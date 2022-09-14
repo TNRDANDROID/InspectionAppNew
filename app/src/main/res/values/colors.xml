@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#33557B</color>
+    <color name="colorPrimaryDark">#002b5b</color>
+    <color name="colorAccent">#667F9C</color>
+    <color name="colorAccentlight">#B2BFCD</color>
+    <color name="colorAccentverylight">#E5E9EE</color>
+
+    <color name="address">#2F7092</color>
+    <color name="followers">#0D5D98</color>
+    <color name="headings">#3797CF</color>
+    <color name="solidCircle">#AAFFFFFF</color>
+    <color name="circleBorder">#50FFFFFF</color>
+
+    <color name="grey">#E5E5E5</color>
+
+    <color name="gradEnd">#6bce67</color>
+    <color name="gradStart">#45c240</color>
+    <color name="followersBg">#6bce67</color>
+    <color name="followingBg">#45c240</color>
+    <color name="light_green">#f3fff3</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="pink">#bf63f9</color>
+    <color name="pink_light">#daa6fd</color>
+    <color name="pink_very_light">#f5e7ff</color>
+
+    <color name="grey_1">#fafaf9</color>
+    <color name="grey_2">#f3f2f2</color>
+    <color name="grey_3">#ecebea</color>
+    <color name="grey_4">#dddbda</color>
+    <color name="grey_5">#c9c7c5</color>
+    <color name="grey_6">#b0adab</color>
+    <color name="grey_7">#969492</color>
+    <color name="grey_8">#706e6b</color>
+    <color name="grey_9">#514f4d</color>
+    <color name="grey_10">#3e3e3c</color>
+    <color name="greyed_out">#c7c7c7</color>
+
+    <color name="black">#000000</color>
+    <color name="yellow">#F5F504</color>
+    <color name="red">#B71C1C</color>
+
+    <color name="d_grey">#E7E7EB</color>
+    <color name="d_grey1">#8F91A2</color>
+    <color name="d_grey2">#747474</color>
+    <color name="d_grey3">#746C7C</color>
+    <color name="d_grey4">#B8B8BA</color>
+    <color name="full_transparent">#00FF0000</color>
+    <color name="primary_text_color">#2A4AFB</color>
+
+    <color name="blue_background">#242b35</color>
+    <color name="border_line">#252b34</color>
+    <color name="account_status_green_color">#45c240</color>
+    <color name="subscription_type_red_color">#fc4b5f</color>
+    <color name="background_light_gray">#f1f1f1</color>
+    <color name="sky_blue">#61BEE1</color>
+    <color name="green_combo">#e1dd72</color>
+
+    <color name="dashboard_line_dark">#818080</color>
+    <color name="dashboard_line_light">#EBEBEB</color>
+    <color name="tool_bar_blue">#344050</color>
+
+    <color name="dot_dark_screen1">#FA023C</color>
+    <color name="dot_dark_screen2">#14a895</color>
+    <color name="dot_dark_screen3">#2278d4</color>
+    <color name="dot_dark_screen4">#a854d4</color>
+
+    <color name="background_image_tint">#77002237</color>
+    <color name="unselect">#a0a0a0</color>
+    <!-- dots active colors -->
+    <color name="dot_light_screen1">#f98da5</color>
+    <color name="dot_light_screen2">#8cf9eb</color>
+    <color name="dot_light_screen3">#93c6fd</color>
+    <color name="dot_light_screen4">#e4b5fc</color>
+    <array name="array_dot_active">
+        <item>@color/dot_light_screen1</item>
+        <item>@color/dot_light_screen2</item>
+        <item>@color/dot_light_screen3</item>
+        <item>@color/dot_light_screen4</item>
+        <item>@color/dot_light_screen1</item>
+        <item>@color/dot_light_screen2</item>
+        <item>@color/dot_light_screen3</item>
+        <item>@color/dot_light_screen4</item>
+        <item>@color/dot_light_screen1</item>
+        <item>@color/dot_light_screen2</item>
+    </array>
+
+    <array name="array_dot_inactive">
+        <item>@color/dot_dark_screen1</item>
+        <item>@color/dot_dark_screen2</item>
+        <item>@color/dot_dark_screen3</item>
+        <item>@color/dot_dark_screen4</item>
+        <item>@color/dot_dark_screen1</item>
+        <item>@color/dot_dark_screen2</item>
+        <item>@color/dot_dark_screen3</item>
+        <item>@color/dot_dark_screen4</item>
+        <item>@color/dot_dark_screen1</item>
+        <item>@color/dot_dark_screen2</item>
+    </array>
+
+    <item name="purple" type="color">#FFAA66CC</item>
+
+
+
+    <item name="darkblue" type="color">#A90099CC</item>
+    <item name="darkpurple" type="color">#A99933CC</item>
+    <item name="darkgreen" type="color">#DA4CAF50</item>
+
+
+
+    <integer-array name="androidcolors">
+        <item>@color/purple</item>
+        <item>@color/darkblue</item>
+        <item>@color/darkgreen</item>
+        <item>@color/colorPrimary</item>
+    </integer-array>
+
+</resources>
