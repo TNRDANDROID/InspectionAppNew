@@ -3,7 +3,7 @@
 <data>
     <variable
         name="activity"
-        type="com.nic.samathuvapuram.activity.FullImageActivity" />
+        type="com.nic.InspectionAppNew.activity.FullImageActivity" />
 </data>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"

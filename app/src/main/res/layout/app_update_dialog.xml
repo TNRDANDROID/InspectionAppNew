@@ -3,7 +3,7 @@
     <data>
         <variable
             name="activity"
-            type="com.nic.samathuvapuram.activity.AppUpdateDialog" />
+            type="com.nic.InspectionAppNew.activity.AppUpdateDialog" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

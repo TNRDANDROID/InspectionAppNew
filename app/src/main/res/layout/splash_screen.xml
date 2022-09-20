@@ -3,7 +3,7 @@
     <data>
         <variable
             name="activity"
-            type="com.nic.samathuvapuram.activity.SplashScreen" />
+            type="com.nic.InspectionAppNew.activity.SplashScreen" />
     </data>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"

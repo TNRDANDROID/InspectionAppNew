@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#33557B</color>
-    <color name="colorPrimaryDark">#002b5b</color>
-    <color name="colorAccent">#667F9C</color>
-    <color name="colorAccentlight">#B2BFCD</color>
-    <color name="colorAccentverylight">#E5E9EE</color>
+    <color name="colorPrimary">#07b3a5</color>
+    <color name="colorPrimaryDark">#058177</color>
+    <color name="colorAccent">#08cbbb</color>
+    <color name="colorAccentlight">#08cbbb</color>
+    <color name="colorAccentverylight">#11f6e3</color>
 
     <color name="address">#2F7092</color>
     <color name="followers">#0D5D98</color>
@@ -24,7 +24,7 @@
     <color name="pink">#bf63f9</color>
     <color name="pink_light">#daa6fd</color>
     <color name="pink_very_light">#f5e7ff</color>
-
+    <color name="gray_text_colour">#504E4E</color>
     <color name="grey_1">#fafaf9</color>
     <color name="grey_2">#f3f2f2</color>
     <color name="grey_3">#ecebea</color>
@@ -56,6 +56,9 @@
     <color name="background_light_gray">#f1f1f1</color>
     <color name="sky_blue">#61BEE1</color>
     <color name="green_combo">#e1dd72</color>
+
+    <color name="colorPrimary_light">#9A07B3A5</color>
+    <color name="colorPrimaryDark_light">#9E058177</color>
 
     <color name="dashboard_line_dark">#818080</color>
     <color name="dashboard_line_light">#EBEBEB</color>

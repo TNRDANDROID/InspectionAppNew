@@ -3,6 +3,11 @@
   <component name="WizardSettings">
     <option name="children">
       <map>
+        <entry key="imageWizard">
+          <value>
+            <PersistentState />
+          </value>
+        </entry>
         <entry key="vectorWizard">
           <value>
             <PersistentState>
@@ -14,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_phone_camera" />
-                            <entry key="sourceFile" value="C:\Users\NIC1\Downloads\phone-camera.svg" />
+                            <entry key="outputName" value="ic_mic_outline" />
+                            <entry key="sourceFile" value="C:\Users\hp\Downloads\216333_microphone_icon.svg" />
                           </map>
                         </option>
                       </PersistentState>

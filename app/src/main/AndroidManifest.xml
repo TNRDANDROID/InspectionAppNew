@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.nic.samathuvapuram">
+    package="com.nic.InspectionAppNew">
 
     <supports-screens
         android:anyDensity="true"
@@ -29,24 +29,24 @@
     <uses-permission android:name="android.permission.FLAG_GRANT_READ_URI_PERMISSION" />
 
     <application
-        android:name="com.nic.samathuvapuram.application.NICApplication"
+        android:name=".application.NICApplication"
         android:allowBackup="true"
-        android:icon="@drawable/ic_house"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:resizeableActivity="true"
-        android:roundIcon="@drawable/ic_house"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity android:name=".activity.MainHomePage"></activity>
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name="com.nic.samathuvapuram.activity.SplashScreen">
+        <activity android:name=".activity.SplashScreen">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -61,33 +61,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.nic.samathuvapuram.activity.LoginScreen"
+            android:name=".activity.LoginScreen"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
         <activity
-            android:name="com.nic.samathuvapuram.activity.HomePage"
+            android:name=".activity.WorkList"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
         <activity
-            android:name="com.nic.samathuvapuram.activity.AppUpdateDialog"
+            android:name=".activity.AppUpdateDialog"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
-        <activity android:name=".activity.HouseListActivity" />
         <activity android:name=".activity.CameraScreen" />
         <activity android:name=".activity.FullImageActivity" />
         <activity android:name=".activity.PendingScreen" />
-        <activity android:name=".activity.SaveBlkHouseDetailsActivity" />
-        <activity android:name=".activity.SaveAeHouseDetailsActivity" />
-        <activity android:name=".activity.AEScreen" />
-        <activity android:name=".activity.InfraListActivity" />
-        <activity android:name=".activity.SaveAeInfraDetailsActivity" />
+        <activity android:name=".activity.SaveWorkDetailsActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.nic.samathuvapuram.provider"
+            android:authorities="com.nic.InspectionAppNew.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

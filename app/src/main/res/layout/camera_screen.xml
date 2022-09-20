@@ -5,7 +5,7 @@
 <data>
     <variable
         name="activity"
-        type="com.nic.samathuvapuram.activity.CameraScreen" />
+        type="com.nic.InspectionAppNew.activity.CameraScreen" />
 </data>
 <RelativeLayout
     android:id="@+id/parent"

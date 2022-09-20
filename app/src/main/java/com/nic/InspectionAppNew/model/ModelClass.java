@@ -1,0 +1,313 @@
+package com.nic.InspectionAppNew.model;
+
+import android.graphics.Bitmap;
+
+/**
+ * Created by Kavitha M on 19-09-2022.
+ */
+
+public class ModelClass {
+
+    private String stateCode;
+    private String stateName;
+    private String distictCode;
+    private String districtName;
+    private String blockCode;
+    private String HabCode;
+    private String Description;
+    private String Latitude;
+    private String Longtitude;
+    private String image_path;
+    private String image;
+    private int img_id;
+    private int image_serial_number;
+    private String PvCode;
+    private String PvName;
+    private String blockName;
+    private String HabitationName;
+    private Bitmap Image;
+    private int work_id;
+    private String work_name;
+    private String work_status;
+    private int work_status_id;
+    private String work_type;
+    private int photo_type_id;
+    private String photo_type_name;
+    private int min_no_of_photos;
+    private int max_no_of_photos;
+    private String financialYear;
+    private String VillageListDistrictCode;
+    private String VillageListBlockCode;
+    private String VillageListPvCode;
+    private String VillageListPvName;
+    private String schemeSequentialID;
+    private String schemeName;
+
+    public int getWork_status_id() {
+        return work_status_id;
+    }
+
+    public void setWork_status_id(int work_status_id) {
+        this.work_status_id = work_status_id;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public int getImg_id() {
+        return img_id;
+    }
+
+    public void setImg_id(int img_id) {
+        this.img_id = img_id;
+    }
+
+    public String getStateCode() {
+        return stateCode;
+    }
+
+    public void setStateCode(String stateCode) {
+        this.stateCode = stateCode;
+    }
+
+    public String getStateName() {
+        return stateName;
+    }
+
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
+    }
+
+    public String getSchemeSequentialID() {
+        return schemeSequentialID;
+    }
+
+    public void setSchemeSequentialID(String schemeSequentialID) {
+        this.schemeSequentialID = schemeSequentialID;
+    }
+
+    public String getSchemeName() {
+        return schemeName;
+    }
+
+    public void setSchemeName(String schemeName) {
+        this.schemeName = schemeName;
+    }
+
+    public String getVillageListDistrictCode() {
+        return VillageListDistrictCode;
+    }
+
+    public void setVillageListDistrictCode(String villageListDistrictCode) {
+        VillageListDistrictCode = villageListDistrictCode;
+    }
+
+    public String getVillageListBlockCode() {
+        return VillageListBlockCode;
+    }
+
+    public void setVillageListBlockCode(String villageListBlockCode) {
+        VillageListBlockCode = villageListBlockCode;
+    }
+
+    public String getVillageListPvCode() {
+        return VillageListPvCode;
+    }
+
+    public void setVillageListPvCode(String villageListPvCode) {
+        VillageListPvCode = villageListPvCode;
+    }
+
+    public String getVillageListPvName() {
+        return VillageListPvName;
+    }
+
+    public void setVillageListPvName(String villageListPvName) {
+        VillageListPvName = villageListPvName;
+    }
+
+    public String getFinancialYear() {
+        return financialYear;
+    }
+
+    public void setFinancialYear(String financialYear) {
+        this.financialYear = financialYear;
+    }
+
+    public String getWork_type() {
+        return work_type;
+    }
+
+    public void setWork_type(String work_type) {
+        this.work_type = work_type;
+    }
+
+    public String getDistictCode() {
+        return distictCode;
+    }
+
+    public void setDistictCode(String distictCode) {
+        this.distictCode = distictCode;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
+    }
+
+    public String getBlockCode() {
+        return blockCode;
+    }
+
+    public void setBlockCode(String blockCode) {
+        this.blockCode = blockCode;
+    }
+
+    public String getHabCode() {
+        return HabCode;
+    }
+
+    public void setHabCode(String habCode) {
+        HabCode = habCode;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
+
+    public String getLatitude() {
+        return Latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        Latitude = latitude;
+    }
+
+    public String getLongtitude() {
+        return Longtitude;
+    }
+
+    public void setLongtitude(String longtitude) {
+        Longtitude = longtitude;
+    }
+
+    public String getImage_path() {
+        return image_path;
+    }
+
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+
+    public int getImage_serial_number() {
+        return image_serial_number;
+    }
+
+    public void setImage_serial_number(int image_serial_number) {
+        this.image_serial_number = image_serial_number;
+    }
+
+    public String getPvCode() {
+        return PvCode;
+    }
+
+    public void setPvCode(String pvCode) {
+        PvCode = pvCode;
+    }
+
+    public String getPvName() {
+        return PvName;
+    }
+
+    public void setPvName(String pvName) {
+        PvName = pvName;
+    }
+
+    public String getBlockName() {
+        return blockName;
+    }
+
+    public void setBlockName(String blockName) {
+        this.blockName = blockName;
+    }
+
+    public String getHabitationName() {
+        return HabitationName;
+    }
+
+    public void setHabitationName(String habitationName) {
+        HabitationName = habitationName;
+    }
+
+    public Bitmap getImage() {
+        return Image;
+    }
+
+    public void setImage(Bitmap image) {
+        Image = image;
+    }
+
+    public int getWork_id() {
+        return work_id;
+    }
+
+    public void setWork_id(int work_id) {
+        this.work_id = work_id;
+    }
+
+    public String getWork_name() {
+        return work_name;
+    }
+
+    public void setWork_name(String work_name) {
+        this.work_name = work_name;
+    }
+
+    public String getWork_status() {
+        return work_status;
+    }
+
+    public void setWork_status(String work_status) {
+        this.work_status = work_status;
+    }
+
+    public int getPhoto_type_id() {
+        return photo_type_id;
+    }
+
+    public void setPhoto_type_id(int photo_type_id) {
+        this.photo_type_id = photo_type_id;
+    }
+
+    public String getPhoto_type_name() {
+        return photo_type_name;
+    }
+
+    public void setPhoto_type_name(String photo_type_name) {
+        this.photo_type_name = photo_type_name;
+    }
+
+    public int getMin_no_of_photos() {
+        return min_no_of_photos;
+    }
+
+    public void setMin_no_of_photos(int min_no_of_photos) {
+        this.min_no_of_photos = min_no_of_photos;
+    }
+
+    public int getMax_no_of_photos() {
+        return max_no_of_photos;
+    }
+
+    public void setMax_no_of_photos(int max_no_of_photos) {
+        this.max_no_of_photos = max_no_of_photos;
+    }
+}

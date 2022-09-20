@@ -3,9 +3,9 @@
     <data>
         <variable
             name="adapter"
-            type="com.nic.samathuvapuram.adapter.FullImageAdapter" />
+            type="com.nic.InspectionAppNew.adapter.FullImageAdapter" />
     </data>
-<com.nic.samathuvapuram.support.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.nic.InspectionAppNew.support.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -19,5 +19,5 @@
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         tools:ignore="ContentDescription" />
-</com.nic.samathuvapuram.support.SquareLayout>
+</com.nic.InspectionAppNew.support.SquareLayout>
 </layout>

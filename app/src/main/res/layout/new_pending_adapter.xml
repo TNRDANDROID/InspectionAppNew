@@ -6,7 +6,7 @@
 
         <variable
             name="adapter"
-            type="com.nic.samathuvapuram.adapter.PendingScreenAdapter" />
+            type="com.nic.InspectionAppNew.adapter.PendingScreenAdapter" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,7 +23,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="@dimen/_30sdp"
             app:cardCornerRadius="10dp"
-            app:cardBackgroundColor="@color/colorPrimaryDark"
+            app:cardBackgroundColor="@color/white"
             >
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -41,119 +41,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/linear"
+                        android:padding="@dimen/_5sdp"
                         android:layout_below="@+id/view_offline_images"
                         android:orientation="vertical">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
-                            android:padding="@dimen/_3sdp"
-                            android:id="@+id/samathuvapuram_layout"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.8"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/samathuvapuram_h"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="Samathuvapuram id"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.2"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text=":"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/samathuvapuram_id"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                />
-
-
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
-                            android:padding="@dimen/_3sdp"
-                            android:id="@+id/house_no_layout"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.8"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/house_serial_number_h"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="House Sl.No"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.2"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text=":"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/house_serial_number"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                />
-
-
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
-                            android:padding="@dimen/_3sdp"
-                            android:id="@+id/scheme_layout"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.8"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/scheme_h"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="Scheme"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.2"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text=":"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/scheme"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                />
-
-
-                        </LinearLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:weightSum="2"
@@ -166,16 +56,16 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/work_h"
                                 android:gravity="start"
-                                android:textColor="@color/white"
+                                android:textColor="@color/grey_9"
                                 android:textSize="@dimen/_12sdp"
-                                android:text="Work"
+                                android:text="Work id"
                                 />
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="0.2"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:textColor="@color/white"
+                                android:textColor="@color/grey_9"
                                 android:textSize="@dimen/_12sdp"
                                 android:text=":"
                                 />
@@ -183,9 +73,9 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/work"
+                                android:id="@+id/work_id"
                                 android:gravity="start"
-                                android:textColor="@color/white"
+                                android:textColor="@color/grey_9"
                                 android:textSize="@dimen/_12sdp"
                                 />
 
@@ -195,24 +85,24 @@
                             android:layout_width="match_parent"
                             android:weightSum="2"
                             android:padding="@dimen/_3sdp"
-                            android:id="@+id/beneficiary_layout"
+                            android:id="@+id/work_name_layout"
                             android:layout_height="wrap_content">
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/current_name_of_the_beneficiary_h"
+                                android:id="@+id/work_name_h"
                                 android:gravity="start"
-                                android:textColor="@color/white"
+                                android:textColor="@color/grey_9"
                                 android:textSize="@dimen/_12sdp"
-                                android:text="Beneficiary name"
+                                android:text="Work Name"
                                 />
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="0.2"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:textColor="@color/white"
+                                android:textColor="@color/grey_9"
                                 android:textSize="@dimen/_12sdp"
                                 android:text=":"
                                 />
@@ -220,9 +110,9 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/current_name_of_the_beneficiary"
+                                android:id="@+id/work_name"
                                 android:gravity="start"
-                                android:textColor="@color/white"
+                                android:textColor="@color/grey_9"
                                 android:textSize="@dimen/_12sdp"
                                 />
 
@@ -232,24 +122,25 @@
                             android:layout_width="match_parent"
                             android:weightSum="2"
                             android:padding="@dimen/_3sdp"
-                            android:id="@+id/current_house_usage_layout"
+                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:id="@+id/work_status_layout"
                             android:layout_height="wrap_content">
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/current_house_usage_h"
+                                android:id="@+id/work_status_h"
                                 android:gravity="start"
-                                android:textColor="@color/white"
+                                android:textColor="@color/grey_9"
                                 android:textSize="@dimen/_12sdp"
-                                android:text="Current house usage"
+                                android:text="Work Status"
                                 />
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="0.2"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:textColor="@color/white"
+                                android:textColor="@color/grey_9"
                                 android:textSize="@dimen/_12sdp"
                                 android:text=":"
                                 />
@@ -257,83 +148,9 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/current_house_usage"
+                                android:id="@+id/work_status"
                                 android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                />
-
-
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
-                            android:padding="@dimen/_3sdp"
-                            android:id="@+id/condition_of_house_layout"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.8"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/condition_of_house_h"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="Condition of house"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.2"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text=":"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/condition_of_house"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                />
-
-
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
-                            android:padding="@dimen/_3sdp"
-                            android:id="@+id/condition_of_infra_layout"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.8"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/condition_of_infra_h"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="Condition of infra"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.2"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text=":"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/condition_of_infra"
-                                android:gravity="start"
-                                android:textColor="@color/white"
+                                android:textColor="@color/grey_9"
                                 android:textSize="@dimen/_12sdp"
                                 />
 
@@ -405,7 +222,7 @@
                         android:gravity="end"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
-                        android:textColor="@color/white"
+                        android:textColor="@color/grey_9"
                         android:textSize="@dimen/_14sdp"
                         android:text="@string/view_image"
                         android:textStyle="bold"
@@ -431,7 +248,7 @@
             android:layout_alignParentStart="true"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/_7sdp"
-            app:cardElevation="@dimen/_7sdp"
+            app:cardElevation="@dimen/_3sdp"
             >
             <ImageView
                 android:layout_width="match_parent"
