@@ -1188,14 +1188,20 @@ public class Utils {
         return dataSet;
     }
 
-    public static JSONObject villageListDistrictBlockWiseJsonParams(Activity activity) throws JSONException {
+    public static JSONObject villageListDistrictWiseJsonParams(Activity activity) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VILLAGE_LIST_DISTRICT_BLOCK_WISE);
-        dataSet.put(AppConstant.STATE_CODE, prefManager.getStateCode());
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VILLAGE_LIST_DISTRICT_WISE);
         dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
         dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
-        Log.d("villageListDistBlock", "" + dataSet);
+      /*  if(prefManager.getLevels().equalsIgnoreCase("D") || prefManager.getLevels().equalsIgnoreCase("B") ) {
+            dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VILLAGE_LIST_DISTRICT_WISE);
+            dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+
+        }else if(prefManager.getLevels().equalsIgnoreCase("S")){
+            dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VILLAGE_LIST_ALL);
+        }*/
+        Log.d("villageListDistrictWise", "" + dataSet);
         return dataSet;
     }
 
@@ -1221,7 +1227,7 @@ public class Utils {
         }
 
         if(prefManager.getLevels().equalsIgnoreCase("D") || prefManager.getLevels().equalsIgnoreCase("S")){
-            dataSet.put(AppConstant.FIN_YEAR,prefManager.getFinYearJson());
+            dataSet.put(AppConstant.FINANCIAL_YEAR,prefManager.getFinYearJson());
         }
         Log.d("schemeListDistrictWise", "" + dataSet);
         return dataSet;
@@ -1251,7 +1257,7 @@ public class Utils {
             dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCodeJson());
             dataSet.put(AppConstant.PV_CODE, prefManager.getVillagePvCodeJson());
             dataSet.put(AppConstant.SCHEME_ID, prefManager.getSchemeSeqIdJson());
-            dataSet.put(AppConstant.FIN_YEAR, prefManager.getFinYearJson());
+            dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinYearJson());
         }
         else if (prefManager.getLevels().equalsIgnoreCase("D")) {
             dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_WORK_LIST_OPTIONAL);
@@ -1260,7 +1266,7 @@ public class Utils {
             dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCodeJson());
             dataSet.put(AppConstant.PV_CODE, prefManager.getVillagePvCodeJson());
             dataSet.put(AppConstant.SCHEME_ID, prefManager.getSchemeSeqIdJson());
-            dataSet.put(AppConstant.FIN_YEAR, prefManager.getFinYearJson());
+            dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinYearJson());
         }
         else if (prefManager.getLevels().equalsIgnoreCase("B")) {
             dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_WORK_LIST_OPTIONAL);
@@ -1269,7 +1275,7 @@ public class Utils {
             dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
             dataSet.put(AppConstant.PV_CODE, prefManager.getVillagePvCodeJson());
             dataSet.put(AppConstant.SCHEME_ID, prefManager.getSchemeSeqIdJson());
-            dataSet.put(AppConstant.FIN_YEAR, prefManager.getFinYearJson());
+            dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinYearJson());
         }
 
         Log.d("workListOptional", "" + dataSet);

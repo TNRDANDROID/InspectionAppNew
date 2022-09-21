@@ -100,7 +100,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             public void onClick(View view) {
                 prefManager.setWorkType("rdpr");
                 prefManager.setOnOffType("offline");
-                openWorkListScreen();
+                openDownloadScreen();
             }
         });
         homeScreenBinding.goOfflineOther.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +108,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             public void onClick(View view) {
                 prefManager.setWorkType("other");
                 prefManager.setOnOffType("offline");
-                openWorkListScreen();
+                openDownloadScreen();
             }
         });
     }
@@ -400,6 +400,11 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     }
     public void openWorkListScreen() {
         Intent intent = new Intent(this, WorkList.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+    public void openDownloadScreen() {
+        Intent intent = new Intent(this, DownloadActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -44,7 +45,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nic.InspectionAppNew.activity.WorkList.db;
+
 
 
 public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScreenAdapter.MyViewHolder> implements Filterable {
@@ -58,6 +59,8 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
     ArrayList<ModelClass> imageCount;
     private LayoutInflater layoutInflater;
     String image_sql="";
+    public DBHelper dbHelper;
+    public SQLiteDatabase db;
 
     private static DiffUtil.ItemCallback<ModelClass> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<ModelClass>() {
@@ -79,6 +82,12 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
         dbData = new dbData(context);
         this.pendingListValues = pendingListValues;
         this.pendingListFiltered = pendingListValues;
+        try {
+            dbHelper = new DBHelper(context);
+            db = dbHelper.getWritableDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

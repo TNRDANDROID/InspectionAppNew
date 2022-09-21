@@ -327,7 +327,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     }
 
     public JSONObject villageListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.villageListDistrictBlockWiseJsonParams(this).toString());
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.villageListDistrictWiseJsonParams(this).toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
@@ -382,7 +382,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                             getBlockList();
                         }
 
-                        getVillageList();
+//                        getVillageList();
                         //getHabList();
 
                         new Handler().postDelayed(new Runnable() {

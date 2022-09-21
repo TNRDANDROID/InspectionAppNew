@@ -1,26 +1,23 @@
 package com.nic.InspectionAppNew.activity;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 
 import com.android.volley.VolleyError;
 import com.nic.InspectionAppNew.R;
@@ -42,7 +39,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static com.nic.InspectionAppNew.dataBase.DBHelper.BLOCK_TABLE_NAME;
@@ -54,7 +50,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     private Button download, btn_view_finyear,btn_view_district, btn_view_block, btn_view_village, btn_view_scheme;
 
     public MyCustomTextView title_tv, selected_finyear_tv, selected_district_tv, selected_block_tv, selected_village_tv, selected_scheme_tv;
-    private static PrefManager prefManager;
+    private  PrefManager prefManager;
 
     private ImageView back_img,homeimg;
     private List<ModelClass> District = new ArrayList<>();
@@ -68,7 +64,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     final ArrayList<Integer> mVillageItems = new ArrayList<>();
     final ArrayList<Integer> mFinYearItems = new ArrayList<>();
     final ArrayList<Integer> mSchemeItems = new ArrayList<>();
-    final ArrayList<Integer> mUserItems = new ArrayList<>();
+    final ArrayList<Integer> mBlockItems = new ArrayList<>();
     /*It is Temporarly hide scheme is empty in the multiple choice dialog to unhide */
     String[] districtStrings;
     String[] districtCodeStrings;
@@ -149,7 +145,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
 
         if (prefManager.getLevels().equalsIgnoreCase("B")) {
-            loadOfflineVillgeListDBValues();
+//            loadOfflineVillgeListDBValues();
+            getVillageList();
             district_hide_layout.setVisibility(View.GONE);
             block_hide_layout.setVisibility(View.GONE);
         }
@@ -162,6 +159,21 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         }
 
     }
+    public void getVillageList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("VillageList", Api.Method.POST, UrlGenerator.getServicesListUrl(), villageListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }    public JSONObject villageListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.villageListDistrictWiseJsonParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("villageListDistrictWise", "" + authKey);
+        return dataSet;
+    }
+
 
     public void loadOfflineFinYearListDBValues() {
         dbData.open();
@@ -313,6 +325,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                 if (isChecked) {
 
+                    mBlockItems.clear();
+                    select_block_layout.setVisibility(View.GONE);
 
                     if (!mDistrictItems.contains(position)) {
                         mDistrictItems.add(position);
@@ -323,6 +337,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 JSONArray districtCodeJsonArray = new JSONArray();
 
                 for (int i = 0; i < mDistrictItems.size(); i++) {
+                    prefManager.setDistrictCode(districtCodeStrings[mDistrictItems.get(i)]);
                     districtCodeJsonArray.put(districtCodeStrings[mDistrictItems.get(i)]);
                 }
                 prefManager.setDistrictCodeJson(districtCodeJsonArray);
@@ -434,16 +449,19 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 jsonArray.put(Block.get(i).getBlockCode());
                 myBlockCodelist.add(jsonArray);
             }
-            if (prefManager.getLevels().equalsIgnoreCase("D")) {
+            block_myBlockCodeList.add(Block.get(i).getBlockCode());
+            /*if (prefManager.getLevels().equalsIgnoreCase("D")) {
                 block_myBlockCodeList.add(Block.get(i).getBlockCode());
-            }
+            }*/
 
         }
 
         blockStrings = myBlockList.toArray(new String[myBlockList.size()]);
-        if (prefManager.getLevels().equalsIgnoreCase("D")) {
+        blockCodeStrings = block_myBlockCodeList.toArray(new String[block_myBlockCodeList.size()]);
+
+       /* if (prefManager.getLevels().equalsIgnoreCase("D")) {
          blockCodeStrings = block_myBlockCodeList.toArray(new String[block_myBlockCodeList.size()]);
-        }
+        }*/
         blockcheckedItems= new boolean[blockStrings.length];
 
     }
@@ -457,21 +475,25 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                 if (isChecked) {
 
+                    mVillageItems.clear();
+                    select_village_layout.setVisibility(View.GONE);
 
-                    if (!mUserItems.contains(position)) {
-                        mUserItems.add(position);
+                    if (!mBlockItems.contains(position)) {
+                        mBlockItems.add(position);
                     }
-                } else if (mUserItems.contains(position)) {
-                    mUserItems.remove(Integer.valueOf(position));
+                } else if (mBlockItems.contains(position)) {
+                    mBlockItems.remove(Integer.valueOf(position));
                 }
                 JSONArray blockCodeJsonArray = new JSONArray();
 
-                for (int i = 0; i < mUserItems.size(); i++) {
+                for (int i = 0; i < mBlockItems.size(); i++) {
+                    prefManager.setBlockCode(blockCodeStrings[mBlockItems.get(i)]);
                     if(prefManager.getLevels().equalsIgnoreCase("S")) {
-                        blockCodeJsonArray.put(myBlockCodelist.get(mUserItems.get(i)));
+                        blockCodeJsonArray.put(myBlockCodelist.get(mBlockItems.get(i)));
                     }
                     if (prefManager.getLevels().equalsIgnoreCase("D")) {
-                        blockCodeJsonArray.put(blockCodeStrings[mUserItems.get(i)]);
+
+                        blockCodeJsonArray.put(blockCodeStrings[mBlockItems.get(i)]);
                     }
 
                 }
@@ -489,22 +511,23 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
                 String item = "";
-                for (int i = 0; i < mUserItems.size(); i++) {
-                    item = item + blockStrings[mUserItems.get(i)];
-                    if (i != mUserItems.size() - 1) {
+                for (int i = 0; i < mBlockItems.size(); i++) {
+                    item = item + blockStrings[mBlockItems.get(i)];
+                    if (i != mBlockItems.size() - 1) {
                         item = item + ", ";
 
 
                     }
                 }
-                if(mUserItems.size() > 0) {
+                if(mBlockItems.size() > 0) {
                     select_block_layout.setVisibility(View.VISIBLE);
                 }else {
                     select_block_layout.setVisibility(View.GONE);
                 }
                 selected_block_tv.setText(item);
 
-                loadOfflineVillgeListDBValues();
+//                loadOfflineVillgeListDBValues();
+                getVillageList();
             }
         });
 
@@ -520,22 +543,33 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             public void onClick(DialogInterface dialogInterface, int which) {
                 for (int i = 0; i < blockcheckedItems.length; i++) {
                     blockcheckedItems[i] = false;
-                    mUserItems.clear();
+                    mBlockItems.clear();
                     selected_block_tv.setText("");
                     select_block_layout.setVisibility(View.GONE);
                 }
             }
         });
 
-        AlertDialog mDialog = mBuilder.create();
-        mDialog.show();
+        if(prefManager.getLevels().equals("S")){
+            AlertDialog mDialog = mBuilder.create();
+            if(mDistrictItems.size() > 0 ) {/*Used for Block level Login*/
+                mDialog.show();
+            }
+            else {
+                Utils.showAlert(this,"Please Select District!");
+                select_village_layout.setVisibility(View.GONE);
+            }
+        }
+
+       /* AlertDialog mDialog = mBuilder.create();
+        mDialog.show();*/
     }
 
 
     public void loadOfflineVillgeListDBValues() {
 
         String villageSql = null;
-        if (prefManager.getLevels().equalsIgnoreCase("S")){
+       /* if (prefManager.getLevels().equalsIgnoreCase("S")){
             JSONArray filterVillage = prefManager.getBlockCodeJson();
             db.execSQL("CREATE TEMPORARY TABLE IF NOT EXISTS tempData (dcode INTEGER, bcode INTEGER);");
             db.execSQL("delete from tempData");
@@ -565,8 +599,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         else if (prefManager.getLevels().equalsIgnoreCase("B")){
             String filterVillage = prefManager.getBlockCode();
             villageSql = "SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " WHERE bcode ="+filterVillage+ " order by pvname asc";
-        }
-
+        }*/
+        villageSql = "SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " WHERE bcode ="+prefManager.getBlockCode()+" and dcode ="+prefManager.getDistrictCode()+ " order by pvname asc";
         Log.d("villageSql", "" + villageSql);
         Cursor VillageList = getRawEvents(villageSql, null);
         Village.clear();
@@ -678,7 +712,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         });
 
         AlertDialog mDialog = mBuilder.create();
-        if(mUserItems.size() > 0 || prefManager.getLevels().equalsIgnoreCase("B")) {/*Used for Block level Login*/
+        if(mBlockItems.size() > 0 || prefManager.getLevels().equalsIgnoreCase("B")) {/*Used for Block level Login*/
             mDialog.show();
         }
         else {
@@ -886,9 +920,59 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 Log.d("responseWorkList", "" + jsonObject.getJSONArray(AppConstant.JSON_DATA));
 
             }
+            if ("VillageList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new InsertVillageTask().execute(jsonObject);
+                }
+                Log.d("VillageList", "" + responseDecryptedBlockKey);
+            }
+
 
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+    public class InsertVillageTask extends AsyncTask<JSONObject, Void, Void> {
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            dbData.open();
+            ArrayList<ModelClass> villagelist_count = dbData.getAll_Village(prefManager.getDistrictCode(),prefManager.getBlockCode());
+            if (villagelist_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        ModelClass villageListValue = new ModelClass();
+                        try {
+                            villageListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                            villageListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
+                            villageListValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
+                            villageListValue.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
+
+                            dbData.insertVillage(villageListValue);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            loadOfflineVillgeListDBValues();
         }
     }
 
@@ -912,7 +996,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 ContentValues schemeListLocalDbValues = new ContentValues();
                 schemeListLocalDbValues.put(AppConstant.SCHEME_SEQUENTIAL_ID, schemeSequentialID);
                 schemeListLocalDbValues.put(AppConstant.SCHEME_NAME, schemeName);
-                schemeListLocalDbValues.put(AppConstant.FIN_YEAR, fin_year);
+                schemeListLocalDbValues.put(AppConstant.FINANCIAL_YEAR, fin_year);
 
                 db.insert(SCHEME_TABLE_NAME, null, schemeListLocalDbValues);
                 Log.d("LocalDBSchemeList", "" + schemeListLocalDbValues);
@@ -931,7 +1015,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
 
     public void loadOfflineSchemeListDBValues() {
-        String query = "SELECT distinct scheme_name,scheme_seq_id FROM " + SCHEME_TABLE_NAME + " Where finyear in " + prefManager.getFinYearJson().toString().replace("[", "(").replace("]", ")") + " order by LTRIM(scheme_name) asc";
+        String query = "SELECT distinct scheme_name,scheme_seq_id FROM " + SCHEME_TABLE_NAME + " Where fin_year in " + prefManager.getFinYearJson().toString().replace("[", "(").replace("]", ")") + " order by LTRIM(scheme_name) asc";
         Cursor SchemeList = getRawEvents(query, null);
         Log.d("SchemeQuery", "" + query);
 
@@ -1061,7 +1145,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
                     String SelectedBlockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
                     String schemeID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_ID);
-                    String finYear = jsonArray.getJSONObject(i).getString(AppConstant.FIN_YEAR);
+                    String finYear = jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR);
                     String workID = jsonArray.getJSONObject(i).getString(AppConstant.WORK_ID);
                     String workName = jsonArray.getJSONObject(i).getString(AppConstant.WORK_NAME);
                     String currentStage = jsonArray.getJSONObject(i).getString(AppConstant.CURRENT_STAGE);
@@ -1071,7 +1155,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     workListOptional.put(AppConstant.DISTRICT_CODE, dcode);
                     workListOptional.put(AppConstant.BLOCK_CODE, SelectedBlockCode);
                     workListOptional.put(AppConstant.SCHEME_ID, schemeID);
-                    workListOptional.put(AppConstant.FIN_YEAR, finYear);
+                    workListOptional.put(AppConstant.FINANCIAL_YEAR, finYear);
                     workListOptional.put(AppConstant.WORK_ID, workID);
                     workListOptional.put(AppConstant.WORK_NAME, workName);
                     workListOptional.put(AppConstant.WORK_STATUS, currentStage);

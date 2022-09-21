@@ -37,8 +37,8 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     private SaveWorkDetailsActivityBinding saveWorkDetailsActivityBinding;
     private PrefManager prefManager;
     public dbData dbData = new dbData(this);
-    public static DBHelper dbHelper;
-    public static SQLiteDatabase db;
+    public  DBHelper dbHelper;
+    public  SQLiteDatabase db;
     Handler myHandler = new Handler();
 
     private ProgressHUD progressHUD;
@@ -91,29 +91,17 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     public void statusFilterSpinner() {
         Cursor cursor = null;
         cursor = db.rawQuery("SELECT * FROM " + DBHelper.STATUS_TABLE, null);
-
+        status_list = new ArrayList<>();
         status_list.clear();
         ModelClass list = new ModelClass();
-        list.setSchemeName("Select status");
+        list.setWork_status_id(0);
+        list.setWork_status("Select Status");
         status_list.add(list);
-        if (cursor.getCount() > 0) {
-            if (cursor.moveToFirst()) {
-                do {
-                    ModelClass modelClass = new ModelClass();
-                    int status_id = cursor.getInt(cursor.getColumnIndexOrThrow("status_id"));
-                    String status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
-
-                    modelClass.setWork_status_id(status_id);
-                    modelClass.setWork_status(status);
-
-                    status_list.add(modelClass);
-                } while (cursor.moveToNext());
-            }
-            Log.d("statuspinnersize", "" + status_list.size());
-
-        }
+        dbData.open();
+        status_list.addAll(dbData.getAll_Work_Status());
         saveWorkDetailsActivityBinding.statusSpinner.setAdapter(new CommonAdapter(this, status_list, "status"));
     }
+
 
 
 

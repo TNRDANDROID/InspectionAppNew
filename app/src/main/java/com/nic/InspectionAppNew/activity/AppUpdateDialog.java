@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.nic.InspectionAppNew.R;
+
 import com.nic.InspectionAppNew.databinding.AppUpdateDialogBinding;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.MyCustomTextView;

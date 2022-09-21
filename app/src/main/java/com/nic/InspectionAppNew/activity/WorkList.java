@@ -48,8 +48,8 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
     private WorkListBinding workListBinding;
     private PrefManager prefManager;
     public dbData dbData = new dbData(this);
-    public static DBHelper dbHelper;
-    public static SQLiteDatabase db;
+    public  DBHelper dbHelper;
+    public  SQLiteDatabase db;
     private String isHome;
     Handler myHandler = new Handler();
     private List<ModelClass> Village = new ArrayList<>();
@@ -88,7 +88,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
         workListBinding.recycler.setVisibility(View.GONE);
         workListBinding.notFoundTv.setVisibility(View.VISIBLE);
-        villageFilterSpinner();
+//        villageFilterSpinner();
         schemeFilterSpinner();
         finyearFilterSpinner();
 
@@ -175,7 +175,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
         //fetAllApi();
         //Sample
-        JSONObject jsonObject = new JSONObject();
+       /* JSONObject jsonObject = new JSONObject();
         String json = "{\"STATUS\":\"OK\",\"RESPONSE\":\"OK\",\"JSON_DATA\":[{\"work_id\":1,\"work_name\":\"Property tax\"},{\"work_id\":2,\"work_name\":\"Water Charges\"},{\"work_id\":3,\"work_name\":\"Professional Tax\"},{\"work_id\":4,\"work_name\":\"Non Tax\"},{\"work_id\":5,\"work_name\":\"Trade License \"}]}";
         try {  jsonObject = new JSONObject(json); } catch (Throwable t) {
             Log.e("My App", "Could not parse malformed JSON: \"" + json + "\""); }
@@ -184,7 +184,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                 new Insert_workList().execute(jsonObject);
             }
         } catch (JSONException e) { e.printStackTrace(); }
-
+*/
     }
     public void schemeFilterSpinner() {
         Cursor cursor = null;
@@ -239,10 +239,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
     public void villageFilterSpinner() {
         Cursor cursor = null;
-        String sql = null;
-        sql = "SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " WHERE bcode ="+prefManager.getBlockCode()+ " order by pvname asc";
-        Log.d("Sql", "" + sql);
-        cursor = getRawEvents(sql, null);
+        cursor = db.rawQuery("select * from "+DBHelper.VILLAGE_TABLE_NAME+" where dcode = "+prefManager.getBlockCode()+" order by pvname asc",null);
         Village.clear();
         ModelClass list = new ModelClass();
         list.setPvName("Select Village");

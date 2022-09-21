@@ -39,13 +39,15 @@ public class AppConstant {
     public static String KEY_DISTRICT_LIST_ALL = "district_list_all";
     public static String KEY_BLOCK_LIST_ALL = "block_list_all";
     public static String KEY_BLOCK_LIST_DISTRICT_WISE = "block_list_district_wise";
+
+    public static String KEY_VILLAGE_LIST_ALL = "village_list_all";
+    public static String KEY_VILLAGE_LIST_DISTRICT_WISE = "village_list_district_wise";
     public static String KEY_VILLAGE_LIST_DISTRICT_BLOCK_WISE = "village_list_district_block_wise";
     public static String KEY_HABITATION_LIST_DISTRICT_BLOCK_WISE = "habitation_list_district_block_wise";
     public static String KEY_SCHEME_LIST_ALL = "scheme_list_all";
     public static String KEY_SCHEME_LIST_DISTRICT_FINYEAR_WISE = "scheme_list_district_finyear_wise";
     public static String KEY_SCHEME_FINYEAR_LIST_LAST_NYEARS = "scheme_finyear_list_last_nyears";
     public static String KEY_OBSERVATION = "master_high_value_project_observation";
-    public static String FIN_YEAR = "finyear";
     public static String N_YEAR = "nyear";
     public static String SCHEME_SEQUENTIAL_ID = "scheme_seq_id";
     public static String SCHEME_NAME = "scheme_name";

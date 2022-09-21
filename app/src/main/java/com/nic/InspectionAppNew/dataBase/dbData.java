@@ -59,7 +59,7 @@ public class dbData {
     public void insertFinYear(ModelClass pmgsySurvey) {
 
         ContentValues values = new ContentValues();
-        values.put(AppConstant.FIN_YEAR, pmgsySurvey.getFinancialYear());
+        values.put(AppConstant.FINANCIAL_YEAR, pmgsySurvey.getFinancialYear());
 
         long id = db.insert(DBHelper.FINANCIAL_YEAR_TABLE_NAME,null,values);
         Log.d("Inserted_id_fin", String.valueOf(id));
@@ -120,7 +120,34 @@ public class dbData {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ModelClass card = new ModelClass();
-                    card.setFinancialYear(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.FIN_YEAR)));
+                    card.setFinancialYear(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.FINANCIAL_YEAR)));
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+            e.printStackTrace();
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+    public ArrayList<ModelClass> getAll_Work_Status() {
+
+        ArrayList<ModelClass> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("select * from "+DBHelper.STATUS_TABLE,null);
+            // cursor = db.query(CardsDBHelper.TABLE_CARDS,
+            //       COLUMNS, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ModelClass card = new ModelClass();
+                    card.setWork_status_id(cursor.getInt(cursor.getColumnIndexOrThrow(AppConstant.STATUS_ID)));
+                    card.setWork_status(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.WORK_STATUS)));
                     cards.add(card);
                 }
             }

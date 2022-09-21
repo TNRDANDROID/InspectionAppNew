@@ -45,7 +45,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
     private ShimmerRecyclerView recyclerView;
     private PrefManager prefManager;
     private SQLiteDatabase db;
-    public static DBHelper dbHelper;
+    public  DBHelper dbHelper;
     public com.nic.InspectionAppNew.dataBase.dbData dbData = new dbData(this);
     ArrayList<ModelClass> pendingList = new ArrayList<>();
     private PendingScreenAdapter pendingScreenAdapter;

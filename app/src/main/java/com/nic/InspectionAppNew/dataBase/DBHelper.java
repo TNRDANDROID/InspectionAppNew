@@ -53,7 +53,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "habitation_name TEXT)");
         db.execSQL("CREATE TABLE " + SCHEME_TABLE_NAME + " ("
                 + "scheme_name varchar(32)," +
-                "finyear  varchar(32),"+
+                "fin_year  varchar(32),"+
                 "scheme_seq_id INTEGER)");
 
         db.execSQL("CREATE TABLE " + STATUS_TABLE + " ("
@@ -61,7 +61,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "status TEXT)");
 
         db.execSQL("CREATE TABLE " + FINANCIAL_YEAR_TABLE_NAME + " ("
-                + "finyear  varchar(32))");
+                + "fin_year  varchar(32))");
 
         db.execSQL("CREATE TABLE " + SAVE_IMAGES + " ("
                 + "img_id INTEGER,"+
