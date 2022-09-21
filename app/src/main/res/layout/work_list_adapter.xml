@@ -22,11 +22,12 @@
             android:elevation="@dimen/_5sdp"
             android:layout_alignParentStart="true"
             app:cardCornerRadius="10dp"
-            app:cardBackgroundColor="@color/colorAccent"
             >
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/button_background_light"
+
                 >
 
                 <RelativeLayout

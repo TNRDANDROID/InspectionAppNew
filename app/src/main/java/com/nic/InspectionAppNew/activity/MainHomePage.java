@@ -87,14 +87,23 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 openPendingScreen();
             }
         });
-        homeScreenBinding.rdprWorks.setOnClickListener(new View.OnClickListener() {
+        homeScreenBinding.goOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 prefManager.setWorkType("rdpr");
-                openHomeScreen();
+                prefManager.setOnOffType("online");
+                openWorkListScreen();
             }
         });
-        homeScreenBinding.otherWorks.setOnClickListener(new View.OnClickListener() {
+        homeScreenBinding.goOffline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prefManager.setWorkType("rdpr");
+                prefManager.setOnOffType("offline");
+                openWorkListScreen();
+            }
+        });
+        homeScreenBinding.goOfflineOther.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 prefManager.setWorkType("other");
@@ -386,11 +395,6 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
     public void openPendingScreen() {
         Intent intent = new Intent(this, PendingScreen.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-    }
-    public void openHomeScreen() {
-        Intent intent = new Intent(MainHomePage.this, DownloadActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

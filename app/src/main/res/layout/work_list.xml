@@ -12,7 +12,7 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="#FFFFFF"
         android:orientation="vertical">
 
@@ -71,12 +71,17 @@
 
             </androidx.appcompat.widget.Toolbar>
 
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"
 
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/toolbar"
-                android:background="@color/white"
+                android:background="@color/colorAccent"
                 android:orientation="vertical">
                 <TextView
                     android:id="@+id/village_tv"
@@ -236,38 +241,39 @@
                         android:padding="@dimen/_3sdp"
                         android:gravity="center_horizontal"
                         android:layout_centerHorizontal="true"
-                        android:textColor="@color/white"
+                        android:textColor="@color/grey_10"
                         android:textStyle="bold"
                         android:textSize="@dimen/_15sdp" />
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler"
                         android:layout_below="@+id/work_tv"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="@dimen/_15sdp"
                         android:fadeScrollbars="false"
                         android:scrollbarSize="4dp"
                         android:scrollbars="vertical"
-                        android:visibility="visible"/>
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/not_found_tv"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:text="@string/no_data_found"
                         android:textAlignment="center"
+                        android:gravity="center"
                         android:layout_below="@+id/work_tv"
                         android:layout_marginTop="@dimen/_50sdp"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/grey_10"
                         android:textSize="@dimen/title_text_size"
                         android:textStyle="bold"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
                 </RelativeLayout>
 
 
 
             </RelativeLayout>
-
+        </androidx.core.widget.NestedScrollView>
 
     </RelativeLayout>
 </layout>
