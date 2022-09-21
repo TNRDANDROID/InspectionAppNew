@@ -1251,7 +1251,7 @@ public class Utils {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
         if (prefManager.getLevels().equalsIgnoreCase("S")){
-            dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_WORK_LIST_OPTIONAL);
+            dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS);
             dataSet.put(AppConstant.STATE_CODE, prefManager.getStateCode());
             dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCodeJson());
             dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCodeJson());
@@ -1260,7 +1260,7 @@ public class Utils {
             dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinYearJson());
         }
         else if (prefManager.getLevels().equalsIgnoreCase("D")) {
-            dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_WORK_LIST_OPTIONAL);
+            dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS);
             dataSet.put(AppConstant.STATE_CODE, prefManager.getStateCode());
             dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
             dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCodeJson());
@@ -1269,7 +1269,7 @@ public class Utils {
             dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinYearJson());
         }
         else if (prefManager.getLevels().equalsIgnoreCase("B")) {
-            dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_WORK_LIST_OPTIONAL);
+            dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS);
             dataSet.put(AppConstant.STATE_CODE, prefManager.getStateCode());
             dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
             dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());

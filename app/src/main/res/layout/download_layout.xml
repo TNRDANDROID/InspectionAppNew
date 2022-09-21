@@ -127,6 +127,8 @@
 
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:paddingBottom="@dimen/_5sdp"
+                                    android:paddingTop="@dimen/_5sdp"
                                     android:background="@drawable/text_view_bg_rect_curve"
                                     android:orientation="horizontal">
 

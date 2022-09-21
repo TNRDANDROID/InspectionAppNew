@@ -211,6 +211,10 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             @Override
             public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                 if (isChecked) {
+
+                    mSchemeItems.clear();
+                    select_scheme_layout.setVisibility(View.GONE);
+
                     if (!mFinYearItems.contains(position)) {
                         mFinYearItems.add(position);
 
@@ -324,9 +328,12 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             @Override
             public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                 if (isChecked) {
-
+                    mSchemeItems.clear();
+                    select_scheme_layout.setVisibility(View.GONE);
                     mBlockItems.clear();
                     select_block_layout.setVisibility(View.GONE);
+                    mVillageItems.clear();
+                    select_village_layout.setVisibility(View.GONE);
 
                     if (!mDistrictItems.contains(position)) {
                         mDistrictItems.add(position);
