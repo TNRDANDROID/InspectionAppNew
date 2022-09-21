@@ -2,6 +2,7 @@ package com.nic.InspectionAppNew.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -40,8 +41,8 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     private ActivityMainHomePageBinding homeScreenBinding;
     private PrefManager prefManager;
     public dbData dbData = new dbData(this);
-    public static DBHelper dbHelper;
-    public static SQLiteDatabase db;
+    public  DBHelper dbHelper;
+    public  SQLiteDatabase db;
     private String isHome;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,9 +76,9 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
 
         if (Utils.isOnline()) {
-            getSchemeList();
+            //getSchemeList();
             getFinYearList();
-            getObservationList();
+            getInspection_statusList();
         }
         syncButtonVisibility();
         homeScreenBinding.syncLayout.setOnClickListener(new View.OnClickListener() {
@@ -103,9 +104,9 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         });
     }
 
-    public void getObservationList() {
+    public void getInspection_statusList() {
         try {
-            new ApiService(this).makeJSONObjectRequest("ObservationList", Api.Method.POST, UrlGenerator.getServicesListUrl(), ObservationListJsonParams(), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("inspection_status", Api.Method.POST, UrlGenerator.getServicesListUrl(), inspection_statusListJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -133,12 +134,12 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         Log.d("finYearList", "" + authKey);
         return dataSet;
     }
-    public JSONObject ObservationListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.observationListJsonParams().toString());
+    public JSONObject inspection_statusListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.inspection_statusListJsonParams().toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("ObservationList", "" + authKey);
+        Log.d("inspection_statusList", "" + authKey);
         return dataSet;
     }
     public JSONObject schemeListJsonParams() throws JSONException {
@@ -192,9 +193,38 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     public void OnMyResponse(ServerResponse serverResponse) {
 
         try {
-            String urlType = serverResponse.getApi();
             JSONObject responseObj = serverResponse.getJsonResponse();
+            String urlType = serverResponse.getApi();
+            String status;
+            String response;
+            if ("inspection_status".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new Insert_Inspection_status_Task().execute(jsonObject);
+                }
+                Log.d("inspection_status", "" + responseDecryptedBlockKey);
+            }
+            if ("FinYearList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new Insert_FinYear_Task().execute(jsonObject);
+                }
+                Log.d("FinYearList", "" + responseDecryptedBlockKey);
+            }
 
+            if ("SchemeList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new Insert_Scheme_Task().execute(jsonObject);
+                }
+                Log.d("SchemeList", "" + responseDecryptedBlockKey);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -207,8 +237,115 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
     }
 
+    public class Insert_Inspection_status_Task extends AsyncTask<JSONObject ,Void ,Void> {
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+
+            if (params.length > 0) {
+                dbData.open();
+                dbData.deleteinspection_statusTable();
+                JSONArray jsonArray = new JSONArray();
+                try {
+                    jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    try {
+                        String status_id = jsonArray.getJSONObject(i).getString(AppConstant.STATUS_ID);
+                        String status = jsonArray.getJSONObject(i).getString(AppConstant.STATUS);
+                        ModelClass modelClass = new ModelClass();
+                        modelClass.setWork_status_id(Integer.parseInt(status_id));
+                        modelClass.setWork_status(status);
+                        dbData.insertStatus(modelClass);
+                        /*ContentValues status_items = new ContentValues();
+                        status_items.put(AppConstant.STATUS_ID, status_id);
+                        status_items.put(AppConstant.STATUS, status);*/
+                        //db.insert(DBHelper.STATUS_TABLE, null, status_items);
+                        //Log.d("LocalDBstatusList", "" + status_items);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return null;
+        }
+
+    }
+    public class Insert_Scheme_Task extends AsyncTask<JSONObject ,Void ,Void> {
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+
+            if (params.length > 0) {
+                dbData.open();
+                dbData.deleteSchemeTable();
+                JSONArray jsonArray = new JSONArray();
+                try {
+                    jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    try {
+                        String schemeSequentialID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_SEQUENTIAL_ID);
+                        String schemeName = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_NAME);
+                        String fin_year = jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR);
+
+                        ContentValues schemeListLocalDbValues = new ContentValues();
+                        schemeListLocalDbValues.put(AppConstant.SCHEME_SEQUENTIAL_ID, schemeSequentialID);
+                        schemeListLocalDbValues.put(AppConstant.SCHEME_NAME, schemeName);
+                        schemeListLocalDbValues.put(AppConstant.FINANCIAL_YEAR, fin_year);
+
+                        db.insert(DBHelper.SCHEME_TABLE_NAME, null, schemeListLocalDbValues);
+                        Log.d("LocalDBSchemeList", "" + schemeListLocalDbValues);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return null;
+        }
 
 
+    }
+    public class Insert_FinYear_Task extends AsyncTask<JSONObject ,Void ,Void> {
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+
+            if (params.length > 0) {
+                dbData.open();
+                dbData.deleteFinYearTable();
+                JSONArray jsonArray = new JSONArray();
+                try {
+                    jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    try {
+                        String financialYear = jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR);
+
+                        ModelClass modelClass = new ModelClass();
+                        modelClass.setFinancialYear(financialYear);
+                        dbData.insertFinYear(modelClass);
+                        //db.insert(DBHelper.FINANCIAL_YEAR_TABLE_NAME, null, FinYearListLocalDbValues);
+                        //Log.d("LocalDBFinyearList", "" + FinYearListLocalDbValues);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return null;
+        }
+
+    }
 
     public void closeApplication() {
         new MyDialog(this).exitDialog(this, "Are you sure you want to Logout?", "Logout");
@@ -245,12 +382,6 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     public void syncButtonVisibility() {
         dbData.open();
         ArrayList<ModelClass> ImageCount = dbData.getSavedImage();
-/*
-        if (ImageCount.size() > 0) {
-            homeScreenBinding.synData.setVisibility(View.VISIBLE);
-        }else {
-            homeScreenBinding.synData.setVisibility(View.GONE);
-        }*/
     }
 
     public void openPendingScreen() {
@@ -259,7 +390,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
     public void openHomeScreen() {
-        Intent intent = new Intent(this, HomePage.class);
+        Intent intent = new Intent(MainHomePage.this, DownloadActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

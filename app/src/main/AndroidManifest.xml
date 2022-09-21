@@ -79,6 +79,7 @@
         <activity android:name=".activity.FullImageActivity" />
         <activity android:name=".activity.PendingScreen" />
         <activity android:name=".activity.SaveWorkDetailsActivity" />
+        <activity android:name=".activity.DownloadActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

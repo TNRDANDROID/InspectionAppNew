@@ -91,8 +91,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     ArrayList<JSONArray> myVillageCodelist;
     ArrayList<JSONArray> myBlockCodelist;
     public com.nic.InspectionAppNew.dataBase.dbData dbData = new dbData(this);
-    public static DBHelper dbHelper;
-    public static SQLiteDatabase db;
+    public DBHelper dbHelper;
+    public SQLiteDatabase db;
     boolean workListInsert = false;
 
     @Override
@@ -150,23 +150,28 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
         if (prefManager.getLevels().equalsIgnoreCase("B")) {
             loadOfflineVillgeListDBValues();
+            district_hide_layout.setVisibility(View.GONE);
+            block_hide_layout.setVisibility(View.GONE);
         }
         if(prefManager.getLevels().equalsIgnoreCase("S")){
             loadOfflineDistrictListDBValues();
         }
         if (prefManager.getLevels().equalsIgnoreCase("D")) {
             loadOfflineBlockListDBValues();
+            district_hide_layout.setVisibility(View.GONE);
         }
 
     }
 
     public void loadOfflineFinYearListDBValues() {
-        Cursor FinYear = getRawEvents("SELECT fin_year FROM " + DBHelper.FINANCIAL_YEAR_TABLE_NAME, null);
+        dbData.open();
+        FinYearList  = new ArrayList<>();
+        //Cursor FinYear = getRawEvents("SELECT fin_year FROM " + DBHelper.FINANCIAL_YEAR_TABLE_NAME, null);
         FinYearList.clear();
+        FinYearList.addAll(dbData.getAll_Fin_Year());
         final ArrayList<String> myFinYearlist = new ArrayList<String>();
 
-
-        if (FinYear.getCount() > 0) {
+        /*if (FinYear.getCount() > 0) {
             if (FinYear.moveToFirst()) {
                 do {
                     ModelClass finyearList = new ModelClass();
@@ -177,7 +182,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 } while (FinYear.moveToNext());
             }
 
-        }
+        }*/
 
         for (int i = 0; i < FinYearList.size(); i++) {
             myFinYearlist.add(FinYearList.get(i).getFinancialYear());
@@ -544,12 +549,12 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 }
             }
             villageSql = "SELECT *\n" +
-                    "FROM village_table_name\n" +
+                    "FROM villageTable\n" +
                     "WHERE EXISTS (\n" +
                     "  SELECT NULL\n" +
                     "  FROM  tempData\n" +
-                    "  WHERE tempData.dcode = village_table_name.dcode\n" +
-                    "    AND tempData.bcode = village_table_name.bcode\n" +
+                    "  WHERE tempData.dcode = villageTable.dcode\n" +
+                    "    AND tempData.bcode = villageTable.bcode\n" +
                     ") order by pvname";
 
         }
@@ -902,14 +907,14 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             for (int i = 0; i < jsonArray.length(); i++) {
                 String schemeSequentialID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_SEQUENTIAL_ID);
                 String schemeName = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_NAME);
-                String fin_year = jsonArray.getJSONObject(i).getString(AppConstant.FIN_YEAR);
+                String fin_year = jsonArray.getJSONObject(i).getString("fin_year");
 
                 ContentValues schemeListLocalDbValues = new ContentValues();
                 schemeListLocalDbValues.put(AppConstant.SCHEME_SEQUENTIAL_ID, schemeSequentialID);
                 schemeListLocalDbValues.put(AppConstant.SCHEME_NAME, schemeName);
                 schemeListLocalDbValues.put(AppConstant.FIN_YEAR, fin_year);
 
-                LoginScreen.db.insert(SCHEME_TABLE_NAME, null, schemeListLocalDbValues);
+                db.insert(SCHEME_TABLE_NAME, null, schemeListLocalDbValues);
                 Log.d("LocalDBSchemeList", "" + schemeListLocalDbValues);
 
             }
@@ -926,7 +931,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
 
     public void loadOfflineSchemeListDBValues() {
-        String query = "SELECT distinct scheme_name,scheme_seq_id FROM " + SCHEME_TABLE_NAME + " Where fin_year in " + prefManager.getFinYearJson().toString().replace("[", "(").replace("]", ")") + " order by LTRIM(scheme_name) asc";
+        String query = "SELECT distinct scheme_name,scheme_seq_id FROM " + SCHEME_TABLE_NAME + " Where finyear in " + prefManager.getFinYearJson().toString().replace("[", "(").replace("]", ")") + " order by LTRIM(scheme_name) asc";
         Cursor SchemeList = getRawEvents(query, null);
         Log.d("SchemeQuery", "" + query);
 
@@ -1072,7 +1077,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     workListOptional.put(AppConstant.WORK_STATUS, currentStage);
                     workListOptional.put(AppConstant.PV_CODE, pvCode);
 
-                    LoginScreen.db.insert(DBHelper.WORK_LIST, null, workListOptional);
+                    db.insert(DBHelper.WORK_LIST, null, workListOptional);
                     Log.d("LocalDBworkList", "" + workListOptional);
                 }
                 callAlert();

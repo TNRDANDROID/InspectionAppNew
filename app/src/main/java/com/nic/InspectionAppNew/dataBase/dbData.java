@@ -56,6 +56,25 @@ public class dbData {
 
         return pmgsySurvey;
     }
+    public void insertFinYear(ModelClass pmgsySurvey) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.FIN_YEAR, pmgsySurvey.getFinancialYear());
+
+        long id = db.insert(DBHelper.FINANCIAL_YEAR_TABLE_NAME,null,values);
+        Log.d("Inserted_id_fin", String.valueOf(id));
+
+    }
+    public void insertStatus(ModelClass pmgsySurvey) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.STATUS_ID, pmgsySurvey.getWork_status_id());
+        values.put(AppConstant.STATUS, pmgsySurvey.getWork_status());
+
+        long id = db.insert(DBHelper.STATUS_TABLE,null,values);
+        Log.d("Inserted_id_status", String.valueOf(id));
+
+    }
     public ArrayList<ModelClass> getAll_Village(String dcode, String bcode) {
 
         ArrayList<ModelClass> cards = new ArrayList<>();
@@ -89,7 +108,32 @@ public class dbData {
         }
         return cards;
     }
+    public ArrayList<ModelClass> getAll_Fin_Year() {
 
+        ArrayList<ModelClass> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("select * from "+DBHelper.FINANCIAL_YEAR_TABLE_NAME,null);
+            // cursor = db.query(CardsDBHelper.TABLE_CARDS,
+            //       COLUMNS, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ModelClass card = new ModelClass();
+                    card.setFinancialYear(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.FIN_YEAR)));
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+            e.printStackTrace();
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
     public ModelClass insertHabitation(ModelClass pmgsySurvey) {
 
         ContentValues values = new ContentValues();
@@ -314,7 +358,7 @@ public class dbData {
     public void deleteSchemeTable() {
         db.execSQL("delete from " + DBHelper.SCHEME_TABLE_NAME);
     }
-    public void deleteObservationTable() {
+    public void deleteinspection_statusTable() {
         db.execSQL("delete from " + DBHelper.STATUS_TABLE);
     }
     public void deleteFinYearTable() {
@@ -337,7 +381,7 @@ public class dbData {
         deleteSAVE_IMAGESTable();
         deleteWorkListTable();
         deleteSchemeTable();
-        deleteObservationTable();
+        deleteinspection_statusTable();
         deleteFinYearTable();
         deleteSaveWorkDetailsTable();
 

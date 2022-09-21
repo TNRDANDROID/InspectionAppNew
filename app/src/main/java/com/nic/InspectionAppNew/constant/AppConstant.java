@@ -63,7 +63,10 @@ public class AppConstant {
     public static String KEY_LONGITUDE = "longitude";
     public static String KEY_IMAGE = "image";
 
-
+    public static String KEY_INSPECTION_STATUS = "inspection_status";
+    public static String FINANCIAL_YEAR = "fin_year";
+    public static String STATUS_ID = "status_id";
+    public static String STATUS = "status";
 
     public static String SQL_QUERY= "select distinct  a.shg_code,a.shg_member_code,a.work_code,a.shg_name,a.member_name,a.work_name,a.fin_year\n" +
             "                       from save_after_tree_image_table as a left join save_before_tree_image_table as b on a.shg_code=b.shg_code and a.shg_member_code=b.shg_member_code and a.work_code=b.work_code";

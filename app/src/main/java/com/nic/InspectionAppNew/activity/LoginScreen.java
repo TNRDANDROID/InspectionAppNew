@@ -58,8 +58,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     private String randString;
 
-    public static DBHelper dbHelper;
-    public static SQLiteDatabase db;
+    public  DBHelper dbHelper;
+    public  SQLiteDatabase db;
     JSONObject jsonObject;
 
     private PrefManager prefManager;
@@ -77,7 +77,12 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         prefManager = new PrefManager(this);
         loginScreenBinding = DataBindingUtil.setContentView(this, R.layout.login_screen);
         loginScreenBinding.setActivity(this);
-
+        try {
+            dbHelper = new DBHelper(this);
+            db = dbHelper.getWritableDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         loginScreenBinding.password.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -185,11 +190,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     public void checkLoginScreen() {
         //local
-        loginScreenBinding.userName.setText("blkadmin");
-        loginScreenBinding.password.setText("test123#$");//BDO
+        loginScreenBinding.userName.setText("nicdrd");
+        loginScreenBinding.password.setText("test123#$");//state local
 
-       /* loginScreenBinding.userName.setText("aeblkadmin");
-        loginScreenBinding.password.setText("test123#$");//AE*/
+        /*loginScreenBinding.userName.setText("distadmdemo");
+        loginScreenBinding.password.setText("test123#$");//district local*/
+
+
 
         //production
        /* loginScreenBinding.userName.setText("blkadmin");
@@ -357,7 +364,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         String userDataDecrypt = Utils.decrypt(prefManager.getEncryptPass(), user_data);
                         Log.d("userdatadecry", "" + userDataDecrypt);
                         jsonObject = new JSONObject(userDataDecrypt);
-//                        prefManager.setStateCode(jsonObject.get(AppConstant.STATE_CODE));
+                        prefManager.setStateCode(jsonObject.get("statecode"));
                         prefManager.setDistrictCode(jsonObject.get(AppConstant.DISTRICT_CODE));
                         prefManager.setBlockCode(jsonObject.get(AppConstant.BLOCK_CODE));
                         prefManager.setPvCode(jsonObject.get(AppConstant.PV_CODE));
@@ -376,7 +383,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         }
 
                         getVillageList();
-                        getHabList();
+                        //getHabList();
 
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -458,7 +465,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         districtListValues.put(AppConstant.DISTRICT_CODE, districtCode);
                         districtListValues.put(AppConstant.DISTRICT_NAME, districtName);
 
-                        LoginScreen.db.insert(DBHelper.DISTRICT_TABLE_NAME, null, districtListValues);
+                        db.insert(DBHelper.DISTRICT_TABLE_NAME, null, districtListValues);
                         Log.d("LocalDBdistrictList", "" + districtListValues);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -489,6 +496,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         protected Void doInBackground(JSONObject... params) {
 
             if (params.length > 0) {
+                dbData.open();
                 JSONArray jsonArray = new JSONArray();
                 try {
                     jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
@@ -507,7 +515,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         blockListValues.put(AppConstant.BLOCK_CODE, blockCode);
                         blockListValues.put(AppConstant.BLOCK_NAME, blockName);
 
-                        LoginScreen.db.insert(DBHelper.BLOCK_TABLE_NAME, null, blockListValues);
+                        db.insert(DBHelper.BLOCK_TABLE_NAME, null, blockListValues);
                         Log.d("LocalDBblockList", "" + blockListValues);
                     } catch (JSONException e) {
                         e.printStackTrace();
