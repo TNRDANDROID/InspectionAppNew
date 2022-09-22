@@ -80,6 +80,7 @@
         <activity android:name=".activity.PendingScreen" />
         <activity android:name=".activity.SaveWorkDetailsActivity" />
         <activity android:name=".activity.DownloadActivity" />
+        <activity android:name=".activity.OnlineWorkFilterScreen" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

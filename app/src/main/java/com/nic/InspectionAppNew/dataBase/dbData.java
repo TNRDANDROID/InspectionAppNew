@@ -56,6 +56,17 @@ public class dbData {
 
         return pmgsySurvey;
     }
+    public ModelClass insertScheme(ModelClass pmgsySurvey) {
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.SCHEME_SEQUENTIAL_ID, pmgsySurvey.getSchemeSequentialID());
+        values.put(AppConstant.SCHEME_NAME, pmgsySurvey.getSchemeName());
+        values.put(AppConstant.FINANCIAL_YEAR, pmgsySurvey.getFinancialYear());
+
+        long id = db.insert(DBHelper.SCHEME_TABLE_NAME,null,values);
+        Log.d("Inserted_id_scheme", String.valueOf(id));
+
+        return pmgsySurvey;
+    }
     public void insertFinYear(ModelClass pmgsySurvey) {
 
         ContentValues values = new ContentValues();
@@ -304,13 +315,24 @@ public class dbData {
         }
         return cards;
     }
-    public ArrayList<ModelClass> getAllWorkList() {
+    public ArrayList<ModelClass> getAllWorkList(String type,String dcode,String bcode,String pvcode,String fin_year,String scheme_id) {
 
         ArrayList<ModelClass> cards = new ArrayList<>();
         Cursor cursor = null;
-
+        String selection;
+        String[] selectionArgs;
         try {
-            cursor = db.rawQuery("select * from "+DBHelper.WORK_LIST,null);
+
+            if(type.equals("all")){
+                cursor = db.rawQuery("select * from "+DBHelper.WORK_LIST,null);
+
+            }else {
+                selection = "dcode = ? and bcode = ? and pvcode = ? and fin_year = ? and scheme_id = ? ";
+                selectionArgs = new String[]{ dcode, bcode, pvcode, fin_year,scheme_id};
+                cursor = db.query(DBHelper.WORK_LIST, new String[]{"*"},
+                        selection, selectionArgs, null, null, null);
+            }
+
             // cursor = db.query(CardsDBHelper.TABLE_CARDS,
             //       COLUMNS, null, null, null, null, null);
             if (cursor.getCount() > 0) {

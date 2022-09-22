@@ -44,6 +44,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.nic.InspectionAppNew.dataBase.DBHelper.FINANCIAL_YEAR_TABLE_NAME;
+import static com.nic.InspectionAppNew.dataBase.DBHelper.SCHEME_TABLE_NAME;
+import static com.nic.InspectionAppNew.dataBase.DBHelper.VILLAGE_TABLE_NAME;
+
 public class WorkList extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener {
     private WorkListBinding workListBinding;
     private PrefManager prefManager;
@@ -88,7 +92,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
         workListBinding.recycler.setVisibility(View.GONE);
         workListBinding.notFoundTv.setVisibility(View.VISIBLE);
-//        villageFilterSpinner();
+        villageFilterSpinner();
         schemeFilterSpinner();
         finyearFilterSpinner();
 
@@ -128,6 +132,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
                     prefManager.setPvCode(Village.get(position).getPvCode());
+                    workListBinding.schemeSpinner.setSelection(0);
 
                 }else {
                     prefManager.setPvCode("");
@@ -143,7 +148,17 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
-                    prefManager.setSchemeSeqId(Scheme.get(position).getSchemeSequentialID());
+                    if(prefManager.getPvCode()!=null && !prefManager.getPvCode().equals("")){
+                        if(prefManager.getFinancialyearName()!=null && !prefManager.getFinancialyearName().equals("")){
+                            prefManager.setSchemeSeqId(Scheme.get(position).getSchemeSequentialID());
+                            new fetchWorkList().execute();
+                        }else {
+                            Utils.showAlert(WorkList.this,"Please Select Financial Year");
+                        }
+                    }else {
+                        Utils.showAlert(WorkList.this,"Please Select Village");
+                    }
+
 
                 }else {
                     prefManager.setSchemeSeqId("");
@@ -160,6 +175,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
                     prefManager.setFinancialyearName(FinYear.get(position).getFinancialYear());
+                    workListBinding.schemeSpinner.setSelection(0);
 
                 }else {
                     prefManager.setFinancialyearName("");
@@ -176,8 +192,17 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
     }
     public void schemeFilterSpinner() {
-        Cursor cursor = null;
-        cursor = db.rawQuery("SELECT * FROM " + DBHelper.SCHEME_TABLE_NAME , null);
+       /* Cursor cursor = null;
+        cursor = db.rawQuery("SELECT * FROM " + DBHelper.SCHEME_TABLE_NAME , null);*/
+        String sql = null;
+        JSONArray filter = prefManager.getSchemeSeqIdJson();
+        JSONArray filter2 = prefManager.getFinYearJson();
+        sql = "SELECT distinct scheme_seq_id,scheme_name FROM " + SCHEME_TABLE_NAME + " WHERE scheme_seq_id in" + filter.toString().replace("[", "(").replace("]", ")") +
+                " and fin_year in" + filter2.toString().replace("[", "(").replace("]", ")") + " order by scheme_name";
+
+        Log.d("Scheme",""+sql);
+
+        Cursor cursor = getRawEvents(sql, null);
 
         Scheme.clear();
         ModelClass list = new ModelClass();
@@ -202,8 +227,15 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         workListBinding.schemeSpinner.setAdapter(new CommonAdapter(this, Scheme, "Scheme"));
     }
     public void finyearFilterSpinner() {
-        Cursor cursor = null;
-        cursor = db.rawQuery("SELECT * FROM " + DBHelper.FINANCIAL_YEAR_TABLE_NAME , null);
+        /*Cursor cursor = null;
+        cursor = db.rawQuery("SELECT * FROM " + DBHelper.FINANCIAL_YEAR_TABLE_NAME , null);*/
+        String sql = null;
+        JSONArray filter = prefManager.getFinYearJson();
+        sql = "SELECT * FROM " + FINANCIAL_YEAR_TABLE_NAME + " WHERE fin_year in" + filter.toString().replace("[", "(").replace("]", ")") + " order by fin_year";
+
+        Log.d("fin_year",""+sql);
+
+        Cursor cursor = getRawEvents(sql, null);
 
         FinYear.clear();
         ModelClass list = new ModelClass();
@@ -223,12 +255,20 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             Log.d("FinYearspinnersize", "" + FinYear.size());
 
         }
-        workListBinding.schemeSpinner.setAdapter(new CommonAdapter(this, FinYear, "FinYear"));
+        workListBinding.finYearSpinner.setAdapter(new CommonAdapter(this, FinYear, "FinYear"));
     }
 
     public void villageFilterSpinner() {
-        Cursor cursor = null;
-        cursor = db.rawQuery("select * from "+DBHelper.VILLAGE_TABLE_NAME+" where dcode = "+prefManager.getBlockCode()+" order by pvname asc",null);
+
+        String sql = null;
+        JSONArray filter = prefManager.getVillagePvCodeJson();
+        sql = "SELECT * FROM " + VILLAGE_TABLE_NAME + " WHERE dcode = "+prefManager.getDistrictCode()+" and bcode = "+prefManager.getBlockCode()+" and pvcode in" + filter.toString().replace("[", "(").replace("]", ")") + " order by pvname";
+
+        Log.d("village",""+sql);
+
+        Cursor cursor = getRawEvents(sql, null);
+
+//        cursor = db.rawQuery("select * from "+ VILLAGE_TABLE_NAME+" where bcode = "+prefManager.getBlockCode()+" order by pvname asc",null);
         Village.clear();
         ModelClass list = new ModelClass();
         list.setPvName("Select Village");
@@ -239,7 +279,6 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                     ModelClass modelClass = new ModelClass();
                     int pvcode = cursor.getInt(cursor.getColumnIndexOrThrow("pvcode"));
                     String pvname = cursor.getString(cursor.getColumnIndexOrThrow("pvname"));
-
                     modelClass.setPvCode(String.valueOf(pvcode));
                     modelClass.setPvName(pvname);
 
@@ -253,13 +292,17 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
     }
 
 
+    public Cursor getRawEvents(String sql, String string) {
+        Cursor cursor = db.rawQuery(sql, null);
+        return cursor;
+    }
 
     public class fetchWorkList extends AsyncTask<Void, Void,ArrayList<ModelClass>> {
         @Override
         protected ArrayList<ModelClass> doInBackground(Void... params) {
             dbData.open();
             workList = new ArrayList<>();
-            workList = dbData.getAllWorkList();
+            workList = dbData.getAllWorkList("",prefManager.getDistrictCode(),prefManager.getBlockCode(),prefManager.getPvCode(),prefManager.getFinancialyearName(),prefManager.getSchemeSeqId());
             Log.d("Wlist_COUNT", String.valueOf(workList.size()));
             return workList;
         }

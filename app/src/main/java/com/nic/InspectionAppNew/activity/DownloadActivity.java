@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -90,6 +91,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     public DBHelper dbHelper;
     public SQLiteDatabase db;
     boolean workListInsert = false;
+    TextView skip;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,6 +110,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
         prefManager = new PrefManager(this);
         homeimg = (ImageView) findViewById(R.id.homeimg);
+        skip = (TextView) findViewById(R.id.skip);
         select_fin_year_layout = (LinearLayout) findViewById(R.id.select_fin_year_layout);
         select_block_layout = (LinearLayout) findViewById(R.id.select_block_layout);
         select_district_layout = (LinearLayout) findViewById(R.id.select_district_layout);
@@ -140,6 +143,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         btn_view_village.setOnClickListener(this);
         btn_view_scheme.setOnClickListener(this);
         download.setOnClickListener(this);
+        skip.setOnClickListener(this);
 
         loadOfflineFinYearListDBValues();
 
@@ -214,6 +218,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
                     mSchemeItems.clear();
                     select_scheme_layout.setVisibility(View.GONE);
+                    mDistrictItems.clear();
+                    select_district_layout.setVisibility(View.GONE);
 
                     if (!mFinYearItems.contains(position)) {
                         mFinYearItems.add(position);
@@ -796,6 +802,18 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             case R.id.backimg:
                 onBackPress();
                 break;
+            case R.id.skip:
+                dbData.open();
+                ArrayList<ModelClass> workList = new ArrayList<>();
+                workList = new ArrayList<>();
+                workList = dbData.getAllWorkList("all","","","","","");
+                if(workList.size() > 0){
+                    openWorkListScreen();
+                }else {
+                    Utils.showAlert(this,"Please download your work list!");
+                }
+
+                break;
             case R.id.homeimg:
                 dashboard();
                 break;
@@ -952,7 +970,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     workListInsert = false;
                     Utils.showAlert(this, "No Projects Found! for your selected items");
                 }
-                Log.d("responseWorkList", "" + jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                Log.d("responseWorkList", "" + responseDecryptedKey);
 
             }
             if ("VillageList".equals(urlType) && responseObj != null) {
@@ -975,6 +993,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         @Override
         protected Void doInBackground(JSONObject... params) {
             dbData.open();
+            dbData.deleteVillageTable();
             ArrayList<ModelClass> villagelist_count = dbData.getAll_Village(prefManager.getDistrictCode(),prefManager.getBlockCode());
             if (villagelist_count.size() <= 0) {
                 if (params.length > 0) {
@@ -1235,7 +1254,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    onBackPressed();
+                    openWorkListScreen();
                 }
             }, 1000);
 
@@ -1245,6 +1264,11 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     @Override
     public void OnError(VolleyError volleyError) {
 
+    }
+    public void openWorkListScreen() {
+        Intent intent = new Intent(this, WorkList.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     public void onBackPress() {

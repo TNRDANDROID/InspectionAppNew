@@ -15,7 +15,7 @@
 
 
     <ScrollView
-        android:layout_marginTop="-15dp"
+        android:layout_marginTop="-40dp"
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -139,7 +139,7 @@
                                         android:padding="5dp"
                                         android:text="Select Values For Download"
                                         android:textAlignment="center"
-                                        android:textColor="@color/black"
+                                        android:textColor="@color/grey_10"
                                         android:textSize="15sp"
                                         customfontdemo:fontName="@string/font_circular_bold" />
 
@@ -1253,17 +1253,40 @@
             </LinearLayout>
 
 
-            <Button
-                android:id="@+id/btn_download"
-                android:layout_width="120dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:layout_marginBottom="@dimen/_50sdp"
-                android:background="@drawable/login_button"
-                android:text="Download"
-                android:textAllCaps="true"
-                android:textColor="@android:color/white" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/btn_download"
+                    android:layout_width="120dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginBottom="@dimen/_50sdp"
+                    android:background="@drawable/login_button"
+                    android:text="Download"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white" />
+                <TextView
+                    android:id="@+id/skip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="end"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginBottom="@dimen/_50sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:text="Skip"
+                    android:drawableRight="@drawable/ic_double_arrow"
+                    android:drawableTint="@color/darkblue"
+                    android:drawablePadding="0dp"
+                    android:gravity="center"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="bold"
+                    android:textColor="@color/darkblue" />
+            </RelativeLayout>
+
 
         </LinearLayout>
 

@@ -23,6 +23,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="@dimen/_30sdp"
             app:cardCornerRadius="10dp"
+            app:cardElevation="3dp"
             app:cardBackgroundColor="@color/white"
             >
             <LinearLayout
@@ -56,7 +57,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/work_h"
                                 android:gravity="start"
-                                android:textColor="@color/grey_9"
+                                android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
                                 android:text="Work id"
                                 />
@@ -65,7 +66,7 @@
                                 android:layout_weight="0.2"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:textColor="@color/grey_9"
+                                android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
                                 android:text=":"
                                 />
@@ -75,7 +76,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/work_id"
                                 android:gravity="start"
-                                android:textColor="@color/grey_9"
+                                android:textColor="@color/grey_8"
                                 android:textSize="@dimen/_12sdp"
                                 />
 
@@ -93,7 +94,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/work_name_h"
                                 android:gravity="start"
-                                android:textColor="@color/grey_9"
+                                android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
                                 android:text="Work Name"
                                 />
@@ -102,7 +103,7 @@
                                 android:layout_weight="0.2"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:textColor="@color/grey_9"
+                                android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
                                 android:text=":"
                                 />
@@ -112,7 +113,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/work_name"
                                 android:gravity="start"
-                                android:textColor="@color/grey_9"
+                                android:textColor="@color/grey_8"
                                 android:textSize="@dimen/_12sdp"
                                 />
 
@@ -123,6 +124,121 @@
                             android:weightSum="2"
                             android:padding="@dimen/_3sdp"
                             android:layout_marginBottom="@dimen/_5sdp"
+                            android:id="@+id/fin_year_layout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/fin_year_h"
+                                android:gravity="start"
+                                android:textColor="@color/grey_10"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="Financial Year"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/grey_10"
+                                android:textSize="@dimen/_12sdp"
+                                android:text=":"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/fin_year"
+                                android:gravity="start"
+                                android:textColor="@color/grey_8"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:padding="@dimen/_3sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:id="@+id/as_value_layout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/as_value_h"
+                                android:gravity="start"
+                                android:textColor="@color/grey_10"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="AS value"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/grey_10"
+                                android:textSize="@dimen/_12sdp"
+                                android:text=":"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/as_value"
+                                android:gravity="start"
+                                android:textColor="@color/grey_8"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:padding="@dimen/_3sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:id="@+id/ts_value_layout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/ts_value_h"
+                                android:gravity="start"
+                                android:textColor="@color/grey_10"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="TS value"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/grey_10"
+                                android:textSize="@dimen/_12sdp"
+                                android:text=":"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/ts_value"
+                                android:gravity="start"
+                                android:textColor="@color/grey_8"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:padding="@dimen/_3sdp"
+                            android:visibility="gone"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:id="@+id/work_status_layout"
                             android:layout_height="wrap_content">
                             <TextView
@@ -131,7 +247,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/work_status_h"
                                 android:gravity="start"
-                                android:textColor="@color/grey_9"
+                                android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
                                 android:text="Work Status"
                                 />
@@ -140,7 +256,7 @@
                                 android:layout_weight="0.2"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:textColor="@color/grey_9"
+                                android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
                                 android:text=":"
                                 />
@@ -150,7 +266,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/work_status"
                                 android:gravity="start"
-                                android:textColor="@color/grey_9"
+                                android:textColor="@color/grey_8"
                                 android:textSize="@dimen/_12sdp"
                                 />
 

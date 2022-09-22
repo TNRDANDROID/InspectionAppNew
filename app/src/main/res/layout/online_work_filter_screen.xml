@@ -6,14 +6,14 @@
 
         <variable
             name="activity"
-            type="com.nic.InspectionAppNew.activity.WorkList" />
+            type="com.nic.InspectionAppNew.activity.OnlineWorkFilterScreen" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#1E07B3A5"
+        android:background="#FFFFFF"
         android:orientation="vertical">
 
             <androidx.appcompat.widget.Toolbar
@@ -46,7 +46,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:text="Work List"
+                        android:text="Filter Work List"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/_15sdp"
                         tools:ignore="RelativeOverlap" />
@@ -81,9 +81,153 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/white"
                 android:orientation="vertical">
                 <TextView
+                    android:id="@+id/fin_year_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:text="Select financial year"
+                    android:textColor="@color/grey_9"
+                    android:textSize="@dimen/_15sdp" />
+
+                <RelativeLayout
+                    android:id="@+id/fin_year_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/header"
+                    android:layout_below="@+id/fin_year_tv"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:background="@drawable/rectangle_box"
+                    android:orientation="vertical">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="15dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sdp"
+                        android:visibility="visible"
+                        />
+
+                    <Spinner
+                        android:id="@+id/fin_year_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/district_tv"
+                    android:layout_below="@+id/fin_year_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:text="Select district"
+                    android:textColor="@color/grey_9"
+                    android:textSize="@dimen/_15sdp"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/district_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/header"
+                    android:layout_below="@+id/district_tv"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:background="@drawable/rectangle_box"
+                    android:orientation="vertical">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="15dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sdp"
+                        android:visibility="visible"
+                        />
+
+                    <Spinner
+                        android:id="@+id/district_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/block_tv"
+                    android:layout_below="@+id/district_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:text="Select block"
+                    android:textColor="@color/grey_9"
+                    android:textSize="@dimen/_15sdp"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/block_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/header"
+                    android:layout_below="@+id/block_tv"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:background="@drawable/rectangle_box"
+                    android:orientation="vertical">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="15dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sdp"
+                        android:visibility="visible"
+                        />
+
+                    <Spinner
+                        android:id="@+id/block_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center" />
+
+                </RelativeLayout>
+
+                <TextView
                     android:id="@+id/village_tv"
+                    android:layout_below="@+id/block_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
@@ -129,58 +273,11 @@
 
                 </RelativeLayout>
 
-
-                <TextView
-                    android:id="@+id/fin_year_tv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/village_layout"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Select financial year"
-                    android:textColor="@color/grey_9"
-                    android:textSize="@dimen/_15sdp" />
-
-                <RelativeLayout
-                    android:id="@+id/fin_year_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/header"
-                    android:layout_below="@+id/fin_year_tv"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:background="@drawable/rectangle_box"
-                    android:orientation="vertical">
-
-                    <TextView
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="15dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/_15sdp"
-                        android:visibility="visible"
-                        />
-
-                    <Spinner
-                        android:id="@+id/fin_year_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center" />
-
-                </RelativeLayout>
                 <TextView
                     android:id="@+id/scheme_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/fin_year_layout"
+                    android:layout_below="@+id/village_layout"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
@@ -222,51 +319,20 @@
                         android:gravity="center" />
 
                 </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/scheme_layout"
-                    android:layout_marginTop="@dimen/padding"
-                    >
-                    <TextView
-                        android:id="@+id/work_tv"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_left_20dp"
-                        android:layout_marginTop="@dimen/padding"
-                        android:layout_marginRight="@dimen/margin_left_20dp"
-                        android:text="Work List"
-                        android:padding="@dimen/_3sdp"
-                        android:gravity="center_horizontal"
-                        android:layout_centerHorizontal="true"
-                        android:textColor="@color/grey_10"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/_15sdp" />
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycler"
-                        android:layout_below="@+id/work_tv"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:fadeScrollbars="false"
-                        android:scrollbarSize="4dp"
-                        android:scrollbars="vertical"
-                        android:visibility="gone"/>
 
-                    <TextView
-                        android:id="@+id/not_found_tv"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/no_data_found"
-                        android:textAlignment="center"
-                        android:gravity="center"
-                        android:layout_below="@+id/work_tv"
-                        android:layout_marginTop="@dimen/_50sdp"
-                        android:textColor="@color/grey_10"
-                        android:textSize="@dimen/title_text_size"
-                        android:textStyle="bold"
-                        android:visibility="visible" />
-                </RelativeLayout>
+                <Button
+                    android:id="@+id/btn_submit"
+                    android:layout_width="120dp"
+                    android:layout_below="@+id/scheme_layout"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginBottom="@dimen/_50sdp"
+                    android:background="@drawable/login_button"
+                    android:text="Submit"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white" />
 
 
 

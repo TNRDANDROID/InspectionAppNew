@@ -92,7 +92,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             public void onClick(View view) {
                 prefManager.setWorkType("rdpr");
                 prefManager.setOnOffType("online");
-                openWorkListScreen();
+                openOnlineWorkListScreen();
             }
         });
         homeScreenBinding.goOffline.setOnClickListener(new View.OnClickListener() {
@@ -400,6 +400,11 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     }
     public void openWorkListScreen() {
         Intent intent = new Intent(this, WorkList.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+    public void openOnlineWorkListScreen() {
+        Intent intent = new Intent(this, OnlineWorkFilterScreen.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

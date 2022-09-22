@@ -12,7 +12,7 @@
         android:background="@drawable/ic_wave_8"
         android:id="@+id/tool_bar_bg_rl"
         android:layout_width="match_parent"
-        android:layout_height="150dp">
+        android:layout_height="200dp">
 
         <ImageView
             android:visibility="gone"
@@ -95,21 +95,24 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/_10sdp"
             android:id="@+id/title_tv"
+            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textSize="15sp"
              />
         <ImageView
+            android:layout_marginTop="@dimen/_10sdp"
             android:id="@+id/homeimg"
             android:layout_width="@dimen/_30sdp"
             android:layout_height="@dimen/_30sdp"
-            android:layout_gravity="end"
-            android:padding="@dimen/_5sdp"
-            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_gravity="start"
             android:layout_alignParentEnd="true"
-            android:src="@mipmap/home_img"
-            android:tint="@color/white"/>
+            android:padding="@dimen/_2sdp"
+            android:tint="@color/white"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:src="@mipmap/home_img" />
+
     </RelativeLayout>
 
 

@@ -190,20 +190,14 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     public void checkLoginScreen() {
         //local
-        loginScreenBinding.userName.setText("nicdrd");
+        loginScreenBinding.userName.setText("9874123658");
         loginScreenBinding.password.setText("test123#$");//state local
 
-        /*loginScreenBinding.userName.setText("distadmdemo");
-        loginScreenBinding.password.setText("test123#$");//district local*/
+        /*loginScreenBinding.userName.setText("7877979787");
+        loginScreenBinding.password.setText("test123#$");//Dist local*/
 
-
-
-        //production
-       /* loginScreenBinding.userName.setText("blkadmin");
-        loginScreenBinding.password.setText("ncrd222#$");//BDO*/
-
-        /*loginScreenBinding.userName.setText("maedemo");
-        loginScreenBinding.password.setText("crd123#$");//AE*/
+        /*loginScreenBinding.userName.setText("8754085962");
+        loginScreenBinding.password.setText("test123#$");//Block local*/
 
 
         final String username = loginScreenBinding.userName.getText().toString().trim();
@@ -364,10 +358,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         String userDataDecrypt = Utils.decrypt(prefManager.getEncryptPass(), user_data);
                         Log.d("userdatadecry", "" + userDataDecrypt);
                         jsonObject = new JSONObject(userDataDecrypt);
-                        prefManager.setStateCode(jsonObject.get("statecode"));
-                        prefManager.setDistrictCode(jsonObject.get(AppConstant.DISTRICT_CODE));
-                        prefManager.setBlockCode(jsonObject.get(AppConstant.BLOCK_CODE));
-                        prefManager.setPvCode(jsonObject.get(AppConstant.PV_CODE));
+
+//                        prefManager.setPvCode(jsonObject.get(AppConstant.PV_CODE));
                         prefManager.setDistrictName(jsonObject.get(AppConstant.DISTRICT_NAME));
                         prefManager.setBlockName(jsonObject.get(AppConstant.BLOCK_NAME));
                         prefManager.setDesignation(jsonObject.get(AppConstant.DESIG_NAME));
@@ -376,10 +368,18 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName() + prefManager.getName());
                         prefManager.setUserPassKey(decryptedKey);
                         if(jsonObject.get(AppConstant.LEVELS).equals("S")){
+                            prefManager.setStateCode(jsonObject.get("statecode"));
                             getDistrictList();
                             getBlockList();
                         }else if(jsonObject.get(AppConstant.LEVELS).equals("D")){
+                            prefManager.setStateCode(jsonObject.get("statecode"));
+                            prefManager.setDistrictCode(jsonObject.get(AppConstant.DISTRICT_CODE));
                             getBlockList();
+                        }else if(jsonObject.get(AppConstant.LEVELS).equals("B")){
+                            prefManager.setStateCode(jsonObject.get("statecode"));
+                            prefManager.setDistrictCode(jsonObject.get(AppConstant.DISTRICT_CODE));
+                            prefManager.setBlockCode(jsonObject.get(AppConstant.BLOCK_CODE));
+
                         }
 
 //                        getVillageList();
@@ -547,6 +547,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         @Override
         protected Void doInBackground(JSONObject... params) {
             dbData.open();
+            dbData.deleteVillageTable();
             ArrayList<ModelClass> villagelist_count = dbData.getAll_Village(prefManager.getDistrictCode(),prefManager.getBlockCode());
             if (villagelist_count.size() <= 0) {
                 if (params.length > 0) {

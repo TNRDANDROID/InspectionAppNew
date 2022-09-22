@@ -65,11 +65,23 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.MyView
 
         holder.binding.workId.setText(String.valueOf(list.get(position).getWork_id()));
         holder.binding.workName.setText(String.valueOf(list.get(position).getWork_name()));
-        holder.binding.workStatus.setText(String.valueOf(list.get(position).getWork_status()));
+//        holder.binding.workStatus.setText(String.valueOf(list.get(position).getWork_status()));
+        holder.binding.finYear.setText(String.valueOf(list.get(position).getFinancialYear()));
+        holder.binding.asValue.setText(String.valueOf(list.get(position).getAs_value()));
+        holder.binding.tsValue.setText(String.valueOf(list.get(position).getTs_value()));
 
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, SaveWorkDetailsActivity.class);
+                intent.putExtra("work_id", list.get(position).getWork_id());
+                context.startActivity(intent);
+
+            }
+        });
+        holder.binding.viewAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, SaveWorkDetailsActivity.class);

@@ -84,7 +84,7 @@
                 android:layout_height="@dimen/_45sdp"
                 android:layout_alignParentBottom="true"
 
-                android:background="@drawable/top_curve_background"
+                android:background="@drawable/top_curve_background_dark"
 
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
