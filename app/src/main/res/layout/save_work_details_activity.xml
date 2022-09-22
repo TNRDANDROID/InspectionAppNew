@@ -127,17 +127,34 @@
                     android:visibility="visible"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_left_20dp"
-                        android:layout_marginTop="@dimen/padding"
-                        android:layout_marginRight="@dimen/margin_left_20dp"
-                        android:text="Enter description"
-                        android:textColor="@color/grey_9"
-                        android:textSize="@dimen/_14sdp"
-                        android:visibility="visible"
-                        style="@string/font_circular_medium" />
+                   <RelativeLayout
+                       android:layout_marginLeft="@dimen/margin_left_20dp"
+                       android:layout_marginTop="@dimen/padding"
+                       android:layout_marginRight="@dimen/margin_left_20dp"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/description_layout1">
+                       <TextView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:text="Enter description"
+                           android:textColor="@color/grey_9"
+                           android:textSize="@dimen/_14sdp"
+                           android:visibility="visible"
+                           style="@string/font_circular_medium" />
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:id="@+id/clear_text"
+                           android:layout_alignParentEnd="true"
+                           android:layout_centerVertical="true"
+                           style="@string/font_circular_medium"
+                           android:text="Clear"
+                           android:textStyle="bold"
+                           android:textSize="@dimen/_14sdp"
+                           android:layout_marginEnd="@dimen/_10sdp"
+                           android:textColor="@color/darkblue"/>
+                   </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -153,19 +170,15 @@
 
                         <EditText
                             android:id="@+id/description"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="@dimen/_100sdp"
                             android:gravity="start"
-                            android:padding="@dimen/_5sdp"
                             android:background="@android:color/transparent"
                             android:hint="Enter description"
                             android:inputType="text"
                             android:layout_centerVertical="true"
-                            android:layout_marginRight="10dp"
-                            android:minLines="5"
-                            android:lines="8"
-                            android:layout_marginLeft="10dp"
+                            android:layout_margin="@dimen/_10sdp"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/_13sdp"
 
@@ -184,6 +197,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_weight="1"
+                            android:id="@+id/english_mic"
                             android:layout_height="wrap_content"
                             android:text="English Speech"
                             android:drawableLeft="@drawable/ic_mic_outline"
@@ -195,6 +209,7 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:text="Tamil Speech"
+                            android:id="@+id/tamil_mic"
                             android:drawableLeft="@drawable/ic_mic_outline"
                             android:drawablePadding="@dimen/_5sdp"
                             android:textSize="@dimen/_12sdp"

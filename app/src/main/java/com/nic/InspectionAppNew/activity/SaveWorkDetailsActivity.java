@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.speech.RecognizerIntent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,12 +30,18 @@ import com.nic.InspectionAppNew.databinding.SaveWorkDetailsActivityBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.ProgressHUD;
+import com.nic.InspectionAppNew.utils.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import in.mayanknagwanshi.imagepicker.ImageSelectActivity;
+
+import static android.os.Build.VERSION_CODES.N;
 
 public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener {
     private SaveWorkDetailsActivityBinding saveWorkDetailsActivityBinding;
@@ -46,6 +56,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     int work_id=0;
     int min_img_count=0;
     int max_img_count=0;
+    private static final int SPEECH_REQUEST_CODE = 103;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,18 +90,45 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             }
         });
 
+        saveWorkDetailsActivityBinding.clearText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveWorkDetailsActivityBinding.description.setText("");
+            }
+        });
+        saveWorkDetailsActivityBinding.tamilMic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speechToText("ta");
+            }
+        });
+        saveWorkDetailsActivityBinding.englishMic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speechToText("en");
+            }
+        });
+
     }
 
 
     public void gotoCameraScreen()
     {
-        Intent intent = new Intent(this, CameraScreen.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        if(!prefManager.getWorkStatusId().equals("")){
+            if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
+                Intent intent = new Intent(this, CameraScreen.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+            else {
+                Utils.showAlert(SaveWorkDetailsActivity.this,"Please Enter Description");
+            }
+        }
+        else {
+            Utils.showAlert(SaveWorkDetailsActivity.this,"Please Select Status");
+        }
     }
     public void statusFilterSpinner() {
-        Cursor cursor = null;
-        cursor = db.rawQuery("SELECT * FROM " + DBHelper.STATUS_TABLE, null);
         status_list = new ArrayList<>();
         status_list.clear();
         ModelClass list = new ModelClass();
@@ -141,7 +179,47 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
     }
 
+    public void speechToText(String language) {
+        Intent intent
+                = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        if(language.equalsIgnoreCase("en")){
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
+                    "en-IND");
+        }
+        else {
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
+                    "ta-IND");
+        }
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text");
 
+        try {
+            startActivityForResult(intent, SPEECH_REQUEST_CODE);
 
+        } catch (Exception e) {
+            Toast.makeText(SaveWorkDetailsActivity.this, " " + e.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+
+            case SPEECH_REQUEST_CODE:
+
+                if (resultCode == RESULT_OK && data != null) {
+                    ArrayList<String> result = data.getStringArrayListExtra(
+                            RecognizerIntent.EXTRA_RESULTS);
+                    saveWorkDetailsActivityBinding.description.setText(
+                            Objects.requireNonNull(result).get(0));
+                }
+
+                break;
+            default:
+                break;
+        }
+    }
 }
