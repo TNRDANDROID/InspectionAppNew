@@ -449,6 +449,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         protected Void doInBackground(JSONObject... params) {
 
             if (params.length > 0) {
+                dbData.open();
+                dbData.deleteDistrictTable();
                 JSONArray jsonArray = new JSONArray();
                 try {
                     jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
@@ -497,6 +499,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             if (params.length > 0) {
                 dbData.open();
+                dbData.deleteBlockTable();
                 JSONArray jsonArray = new JSONArray();
                 try {
                     jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);

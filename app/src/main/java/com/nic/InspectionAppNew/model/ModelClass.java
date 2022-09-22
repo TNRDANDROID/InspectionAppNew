@@ -42,6 +42,69 @@ public class ModelClass {
     private String VillageListPvName;
     private String schemeSequentialID;
     private String schemeName;
+    private String scheme_group_id;
+    private String work_type_id;
+    private String as_value;
+    private String ts_value;
+    private String current_stage_of_work;
+    private String is_high_value;
+    private String work_group_id;
+
+    public String getWork_group_id() {
+        return work_group_id;
+    }
+
+    public void setWork_group_id(String work_group_id) {
+        this.work_group_id = work_group_id;
+    }
+
+    public String getScheme_group_id() {
+        return scheme_group_id;
+    }
+
+    public void setScheme_group_id(String scheme_group_id) {
+        this.scheme_group_id = scheme_group_id;
+    }
+
+    public String getWork_type_id() {
+        return work_type_id;
+    }
+
+    public void setWork_type_id(String work_type_id) {
+        this.work_type_id = work_type_id;
+    }
+
+    public String getAs_value() {
+        return as_value;
+    }
+
+    public void setAs_value(String as_value) {
+        this.as_value = as_value;
+    }
+
+    public String getTs_value() {
+        return ts_value;
+    }
+
+    public void setTs_value(String ts_value) {
+        this.ts_value = ts_value;
+    }
+
+    public String getCurrent_stage_of_work() {
+        return current_stage_of_work;
+    }
+
+    public void setCurrent_stage_of_work(String current_stage_of_work) {
+        this.current_stage_of_work = current_stage_of_work;
+    }
+
+    public String getIs_high_value() {
+        return is_high_value;
+    }
+
+    public void setIs_high_value(String is_high_value) {
+        this.is_high_value = is_high_value;
+    }
 
     public int getWork_status_id() {
         return work_status_id;

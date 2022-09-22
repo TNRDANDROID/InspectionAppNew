@@ -71,17 +71,21 @@ public class DBHelper extends SQLiteOpenHelper {
                 "type_of_photo TEXT)");
 
         db.execSQL("CREATE TABLE " + WORK_LIST + " ("
-                + "work_id INTEGER," +
-                "dcode INTEGER," +
+                + "dcode INTEGER," +
                 "bcode INTEGER," +
-                "pvcode TEXT," +
+                "pvcode INTEGER," +
                 "hab_code TEXT," +
-                "dname TEXT," +
-                "bname TEXT," +
-                "pvname TEXT," +
-                "habitation_name TEXT," +
-                "work_status TEXT," +
-                "work_name TEXT)");
+                "scheme_group_id TEXT," +
+                "scheme_id TEXT," +
+                "work_group_id TEXT," +
+                "work_type_id TEXT," +
+                "fin_year TEXT," +
+                "work_id INTEGER," +
+                "work_name TEXT," +
+                "as_value TEXT," +
+                "ts_value TEXT," +
+                "current_stage_of_work TEXT," +
+                "is_high_value TEXT)");
         db.execSQL("CREATE TABLE " + SAVE_WORK_DETAILS + " ("
                 + "work_id INTEGER," +
                 "dcode INTEGER," +

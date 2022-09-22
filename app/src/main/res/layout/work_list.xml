@@ -90,7 +90,7 @@
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Select villagee"
+                    android:text="Select village"
                     android:textColor="@color/grey_9"
                     android:textSize="@dimen/_15sdp"
                     />

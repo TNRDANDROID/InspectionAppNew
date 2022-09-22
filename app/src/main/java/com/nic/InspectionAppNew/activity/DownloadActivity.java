@@ -335,9 +335,23 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     mVillageItems.clear();
                     select_village_layout.setVisibility(View.GONE);
 
-                    if (!mDistrictItems.contains(position)) {
+                    /*if (!mDistrictItems.contains(position)) {
                         mDistrictItems.add(position);
+                    }*/
+                    for (int i = 0; i < districtcheckedItems.length; i++) {
+                        if (i == position) {
+                            districtcheckedItems[i]=true;
+                            ((AlertDialog) dialogInterface).getListView().setItemChecked(i, true);
+                            mDistrictItems.add(i);
+                        }
+                        else {
+                            districtcheckedItems[i]=false;
+                            ((AlertDialog) dialogInterface).getListView().setItemChecked(i, false);
+                            mDistrictItems.remove(Integer.valueOf(i));
+
+                        }
                     }
+
                 } else if (mDistrictItems.contains(position)) {
                     mDistrictItems.remove(Integer.valueOf(position));
                 }
@@ -485,9 +499,23 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     mVillageItems.clear();
                     select_village_layout.setVisibility(View.GONE);
 
-                    if (!mBlockItems.contains(position)) {
+                    /*if (!mBlockItems.contains(position)) {
                         mBlockItems.add(position);
+                    }*/
+                    for (int i = 0; i < blockcheckedItems.length; i++) {
+                        if (i == position) {
+                            blockcheckedItems[i]=true;
+                            ((AlertDialog) dialogInterface).getListView().setItemChecked(i, true);
+                            mBlockItems.add(i);
+                        }
+                        else {
+                            blockcheckedItems[i]=false;
+                            ((AlertDialog) dialogInterface).getListView().setItemChecked(i, false);
+                            mBlockItems.remove(Integer.valueOf(i));
+
+                        }
                     }
+
                 } else if (mBlockItems.contains(position)) {
                     mBlockItems.remove(Integer.valueOf(position));
                 }
@@ -634,13 +662,13 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 } while (VillageList.moveToNext());
             }
         }
+        JSONArray jsonArray = new JSONArray();
         for (int i = 0; i < Village.size(); i++) {
             myVillageList.add(Village.get(i).getVillageListPvName());
-            JSONArray jsonArray = new JSONArray();
-            if(prefManager.getLevels().equalsIgnoreCase("S")) {
+            /*if(prefManager.getLevels().equalsIgnoreCase("S")) {
                 jsonArray.put(Village.get(i).getVillageListDistrictCode());
             }
-            jsonArray.put(Village.get(i).getVillageListBlockCode());
+            jsonArray.put(Village.get(i).getVillageListBlockCode());*/
             jsonArray.put(Village.get(i).getVillageListPvCode());
 
             myVillageCodelist.add(jsonArray);
@@ -667,7 +695,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 JSONArray villageCodeJsonArray = new JSONArray();
 
                 for (int i = 0; i < mVillageItems.size(); i++) {
-                    villageCodeJsonArray.put(myVillageCodelist.get(mVillageItems.get(i)));
+                    villageCodeJsonArray.put(Village.get(i).getVillageListPvCode());
                 }
                 prefManager.setVillagePvCodeJson(villageCodeJsonArray);
                 Log.d("villagecode", "" + villageCodeJsonArray);
@@ -1139,8 +1167,10 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
     private void workListOptionalS(JSONArray jsonArray) {
         try {
-            db.delete(DBHelper.WORK_LIST, null, null);
-        } catch (Exception e) {
+            dbData.open();
+            dbData.deleteWorkListTable();
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         try {
@@ -1151,36 +1181,48 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
                     String SelectedBlockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
+                    String hab_code = jsonArray.getJSONObject(i).getString("hab_code");
+                    String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
                     String schemeID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_ID);
+                    String scheme_group_id = jsonArray.getJSONObject(i).getString("scheme_group_id");
+                    String work_group_id = jsonArray.getJSONObject(i).getString("work_group_id");
+                    String work_type_id = jsonArray.getJSONObject(i).getString("work_type_id");
                     String finYear = jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR);
-                    String workID = jsonArray.getJSONObject(i).getString(AppConstant.WORK_ID);
+                    int workID = jsonArray.getJSONObject(i).getInt(AppConstant.WORK_ID);
                     String workName = jsonArray.getJSONObject(i).getString(AppConstant.WORK_NAME);
-                    String currentStage = jsonArray.getJSONObject(i).getString(AppConstant.CURRENT_STAGE);
-                    String pvCode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
+                    String as_value = jsonArray.getJSONObject(i).getString("as_value");
+                    String ts_value = jsonArray.getJSONObject(i).getString("ts_value");
+                    String current_stage_of_work = jsonArray.getJSONObject(i).getString("current_stage_of_work");
+                    String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
 
-                    ContentValues workListOptional = new ContentValues();
-                    workListOptional.put(AppConstant.DISTRICT_CODE, dcode);
-                    workListOptional.put(AppConstant.BLOCK_CODE, SelectedBlockCode);
-                    workListOptional.put(AppConstant.SCHEME_ID, schemeID);
-                    workListOptional.put(AppConstant.FINANCIAL_YEAR, finYear);
-                    workListOptional.put(AppConstant.WORK_ID, workID);
-                    workListOptional.put(AppConstant.WORK_NAME, workName);
-                    workListOptional.put(AppConstant.WORK_STATUS, currentStage);
-                    workListOptional.put(AppConstant.PV_CODE, pvCode);
+                    ModelClass modelClass = new ModelClass();
+                    modelClass.setDistictCode(dcode);
+                    modelClass.setBlockCode(SelectedBlockCode);
+                    modelClass.setHabCode(hab_code);
+                    modelClass.setPvCode(pvcode);
+                    modelClass.setSchemeSequentialID(schemeID);
+                    modelClass.setScheme_group_id(scheme_group_id);
+                    modelClass.setWork_group_id(work_group_id);
+                    modelClass.setWork_type_id(work_type_id);
+                    modelClass.setFinancialYear(finYear);
+                    modelClass.setWork_id(workID);
+                    modelClass.setWork_name(workName);
+                    modelClass.setAs_value(as_value);
+                    modelClass.setTs_value(ts_value);
+                    modelClass.setCurrent_stage_of_work(current_stage_of_work);
+                    modelClass.setIs_high_value(is_high_value);
 
-                    db.insert(DBHelper.WORK_LIST, null, workListOptional);
-                    Log.d("LocalDBworkList", "" + workListOptional);
+                    dbData.Insert_workList(modelClass);
+
                 }
                 callAlert();
 
             } else {
-                Utils.showAlert(this, "No Record Found for Corrsponding Financial Year");
+                Utils.showAlert(this, "No Record Found for Corresponding Financial Year");
             }
 
-        } catch (JSONException j) {
+        } catch (JSONException | ArrayIndexOutOfBoundsException j) {
             j.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException a) {
-            a.printStackTrace();
         }
 
     }
@@ -1188,14 +1230,14 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
     public void callAlert() {
         if (workListInsert){
-            Utils.showAlert(this, "Your Data Downloaded Sucessfully!");
+            Utils.showAlert(this, "Your Data Downloaded Successfully!");
             workListInsert = false;
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     onBackPressed();
                 }
-            }, 2000);
+            }, 1000);
 
         }
     }

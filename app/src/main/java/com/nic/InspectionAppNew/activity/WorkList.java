@@ -173,18 +173,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         });
 
 
-        //fetAllApi();
-        //Sample
-       /* JSONObject jsonObject = new JSONObject();
-        String json = "{\"STATUS\":\"OK\",\"RESPONSE\":\"OK\",\"JSON_DATA\":[{\"work_id\":1,\"work_name\":\"Property tax\"},{\"work_id\":2,\"work_name\":\"Water Charges\"},{\"work_id\":3,\"work_name\":\"Professional Tax\"},{\"work_id\":4,\"work_name\":\"Non Tax\"},{\"work_id\":5,\"work_name\":\"Trade License \"}]}";
-        try {  jsonObject = new JSONObject(json); } catch (Throwable t) {
-            Log.e("My App", "Could not parse malformed JSON: \"" + json + "\""); }
-        try {
-            if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                new Insert_workList().execute(jsonObject);
-            }
-        } catch (JSONException e) { e.printStackTrace(); }
-*/
+
     }
     public void schemeFilterSpinner() {
         Cursor cursor = null;
@@ -262,26 +251,8 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         }
         workListBinding.villageSpinner.setAdapter(new CommonAdapter(this, Village, "Village"));
     }
-    public Cursor getRawEvents(String sql, String string) {
-        Cursor cursor = db.rawQuery(sql, null);
-        return cursor;
-    }
 
-    public void getWorkListOptional() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("WorkListOptional", Api.Method.POST, UrlGenerator.getMainService(), workListOptionalJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-    public JSONObject workListOptionalJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.workListOptional(this).toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("WorkListOptional", "" + dataSet);
-        return dataSet;
-    }
+
 
     public class fetchWorkList extends AsyncTask<Void, Void,ArrayList<ModelClass>> {
         @Override
@@ -343,20 +314,6 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             String urlType = serverResponse.getApi();
             JSONObject responseObj = serverResponse.getJsonResponse();
 
-            if ("WorkListOptional".equals(urlType) && responseObj != null) {
-                String key = responseObj.getString(AppConstant.ENCODE_DATA);
-                String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
-                JSONObject jsonObject = new JSONObject(responseDecryptedKey);
-                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    new  Insert_workList().execute(jsonObject);
-//                    Utils.showAlert(this, "Your Data will be Downloaded");
-                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
-                    Utils.showAlert(this, "No Projects Found! for your selected items");
-                }
-                Log.d("responseWorkList", "" + jsonObject.getJSONArray(AppConstant.JSON_DATA));
-
-            }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -368,44 +325,6 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
     }
 
-    public class Insert_workList extends AsyncTask<JSONObject, Void, Void> {
-        @Override
-        protected Void doInBackground(JSONObject... params) {
-            if (params.length > 0) {
-                dbData.open();
-                dbData.deleteWorkListTable();
-                JSONArray jsonArray = new JSONArray();
-                try {
-                    jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-                        ModelClass ListValue = new ModelClass();
-                    try {
-                        ListValue.setWork_id(jsonArray.getJSONObject(i).getInt("work_id"));
-                        ListValue.setWork_name(jsonArray.getJSONObject(i).getString("work_name"));
-                        ListValue.setWork_status(jsonArray.getJSONObject(i).getString("work_status"));
-                        dbData.Insert_workList(ListValue);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-
-            return null;
-
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-
-        }
-    }
 
 
 

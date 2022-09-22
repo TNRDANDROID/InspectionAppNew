@@ -175,6 +175,27 @@ public class dbData {
 
         return pmgsySurvey;
     }
+    public void Insert_workList(ModelClass modelClass) {
+        ContentValues values = new ContentValues();
+        values.put("dcode", modelClass.getDistictCode());
+        values.put("bcode", modelClass.getBlockCode());
+        values.put("pvcode", modelClass.getPvCode());
+        values.put("hab_code", modelClass.getHabCode());
+        values.put("scheme_group_id", modelClass.getScheme_group_id());
+        values.put("scheme_id", modelClass.getSchemeSequentialID());
+        values.put("work_group_id", modelClass.getWork_group_id());
+        values.put("work_type_id", modelClass.getWork_type_id());
+        values.put("fin_year", modelClass.getFinancialYear());
+        values.put("work_id", modelClass.getWork_id());
+        values.put("work_name", modelClass.getWork_name());
+        values.put("as_value", modelClass.getAs_value());
+        values.put("ts_value", modelClass.getTs_value());
+        values.put("current_stage_of_work", modelClass.getCurrent_stage_of_work());
+        values.put("is_high_value", modelClass.getIs_high_value());
+        long id = db.insert(DBHelper.WORK_LIST,null,values);
+        Log.d("Insert_id_work", String.valueOf(id));
+
+    }
     public ArrayList<ModelClass> getAll_Habitation(String dcode, String bcode) {
 
         ArrayList<ModelClass> cards = new ArrayList<>();
@@ -295,9 +316,21 @@ public class dbData {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ModelClass card = new ModelClass();
+                    card.setDistictCode(cursor.getString(cursor.getColumnIndexOrThrow("dcode")));
+                    card.setBlockCode(cursor.getString(cursor.getColumnIndexOrThrow("bcode")));
+                    card.setPvCode(cursor.getString(cursor.getColumnIndexOrThrow("pvcode")));
+                    card.setHabCode(cursor.getString(cursor.getColumnIndexOrThrow("hab_code")));
+                    card.setScheme_group_id(cursor.getString(cursor.getColumnIndexOrThrow("scheme_group_id")));
+                    card.setSchemeSequentialID(cursor.getString(cursor.getColumnIndexOrThrow("scheme_id")));
+                    card.setWork_group_id(cursor.getString(cursor.getColumnIndexOrThrow("work_group_id")));
+                    card.setWork_type_id(cursor.getString(cursor.getColumnIndexOrThrow("work_type_id")));
+                    card.setFinancialYear(cursor.getString(cursor.getColumnIndexOrThrow("fin_year")));
                     card.setWork_id(cursor.getInt(cursor.getColumnIndexOrThrow("work_id")));
                     card.setWork_name(cursor.getString(cursor.getColumnIndexOrThrow("work_name")));
-                    card.setWork_status(cursor.getString(cursor.getColumnIndexOrThrow("work_status")));
+                    card.setAs_value(cursor.getString(cursor.getColumnIndexOrThrow("as_value")));
+                    card.setTs_value(cursor.getString(cursor.getColumnIndexOrThrow("ts_value")));
+                    card.setCurrent_stage_of_work(cursor.getString(cursor.getColumnIndexOrThrow("current_stage_of_work")));
+                    card.setIs_high_value(cursor.getString(cursor.getColumnIndexOrThrow("is_high_value")));
 
                     cards.add(card);
                 }
@@ -341,15 +374,7 @@ public class dbData {
         }
         return cards;
     }
-    public void Insert_workList(ModelClass modelClass) {
-        ContentValues values = new ContentValues();
-        values.put("work_id", modelClass.getWork_id());
-        values.put("work_name", modelClass.getWork_name());
-        values.put("work_status", modelClass.getWork_status());
-        long id = db.insert(DBHelper.WORK_LIST,null,values);
-        Log.d("Insert_id_work", String.valueOf(id));
 
-    }
 
     public Bitmap bytearrtoBitmap(byte[] photo){
         byte[] imgbytes = Base64.decode(photo, Base64.DEFAULT);

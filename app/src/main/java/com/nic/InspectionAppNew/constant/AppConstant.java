@@ -53,7 +53,7 @@ public class AppConstant {
     public static String SCHEME_NAME = "scheme_name";
     public static String KEY_WORK_LIST_OPTIONAL_ACTION = "work_list_optional_action";
     public static String KEY_WORK_LIST_OPTIONAL = "work_list_optional";
-    public static String KEY_INSPECTION_WORK_DETAILS = "inspection_work_details";
+    public static String KEY_INSPECTION_WORK_DETAILS = "get_inspection_work_details";
     public static String SCHEME_ID = "scheme_id";
     public static String WORK_ID = "work_id";
     public static String WORK_NAME = "work_name";

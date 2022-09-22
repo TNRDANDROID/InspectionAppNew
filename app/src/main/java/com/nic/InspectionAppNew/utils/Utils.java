@@ -1250,36 +1250,45 @@ public class Utils {
     public static JSONObject workListOptional(Activity activity) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        if (prefManager.getLevels().equalsIgnoreCase("S")){
-            dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS);
-            dataSet.put(AppConstant.STATE_CODE, prefManager.getStateCode());
-            dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCodeJson());
-            dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCodeJson());
-            dataSet.put(AppConstant.PV_CODE, prefManager.getVillagePvCodeJson());
-            dataSet.put(AppConstant.SCHEME_ID, prefManager.getSchemeSeqIdJson());
-            dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinYearJson());
+        JSONObject dataSet1 = new JSONObject();
+        try{
+            if (prefManager.getLevels().equalsIgnoreCase("S")){
+                dataSet1.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS);
+                dataSet.put(AppConstant.STATE_CODE, prefManager.getStateCode());
+                dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+                dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+                dataSet.put(AppConstant.PV_CODE, prefManager.getVillagePvCodeJson());
+                dataSet.put(AppConstant.SCHEME_ID, prefManager.getSchemeSeqIdJson());
+                dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinYearJson());
+                dataSet1.put("inspection_work_details", dataSet);
+            }
+            else if (prefManager.getLevels().equalsIgnoreCase("D")) {
+                dataSet1.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS);
+                dataSet.put(AppConstant.STATE_CODE, prefManager.getStateCode());
+                dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+                dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+                dataSet.put(AppConstant.PV_CODE, prefManager.getVillagePvCodeJson());
+                dataSet.put(AppConstant.SCHEME_ID, prefManager.getSchemeSeqIdJson());
+                dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinYearJson());
+                dataSet1.put("inspection_work_details", dataSet);
+            }
+            else if (prefManager.getLevels().equalsIgnoreCase("B")) {
+                dataSet1.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS);
+                dataSet.put(AppConstant.STATE_CODE, prefManager.getStateCode());
+                dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+                dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+                dataSet.put(AppConstant.PV_CODE, prefManager.getVillagePvCodeJson());
+                dataSet.put(AppConstant.SCHEME_ID, prefManager.getSchemeSeqIdJson());
+                dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinYearJson());
+                dataSet1.put("inspection_work_details", dataSet);
+            }
         }
-        else if (prefManager.getLevels().equalsIgnoreCase("D")) {
-            dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS);
-            dataSet.put(AppConstant.STATE_CODE, prefManager.getStateCode());
-            dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
-            dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCodeJson());
-            dataSet.put(AppConstant.PV_CODE, prefManager.getVillagePvCodeJson());
-            dataSet.put(AppConstant.SCHEME_ID, prefManager.getSchemeSeqIdJson());
-            dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinYearJson());
-        }
-        else if (prefManager.getLevels().equalsIgnoreCase("B")) {
-            dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS);
-            dataSet.put(AppConstant.STATE_CODE, prefManager.getStateCode());
-            dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
-            dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
-            dataSet.put(AppConstant.PV_CODE, prefManager.getVillagePvCodeJson());
-            dataSet.put(AppConstant.SCHEME_ID, prefManager.getSchemeSeqIdJson());
-            dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinYearJson());
+        catch (JSONException e){
+            e.printStackTrace();
         }
 
-        Log.d("workListOptional", "" + dataSet);
-        return dataSet;
+        Log.d("workListOptional", "" + dataSet1);
+        return dataSet1;
     }
 
 
