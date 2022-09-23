@@ -81,6 +81,8 @@
         <activity android:name=".activity.SaveWorkDetailsActivity" />
         <activity android:name=".activity.DownloadActivity" />
         <activity android:name=".activity.OnlineWorkFilterScreen" />
+        <activity android:name=".activity.ViewActionScreen" />
+        <activity android:name=".activity.ViewSavedWorkList" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

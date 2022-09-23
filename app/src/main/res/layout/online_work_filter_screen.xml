@@ -331,6 +331,7 @@
                     android:layout_marginBottom="@dimen/_50sdp"
                     android:background="@drawable/login_button"
                     android:text="Submit"
+                    android:onClick="@{()-> activity.download()}"
                     android:textAllCaps="true"
                     android:textColor="@android:color/white" />
 

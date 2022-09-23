@@ -202,5 +202,5 @@
     <string name="ok_label">OK</string>
     <string name="dismiss_label">Dismiss</string>
     <string name="clear_all_label">Clear all</string>
-
+    <string name="select_from_and_to_Date">Select from and to Date</string>
 </resources>

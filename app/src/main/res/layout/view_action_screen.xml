@@ -6,7 +6,7 @@
 
         <variable
             name="activity"
-            type="com.nic.InspectionAppNew.activity.WorkList" />
+            type="com.nic.InspectionAppNew.activity.ViewActionScreen" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -46,7 +46,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:text="Work List"
+                        android:text="Action Taken"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/_15sdp"
                         tools:ignore="RelativeOverlap" />
@@ -82,32 +82,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/filters"
-                android:orientation="vertical">
                 <TextView
-                    android:id="@+id/village_tv"
+                    android:id="@+id/status_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Select village"
+                    android:text="Work Status"
                     android:textColor="@color/grey_9"
-                    android:textSize="@dimen/_15sdp"
-                    />
+                    android:textSize="@dimen/_14sdp" />
 
                 <RelativeLayout
-                    android:id="@+id/village_layout"
+                    android:id="@+id/status_layout"
+                    android:layout_below="@+id/status_tv"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/header"
-                    android:layout_below="@+id/village_tv"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:background="@drawable/rectangle_box"
+                    android:background="@color/white"
                     android:orientation="vertical">
 
                     <TextView
@@ -115,6 +109,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
+                        android:id="@+id/status"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
                         android:textColor="@android:color/black"
@@ -122,40 +117,30 @@
                         android:visibility="visible"
                         />
 
-                    <Spinner
-                        android:id="@+id/village_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center" />
 
                 </RelativeLayout>
 
-
                 <TextView
-                    android:id="@+id/fin_year_tv"
+                    android:id="@+id/description_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/village_layout"
+                    android:layout_below="@+id/status_layout"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Select financial year"
+                    android:text="Description"
                     android:textColor="@color/grey_9"
-                    android:textSize="@dimen/_15sdp" />
+                    android:textSize="@dimen/_14sdp" />
 
                 <RelativeLayout
-                    android:id="@+id/fin_year_layout"
+                    android:id="@+id/description_layout"
+                    android:layout_below="@+id/description_tv"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/header"
-                    android:layout_below="@+id/fin_year_tv"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:background="@drawable/rectangle_box"
+                    android:background="@color/white"
                     android:orientation="vertical">
 
                     <TextView
@@ -163,6 +148,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
+                        android:id="@+id/description"
+                        android:minHeight="@dimen/_80sdp"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
                         android:textColor="@android:color/black"
@@ -170,68 +157,16 @@
                         android:visibility="visible"
                         />
 
-                    <Spinner
-                        android:id="@+id/fin_year_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center" />
 
                 </RelativeLayout>
-                <TextView
-                    android:id="@+id/scheme_tv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/fin_year_layout"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Select scheme"
-                    android:textColor="@color/grey_9"
-                    android:textSize="@dimen/_15sdp" />
 
-                <RelativeLayout
-                    android:id="@+id/scheme_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/header"
-                    android:layout_below="@+id/scheme_tv"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:background="@drawable/rectangle_box"
-                    android:orientation="vertical">
 
-                    <TextView
 
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="15dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/_15sdp"
-                        android:visibility="visible"
-                        />
 
-                    <Spinner
-                        android:id="@+id/scheme_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center" />
-
-                </RelativeLayout>
-            </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/filters"
+                    android:layout_below="@+id/description_layout"
                     android:layout_marginTop="@dimen/padding"
                     >
                     <TextView
@@ -241,7 +176,7 @@
                         android:layout_marginLeft="@dimen/margin_left_20dp"
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/margin_left_20dp"
-                        android:text="Work List"
+                        android:text="Photos"
                         android:padding="@dimen/_3sdp"
                         android:gravity="center_horizontal"
                         android:layout_centerHorizontal="true"
@@ -253,7 +188,7 @@
                         android:layout_below="@+id/work_tv"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
                         android:fadeScrollbars="false"
                         android:scrollbarSize="4dp"
                         android:scrollbars="vertical"
@@ -272,8 +207,10 @@
                         android:textSize="@dimen/title_text_size"
                         android:textStyle="bold"
                         android:visibility="visible" />
+                </RelativeLayout>
 
-            </RelativeLayout>
+
+
             </RelativeLayout>
         </androidx.core.widget.NestedScrollView>
 

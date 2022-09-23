@@ -64,7 +64,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
     WorkListAdapter workListAdapter;
 
 
-    String pref_Village;
+    String onOffType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,7 +83,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         if (bundle != null) {
             isHome = bundle.getString("Home");
         }
-
+        onOffType=getIntent().getStringExtra("OnOffType");
         workListBinding.recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
         workListBinding.recycler.setItemAnimator(new DefaultItemAnimator());
         workListBinding.recycler.setHasFixedSize(true);
@@ -92,6 +92,16 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
         workListBinding.recycler.setVisibility(View.GONE);
         workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+
+        if(onOffType.equals("online")){
+            workListBinding.filters.setVisibility(View.GONE);
+            workListBinding.workTv.setVisibility(View.GONE);
+            new fetchWorkList().execute();
+
+        }else {
+            workListBinding.filters.setVisibility(View.VISIBLE);
+            workListBinding.workTv.setVisibility(View.VISIBLE);
+        }
         villageFilterSpinner();
         schemeFilterSpinner();
         finyearFilterSpinner();

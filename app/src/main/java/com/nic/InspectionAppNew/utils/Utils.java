@@ -2,6 +2,7 @@ package com.nic.InspectionAppNew.utils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -20,10 +22,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +40,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -1290,7 +1302,331 @@ public class Utils {
         Log.d("workListOptional", "" + dataSet1);
         return dataSet1;
     }
+    public static void addReadMore(final Context context, final String text, final TextView textView, final int color) {
+        int stringLength=0;
+        if(color==0){
+            stringLength=10;
+        }else if(color==2){
+            stringLength=42;
+        }else if(color==3){
+            stringLength=42;
+        }else {
+            stringLength=30;
+        }
+        SpannableString ss;
+        if(textView.getLineCount() > 2){
+            String[] lines = textView.getText().toString().split("\n");
+            int length = 0;
+            int index = 0;
+            for (String line : lines) {
+                length = length+ line.length();
+                index++;
+                if(index==3){
+                    break;
+                }
+            }
+            ss = new SpannableString(text.substring(0, text.length() > length ? length : text.length()) + "... read more");
+            if(length > stringLength)
+                ss = new SpannableString(text.substring(0, text.length() > stringLength ? stringLength : text.length()) + "... read more");
+        } else {
+            ss = new SpannableString(text.substring(0, text.length() > stringLength ? stringLength : text.length()) + "... read more");
+        }
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                addReadLess(context,text, textView,color);
+//                String text="Let's try to run your application. I assume you have connected your actual Android Mobile device with your computer." +
+//                        " To run the app from android studio, open one of your project's activity files and click the Run icon " +
+//                        "from the toolbar. Select your mobile device as an option and then check your mobile device which will " +
+//                        "display your default screen I assume you have connected your actual Android Mobile device with your computer." +
+//                        " I assume you have connected your actual Android Mobile device with your computer." +
+//                        " I assume you have connected your actual Android Mobile device with your computer." +
+//                        "I assume you have connected your actual Android Mobile device with your computer.";
 
+//                showPopUp(context,text);
+            }
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if(color==0){
+                        ds.setColor(context.getResources().getColor(R.color.darkblue, context.getTheme()));
+                    }else {
+                        ds.setColor(context.getResources().getColor(R.color.darkblue, context.getTheme()));
+
+                    }
+                } else {
+                    if(color==0) {
+                        ds.setColor(context.getResources().getColor(R.color.darkblue));
+                    }else {
+                        ds.setColor(context.getResources().getColor(R.color.darkblue));
+                    }
+                }
+            }
+        };
+/*
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopUp(context,text);
+            }
+        });
+*/
+        ss.setSpan(clickableSpan, ss.length() - 10, ss.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(ss);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    public static void addReadLess(final Context context, final String text, final TextView textView, final int color) {
+        SpannableString ss = new SpannableString(text + " read less");
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                addReadMore(context,text, textView,0);
+            }
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if(color==0){
+                        ds.setColor(context.getResources().getColor(R.color.darkblue, context.getTheme()));
+                    }else {
+                        ds.setColor(context.getResources().getColor(R.color.darkblue, context.getTheme()));
+
+                    }
+                } else {
+                    if(color==0) {
+                        ds.setColor(context.getResources().getColor(R.color.darkblue));
+                    }else {
+                        ds.setColor(context.getResources().getColor(R.color.darkblue));
+                    }
+                }
+
+            }
+        };
+        ss.setSpan(clickableSpan, ss.length() - 10, ss.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(ss);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+    public static void showDatePickerDialog(Context context) {
+        fromToDate=" ";
+        dateInterface= (DateInterface) context;
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogView = inflater.inflate(R.layout.date_picker_layout, null);
+        final AlertDialog alertDialog = builder.create();
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(alertDialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        lp.windowAnimations = R.style.DialogAnimation;
+        alertDialog.getWindow().setAttributes(lp);
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.setView(dialogView, 0, 0, 0, 0);
+        alertDialog.setCancelable(true);
+        alertDialog.show();
+
+        DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.datePicker);
+        TextView from = (TextView) dialogView.findViewById(R.id.from);
+        TextView to = (TextView) dialogView.findViewById(R.id.to);
+        TextView cancel = (TextView) dialogView.findViewById(R.id.cancel);
+        TextView ok = (TextView) dialogView.findViewById(R.id.ok);
+        TextView fromDateValue = (TextView) dialogView.findViewById(R.id.fromDateValue);
+        TextView toDateValue = (TextView) dialogView.findViewById(R.id.toDateValue);
+        LinearLayout t_layout = (LinearLayout) dialogView.findViewById(R.id.t_layout);
+        LinearLayout f_layout = (LinearLayout) dialogView.findViewById(R.id.f_layout);
+        RelativeLayout button_layout = (RelativeLayout) dialogView.findViewById(R.id.button_layout);
+
+        Typeface custom_font = Typeface.createFromAsset(context.getAssets(), "fonts/Poppins-Medium.ttf");
+        from.setTypeface(custom_font);
+        to.setTypeface(custom_font);
+        fromDateValue.setTypeface(custom_font);
+        toDateValue.setTypeface(custom_font);
+        cancel.setTypeface(custom_font);
+        ok.setTypeface(custom_font);
+
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        date_flag=true;
+        f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+        fromDateValue.setTextColor(context.getResources().getColor(R.color.white));
+        from.setTextColor(context.getResources().getColor(R.color.white));
+        toDateValue.setTextColor(context.getResources().getColor(R.color.grey_2));
+        to.setTextColor(context.getResources().getColor(R.color.grey_2));
+        t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+
+        datePicker.setMaxDate(new Date().getTime());
+        datePicker.setMinDate(0);
+
+        fromDate= format.format(c.getTime());
+        fromDateValue.setText(fromDate);
+        toDate= format.format(c.getTime());
+        toDateValue.setText(toDate);
+        datePicker.setMaxDate(new Date().getTime());
+        datePicker.setMinDate(0);
+// set current date into datepicker
+        datePicker.init(year, month, day, null);
+        f_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                date_flag=true;
+                f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                fromDateValue.setTextColor(context.getResources().getColor(R.color.white));
+                from.setTextColor(context.getResources().getColor(R.color.white));
+                toDateValue.setTextColor(context.getResources().getColor(R.color.grey_2));
+                to.setTextColor(context.getResources().getColor(R.color.grey_2));
+                t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+
+                datePicker.setMaxDate(new Date().getTime());
+                datePicker.setMinDate(0);
+            }
+        });
+        t_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                date_flag=false;
+                f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                fromDateValue.setTextColor(context.getResources().getColor(R.color.grey_2));
+                from.setTextColor(context.getResources().getColor(R.color.grey_2));
+                toDateValue.setTextColor(context.getResources().getColor(R.color.white));
+                to.setTextColor(context.getResources().getColor(R.color.white));
+                t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                Date date = null;
+                try {
+                    date = format.parse(fromDate);
+                    datePicker.setMinDate(date.getTime());
+                    datePicker.setMaxDate(new Date().getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
+
+            @Override
+            public void onDateChanged(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                Log.d("Date", "Year=" + year + " Month=" + (month + 1) + " day=" + dayOfMonth);
+
+                if(date_flag){
+
+                    fromDate=datePicker.getDayOfMonth() + "-" + (datePicker.getMonth() + 1) + "-" + datePicker.getYear();
+                    fromDateValue.setText(updateLabel(fromDate));
+
+                    try {
+                        Date strDate = format.parse(fromDate);
+                        Date endDate = format.parse(toDate);
+                        if (!endDate.after(strDate)) {
+                            toDate=datePicker.getDayOfMonth() + "-" + (datePicker.getMonth() + 1) + "-" + datePicker.getYear();
+                            toDateValue.setText(updateLabel(toDate));
+                        }else {
+
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    date_flag=false;
+                    f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                    fromDateValue.setTextColor(context.getResources().getColor(R.color.grey_2));
+                    from.setTextColor(context.getResources().getColor(R.color.grey_2));
+                    toDateValue.setTextColor(context.getResources().getColor(R.color.white));
+                    to.setTextColor(context.getResources().getColor(R.color.white));
+                    t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                    Date date = null;
+                    try {
+                        date = format.parse(fromDate);
+                        datePicker.setMinDate(date.getTime());
+                        datePicker.setMaxDate(new Date().getTime());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }else {
+
+
+
+                    toDate=datePicker.getDayOfMonth() + "-" + (datePicker.getMonth() + 1) + "-" + datePicker.getYear();
+                    toDateValue.setText(updateLabel(toDate));
+
+                    /*date_flag=true;
+                    f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                    fromDateValue.setTextColor(context.getResources().getColor(R.color.white));
+                    from.setTextColor(context.getResources().getColor(R.color.white));
+                    toDateValue.setTextColor(context.getResources().getColor(R.color.grey2));
+                    to.setTextColor(context.getResources().getColor(R.color.grey2));
+                    t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+
+                    datePicker.setMaxDate(new Date().getTime());
+                    datePicker.setMinDate(0);*/
+                }
+            }
+        });
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(flag){
+                    fromDate=datePicker.getDayOfMonth() + "-" + (datePicker.getMonth() + 1) + "-" + datePicker.getYear();
+                    fromDateValue.setText(updateLabel(fromDate));
+
+                    try {
+                        Date strDate = format.parse(fromDate);
+                        Date endDate = format.parse(toDate);
+                        if (!endDate.after(strDate)) {
+                            toDate=datePicker.getDayOfMonth() + "-" + (datePicker.getMonth() + 1) + "-" + datePicker.getYear();
+                            toDateValue.setText(updateLabel(toDate));
+                        }else {
+
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    date_flag=false;
+                    f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                    fromDateValue.setTextColor(context.getResources().getColor(R.color.grey_2));
+                    from.setTextColor(context.getResources().getColor(R.color.grey_2));
+                    toDateValue.setTextColor(context.getResources().getColor(R.color.white));
+                    to.setTextColor(context.getResources().getColor(R.color.white));
+                    t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                    Date date = null;
+                    try {
+                        date = format.parse(fromDate);
+                        datePicker.setMinDate(date.getTime());
+                        datePicker.setMaxDate(new Date().getTime());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }else {
+                    fromToDate=fromDateValue.getText().toString()+":"+toDateValue.getText().toString();
+                    dateInterface.getDate(fromToDate);
+                    alertDialog.dismiss();
+                }
+
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fromToDate=" ";
+                alertDialog.dismiss();
+            }
+        });
+
+    }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void setStatusBarGradiant(Activity activity) {
