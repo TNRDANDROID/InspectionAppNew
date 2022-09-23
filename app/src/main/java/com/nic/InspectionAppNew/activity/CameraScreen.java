@@ -88,8 +88,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     private PrefManager prefManager;
     private CameraScreenBinding cameraScreenBinding;
 
-    public static DBHelper dbHelper;
-    public static SQLiteDatabase db;
+    public  DBHelper dbHelper;
+    public  SQLiteDatabase db;
     private com.nic.InspectionAppNew.dataBase.dbData dbData = new dbData(this);
 
     ///Image With Description
@@ -101,10 +101,26 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
     int work_id;
     int min_img_count;
-    int max_img_count;
+    int max_img_count =4;
     int clicked_position;
 
-
+    String dcode;
+    String bcode;
+    String pvcode;
+    String scheme_id;
+    String fin_year;
+    String work_name;
+    String as_value;
+    String ts_value;
+    String current_stage_of_work;
+    String is_high_value;
+    String work_description;
+    String work_status_id;
+    String work_status;
+    String hab_code;
+    String scheme_group_id;
+    String work_group_id;
+    String work_type_id;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -131,7 +147,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     }
 
     public void intializeUI() {
-        work_id= getIntent().getIntExtra("work_id",0);
+        getIntentData();
+        //work_id= getIntent().getIntExtra("work_id",0);
 
         viewArrayList.clear();
 
@@ -141,8 +158,30 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
         cameraScreenBinding.btnSaveLocal.setOnClickListener(this::onClick);
         cameraScreenBinding.imageCountTv.setText("You Can Capture up to "+max_img_count+" photos");
-    }
+        updateView(CameraScreen.this, cameraScreenBinding.cameraLayout, "", "", "", "");
 
+    }
+    private void getIntentData(){
+        work_id= getIntent().getIntExtra("work_id",0);
+        dcode = getIntent().getStringExtra("dcode");
+        bcode = getIntent().getStringExtra("bcode");
+        pvcode = getIntent().getStringExtra("pvcode");
+        scheme_id = getIntent().getStringExtra("scheme_id");
+        fin_year = getIntent().getStringExtra("fin_year");
+        work_name = getIntent().getStringExtra("work_name");
+        dcode = getIntent().getStringExtra("dcode");
+        as_value = getIntent().getStringExtra("as_value");
+        ts_value = getIntent().getStringExtra("ts_value");
+        current_stage_of_work = getIntent().getStringExtra("current_stage_of_work");
+        is_high_value = getIntent().getStringExtra("is_high_value");
+        work_status_id = getIntent().getStringExtra("work_status_id");
+        work_description = getIntent().getStringExtra("work_description");
+        work_status = getIntent().getStringExtra("work_status");
+        hab_code = getIntent().getStringExtra("hab_code");
+        scheme_group_id = getIntent().getStringExtra("scheme_group_id");
+        work_group_id = getIntent().getStringExtra("work_group_id");
+        work_type_id = getIntent().getStringExtra("work_type_id");
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -411,7 +450,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             String filePath = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
             Bitmap rotatedBitmap = BitmapFactory.decodeFile(filePath);
 
-            int childCount = cameraScreenBinding.cameraLayout.getChildCount();
+            /*int childCount = cameraScreenBinding.cameraLayout.getChildCount();
             if (childCount > 0) {
 
                 View vv = cameraScreenBinding.cameraLayout.getChildAt(clicked_position);
@@ -429,8 +468,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 cameraScreenBinding.imageView.setVisibility(View.VISIBLE);
                 cameraScreenBinding.imageView.setImageBitmap(rotatedBitmap);
             }
-
-           /* imageView.setImageBitmap(rotatedBitmap);
+*/
+            imageView.setImageBitmap(rotatedBitmap);
             image_view_preview.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);
             latitude_text.setText(""+offlatTextValue);
@@ -438,7 +477,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
             cameraScreenBinding.imageViewPreview.setVisibility(View.GONE);
             cameraScreenBinding.imageView.setVisibility(View.VISIBLE);
-            cameraScreenBinding.imageView.setImageBitmap(rotatedBitmap);*/
+            cameraScreenBinding.imageView.setImageBitmap(rotatedBitmap);
         }
         else if (requestCode == CAMERA_CAPTURE_VIDEO_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -477,7 +516,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     }
 
     public void homePage() {
-        Intent intent = new Intent(this, WorkList.class);
+        Intent intent = new Intent(this, MainHomePage.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("Home", "Home");
         startActivity(intent);
@@ -498,27 +537,48 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     }
 
     public void saveImageButtonClick() {
-        long house_primary_id = 0;
+        long work_insert_primary_id = 0;
         String whereCl = "";String[] whereAr = null;
-
+        String[] selectionArgs;
+        String selection;
         long rowInsert = 0;
         long rowUpdat = 0;
         try {
-            Date c = Calendar.getInstance().getTime();
-            System.out.println("Current time => " + c);
-
-            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-            String currentDateTimeString = df.format(c);
-//            String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-
             ContentValues values = new ContentValues();
 
+            values.put("dcode",dcode);
+            values.put("bcode",bcode);
+            values.put("pvcode",pvcode);
+            values.put("scheme_id",scheme_id);
+            values.put("fin_year",fin_year);
+            values.put("work_id",work_id);
+            values.put("work_name",work_name);
+            values.put("as_value",as_value);
+            values.put("ts_value",ts_value);
+            values.put("current_stage_of_work",current_stage_of_work);
+            values.put("is_high_value",is_high_value);
+            values.put("work_status_id",work_status_id);
+            values.put("work_status",work_status);
+            values.put("work_description",work_description);
+            values.put("hab_code",hab_code);
+            values.put("scheme_group_id",scheme_group_id);
+            values.put("work_group_id",work_group_id);
+            values.put("work_type_id",work_type_id);
+            selection = "work_id = ?";
+            selectionArgs = new String[]{String.valueOf(work_id)};
+            dbData.open();
+            if(dbData.getSavedWorkList("",String.valueOf(work_id)).size()>0){
+                rowInsert = db.update(DBHelper.SAVE_WORK_DETAILS,values,selection,selectionArgs);
+            }
+            else {
+                rowInsert = db.insert(DBHelper.SAVE_WORK_DETAILS,null,values);
+            }
 
 
         } catch (Exception e) {
 
         }
-        if (house_primary_id>0){
+        if (rowInsert>0){
             long id = 0; String whereClause = "";String[] whereArgs = null;
 
             JSONArray imageJson = new JSONArray();
@@ -550,7 +610,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                             imageInByte = baos.toByteArray();
-                            image_path = fileDirectory(bitmap,"batch",String.valueOf(i));
+                            image_path = fileDirectory(bitmap,"work_list",String.valueOf(i));
 
 
                         } catch (Exception e) {
@@ -559,11 +619,27 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
 
                         ContentValues imageValue = new ContentValues();
-                        imageValue.put("image_serial_number", count);
+                        imageValue.put("save_work_details_primary_id", rowInsert);
+                        imageValue.put("work_id", work_id);
+                        imageValue.put("image_description", description);
+                        imageValue.put("image_path", image_path);
+                        imageValue.put("latitude", latitude_text.getText().toString());
+                        imageValue.put("latitude", latitude_text.getText().toString());
+                        imageValue.put("longitude", longtitude_text.getText().toString());
+                        imageValue.put("serial_no", count);
 
+                        selection = "save_work_details_primary_id = ? and work_id = ? and serial_no = ?";
+                        selectionArgs = new String[]{String.valueOf(rowInsert),String.valueOf(work_id),String.valueOf(count)};
+                        ArrayList<ModelClass> imageCount = new ArrayList<>();
+                        dbData.open();
+                        imageCount = dbData.getParticularSavedImage("",String.valueOf(rowInsert),String.valueOf(work_id),String.valueOf(count));
 
-
-
+                        if(imageCount.size()>0){
+                            rowUpdated =db.update(DBHelper.SAVE_IMAGES,imageValue,selection,selectionArgs);
+                        }
+                        else {
+                            rowInserted =db.insert(DBHelper.SAVE_IMAGES,null,imageValue);
+                        }
 
                         if (count == childCount) {
                             if (rowInserted > 0) {
@@ -617,10 +693,10 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         myEditTextView = (EditText) hiddenInfo.findViewById(R.id.description);
         latitude_text = hiddenInfo.findViewById(R.id.latitude);
         longtitude_text = hiddenInfo.findViewById(R.id.longtitude);
-        description_layout.setVisibility(View.GONE);
+        description_layout.setVisibility(View.VISIBLE);
 
 //        imageView.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_phone_camera));
-        if(values!=null && !values.equals("") && !values.isEmpty()){
+      /*  if(values!=null && !values.equals("") && !values.isEmpty()){
 
             offlatTextValue= Double.valueOf(latitude);
             offlongTextValue= Double.valueOf(longitude);
@@ -637,7 +713,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 cameraScreenBinding.imageView.setVisibility(View.VISIBLE);
                 cameraScreenBinding.imageView.setImageBitmap(myBitmap);
             }
-        }
+        }*/
         imageView_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

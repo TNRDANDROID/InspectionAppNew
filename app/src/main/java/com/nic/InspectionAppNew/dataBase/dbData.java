@@ -80,7 +80,7 @@ public class dbData {
 
         ContentValues values = new ContentValues();
         values.put(AppConstant.STATUS_ID, pmgsySurvey.getWork_status_id());
-        values.put(AppConstant.STATUS, pmgsySurvey.getWork_status());
+        values.put(AppConstant.WORK_STATUS, pmgsySurvey.getWork_status());
 
         long id = db.insert(DBHelper.STATUS_TABLE,null,values);
         Log.d("Inserted_id_status", String.valueOf(id));
@@ -255,13 +255,13 @@ public class dbData {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ModelClass card = new ModelClass();
-                    card.setImg_id(cursor.getInt(cursor.getColumnIndexOrThrow("img_id")));
-                    card.setImage(cursor.getString(cursor.getColumnIndexOrThrow("image")));
-                    card.setImage_serial_number(cursor.getInt(cursor.getColumnIndexOrThrow("image_serial_number")));
+                    card.setSave_work_details_primary_id(cursor.getInt(cursor.getColumnIndexOrThrow("save_work_details_primary_id")));
+                    card.setWork_id(cursor.getInt(cursor.getColumnIndexOrThrow("work_id")));
+                    card.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("image_description")));
                     card.setLatitude(cursor.getString(cursor.getColumnIndexOrThrow("latitude")));
                     card.setLongtitude(cursor.getString(cursor.getColumnIndexOrThrow("longitude")));
                     card.setImage_path(cursor.getString(cursor.getColumnIndexOrThrow("image_path")));
-                    card.setPhoto_type_id(cursor.getInt(cursor.getColumnIndexOrThrow("photo_type_id")));
+                    card.setImage_serial_number(cursor.getInt(cursor.getColumnIndexOrThrow("serial_no")));
 
                     cards.add(card);
                 }
@@ -276,15 +276,21 @@ public class dbData {
         }
         return cards;
     }
-    public ArrayList<ModelClass> getParticularSavedImage(String work_id) {
+    public ArrayList<ModelClass> getParticularSavedImage(String type,String save_work_details_primary_id,String work_id,String serial_number) {
 
         ArrayList<ModelClass> cards = new ArrayList<>();
         Cursor cursor = null;
         String selection;
         String[] selectionArgs;
         try {
-            selection = "work_id = ?";
-            selectionArgs = new String[]{work_id};
+            if(type.equals("work_id")){
+                selection = "save_work_details_primary_id = ?";
+                selectionArgs = new String[]{save_work_details_primary_id};
+            }
+            else {
+                selection = "save_work_details_primary_id = ? and work_id = ? and serial_no = ?";
+                selectionArgs = new String[]{save_work_details_primary_id,work_id,serial_number};
+            }
 
 
             cursor = db.query(DBHelper.SAVE_IMAGES,new String[]{"*"},
@@ -294,19 +300,19 @@ public class dbData {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ModelClass card = new ModelClass();
-                    card.setImg_id(cursor.getInt(cursor.getColumnIndexOrThrow("img_id")));
-                    card.setImage(cursor.getString(cursor.getColumnIndexOrThrow("image")));
-                    card.setImage_serial_number(cursor.getInt(cursor.getColumnIndexOrThrow("image_serial_number")));
+                    card.setSave_work_details_primary_id(cursor.getInt(cursor.getColumnIndexOrThrow("save_work_details_primary_id")));
+                    card.setWork_id(cursor.getInt(cursor.getColumnIndexOrThrow("work_id")));
+                    card.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("image_description")));
                     card.setLatitude(cursor.getString(cursor.getColumnIndexOrThrow("latitude")));
                     card.setLongtitude(cursor.getString(cursor.getColumnIndexOrThrow("longitude")));
                     card.setImage_path(cursor.getString(cursor.getColumnIndexOrThrow("image_path")));
-                    card.setPhoto_type_id(cursor.getInt(cursor.getColumnIndexOrThrow("photo_type_id")));
+                    card.setImage_serial_number(cursor.getInt(cursor.getColumnIndexOrThrow("serial_no")));
 
                     cards.add(card);
                 }
             }
         } catch (Exception e){
-            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+               Log.d("DEBUG_TAG", "Exception raised with a value of " + e);
             e.printStackTrace();
         } finally{
             if (cursor != null) {
@@ -367,21 +373,49 @@ public class dbData {
         }
         return cards;
     }
-    public ArrayList<ModelClass> getSavedWorkList() {
+    public ArrayList<ModelClass> getSavedWorkList(String type,String work_id) {
 
         ArrayList<ModelClass> cards = new ArrayList<>();
         Cursor cursor = null;
-
+        String[] selectionArgs;
+        String selection;
         try {
-            cursor = db.rawQuery("select * from "+DBHelper.SAVE_WORK_DETAILS,null);
+            if(type.equals("all")){
+                cursor = db.rawQuery("select * from "+DBHelper.SAVE_WORK_DETAILS,null);
+            }
+            else {
+                selection = "work_id = ?";
+                selectionArgs = new String[]{work_id};
+
+
+                cursor = db.query(DBHelper.SAVE_WORK_DETAILS,new String[]{"*"},
+                        selection, selectionArgs, null, null, "work_id");
+            }
+
             // cursor = db.query(CardsDBHelper.TABLE_CARDS,
             //       COLUMNS, null, null, null, null, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ModelClass card = new ModelClass();
+                    card.setSave_work_details_primary_id(cursor.getInt(cursor.getColumnIndexOrThrow("save_work_details_primary_id")));
                     card.setWork_id(cursor.getInt(cursor.getColumnIndexOrThrow("work_id")));
+                    card.setDistictCode(cursor.getString(cursor.getColumnIndexOrThrow("dcode")));
+                    card.setBlockCode(cursor.getString(cursor.getColumnIndexOrThrow("bcode")));
+                    card.setPvCode(cursor.getString(cursor.getColumnIndexOrThrow("pvcode")));
+                    card.setHabCode(cursor.getString(cursor.getColumnIndexOrThrow("hab_code")));
+                    card.setScheme_group_id(cursor.getString(cursor.getColumnIndexOrThrow("scheme_group_id")));
+                    card.setWork_group_id(cursor.getString(cursor.getColumnIndexOrThrow("work_group_id")));
+                    card.setWork_type_id(cursor.getString(cursor.getColumnIndexOrThrow("work_type_id")));
+                    card.setSchemeSequentialID(cursor.getString(cursor.getColumnIndexOrThrow("scheme_id")));
+                    card.setFinancialYear(cursor.getString(cursor.getColumnIndexOrThrow("fin_year")));
                     card.setWork_name(cursor.getString(cursor.getColumnIndexOrThrow("work_name")));
+                    card.setAs_value(cursor.getString(cursor.getColumnIndexOrThrow("as_value")));
+                    card.setTs_value(cursor.getString(cursor.getColumnIndexOrThrow("ts_value")));
+                    card.setCurrent_stage_of_work(cursor.getString(cursor.getColumnIndexOrThrow("current_stage_of_work")));
+                    card.setIs_high_value(cursor.getString(cursor.getColumnIndexOrThrow("is_high_value")));
+                    card.setWork_description(cursor.getString(cursor.getColumnIndexOrThrow("work_description")));
                     card.setWork_status(cursor.getString(cursor.getColumnIndexOrThrow("work_status")));
+                    card.setWork_status_id(cursor.getInt(cursor.getColumnIndexOrThrow("work_status_id")));
 
                     cards.add(card);
                 }

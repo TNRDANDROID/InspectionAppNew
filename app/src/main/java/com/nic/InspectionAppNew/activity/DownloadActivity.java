@@ -169,7 +169,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }    public JSONObject villageListJsonParams() throws JSONException {
+    }
+    public JSONObject villageListJsonParams() throws JSONException {
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.villageListDistrictWiseJsonParams(this).toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
@@ -692,8 +693,21 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             @Override
             public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                 if (isChecked) {
-                    if (!mVillageItems.contains(position)) {
+                   /* if (!mVillageItems.contains(position)) {
                         mVillageItems.add(position);
+                    }*/
+                    for (int i = 0; i < villageCheckedItems.length; i++) {
+                        if (i == position) {
+                            villageCheckedItems[i]=true;
+                            ((AlertDialog) dialogInterface).getListView().setItemChecked(i, true);
+                            mVillageItems.add(i);
+                        }
+                        else {
+                            villageCheckedItems[i]=false;
+                            ((AlertDialog) dialogInterface).getListView().setItemChecked(i, false);
+                            mVillageItems.remove(Integer.valueOf(i));
+
+                        }
                     }
                 } else if (mVillageItems.contains(position)) {
                     mVillageItems.remove((Integer.valueOf(position)));
@@ -825,7 +839,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             if(prefManager.getLevels().equalsIgnoreCase("S")) {
                 projectListScreenStateUser();
             }
-            else if (!prefManager.getLevels().equalsIgnoreCase("D")) {
+            else if (prefManager.getLevels().equalsIgnoreCase("D")) {
                 projectListScreenDistrictUser();
             } else {
                 projectListScreenBlockUser();
@@ -1039,8 +1053,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         progressHUD = ProgressHUD.show(this, "Downloading...", true, false, null);
 
         try {
-            updatedJsonArray = new JSONArray();
-            updatedJsonArray = jsonArray;
+
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 String schemeSequentialID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_SEQUENTIAL_ID);
@@ -1193,8 +1206,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             e.printStackTrace();
         }
         try {
-            updatedJsonArray = new JSONArray();
-            updatedJsonArray = jsonArray;
+
             if (jsonArray.length() > 0) {
                 workListInsert = true;
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -1267,6 +1279,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     }
     public void openWorkListScreen() {
         Intent intent = new Intent(this, WorkList.class);
+        intent.putExtra("OnOffType","offline");
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

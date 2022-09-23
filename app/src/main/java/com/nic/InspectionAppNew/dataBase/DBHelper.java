@@ -58,17 +58,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE " + STATUS_TABLE + " ("
                 + "status_id INTEGER," +
-                "status TEXT)");
+                "work_status TEXT)");
 
         db.execSQL("CREATE TABLE " + FINANCIAL_YEAR_TABLE_NAME + " ("
                 + "fin_year  varchar(32))");
 
         db.execSQL("CREATE TABLE " + SAVE_IMAGES + " ("
-                + "img_id INTEGER,"+
-                "image TEXT," +
+                + "save_work_details_image_primary_id INTEGER PRIMARY KEY AUTOINCREMENT,"+
+                "save_work_details_primary_id INTEGER," +
+                "work_id INTEGER," +
+                "image_description TEXT," +
+                "image_path TEXT," +
                 "latitude TEXT," +
                 "longitude TEXT," +
-                "type_of_photo TEXT)");
+                "serial_no INTEGER)");
 
         db.execSQL("CREATE TABLE " + WORK_LIST + " ("
                 + "dcode INTEGER," +
@@ -87,17 +90,25 @@ public class DBHelper extends SQLiteOpenHelper {
                 "current_stage_of_work TEXT," +
                 "is_high_value TEXT)");
         db.execSQL("CREATE TABLE " + SAVE_WORK_DETAILS + " ("
-                + "work_id INTEGER," +
-                "dcode INTEGER," +
+                + "save_work_details_primary_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                 "dcode INTEGER," +
                 "bcode INTEGER," +
-                "pvcode TEXT," +
+                "pvcode INTEGER," +
                 "hab_code TEXT," +
-                "dname TEXT," +
-                "bname TEXT," +
-                "pvname TEXT," +
-                "habitation_name TEXT," +
+                "scheme_group_id TEXT," +
+                "work_group_id TEXT," +
+                "work_type_id TEXT," +
+                "scheme_id TEXT," +
+                "fin_year TEXT," +
+                "work_id INTEGER," +
+                "work_status_id INTEGER," +
+                "work_name TEXT," +
+                "as_value TEXT," +
+                "ts_value TEXT," +
                 "work_status TEXT," +
-                "work_name TEXT)");
+                "work_description TEXT," +
+                "current_stage_of_work TEXT," +
+                "is_high_value TEXT)");
 
 
     }

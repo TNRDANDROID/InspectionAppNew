@@ -54,6 +54,21 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     private ProgressHUD progressHUD;
     private List<ModelClass> status_list = new ArrayList<>();
     int work_id=0;
+    String dcode;
+    String bcode;
+    String pvcode;
+    String scheme_id;
+    String fin_year;
+    String work_name;
+    String as_value;
+    String ts_value;
+    String current_stage_of_work;
+    String is_high_value;
+    String work_status;
+    String hab_code;
+    String scheme_group_id;
+    String work_group_id;
+    String work_type_id;
     int min_img_count=0;
     int max_img_count=0;
     private static final int SPEECH_REQUEST_CODE = 103;
@@ -71,16 +86,18 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         } catch (Exception e) {
             e.printStackTrace();
         }
-        work_id= getIntent().getIntExtra("work_id",0);
+        getIntentData();
         statusFilterSpinner();
         saveWorkDetailsActivityBinding.statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
                     prefManager.setWorkStatusId(String.valueOf(status_list.get(position).getWork_status_id()));
+                    work_status = status_list.get(position).getWork_status();
 
                 }else {
                     prefManager.setWorkStatusId("");
+                    work_status = "";
                 }
             }
 
@@ -111,12 +128,49 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
     }
 
+    private void getIntentData(){
+        work_id= getIntent().getIntExtra("work_id",0);
+        dcode = getIntent().getStringExtra("dcode");
+        bcode = getIntent().getStringExtra("bcode");
+        pvcode = getIntent().getStringExtra("pvcode");
+        scheme_id = getIntent().getStringExtra("scheme_id");
+        fin_year = getIntent().getStringExtra("fin_year");
+        work_name = getIntent().getStringExtra("work_name");
+        dcode = getIntent().getStringExtra("dcode");
+        as_value = getIntent().getStringExtra("as_value");
+        ts_value = getIntent().getStringExtra("ts_value");
+        current_stage_of_work = getIntent().getStringExtra("current_stage_of_work");
+        is_high_value = getIntent().getStringExtra("is_high_value");
+        hab_code = getIntent().getStringExtra("hab_code");
+        scheme_group_id = getIntent().getStringExtra("scheme_group_id");
+        work_group_id = getIntent().getStringExtra("work_group_id");
+        work_type_id = getIntent().getStringExtra("work_type_id");
+    }
 
     public void gotoCameraScreen()
     {
         if(!prefManager.getWorkStatusId().equals("")){
             if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
                 Intent intent = new Intent(this, CameraScreen.class);
+                intent.putExtra("dcode", dcode);
+                intent.putExtra("bcode", bcode);
+                intent.putExtra("pvcode",pvcode);
+                intent.putExtra("hab_code",hab_code);
+                intent.putExtra("scheme_group_id",scheme_group_id);
+                intent.putExtra("work_group_id",work_group_id);
+                intent.putExtra("work_type_id",work_type_id);
+                intent.putExtra("is_high_value",is_high_value);
+                intent.putExtra("scheme_id",scheme_id);
+                intent.putExtra("fin_year", fin_year);
+                intent.putExtra("work_id", work_id);
+                intent.putExtra("work_name", work_name);
+                intent.putExtra("as_value", as_value);
+                intent.putExtra("ts_value", ts_value);
+                intent.putExtra("current_stage_of_work", current_stage_of_work);
+                intent.putExtra("current_stage_of_work", current_stage_of_work);
+                intent.putExtra("work_status_id", prefManager.getWorkStatusId());
+                intent.putExtra("work_status", work_status);
+                intent.putExtra("work_description", saveWorkDetailsActivityBinding.description.getText().toString());
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }

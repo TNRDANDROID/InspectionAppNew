@@ -49,6 +49,33 @@ public class ModelClass {
     private String current_stage_of_work;
     private String is_high_value;
     private String work_group_id;
+    private int save_work_details_primary_id;
+    private int save_work_details_image_primary_id;
+    private String work_description;
+
+    public String getWork_description() {
+        return work_description;
+    }
+
+    public void setWork_description(String work_description) {
+        this.work_description = work_description;
+    }
+
+    public int getSave_work_details_primary_id() {
+        return save_work_details_primary_id;
+    }
+
+    public void setSave_work_details_primary_id(int save_work_details_primary_id) {
+        this.save_work_details_primary_id = save_work_details_primary_id;
+    }
+
+    public int getSave_work_details_image_primary_id() {
+        return save_work_details_image_primary_id;
+    }
+
+    public void setSave_work_details_image_primary_id(int save_work_details_image_primary_id) {
+        this.save_work_details_image_primary_id = save_work_details_image_primary_id;
+    }
 
     public String getWork_group_id() {
         return work_group_id;

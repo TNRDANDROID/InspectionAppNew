@@ -53,6 +53,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
     JSONObject dataset = new JSONObject();
     private ProgressHUD progressHUD;
     String type="";
+    String save_work_details_primary_id="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,7 +89,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         protected ArrayList<ModelClass> doInBackground(JSONObject... params) {
             dbData.open();
             pendingList = new ArrayList<>();
-            pendingList = dbData.getSavedWorkList();
+            pendingList = dbData.getSavedWorkList("all","");
             Log.d("PENDING_COUNT", String.valueOf(pendingList.size()));
             return pendingList;
         }
@@ -145,7 +146,8 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         return true;
     }
 
-    public JSONObject saveImagesJsonParams(JSONObject savePMAYDataSet) {
+    public JSONObject saveImagesJsonParams(JSONObject savePMAYDataSet,String save_work_details_primary_id_) {
+        save_work_details_primary_id = save_work_details_primary_id_;
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), savePMAYDataSet.toString());
         JSONObject dataSet = new JSONObject();
         try {
@@ -176,24 +178,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     Utils.showAlert(this, "Your Data is Synchronized to the server!");
                     dbData.open();
-                   /* if(type.equals("INFRA")){
-                        deleteFileInfraPath(String.valueOf(prefManager.getSamathuvapuramId()),
-                                String.valueOf(prefManager.getscheme_group_id()),
-                                String.valueOf(prefManager.getscheme_id()),
-                                String.valueOf(prefManager.getwork_group_id()),
-                                String.valueOf(prefManager.getwork_type_id()));
-                        db.delete(DBHelper.HOUSE_IMAGES_DETAILS, "samathuvapuram_id = ? and scheme_group_id = ? " +
-                                "and scheme_id = ? and work_group_id = ? and work_type_id = ?", new String[]{String.valueOf(prefManager.getSamathuvapuramId()), String.valueOf(prefManager.getscheme_group_id()), String.valueOf(prefManager.getscheme_id()), String.valueOf(prefManager.getwork_group_id()), String.valueOf(prefManager.getwork_type_id())});
-                        db.delete(DBHelper.HOUSE_DETAILS, "samathuvapuram_id = ? and scheme_group_id = ? and scheme_id = ? and work_group_id = ? and work_type_id = ?", new String[]{String.valueOf(prefManager.getSamathuvapuramId()), String.valueOf(prefManager.getscheme_group_id()), String.valueOf(prefManager.getscheme_id()), String.valueOf(prefManager.getwork_group_id()), String.valueOf(prefManager.getwork_type_id())});
-
-                    }else {
-                        deleteFileHousePath(String.valueOf(prefManager.getSamathuvapuramId()),
-                                String.valueOf(prefManager.getHouse_serial_number()));
-
-                        db.delete(DBHelper.HOUSE_IMAGES_DETAILS, "samathuvapuram_id = ? and house_serial_number = ?", new String[]{String.valueOf(prefManager.getSamathuvapuramId()), String.valueOf(prefManager.getHouse_serial_number())});
-                        db.delete(DBHelper.HOUSE_DETAILS, "samathuvapuram_id = ? and house_serial_number = ?", new String[]{String.valueOf(prefManager.getSamathuvapuramId()), String.valueOf(prefManager.getHouse_serial_number())});
-
-                    }*/
+                    deleteSavedImage(save_work_details_primary_id);
                     pendingScreenAdapter.removeSavedItem(prefManager.getDeleteAdapterPosition());
                     pendingScreenAdapter.notifyDataSetChanged();
                 }
@@ -208,9 +193,9 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         }
     }
 
-    private void deleteSavedImage(String work_id) {
+    private void deleteSavedImage(String save_work_details_primary_id) {
         ArrayList<ModelClass> activityImage = new ArrayList<>();
-        activityImage = dbData.getParticularSavedImage(work_id);
+        activityImage = dbData.getParticularSavedImage("work_id",save_work_details_primary_id,"","");
        for (int i=0; i < activityImage.size();i++){
            String file_path= activityImage.get(i).getImage_path();
            deleteFileDirectory(file_path);

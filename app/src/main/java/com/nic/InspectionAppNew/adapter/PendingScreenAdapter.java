@@ -114,10 +114,15 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         holder.pendingScreenAdapterBinding.workId.setText(String.valueOf(pendingListFiltered.get(position).getWork_id()));
+        holder.pendingScreenAdapterBinding.workName.setText(pendingListFiltered.get(position).getWork_name());
+        holder.pendingScreenAdapterBinding.workStatus.setText(pendingListFiltered.get(position).getWork_status());
+        holder.pendingScreenAdapterBinding.finYear.setText(pendingListFiltered.get(position).getFinancialYear());
+        holder.pendingScreenAdapterBinding.asValue.setText(pendingListFiltered.get(position).getAs_value());
+        holder.pendingScreenAdapterBinding.tsValue.setText(pendingListFiltered.get(position).getTs_value());
 
 
         dbData.open();
-        imageCount = dbData.getParticularSavedImage(String.valueOf(pendingListFiltered.get(position).getWork_id()));
+        imageCount = dbData.getParticularSavedImage("work_id",String.valueOf(pendingListFiltered.get(position).getSave_work_details_primary_id()),"","");
 
         if(imageCount.size() > 0) {
             holder.pendingScreenAdapterBinding.viewOfflineImages.setVisibility(View.VISIBLE);
@@ -129,9 +134,7 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
         holder.pendingScreenAdapterBinding.viewOfflineImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewOfflineImages(String.valueOf(pendingListFiltered.get(position).getWork_id()));
-
-
+                viewOfflineImages(String.valueOf(pendingListFiltered.get(position).getSave_work_details_primary_id()),position);
             }
         });
 
@@ -220,13 +223,24 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
         JSONObject maindataset = new JSONObject();
         JSONObject dataset = new JSONObject();
         JSONArray dataArray = new JSONArray();
-        String work_id = String.valueOf(pendingListValues.get(position).getWork_id());
+        JSONArray inspection_work_details = new JSONArray();
+        String work_id = String.valueOf(pendingListFiltered.get(position).getWork_id());
+        String status_id = String.valueOf(pendingListFiltered.get(position).getWork_status_id());
+        String description = String.valueOf(pendingListFiltered.get(position).getWork_description());
+        String save_work_details_primary_id = String.valueOf(pendingListFiltered.get(position).getSave_work_details_primary_id());
 
         prefManager.setWorkId(work_id);
         prefManager.setDeleteAdapterPosition(position);
         try {
-            maindataset.put(AppConstant.KEY_SERVICE_ID,"work_update");
+            maindataset.put(AppConstant.KEY_SERVICE_ID,"work_inspection_details_save");
+            dataset.put("dcode", pendingListFiltered.get(position).getDistictCode());
+            dataset.put("bcode", pendingListFiltered.get(position).getBlockCode());
+            dataset.put("pvcode", pendingListFiltered.get(position).getPvCode());
+            dataset.put("hab_code", pendingListFiltered.get(position).getHabCode());
             dataset.put("work_id", work_id);
+            dataset.put("status_id", status_id);
+            dataset.put("description", description);
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -234,50 +248,29 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
 
         JSONArray imageArray = new JSONArray();
         dbData.open();
-        image_sql = "Select * from " + DBHelper.SAVE_IMAGES + " where work_id =" + work_id;
-
-        Log.d("sql", image_sql);
-            Cursor image = db.rawQuery(image_sql, null);
-
-            if (image.getCount() > 0) {
-                if (image.moveToFirst()) {
-                    do {
-                        String latitude = image.getString(image.getColumnIndexOrThrow(AppConstant.KEY_LATITUDE));
-                        String longitude = image.getString(image.getColumnIndexOrThrow(AppConstant.KEY_LONGITUDE));
-                        String image_path = image.getString(image.getColumnIndexOrThrow("image_path"));
-                        String image_string = imageString(image_path);
-                        int photo_type_id = image.getInt(image.getColumnIndexOrThrow("photo_type_id"));
-                        int image_serial_number = image.getInt(image.getColumnIndexOrThrow("image_serial_number"));
-
-                        JSONObject imageJson = new JSONObject();
-
-                        try {
-                            imageJson.put("photo_serial_no",image_serial_number);
-                            imageJson.put("photo_type_id",photo_type_id);
-                            imageJson.put(AppConstant.KEY_LATITUDE,latitude);
-                            imageJson.put(AppConstant.KEY_LONGITUDE,longitude);
-                            imageJson.put(AppConstant.KEY_IMAGE,image_string);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        imageArray.put(imageJson);
-
-                    } while (image.moveToNext());
-                }
-            }
-
-
+        ArrayList<ModelClass> imageList = new ArrayList<>();
+        imageList.addAll(dbData.getParticularSavedImage("work_id",save_work_details_primary_id,"",""));
         try {
-            dataset.put("work_images", imageArray);
-            dataArray.put( dataset);
-            maindataset.put(key, dataArray);
-        } catch (JSONException e) {
+            for (int i=0;i<imageList.size();i++){
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("latitude",imageList.get(i).getLatitude());
+                jsonObject.put("longitude",imageList.get(i).getLongtitude());
+                jsonObject.put("serial_no",imageList.get(i).getImage_serial_number());
+                jsonObject.put("image_description",imageList.get(i).getDescription());
+                jsonObject.put("image",imageString(imageList.get(i).getImage_path()));
+                imageArray.put(jsonObject);
+            }
+            dataset.put("image_details",imageArray);
+            inspection_work_details.put(dataset);
+            maindataset.put("inspection_work_details",inspection_work_details);
+        }
+        catch (JSONException e){
             e.printStackTrace();
         }
 
         if (Utils.isOnline()) {
-            ((PendingScreen)context).saveImagesJsonParams(maindataset);
+            ((PendingScreen)context).saveImagesJsonParams(maindataset,save_work_details_primary_id);
             Log.d("saveImages", "" + maindataset);
         } else {
             Activity activity = (Activity) context;
@@ -306,19 +299,21 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
     }
 
     public void removeSavedItem(int position) {
+        String save_work_details_primary_id = String.valueOf(pendingListFiltered.get(position).getSave_work_details_primary_id());
         dbData.open();
-        db.delete(DBHelper.SAVE_WORK_DETAILS, "work_id = ?", new String[]{String.valueOf(pendingListValues.get(position).getWork_id())});
-        db.delete(DBHelper.SAVE_IMAGES, "work_id = ?", new String[]{String.valueOf(pendingListValues.get(position).getWork_id())});
-
+        db.delete(DBHelper.SAVE_WORK_DETAILS, "work_id = ?", new String[]{String.valueOf(pendingListFiltered.get(position).getWork_id())});
+        db.delete(DBHelper.SAVE_IMAGES, "work_id = ?", new String[]{String.valueOf(pendingListFiltered.get(position).getWork_id())});
+        deleteSavedImage(save_work_details_primary_id);
         pendingListFiltered.remove(position);
         notifyItemRemoved(position);
-        notifyItemChanged(position, pendingListValues.size());
+        notifyItemChanged(position, pendingListFiltered.size());
     }
 
-    public void viewOfflineImages(String work_id) {
+    public void viewOfflineImages(String save_work_details_primary_id,int position) {
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, FullImageActivity.class);
-        intent.putExtra("work_id",work_id);
+        intent.putExtra("save_work_details_primary_id",save_work_details_primary_id);
+        intent.putExtra("work_id",pendingListFiltered.get(position).getWork_id());
         intent.putExtra("OnOffType","Offline");
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -365,5 +360,23 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
     public int getItemCount() {
         return pendingListFiltered == null ? 0 : pendingListFiltered.size();
     }
+
+    private void deleteSavedImage(String save_work_details_primary_id) {
+        ArrayList<ModelClass> activityImage = new ArrayList<>();
+        activityImage = dbData.getParticularSavedImage("work_id",save_work_details_primary_id,"","");
+        for (int i=0; i < activityImage.size();i++){
+            String file_path= activityImage.get(i).getImage_path();
+            deleteFileDirectory(file_path);
+        }
+
+    }
+    private void deleteFileDirectory(String file_path){
+        File file = new File(file_path);
+        // call deleteDirectory method to delete directory
+        // recursively
+        file.delete();
+
+    }
+
 }
 

@@ -110,6 +110,7 @@
                 android:layout_height="match_parent"
                 app:layout_anchor="@+id/relativeLayout"
                 android:layout_below="@id/app_bar"
+                android:layout_above="@+id/relativeLayout"
                 app:layout_anchorGravity="center">
 
                 <RelativeLayout
@@ -450,7 +451,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#34C51162">
+                        >
 
                         <RelativeLayout
                             android:layout_centerHorizontal="true"

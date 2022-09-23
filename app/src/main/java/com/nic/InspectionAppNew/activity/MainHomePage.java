@@ -81,7 +81,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             getInspection_statusList();
         }
         syncButtonVisibility();
-        homeScreenBinding.syncLayout.setOnClickListener(new View.OnClickListener() {
+        homeScreenBinding.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openPendingScreen();
@@ -390,16 +390,17 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
     public void syncButtonVisibility() {
         dbData.open();
-        ArrayList<ModelClass> ImageCount = dbData.getSavedImage();
+        ArrayList<ModelClass> imageCount = dbData.getSavedImage();
+        if(imageCount.size()>0){
+            homeScreenBinding.relativeLayout.setVisibility(View.VISIBLE);
+        }
+        else {
+            homeScreenBinding.relativeLayout.setVisibility(View.GONE);
+        }
     }
 
     public void openPendingScreen() {
         Intent intent = new Intent(this, PendingScreen.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-    }
-    public void openWorkListScreen() {
-        Intent intent = new Intent(this, WorkList.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

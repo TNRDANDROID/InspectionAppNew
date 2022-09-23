@@ -41,7 +41,8 @@ import java.util.ArrayList;
 
 public class FullImageActivity extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
     private FullImageRecyclerBinding fullImageRecyclerBinding;
-    public String OnOffType,work_id;
+    public String OnOffType,save_work_details_primary_id;
+    String work_id;
     private FullImageAdapter fullImageAdapter;
     private PrefManager prefManager;
     private static  ArrayList<ModelClass> activityImage = new ArrayList<>();
@@ -54,6 +55,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         prefManager = new PrefManager(this);
 
         OnOffType = getIntent().getStringExtra("OnOffType");
+        save_work_details_primary_id = getIntent().getStringExtra("save_work_details_primary_id");
         work_id = getIntent().getStringExtra("work_id");
 
 
@@ -86,7 +88,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             if(OnOffType.equalsIgnoreCase("Offline")){
                 dbData.open();
                 activityImage = new ArrayList<>();
-                activityImage = dbData.getParticularSavedImage(work_id);
+                activityImage = dbData.getParticularSavedImage("work_id",save_work_details_primary_id,"","");
 
             }
 
@@ -101,7 +103,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         }
     }
     public void homePage() {
-        Intent intent = new Intent(this, WorkList.class);
+        Intent intent = new Intent(this, MainHomePage.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("Home", "Home");
         startActivity(intent);
