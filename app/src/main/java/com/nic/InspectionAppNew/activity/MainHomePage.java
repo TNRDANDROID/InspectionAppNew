@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -54,6 +55,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         try {
             dbHelper = new DBHelper(this);
             db = dbHelper.getWritableDatabase();
+            dbData.open();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,17 +64,6 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             isHome = bundle.getString("Home");
         }
 
-
-        /*//Sample
-        JSONObject jsonObject = new JSONObject();
-        String json = "{\"STATUS\":\"OK\",\"RESPONSE\":\"OK\",\"JSON_DATA\":[{\"id\":1,\"tax\":\"Property tax\"},{\"id\":2,\"tax\":\"Water Charges\"},{\"id\":3,\"tax\":\"Professional Tax\"},{\"id\":4,\"tax\":\"Non Tax\"},{\"id\":5,\"tax\":\"Trade License \"}]}";
-        try {  jsonObject = new JSONObject(json); } catch (Throwable t) {
-            Log.e("My App", "Could not parse malformed JSON: \"" + json + "\""); }
-        try {
-            if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                new Insert_samathuvapuram_details().execute(jsonObject);
-            }
-        } catch (JSONException e) { e.printStackTrace(); }*/
 
 
         if (Utils.isOnline()) {
@@ -85,6 +76,19 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             @Override
             public void onClick(View view) {
                 openPendingScreen();
+            }
+        });
+        homeScreenBinding.menuIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openMenuDrawer();
+            }
+        });
+        homeScreenBinding.viewInspection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
+                gotoViewSavedWorkScreen();
             }
         });
         homeScreenBinding.goOnline.setOnClickListener(new View.OnClickListener() {
@@ -415,5 +419,17 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
+    public void openMenuDrawer(){
+        if(homeScreenBinding.drawerLayout.isDrawerOpen(Gravity.LEFT)){
+            homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
+        }else{
+            homeScreenBinding.drawerLayout.openDrawer(Gravity.LEFT);
+        }
+    }
 
+    private void gotoViewSavedWorkScreen(){
+        Intent intent = new Intent(MainHomePage.this,ViewSavedWorkList.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
 }

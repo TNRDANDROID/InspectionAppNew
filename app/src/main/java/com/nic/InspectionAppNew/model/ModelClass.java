@@ -52,6 +52,24 @@ public class ModelClass {
     private int save_work_details_primary_id;
     private int save_work_details_image_primary_id;
     private String work_description;
+    private String inspection_id;
+    private String inspectedDate;
+
+    public String getInspection_id() {
+        return inspection_id;
+    }
+
+    public void setInspection_id(String inspection_id) {
+        this.inspection_id = inspection_id;
+    }
+
+    public String getInspectedDate() {
+        return inspectedDate;
+    }
+
+    public void setInspectedDate(String inspectedDate) {
+        this.inspectedDate = inspectedDate;
+    }
 
     public String getWork_description() {
         return work_description;

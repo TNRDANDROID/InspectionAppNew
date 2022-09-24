@@ -78,6 +78,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         loginScreenBinding = DataBindingUtil.setContentView(this, R.layout.login_screen);
         loginScreenBinding.setActivity(this);
         try {
+            dbData.open();
             dbHelper = new DBHelper(this);
             db = dbHelper.getWritableDatabase();
         } catch (Exception e) {

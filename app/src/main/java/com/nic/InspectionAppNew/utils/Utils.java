@@ -1442,13 +1442,13 @@ public class Utils {
         LinearLayout f_layout = (LinearLayout) dialogView.findViewById(R.id.f_layout);
         RelativeLayout button_layout = (RelativeLayout) dialogView.findViewById(R.id.button_layout);
 
-        Typeface custom_font = Typeface.createFromAsset(context.getAssets(), "fonts/Poppins-Medium.ttf");
+        /*Typeface custom_font = Typeface.createFromAsset(context.getAssets(), "fonts/Poppins-Medium.ttf");
         from.setTypeface(custom_font);
         to.setTypeface(custom_font);
         fromDateValue.setTypeface(custom_font);
         toDateValue.setTypeface(custom_font);
         cancel.setTypeface(custom_font);
-        ok.setTypeface(custom_font);
+        ok.setTypeface(custom_font);*/
 
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);

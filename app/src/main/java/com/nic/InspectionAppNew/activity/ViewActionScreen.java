@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.volley.VolleyError;
 import com.nic.InspectionAppNew.R;
@@ -69,6 +70,8 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
         }
         work_id=getIntent().getIntExtra("work_id",0);
 
+        binding.workId.setText(""+work_id);
+
         if (Utils.isOnline()) {
             getWorkDetails();
         }else {
@@ -94,7 +97,7 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
     public  JSONObject workDetailsParams(Activity activity) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "work_Action");
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "work_id_wise_inspection_details_view");
         dataSet.put("work_id", work_id);
 
         Log.d("WorkDetails", "" + dataSet);
@@ -163,31 +166,26 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
                     String SelectedBlockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
-                    String hab_code = jsonArray.getJSONObject(i).getString("hab_code");
                     String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
-                    String schemeID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_ID);
-                    String scheme_group_id = jsonArray.getJSONObject(i).getString("scheme_group_id");
-                    String work_group_id = jsonArray.getJSONObject(i).getString("work_group_id");
-                    String work_type_id = jsonArray.getJSONObject(i).getString("work_type_id");
-                    String finYear = jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR);
-                    int workID = jsonArray.getJSONObject(i).getInt(AppConstant.WORK_ID);
-                    String workName = jsonArray.getJSONObject(i).getString(AppConstant.WORK_NAME);
-                    String as_value = jsonArray.getJSONObject(i).getString("as_value");
-                    String ts_value = jsonArray.getJSONObject(i).getString("ts_value");
-                    String current_stage_of_work = jsonArray.getJSONObject(i).getString("current_stage_of_work");
-                    String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
+                    String inspection_id = jsonArray.getJSONObject(i).getString("inspection_id");
+                    String inspection_date = jsonArray.getJSONObject(i).getString("inspection_date");
+                    String status_id = jsonArray.getJSONObject(i).getString("status_id");
+                    String status = jsonArray.getJSONObject(i).getString("status");
                     String description = jsonArray.getJSONObject(i).getString("description");
-                    binding.status.setText(Utils.notNullString(current_stage_of_work));
+                    String work_name = jsonArray.getJSONObject(i).getString("work_name");
+
+                    binding.status.setText(Utils.notNullString(status));
                     binding.description.setText(Utils.notNullString(description));
+                    binding.workName.setText(Utils.notNullString(work_name));
 
                     JSONArray imgarray=new JSONArray();
-                    imgarray=jsonArray.getJSONObject(i).getJSONArray("image_array");
+                    imgarray=jsonArray.getJSONObject(i).getJSONArray("inspection_image");
                     if(imgarray.length() > 0){
                         ArrayList<ModelClass> activityImage = new ArrayList<>();
-                        for(int j = 0; j < jsonArray.length(); j++ ) {
+                        for(int j = 0; j < imgarray.length(); j++ ) {
                             try {
                                 ModelClass imageOnline = new ModelClass();
-
+                                imageOnline.setDescription(imgarray.getJSONObject(j).getString("image_description"));
                                 if (!(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase("null") ||
                                         imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase(""))) {
                                     byte[] decodedString = Base64.decode(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE), Base64.DEFAULT);
@@ -204,6 +202,7 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
                         if (activityImage.size() > 0) {
                             binding.recycler.setVisibility(View.VISIBLE);
                             binding.notFoundTv.setVisibility(View.GONE);
+                            binding.recycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                             imageAdapter = new ImageAdapter(ViewActionScreen.this, activityImage,dbData);
                             binding.recycler.setAdapter(imageAdapter);
                         }else {

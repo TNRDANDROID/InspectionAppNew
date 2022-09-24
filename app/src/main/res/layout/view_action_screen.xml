@@ -78,88 +78,179 @@
             android:layout_below="@+id/toolbar"
 
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <TextView
-                    android:id="@+id/status_tv"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Work Status"
-                    android:textColor="@color/grey_9"
-                    android:textSize="@dimen/_14sdp" />
-
-                <RelativeLayout
-                    android:id="@+id/status_layout"
-                    android:layout_below="@+id/status_tv"
+                    android:layout_alignParentStart="true"
+                    app:cardCornerRadius="15dp"
+                    android:layout_margin="@dimen/_15sdp"
+                    app:cardElevation="@dimen/_5sdp"
+                    >
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/header"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:background="@color/white"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/linear"
+                    android:padding="@dimen/_15sdp"
                     android:orientation="vertical">
-
-                    <TextView
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:id="@+id/status"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="15dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/_15sdp"
-                        android:visibility="visible"
-                        />
-
-
-                </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/description_tv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/status_layout"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Description"
-                    android:textColor="@color/grey_9"
-                    android:textSize="@dimen/_14sdp" />
-
-                <RelativeLayout
-                    android:id="@+id/description_layout"
-                    android:layout_below="@+id/description_tv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:background="@color/white"
-                    android:orientation="vertical">
-
-                    <TextView
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:id="@+id/description"
-                        android:minHeight="@dimen/_80sdp"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="15dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/_15sdp"
-                        android:visibility="visible"
-                        />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:weightSum="2"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:padding="@dimen/_3sdp"
+                        android:id="@+id/work_layout"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.8"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/work_h"
+                            android:gravity="start"
+                            android:textColor="@color/grey_10"
+                            android:textSize="@dimen/_12sdp"
+                            android:text="Work id"
+                            />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.2"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/grey_10"
+                            android:textSize="@dimen/_12sdp"
+                            android:text=":"
+                            />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/work_id"
+                            android:gravity="start"
+                            android:textColor="@color/grey_8"
+                            android:textSize="@dimen/_12sdp"
+                            />
 
 
-                </RelativeLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:weightSum="2"
+                        android:padding="@dimen/_3sdp"
+                        android:id="@+id/work_name_layout"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.8"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/work_name_h"
+                            android:gravity="start"
+                            android:textColor="@color/grey_10"
+                            android:textSize="@dimen/_12sdp"
+                            android:text="Work Name"
+                            />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.2"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/grey_10"
+                            android:textSize="@dimen/_12sdp"
+                            android:text=":"
+                            />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/work_name"
+                            android:gravity="start"
+                            android:textColor="@color/grey_8"
+                            android:textSize="@dimen/_12sdp"
+                            />
 
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:weightSum="2"
+                        android:padding="@dimen/_3sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:id="@+id/fin_year_layout"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.8"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/fin_year_h"
+                            android:gravity="start"
+                            android:textColor="@color/grey_10"
+                            android:textSize="@dimen/_12sdp"
+                            android:text="Description"
+                            />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.2"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/grey_10"
+                            android:textSize="@dimen/_12sdp"
+                            android:text=":"
+                            />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/description"
+                            android:gravity="start"
+                            android:textColor="@color/grey_8"
+                            android:textSize="@dimen/_12sdp"
+                            />
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:weightSum="2"
+                        android:padding="@dimen/_3sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:id="@+id/as_value_layout"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.8"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/as_value_h"
+                            android:gravity="start"
+                            android:textColor="@color/grey_10"
+                            android:textSize="@dimen/_12sdp"
+                            android:text="Status"
+                            />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.2"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/grey_10"
+                            android:textSize="@dimen/_12sdp"
+                            android:text=":"
+                            />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/status"
+                            android:gravity="start"
+                            android:textColor="@color/grey_8"
+                            android:textSize="@dimen/_12sdp"
+                            />
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
 
 
@@ -167,32 +258,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/description_layout"
-                    android:layout_marginTop="@dimen/padding"
                     >
                     <TextView
                         android:id="@+id/work_tv"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_left_20dp"
-                        android:layout_marginTop="@dimen/padding"
-                        android:layout_marginRight="@dimen/margin_left_20dp"
                         android:text="Photos"
                         android:padding="@dimen/_3sdp"
                         android:gravity="center_horizontal"
                         android:layout_centerHorizontal="true"
                         android:textColor="@color/grey_10"
                         android:textStyle="bold"
-                        android:textSize="@dimen/_15sdp" />
+                        android:textSize="@dimen/_13sdp" />
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler"
                         android:layout_below="@+id/work_tv"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:fadeScrollbars="false"
                         android:scrollbarSize="4dp"
                         android:scrollbars="vertical"
-                        android:visibility="gone"/>
+                        />
 
                     <TextView
                         android:id="@+id/not_found_tv"
@@ -211,7 +298,7 @@
 
 
 
-            </RelativeLayout>
+            </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
     </RelativeLayout>

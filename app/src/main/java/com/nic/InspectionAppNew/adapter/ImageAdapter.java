@@ -65,8 +65,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder
 
         Glide.with(context).load(list.get(position).getImage())
                 .thumbnail(0.5f)
-                .into(holder.binding.image);
+                .into(holder.binding.thumbnail);
 
+        holder.binding.imageDescription.setText("Description : "+list.get(position).getDescription());
 
     }
 
