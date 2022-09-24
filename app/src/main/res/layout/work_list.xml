@@ -253,7 +253,7 @@
                         android:layout_below="@+id/work_tv"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:fadeScrollbars="false"
                         android:scrollbarSize="4dp"
                         android:scrollbars="vertical"

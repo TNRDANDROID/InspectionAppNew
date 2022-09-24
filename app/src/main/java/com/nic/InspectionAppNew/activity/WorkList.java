@@ -62,6 +62,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
     private ArrayList<ModelClass> workList = new ArrayList<>();
     private ProgressHUD progressHUD;
     WorkListAdapter workListAdapter;
+    String sDistrict,sBlock,sVillage,sScheme,sFinyear;
 
 
     String onOffType;
@@ -96,15 +97,22 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         if(onOffType.equals("online")){
             workListBinding.filters.setVisibility(View.GONE);
             workListBinding.workTv.setVisibility(View.GONE);
+            sDistrict=getIntent().getStringExtra("dcode");
+            sBlock=getIntent().getStringExtra("bcode");
+            sVillage=getIntent().getStringExtra("pvcode");
+            sScheme=getIntent().getStringExtra("scheme");
+            sFinyear=getIntent().getStringExtra("fin_year");
+
             new fetchWorkList().execute();
 
         }else {
             workListBinding.filters.setVisibility(View.VISIBLE);
             workListBinding.workTv.setVisibility(View.VISIBLE);
+            villageFilterSpinner();
+            schemeFilterSpinner();
+            finyearFilterSpinner();
         }
-        villageFilterSpinner();
-        schemeFilterSpinner();
-        finyearFilterSpinner();
+
 
 
        /* if(prefManager.getOnOffType().equals("online")){
@@ -312,7 +320,13 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         protected ArrayList<ModelClass> doInBackground(Void... params) {
             dbData.open();
             workList = new ArrayList<>();
-            workList = dbData.getAllWorkList("",prefManager.getDistrictCode(),prefManager.getBlockCode(),prefManager.getPvCode(),prefManager.getFinancialyearName(),prefManager.getSchemeSeqId());
+            if(onOffType.equals("online")){
+                workList = dbData.getAllWorkList("",sDistrict,sBlock,sVillage,sFinyear,sScheme);
+
+            }else {
+                workList = dbData.getAllWorkList("",prefManager.getDistrictCode(),prefManager.getBlockCode(),prefManager.getPvCode(),prefManager.getFinancialyearName(),prefManager.getSchemeSeqId());
+
+            }
             Log.d("Wlist_COUNT", String.valueOf(workList.size()));
             return workList;
         }
