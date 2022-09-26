@@ -52,6 +52,7 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
     Handler myHandler = new Handler();
     private ProgressHUD progressHUD;
     int work_id;
+    String inspection_id;
     ImageAdapter imageAdapter;
     String pref_Village;
 
@@ -69,6 +70,7 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
             e.printStackTrace();
         }
         work_id=getIntent().getIntExtra("work_id",0);
+        inspection_id=getIntent().getStringExtra("inspection_id");
 
         binding.workId.setText(""+work_id);
 
@@ -99,6 +101,7 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "work_id_wise_inspection_details_view");
         dataSet.put("work_id", work_id);
+        dataSet.put("inspection_id", inspection_id);
 
         Log.d("WorkDetails", "" + dataSet);
         return dataSet;

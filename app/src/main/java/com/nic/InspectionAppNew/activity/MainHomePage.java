@@ -91,6 +91,13 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 gotoViewSavedWorkScreen();
             }
         });
+        homeScreenBinding.viewReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
+                gotoViewReportViaPdf();
+            }
+        });
         homeScreenBinding.goOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -429,6 +436,11 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
     private void gotoViewSavedWorkScreen(){
         Intent intent = new Intent(MainHomePage.this,ViewSavedWorkList.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+    private void gotoViewReportViaPdf(){
+        Intent intent = new Intent(MainHomePage.this,ViewReport.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
