@@ -33,11 +33,12 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/button_background_light"
                     tools:ignore="UselessParent">
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="gone">
+                        android:visibility="visible">
                         <ImageView
                             android:layout_width="@dimen/_30sdp"
                             android:layout_height="@dimen/_30sdp"
@@ -65,7 +66,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/work_h"
                                 android:gravity="start"
-                                android:textColor="@color/grey_10"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 android:text="Work id"
                                 />
@@ -74,7 +75,7 @@
                                 android:layout_weight="0.2"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:textColor="@color/grey_10"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 android:text=":"
                                 />
@@ -84,7 +85,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/work_id"
                                 android:gravity="start"
-                                android:textColor="@color/grey_8"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 />
 
@@ -102,7 +103,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/work_name_h"
                                 android:gravity="start"
-                                android:textColor="@color/grey_10"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 android:text="Work Name"
                                 />
@@ -111,7 +112,7 @@
                                 android:layout_weight="0.2"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:textColor="@color/grey_10"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 android:text=":"
                                 />
@@ -121,7 +122,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/work_name"
                                 android:gravity="start"
-                                android:textColor="@color/grey_8"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 />
 
@@ -140,7 +141,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/fin_year_h"
                                 android:gravity="start"
-                                android:textColor="@color/grey_10"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 android:text="Inspected Date"
                                 />
@@ -149,7 +150,7 @@
                                 android:layout_weight="0.2"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:textColor="@color/grey_10"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 android:text=":"
                                 />
@@ -159,7 +160,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/inspected_date"
                                 android:gravity="start"
-                                android:textColor="@color/grey_8"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 />
 
@@ -178,7 +179,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/as_value_h"
                                 android:gravity="start"
-                                android:textColor="@color/grey_10"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 android:text="Status"
                                 />
@@ -187,7 +188,7 @@
                                 android:layout_weight="0.2"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:textColor="@color/grey_10"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 android:text=":"
                                 />
@@ -197,7 +198,7 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/status"
                                 android:gravity="start"
-                                android:textColor="@color/grey_8"
+                                android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
                                 />
 
@@ -214,13 +215,12 @@
                         android:gravity="center_vertical"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
-                        android:textColor="@color/darkblue"
+                        android:textColor="@color/primary_text_color"
                         android:drawableRight="@drawable/ic_double_arrow"
-                        android:drawableTint="@color/darkblue"
-                        android:drawablePadding="@dimen/_5sdp"
-                        android:textSize="@dimen/_14sdp"
+                        android:drawableTint="@color/primary_text_color"
+                        android:drawablePadding="@dimen/_3sdp"
+                        android:textSize="@dimen/_13sdp"
                         android:text="@string/view_action"
-                        android:textStyle="bold"
                         android:layout_gravity="end"
                         android:layout_marginTop="@dimen/_5sdp"
                         android:layout_marginRight="@dimen/_10sdp"

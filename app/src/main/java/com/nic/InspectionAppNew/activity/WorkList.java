@@ -321,10 +321,10 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             dbData.open();
             workList = new ArrayList<>();
             if(onOffType.equals("online")){
-                workList = dbData.getAllWorkList("",sDistrict,sBlock,sVillage,sFinyear,sScheme);
+                workList = dbData.getAllWorkList("online","",sDistrict,sBlock,sVillage,sFinyear,sScheme);
 
             }else {
-                workList = dbData.getAllWorkList("",prefManager.getDistrictCode(),prefManager.getBlockCode(),prefManager.getPvCode(),prefManager.getFinancialyearName(),prefManager.getSchemeSeqId());
+                workList = dbData.getAllWorkList("offline","",prefManager.getDistrictCode(),prefManager.getBlockCode(),prefManager.getPvCode(),prefManager.getFinancialyearName(),prefManager.getSchemeSeqId());
 
             }
             Log.d("Wlist_COUNT", String.valueOf(workList.size()));

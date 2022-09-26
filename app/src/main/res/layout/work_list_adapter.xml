@@ -28,7 +28,14 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 >
+                <View
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/view"
+                    android:background="@drawable/view_background"/>
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -294,7 +301,7 @@
                         android:drawableRight="@drawable/ic_double_arrow"
                         android:drawableTint="@color/darkblue"
                         android:drawablePadding="@dimen/_5sdp"
-                        android:textSize="@dimen/_14sdp"
+                        android:textSize="@dimen/_13sdp"
                         android:text="@string/view_action"
                         android:textStyle="bold"
                         android:layout_gravity="end"

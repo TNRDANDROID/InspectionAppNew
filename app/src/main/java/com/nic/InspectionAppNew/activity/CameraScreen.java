@@ -100,7 +100,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     private List<ModelClass> viewList = new ArrayList<>();
 
     int work_id;
-    int min_img_count;
+    int min_img_count=0;
     int max_img_count =4;
     int clicked_position;
 
@@ -635,6 +635,11 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                         imageCount = dbData.getParticularSavedImage("",String.valueOf(rowInsert),String.valueOf(work_id),String.valueOf(count));
 
                         if(imageCount.size()>0){
+                            for(int j=0;  j<imageCount.size() ;j++){
+                                String filepath=imageCount.get(j).getImage_path();
+                                Utils.deleteFileDirectory(filepath);
+                            }
+
                             rowUpdated =db.update(DBHelper.SAVE_IMAGES,imageValue,selection,selectionArgs);
                         }
                         else {

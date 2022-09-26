@@ -145,7 +145,7 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
                 }
-                Log.d("responseWorkList", "" + jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                Log.d("responseWorkList", "" + responseDecryptedKey);
 
             }
 

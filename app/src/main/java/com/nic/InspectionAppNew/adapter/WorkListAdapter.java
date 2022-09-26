@@ -106,6 +106,7 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.MyView
                 if(Utils.isOnline()){
                     Intent intent = new Intent(context, ViewActionScreen.class);
                     intent.putExtra("work_id", list.get(position).getWork_id());
+                    intent.putExtra("inspection_id", list.get(position).getInspection_id());
                     context.startActivity(intent);
 
                 }else {

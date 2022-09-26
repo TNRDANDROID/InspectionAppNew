@@ -1307,7 +1307,7 @@ public class Utils {
         if(color==0){
             stringLength=10;
         }else if(color==2){
-            stringLength=42;
+            stringLength=10;
         }else if(color==3){
             stringLength=42;
         }else {
@@ -1353,14 +1353,14 @@ public class Utils {
                     if(color==0){
                         ds.setColor(context.getResources().getColor(R.color.darkblue, context.getTheme()));
                     }else {
-                        ds.setColor(context.getResources().getColor(R.color.darkblue, context.getTheme()));
+                        ds.setColor(context.getResources().getColor(R.color.dot_dark_screen3, context.getTheme()));
 
                     }
                 } else {
                     if(color==0) {
                         ds.setColor(context.getResources().getColor(R.color.darkblue));
                     }else {
-                        ds.setColor(context.getResources().getColor(R.color.darkblue));
+                        ds.setColor(context.getResources().getColor(R.color.dot_dark_screen3));
                     }
                 }
             }
@@ -1383,7 +1383,7 @@ public class Utils {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                addReadMore(context,text, textView,0);
+                addReadMore(context,text, textView,color);
             }
             @Override
             public void updateDrawState(TextPaint ds) {
@@ -1393,14 +1393,14 @@ public class Utils {
                     if(color==0){
                         ds.setColor(context.getResources().getColor(R.color.darkblue, context.getTheme()));
                     }else {
-                        ds.setColor(context.getResources().getColor(R.color.darkblue, context.getTheme()));
+                        ds.setColor(context.getResources().getColor(R.color.dot_dark_screen3, context.getTheme()));
 
                     }
                 } else {
                     if(color==0) {
                         ds.setColor(context.getResources().getColor(R.color.darkblue));
                     }else {
-                        ds.setColor(context.getResources().getColor(R.color.darkblue));
+                        ds.setColor(context.getResources().getColor(R.color.dot_dark_screen3));
                     }
                 }
 
@@ -1410,6 +1410,15 @@ public class Utils {
         textView.setText(ss);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
+
+    public static void deleteFileDirectory(String file_path){
+        File file = new File(file_path);
+        // call deleteDirectory method to delete directory
+        // recursively
+        file.delete();
+
+    }
+
     public static void showDatePickerDialog(Context context) {
         fromToDate=" ";
         dateInterface= (DateInterface) context;
@@ -1457,10 +1466,10 @@ public class Utils {
 
         date_flag=true;
         f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
-        fromDateValue.setTextColor(context.getResources().getColor(R.color.white));
-        from.setTextColor(context.getResources().getColor(R.color.white));
-        toDateValue.setTextColor(context.getResources().getColor(R.color.grey_2));
-        to.setTextColor(context.getResources().getColor(R.color.grey_2));
+        fromDateValue.setTextColor(context.getResources().getColor(R.color.primary_text_color));
+        from.setTextColor(context.getResources().getColor(R.color.primary_text_color));
+        toDateValue.setTextColor(context.getResources().getColor(R.color.white));
+        to.setTextColor(context.getResources().getColor(R.color.white));
         t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
 
         datePicker.setMaxDate(new Date().getTime());
@@ -1479,10 +1488,10 @@ public class Utils {
             public void onClick(View v) {
                 date_flag=true;
                 f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
-                fromDateValue.setTextColor(context.getResources().getColor(R.color.white));
-                from.setTextColor(context.getResources().getColor(R.color.white));
-                toDateValue.setTextColor(context.getResources().getColor(R.color.grey_2));
-                to.setTextColor(context.getResources().getColor(R.color.grey_2));
+                fromDateValue.setTextColor(context.getResources().getColor(R.color.primary_text_color));
+                from.setTextColor(context.getResources().getColor(R.color.primary_text_color));
+                toDateValue.setTextColor(context.getResources().getColor(R.color.white));
+                to.setTextColor(context.getResources().getColor(R.color.white));
                 t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
 
                 datePicker.setMaxDate(new Date().getTime());
@@ -1494,10 +1503,10 @@ public class Utils {
             public void onClick(View v) {
                 date_flag=false;
                 f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
-                fromDateValue.setTextColor(context.getResources().getColor(R.color.grey_2));
-                from.setTextColor(context.getResources().getColor(R.color.grey_2));
-                toDateValue.setTextColor(context.getResources().getColor(R.color.white));
-                to.setTextColor(context.getResources().getColor(R.color.white));
+                fromDateValue.setTextColor(context.getResources().getColor(R.color.white));
+                from.setTextColor(context.getResources().getColor(R.color.white));
+                toDateValue.setTextColor(context.getResources().getColor(R.color.primary_text_color));
+                to.setTextColor(context.getResources().getColor(R.color.primary_text_color));
                 t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
                 Date date = null;
                 try {
@@ -1540,10 +1549,10 @@ public class Utils {
 
                     date_flag=false;
                     f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
-                    fromDateValue.setTextColor(context.getResources().getColor(R.color.grey_2));
-                    from.setTextColor(context.getResources().getColor(R.color.grey_2));
-                    toDateValue.setTextColor(context.getResources().getColor(R.color.white));
-                    to.setTextColor(context.getResources().getColor(R.color.white));
+                    fromDateValue.setTextColor(context.getResources().getColor(R.color.white));
+                    from.setTextColor(context.getResources().getColor(R.color.white));
+                    toDateValue.setTextColor(context.getResources().getColor(R.color.primary_text_color));
+                    to.setTextColor(context.getResources().getColor(R.color.primary_text_color));
                     t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
                     Date date = null;
                     try {
@@ -1596,10 +1605,10 @@ public class Utils {
 
                     date_flag=false;
                     f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
-                    fromDateValue.setTextColor(context.getResources().getColor(R.color.grey_2));
-                    from.setTextColor(context.getResources().getColor(R.color.grey_2));
-                    toDateValue.setTextColor(context.getResources().getColor(R.color.white));
-                    to.setTextColor(context.getResources().getColor(R.color.white));
+                    fromDateValue.setTextColor(context.getResources().getColor(R.color.white));
+                    from.setTextColor(context.getResources().getColor(R.color.white));
+                    toDateValue.setTextColor(context.getResources().getColor(R.color.primary_text_color));
+                    to.setTextColor(context.getResources().getColor(R.color.primary_text_color));
                     t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
                     Date date = null;
                     try {

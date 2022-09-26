@@ -186,7 +186,8 @@ public class dbData {
 
         return pmgsySurvey;
     }
-    public void Insert_workList(ModelClass modelClass) {
+    public void Insert_workList(String type,ModelClass modelClass) {
+        long id;
         ContentValues values = new ContentValues();
         values.put("dcode", modelClass.getDistictCode());
         values.put("bcode", modelClass.getBlockCode());
@@ -203,7 +204,12 @@ public class dbData {
         values.put("ts_value", modelClass.getTs_value());
         values.put("current_stage_of_work", modelClass.getCurrent_stage_of_work());
         values.put("is_high_value", modelClass.getIs_high_value());
-        long id = db.insert(DBHelper.WORK_LIST,null,values);
+        if(type.equals("offline")){
+             id = db.insert(DBHelper.WORK_LIST,null,values);
+        }else {
+             id = db.insert(DBHelper.ONLINE_WORK_LIST,null,values);
+        }
+
         Log.d("Insert_id_work", String.valueOf(id));
 
     }
@@ -321,23 +327,31 @@ public class dbData {
         }
         return cards;
     }
-    public ArrayList<ModelClass> getAllWorkList(String type,String dcode,String bcode,String pvcode,String fin_year,String scheme_id) {
+    public ArrayList<ModelClass> getAllWorkList(String onOffType,String type,String dcode,String bcode,String pvcode,String fin_year,String scheme_id) {
 
         ArrayList<ModelClass> cards = new ArrayList<>();
         Cursor cursor = null;
         String selection;
         String[] selectionArgs;
         try {
+            if(onOffType.equals("offline")){
+                if(type.equals("all")){
+                    cursor = db.rawQuery("select * from "+DBHelper.WORK_LIST,null);
 
-            if(type.equals("all")){
-                cursor = db.rawQuery("select * from "+DBHelper.WORK_LIST,null);
-
+                }else {
+                    selection = "dcode = ? and bcode = ? and pvcode = ? and fin_year = ? and scheme_id = ? ";
+                    selectionArgs = new String[]{ dcode, bcode, pvcode, fin_year,scheme_id};
+                    cursor = db.query(DBHelper.WORK_LIST, new String[]{"*"},
+                            selection, selectionArgs, null, null, "work_id");
+                }
             }else {
                 selection = "dcode = ? and bcode = ? and pvcode = ? and fin_year = ? and scheme_id = ? ";
                 selectionArgs = new String[]{ dcode, bcode, pvcode, fin_year,scheme_id};
-                cursor = db.query(DBHelper.WORK_LIST, new String[]{"*"},
-                        selection, selectionArgs, null, null, null);
+                cursor = db.query(DBHelper.ONLINE_WORK_LIST, new String[]{"*"},
+                        selection, selectionArgs, null, null, "work_id");
             }
+
+
 
             // cursor = db.query(CardsDBHelper.TABLE_CARDS,
             //       COLUMNS, null, null, null, null, null);
@@ -463,6 +477,9 @@ public class dbData {
     public void deleteWorkListTable() {
         db.execSQL("delete from " + DBHelper.WORK_LIST);
     }
+    public void deleteOnlineWorkListTable() {
+        db.execSQL("delete from " + DBHelper.ONLINE_WORK_LIST);
+    }
     public void deleteSchemeTable() {
         db.execSQL("delete from " + DBHelper.SCHEME_TABLE_NAME);
     }
@@ -492,6 +509,7 @@ public class dbData {
         deleteinspection_statusTable();
         deleteFinYearTable();
         deleteSaveWorkDetailsTable();
+        deleteOnlineWorkListTable();
 
     }
 

@@ -69,7 +69,7 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
 
 
         if(String.valueOf(list.get(position).getWork_name()).length() > 5) {
-            Utils.addReadMore(context, "Activity : "+String.valueOf(list.get(position).getWork_name()), holder.binding.workName, 0);
+            Utils.addReadMore(context, "Activity : "+String.valueOf(list.get(position).getWork_name()), holder.binding.workName, 2);
         }
 
         holder.binding.viewAction.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +78,7 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
                 if(Utils.isOnline()){
                     Intent intent = new Intent(context, ViewActionScreen.class);
                     intent.putExtra("work_id", list.get(position).getWork_id());
+                    intent.putExtra("inspection_id", list.get(position).getInspection_id());
                     context.startActivity(intent);
 
                 }else {

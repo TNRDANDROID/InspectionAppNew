@@ -13,6 +13,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String HABITATION_TABLE_NAME = " habitaionTable";
     public static final String SAVE_IMAGES = " save_images";
     public static  final String WORK_LIST ="work_list";
+    public static  final String ONLINE_WORK_LIST ="online_work_list";
     public static  final String SAVE_WORK_DETAILS ="save_work_details";
     public static final String DISTRICT_TABLE_NAME = "DistrictList";
     public static final String BLOCK_TABLE_NAME = "BlockList";
@@ -89,6 +90,22 @@ public class DBHelper extends SQLiteOpenHelper {
                 "ts_value TEXT," +
                 "current_stage_of_work TEXT," +
                 "is_high_value TEXT)");
+        db.execSQL("CREATE TABLE " + ONLINE_WORK_LIST + " ("
+                + "dcode INTEGER," +
+                "bcode INTEGER," +
+                "pvcode INTEGER," +
+                "hab_code TEXT," +
+                "scheme_group_id TEXT," +
+                "scheme_id TEXT," +
+                "work_group_id TEXT," +
+                "work_type_id TEXT," +
+                "fin_year TEXT," +
+                "work_id INTEGER," +
+                "work_name TEXT," +
+                "as_value TEXT," +
+                "ts_value TEXT," +
+                "current_stage_of_work TEXT," +
+                "is_high_value TEXT)");
         db.execSQL("CREATE TABLE " + SAVE_WORK_DETAILS + " ("
                 + "save_work_details_primary_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                  "dcode INTEGER," +
@@ -123,6 +140,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + HABITATION_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_IMAGES);
             db.execSQL("DROP TABLE IF EXISTS " + WORK_LIST);
+            db.execSQL("DROP TABLE IF EXISTS " + ONLINE_WORK_LIST);
             db.execSQL("DROP TABLE IF EXISTS " + SCHEME_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + STATUS_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + FINANCIAL_YEAR_TABLE_NAME);

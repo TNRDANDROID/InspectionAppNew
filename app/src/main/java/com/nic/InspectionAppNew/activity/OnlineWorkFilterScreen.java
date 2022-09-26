@@ -101,7 +101,14 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             workListBinding.blockLayout.setVisibility(View.GONE);
         }
 
-        loadDistrictList();
+
+        if(prefManager.getLevels().equalsIgnoreCase("S")){
+            loadDistrictList();
+        }else if(prefManager.getLevels().equalsIgnoreCase("D")){
+            loadBlockList();
+        }else if(prefManager.getLevels().equalsIgnoreCase("B")){
+            getVillageList();
+        }
 
 
 //        schemeFilterSpinner();
@@ -187,6 +194,9 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     SelectedFinYear=FinYear.get(position).getFinancialYear();
                     finyearJsonArray.put(FinYear.get(position).getFinancialYear());
                     workListBinding.districtSpinner.setSelection(0);
+                    if(!prefManager.getLevels().equals("S")){
+                        getSchemeList();
+                    }
                 }else {
                     SelectedFinYear="";
                     workListBinding.districtSpinner.setSelection(0);
@@ -274,7 +284,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             dataSet.put(AppConstant.DISTRICT_CODE, districtCodeJsonArray);
         }
         else{
-            dataSet.put(AppConstant.DISTRICT_CODE, SelectedDistrict);
+            dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
         }
 
         if(prefManager.getLevels().equalsIgnoreCase("D") || prefManager.getLevels().equalsIgnoreCase("S")){
@@ -508,7 +518,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             if(prefManager.getLevels().equalsIgnoreCase("S")) {
                 projectListScreenStateUser();
             }
-            else if (!prefManager.getLevels().equalsIgnoreCase("D")) {
+            else if (prefManager.getLevels().equalsIgnoreCase("D")) {
                 projectListScreenDistrictUser();
             } else {
                 projectListScreenBlockUser();
@@ -650,7 +660,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
     private void workListOptionalS(JSONArray jsonArray) {
         try {
             dbData.open();
-            dbData.deleteWorkListTable();
+            dbData.deleteOnlineWorkListTable();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -693,7 +703,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     modelClass.setCurrent_stage_of_work(current_stage_of_work);
                     modelClass.setIs_high_value(is_high_value);
 
-                    dbData.Insert_workList(modelClass);
+                    dbData.Insert_workList("online",modelClass);
 
                 }
                 workListInsert = true;
@@ -731,7 +741,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             intent.putExtra("scheme",SelectedScheme);
             intent.putExtra("fin_year",SelectedFinYear);
         }
-        else if (!prefManager.getLevels().equalsIgnoreCase("D")) {
+        else if (prefManager.getLevels().equalsIgnoreCase("D")) {
             intent.putExtra("dcode",prefManager.getDistrictCode());
             intent.putExtra("bcode",SelectedBlock);
             intent.putExtra("pvcode",SelectedVillage);

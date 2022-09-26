@@ -36,6 +36,7 @@ public class PrefManager {
     private static final String KEY_USER_NAME = "UserName";
     private static final String KEY_USER_PASSWORD = "UserPassword";
     private static final String KEY_STATE_CODE = "State_Code";
+    private static final String KEY_STATE_NAME = "State_Name";
     private static final String KEY_DISTRICT_CODE = "District_Code";
     private static final String KEY_BLOCK_CODE = "Block_Code";
     private static final String KEY_PV_CODE = "Pv_Code";
@@ -305,7 +306,7 @@ public class PrefManager {
         return pref.getString(KEY_DISTRICT_CODE, null);
     }
 
- public Object setStateCode(Object key) {
+   public Object setStateCode(Object key) {
         editor.putString(KEY_STATE_CODE, String.valueOf(key));
         editor.commit();
         return key;
@@ -313,6 +314,17 @@ public class PrefManager {
 
     public String getStateCode() {
         return pref.getString(KEY_STATE_CODE, null);
+    }
+
+
+    public Object setStateName(Object key) {
+        editor.putString(KEY_STATE_NAME, String.valueOf(key));
+        editor.commit();
+        return key;
+    }
+
+    public String getStateName() {
+        return pref.getString(KEY_STATE_NAME, null);
     }
 
 

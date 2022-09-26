@@ -191,11 +191,11 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     public void checkLoginScreen() {
         //local
-        loginScreenBinding.userName.setText("8931475663");
+       /* loginScreenBinding.userName.setText("8931475663");
         loginScreenBinding.password.setText("test123#$");//state local
-
-        /*loginScreenBinding.userName.setText("7877979787");
-        loginScreenBinding.password.setText("test123#$");//Dist local*/
+*/
+        loginScreenBinding.userName.setText("7877979787");
+        loginScreenBinding.password.setText("test123#$");//Dist local
 
         /*loginScreenBinding.userName.setText("8754085962");
         loginScreenBinding.password.setText("test123#$");//Block local*/
@@ -361,8 +361,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         jsonObject = new JSONObject(userDataDecrypt);
 
 //                        prefManager.setPvCode(jsonObject.get(AppConstant.PV_CODE));
-                        prefManager.setDistrictName(jsonObject.get(AppConstant.DISTRICT_NAME));
-                        prefManager.setBlockName(jsonObject.get(AppConstant.BLOCK_NAME));
+
                         prefManager.setDesignation(jsonObject.get(AppConstant.DESIG_NAME));
                         prefManager.setName(String.valueOf(jsonObject.get(AppConstant.KEY_NAME)));
                         prefManager.setLevels(jsonObject.get(AppConstant.LEVELS));
@@ -370,16 +369,19 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         prefManager.setUserPassKey(decryptedKey);
                         if(jsonObject.get(AppConstant.LEVELS).equals("S")){
                             prefManager.setStateCode(jsonObject.get("statecode"));
+                            prefManager.setStateName(jsonObject.get(AppConstant.STATE_NAME));
                             getDistrictList();
                             getBlockList();
                         }else if(jsonObject.get(AppConstant.LEVELS).equals("D")){
                             prefManager.setStateCode(jsonObject.get("statecode"));
                             prefManager.setDistrictCode(jsonObject.get(AppConstant.DISTRICT_CODE));
+                            prefManager.setDistrictName(jsonObject.get(AppConstant.DISTRICT_NAME));
                             getBlockList();
                         }else if(jsonObject.get(AppConstant.LEVELS).equals("B")){
                             prefManager.setStateCode(jsonObject.get("statecode"));
                             prefManager.setDistrictCode(jsonObject.get(AppConstant.DISTRICT_CODE));
                             prefManager.setBlockCode(jsonObject.get(AppConstant.BLOCK_CODE));
+                            prefManager.setBlockName(jsonObject.get(AppConstant.BLOCK_NAME));
 
                         }
 

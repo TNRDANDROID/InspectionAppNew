@@ -594,13 +594,16 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
         if(prefManager.getLevels().equals("S")){
             AlertDialog mDialog = mBuilder.create();
-            if(mDistrictItems.size() > 0 ) {/*Used for Block level Login*/
+            if(mDistrictItems.size() > 0 ) {
                 mDialog.show();
             }
             else {
                 Utils.showAlert(this,"Please Select District!");
                 select_village_layout.setVisibility(View.GONE);
             }
+        }else {
+            AlertDialog mDialog = mBuilder.create();
+            mDialog.show();
         }
 
        /* AlertDialog mDialog = mBuilder.create();
@@ -820,7 +823,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 dbData.open();
                 ArrayList<ModelClass> workList = new ArrayList<>();
                 workList = new ArrayList<>();
-                workList = dbData.getAllWorkList("all","","","","","");
+                workList = dbData.getAllWorkList("offline","all","","","","","");
                 if(workList.size() > 0){
                     openWorkListScreen();
                 }else {
@@ -1243,7 +1246,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     modelClass.setCurrent_stage_of_work(current_stage_of_work);
                     modelClass.setIs_high_value(is_high_value);
 
-                    dbData.Insert_workList(modelClass);
+                    dbData.Insert_workList("offline",modelClass);
 
                 }
                 callAlert();
@@ -1281,6 +1284,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         Intent intent = new Intent(this, WorkList.class);
         intent.putExtra("OnOffType","offline");
         startActivity(intent);
+        finish();
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 

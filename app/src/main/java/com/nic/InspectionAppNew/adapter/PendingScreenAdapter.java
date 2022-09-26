@@ -120,7 +120,9 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
         holder.pendingScreenAdapterBinding.asValue.setText(pendingListFiltered.get(position).getAs_value());
         holder.pendingScreenAdapterBinding.tsValue.setText(pendingListFiltered.get(position).getTs_value());
 
-
+        if(String.valueOf(pendingListFiltered.get(position).getWork_name()).length() > 5) {
+            Utils.addReadMore(context, "Activity : "+String.valueOf(pendingListFiltered.get(position).getWork_name()), holder.pendingScreenAdapterBinding.workName, 0);
+        }
         dbData.open();
         imageCount = dbData.getParticularSavedImage("work_id",String.valueOf(pendingListFiltered.get(position).getSave_work_details_primary_id()),"","");
 

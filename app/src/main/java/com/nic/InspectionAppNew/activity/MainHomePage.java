@@ -72,6 +72,21 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             getInspection_statusList();
         }
         syncButtonVisibility();
+        homeScreenBinding.userName.setText(prefManager.getName());
+        homeScreenBinding.name.setText(prefManager.getName());
+        if(prefManager.getLevels().equals("S")){
+            homeScreenBinding.userLevel.setText("State : "+prefManager.getStateName());
+            homeScreenBinding.level.setText("State : "+prefManager.getStateName());
+        }else if(prefManager.getLevels().equals("D")){
+            homeScreenBinding.userLevel.setText("District : "+prefManager.getDistrictName());
+            homeScreenBinding.level.setText("District : "+prefManager.getDistrictName());
+        }else if(prefManager.getLevels().equals("B")){
+            homeScreenBinding.userLevel.setText("Block : "+prefManager.getBlockName());
+            homeScreenBinding.level.setText("Block : "+prefManager.getBlockName());
+
+        }
+
+
         homeScreenBinding.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
