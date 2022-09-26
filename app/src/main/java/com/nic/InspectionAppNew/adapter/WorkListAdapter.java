@@ -100,18 +100,26 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.MyView
 
             }
         });
-        holder.binding.viewAction.setOnClickListener(new View.OnClickListener() {
+        holder.binding.takeAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Utils.isOnline()){
-                    Intent intent = new Intent(context, ViewActionScreen.class);
-                    intent.putExtra("work_id", list.get(position).getWork_id());
-                    intent.putExtra("inspection_id", list.get(position).getInspection_id());
-                    context.startActivity(intent);
-
-                }else {
-                    Utils.showAlert(context,context.getResources().getString(R.string.internet_connection_not_available_please_turn_on_or_offline));
-                }
+                Intent intent = new Intent(context, SaveWorkDetailsActivity.class);
+                intent.putExtra("dcode", list.get(position).getDistictCode());
+                intent.putExtra("bcode", list.get(position).getBlockCode());
+                intent.putExtra("pvcode", list.get(position).getPvCode());
+                intent.putExtra("hab_code", list.get(position).getHabCode());
+                intent.putExtra("scheme_group_id", list.get(position).getScheme_group_id());
+                intent.putExtra("work_group_id", list.get(position).getWork_group_id());
+                intent.putExtra("work_type_id", list.get(position).getWork_type_id());
+                intent.putExtra("scheme_id", list.get(position).getSchemeSequentialID());
+                intent.putExtra("fin_year", list.get(position).getFinancialYear());
+                intent.putExtra("work_id", list.get(position).getWork_id());
+                intent.putExtra("work_name", list.get(position).getWork_name());
+                intent.putExtra("as_value", list.get(position).getAs_value());
+                intent.putExtra("ts_value", list.get(position).getTs_value());
+                intent.putExtra("current_stage_of_work", list.get(position).getCurrent_stage_of_work());
+                intent.putExtra("is_high_value", list.get(position).getIs_high_value());
+                context.startActivity(intent);
 
             }
         });
