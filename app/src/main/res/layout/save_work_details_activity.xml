@@ -164,7 +164,7 @@
                         android:layout_marginRight="@dimen/margin_left_20dp"
                         android:background="@drawable/rectangle_box"
                         android:orientation="vertical"
-                        android:minHeight="@dimen/header"
+                        android:minHeight="@dimen/_100sdp"
                         android:visibility="visible">
 
 
@@ -177,15 +177,21 @@
                             android:background="@android:color/transparent"
                             android:hint="Enter description"
                             android:inputType="text"
-                            android:layout_centerVertical="true"
+                            android:maxLength="600"
                             android:layout_margin="@dimen/_10sdp"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/_13sdp"
-
                             style="@string/font_circular_book" />
 
                     </RelativeLayout>
-
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="(Maximum Length 600)"
+                        android:padding="@dimen/_4sdp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="@dimen/_15sdp"
+                        android:textColor="@color/subscription_type_red_color"/>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

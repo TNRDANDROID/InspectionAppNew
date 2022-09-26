@@ -71,6 +71,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     String work_type_id;
     int min_img_count=0;
     int max_img_count=0;
+    String onOffType;
     private static final int SPEECH_REQUEST_CODE = 103;
 
     @Override
@@ -129,6 +130,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     }
 
     private void getIntentData(){
+        onOffType= getIntent().getStringExtra("onOffType");
         work_id= getIntent().getIntExtra("work_id",0);
         dcode = getIntent().getStringExtra("dcode");
         bcode = getIntent().getStringExtra("bcode");
@@ -170,6 +172,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                 intent.putExtra("current_stage_of_work", current_stage_of_work);
                 intent.putExtra("work_status_id", prefManager.getWorkStatusId());
                 intent.putExtra("work_status", work_status);
+                intent.putExtra("onOffType", onOffType);
                 intent.putExtra("work_description", saveWorkDetailsActivityBinding.description.getText().toString());
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

@@ -59,6 +59,7 @@ public class ViewReport extends AppCompatActivity implements Api.ServerResponseL
     ActivityViewReportBinding activityViewReportBinding;
     Dialog dialog;
     int pageNumber;
+    String work_id;
     private PrefManager prefManager;
     private static final int MY_REQUEST_CODE_PERMISSION = 1000;
     ProgressDialog progressBar;
@@ -71,7 +72,18 @@ public class ViewReport extends AppCompatActivity implements Api.ServerResponseL
         activityViewReportBinding.setActivity(this);
         prefManager = new PrefManager(this);
 
-        getWorkReportDetails();
+        activityViewReportBinding.searchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!activityViewReportBinding.workId.getText().toString().isEmpty()){
+                    work_id = activityViewReportBinding.workId.getText().toString();
+                    getWorkReportDetails();
+                }
+                else {
+                    Utils.showAlert(ViewReport.this,"Please Enter Work ID");
+                }
+            }
+        });
 
     }
     public void getWorkReportDetails() {
@@ -93,7 +105,7 @@ public class ViewReport extends AppCompatActivity implements Api.ServerResponseL
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "pdf_download");
-        dataSet.put("work_id", 8318778);
+        dataSet.put("work_id", work_id);
 
         Log.d("WorkDetails", "" + dataSet);
         return dataSet;
@@ -339,7 +351,9 @@ public class ViewReport extends AppCompatActivity implements Api.ServerResponseL
 
         // Add as notification
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
+        if (manager != null) {
+            manager.notify(0, builder.build());
+        }
     }
     void showProgress(){
         // creating progress bar dialog

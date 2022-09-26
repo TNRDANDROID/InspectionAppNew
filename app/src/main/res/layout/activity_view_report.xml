@@ -83,7 +83,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <RelativeLayout
-                    android:id="@+id/date_layout"
+                    android:id="@+id/work_id_layout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/header"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
@@ -109,37 +109,21 @@
                         android:textSize="@dimen/_13sdp"
                         />
 
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:padding="@dimen/_3sdp"
+                        android:id="@+id/search_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/back"
+                        android:rotation="180"/>
 
 
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/date_layout"
-                    android:layout_marginTop="@dimen/padding"
-                    >
-                    <com.github.barteksc.pdfviewer.PDFView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/documentViewer"/>
 
-
-                    <TextView
-                        android:id="@+id/not_found_tv"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/no_data_found"
-                        android:textAlignment="center"
-                        android:gravity="center"
-                        android:layout_below="@+id/work_tv"
-                        android:layout_marginTop="@dimen/_50sdp"
-                        android:textColor="@color/grey_10"
-                        android:textSize="@dimen/title_text_size"
-                        android:textStyle="bold"
-                        android:visibility="visible" />
-
-                </RelativeLayout>
             </RelativeLayout>
         </androidx.core.widget.NestedScrollView>
 

@@ -342,7 +342,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             if (worklist.size() > 0) {
                 workListBinding.recycler.setVisibility(View.VISIBLE);
                 workListBinding.notFoundTv.setVisibility(View.GONE);
-                workListAdapter = new WorkListAdapter(WorkList.this, worklist,dbData);
+                workListAdapter = new WorkListAdapter(WorkList.this, worklist,dbData,onOffType);
                 workListBinding.recycler.setAdapter(workListAdapter);
             }else {
                 workListBinding.recycler.setVisibility(View.GONE);

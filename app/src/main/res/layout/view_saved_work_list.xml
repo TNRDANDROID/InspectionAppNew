@@ -129,11 +129,51 @@
 
 
                 </RelativeLayout>
+                <RelativeLayout
+                    android:layout_below="@+id/date_layout"
+                    android:id="@+id/work_id_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/header"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:background="@drawable/rectangle_box"
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
+
+                    <EditText
+                        android:id="@+id/work_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="@dimen/_15sdp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_centerHorizontal="true"
+                        android:hint="Enter Work Id"
+                        android:inputType="number"
+                        android:background="@color/full_transparent"
+                        android:textAlignment="viewStart"
+                        android:textSize="@dimen/_13sdp"
+                        />
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:padding="@dimen/_3sdp"
+                        android:id="@+id/search_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/back"
+                        android:rotation="180"/>
+
+
+                </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/date_layout"
+                    android:layout_below="@+id/work_id_layout"
                     android:layout_marginTop="@dimen/padding"
                     >
                     <androidx.recyclerview.widget.RecyclerView

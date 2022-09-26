@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -21,8 +22,12 @@ import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,7 +49,9 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.api.Api;
+import com.nic.InspectionAppNew.api.ApiService;
 import com.nic.InspectionAppNew.api.ServerResponse;
+import com.nic.InspectionAppNew.constant.AppConstant;
 import com.nic.InspectionAppNew.dataBase.DBHelper;
 import com.nic.InspectionAppNew.dataBase.dbData;
 import com.nic.InspectionAppNew.databinding.CameraScreenBinding;
@@ -52,9 +59,12 @@ import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.MyLocationListener;
 import com.nic.InspectionAppNew.utils.CameraUtils;
+import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -121,6 +131,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     String scheme_group_id;
     String work_group_id;
     String work_type_id;
+    String onOffType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -181,6 +192,11 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         scheme_group_id = getIntent().getStringExtra("scheme_group_id");
         work_group_id = getIntent().getStringExtra("work_group_id");
         work_type_id = getIntent().getStringExtra("work_type_id");
+        onOffType = getIntent().getStringExtra("onOffType");
+
+        if(onOffType.equals("online")){
+            cameraScreenBinding.btnSave.setText("Sync Data");
+        }
     }
     @Override
     public void onClick(View v) {
@@ -188,7 +204,13 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_save_local:
                 int childCount = cameraScreenBinding.cameraLayout.getChildCount();
                 if(childCount >= min_img_count){
-                    saveImageButtonClick();
+                    if(onOffType.equals("online")){
+                        onLineUploadData();
+                    }
+                    else {
+                        saveImageButtonClick();
+                    }
+
                 }else {
                     Utils.showAlert(CameraScreen.this, getResources().getString(R.string.minimum_three_photos));
 
@@ -507,7 +529,34 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
+        try {
+            String urlType = serverResponse.getApi();
+            JSONObject responseObj = serverResponse.getJsonResponse();
 
+            if ("saveImage".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    Utils.showAlert(this, "Your Data is Synchronized to the server!");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            homePage();
+                        }
+                    }, 500);
+
+
+                }
+                else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")) {
+                    Utils.showAlert(this, jsonObject.getString("MESSAGE"));
+                }
+                Log.d("savedImage", "" + responseDecryptedBlockKey);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -520,7 +569,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("Home", "Home");
         startActivity(intent);
-        super.onBackPressed();
+        finish();
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
@@ -785,6 +834,146 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             Log.e("SAVE_IMAGE", e.getMessage(), e);
         }
         return mypath.toString();
+    }
+
+    public void onLineUploadData() {
+        JSONObject maindataset = new JSONObject();
+        JSONObject dataset = new JSONObject();
+        JSONArray inspection_work_details = new JSONArray();
+        boolean true_flag = false;
+        try {
+            maindataset.put(AppConstant.KEY_SERVICE_ID,"work_inspection_details_save");
+            dataset.put("dcode",dcode);
+            dataset.put("bcode", bcode);
+            dataset.put("pvcode",pvcode);
+            dataset.put("hab_code",hab_code);
+            dataset.put("work_id", work_id);
+            dataset.put("status_id", work_status_id);
+            dataset.put("description", work_description);
+
+            int childCount = cameraScreenBinding.cameraLayout.getChildCount();
+            int count = 0;
+            JSONArray imageArray = new JSONArray();
+            if (childCount > 0) {
+                for (int i = 0; i < childCount; i++) {
+                    View vv = cameraScreenBinding.cameraLayout.getChildAt(i);
+                    imageView = vv.findViewById(R.id.image_view);
+                    myEditTextView = vv.findViewById(R.id.description);
+                    latitude_text = vv.findViewById(R.id.latitude);
+                    longtitude_text = vv.findViewById(R.id.longtitude);
+
+
+                    if (imageView.getDrawable() != null) {
+                        if(!myEditTextView.getText().toString().equals("")){
+                            count = count + 1;
+                            String image_str = "";
+                            String description = "";
+                            try {
+                                description = myEditTextView.getText().toString();
+                                Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                                image_str = BitMapToString(bitmap);
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("latitude",latitude_text.getText().toString());
+                                jsonObject.put("longitude",longtitude_text.getText().toString());
+                                jsonObject.put("serial_no",count);
+                                jsonObject.put("image_description",description);
+                                jsonObject.put("image",image_str);
+                                imageArray.put(jsonObject);
+
+                                if(count==childCount){
+                                    true_flag = true;
+                                }
+                                else {
+                                    true_flag = false;
+                                }
+                            } catch (Exception e) {
+                                Utils.showAlert(CameraScreen.this, getResources().getString(R.string.at_least_capture_one_photo));
+                            }
+                        }
+                         else{
+                            Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description));
+                         }
+                    }
+                    else {
+                        Utils.showAlert(CameraScreen.this, getResources().getString(R.string.please_capture_image));
+                    }
+                }
+                dataset.put("image_details",imageArray);
+                inspection_work_details.put(dataset);
+                maindataset.put("inspection_work_details",inspection_work_details);
+            }
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (Utils.isOnline()) {
+            uploadDialog(maindataset);
+            //saveImagesJsonParams(maindataset);
+            //Log.d("saveImages", "" + maindataset);
+        } else {
+
+            Utils.showAlert(CameraScreen.this, "Turn On Mobile Data To Upload");
+        }
+
+    }
+    public String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp=Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+
+    public JSONObject saveImagesJsonParams(JSONObject savePMAYDataSet) {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), savePMAYDataSet.toString());
+        JSONObject dataSet = new JSONObject();
+        try {
+            dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+            dataSet.put(AppConstant.DATA_CONTENT, authKey);
+
+            new ApiService(this).makeJSONObjectRequest("saveImage", Api.Method.POST, UrlGenerator.getMainService(), dataSet, "not cache", this);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //Log.d("saveImages", "" + dataSet);
+        return dataSet;
+    }
+
+    private void uploadDialog(JSONObject jsonObject){
+        try {
+            final Dialog dialog = new Dialog(CameraScreen.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.alert_dialog);
+
+            TextView text = (TextView) dialog.findViewById(R.id.tv_message);
+            text.setText("Are you sure to upload data into server?");
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+            Button cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+            cancel.setVisibility(View.VISIBLE);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saveImagesJsonParams(jsonObject);
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

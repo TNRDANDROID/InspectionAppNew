@@ -68,6 +68,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
     String onOffType;
     String fromDate;
     String toDate;
+    String work_id="";
 
     ArrayList<ModelClass> savedWorkList;
 
@@ -95,6 +96,23 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         workListBinding.recycler.setVisibility(View.GONE);
         workListBinding.notFoundTv.setVisibility(View.VISIBLE);
 
+        workListBinding.searchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!workListBinding.workId.getText().toString().isEmpty()){
+                    work_id = workListBinding.workId.getText().toString();
+                    workListBinding.workId.setText("");
+                    workListBinding.date.setText("Select Date");
+                    fromDate = "";
+                    toDate = "";
+                    workListBinding.recycler.setAdapter(null);
+                    getWorkDetails();
+                }
+                else {
+                    Utils.showAlert(ViewSavedWorkList.this,"Please Enter Work ID");
+                }
+            }
+        });
 
 
     }
@@ -167,6 +185,9 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         workListBinding.date.setText(fromDate+" to "+toDate);
 
         if(Utils.isOnline()){
+            work_id = "";
+            workListBinding.workId.setText("");
+            workListBinding.recycler.setAdapter(null);
             getWorkDetails();
         }
         else {
@@ -193,9 +214,15 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "date_wise_inspection_details_view");
-        dataSet.put("from_date", fromDate);
-        dataSet.put("to_date", toDate);
-
+        if(!work_id.isEmpty()){
+            dataSet.put("work_id", work_id);
+            dataSet.put("type", 1);
+        }
+        else {
+            dataSet.put("type", 2);
+            dataSet.put("from_date", fromDate);
+            dataSet.put("to_date", toDate);
+        }
         Log.d("WorkDetails", "" + dataSet);
         return dataSet;
     }

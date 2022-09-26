@@ -30,12 +30,14 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.MyView
     private ArrayList<ModelClass> list;
     private final com.nic.InspectionAppNew.dataBase.dbData dbData;
     private LayoutInflater layoutInflater;
+    String onOffType;
 
-    public WorkListAdapter(Activity context, ArrayList<ModelClass> listValues, dbData dbData) {
+    public WorkListAdapter(Activity context, ArrayList<ModelClass> listValues, dbData dbData,String onOffType) {
 
         this.context = context;
         prefManager = new PrefManager(context);
         this.dbData = dbData;
+        this.onOffType = onOffType;
         this.list = listValues;
     }
 
@@ -95,6 +97,7 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.MyView
                 intent.putExtra("ts_value", list.get(position).getTs_value());
                 intent.putExtra("current_stage_of_work", list.get(position).getCurrent_stage_of_work());
                 intent.putExtra("is_high_value", list.get(position).getIs_high_value());
+                intent.putExtra("onOffType",onOffType);
                 context.startActivity(intent);
 
 
@@ -119,6 +122,7 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.MyView
                 intent.putExtra("ts_value", list.get(position).getTs_value());
                 intent.putExtra("current_stage_of_work", list.get(position).getCurrent_stage_of_work());
                 intent.putExtra("is_high_value", list.get(position).getIs_high_value());
+                intent.putExtra("onOffType",onOffType);
                 context.startActivity(intent);
 
             }
