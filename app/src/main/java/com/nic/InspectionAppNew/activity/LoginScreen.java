@@ -175,7 +175,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public boolean validate() {
         boolean valid = true;
         String username = loginScreenBinding.userName.getText().toString().trim();
-        prefManager.setUserName(username);
+        //prefManager.setUserName(username);
         String password = loginScreenBinding.password.getText().toString().trim();
 
 
@@ -186,15 +186,21 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             valid = false;
             Utils.showAlert(this, getResources().getString(R.string.please_enter_the_password));
         }
+        else if(prefManager.getUserName()!=null&&prefManager.getUserPassword()!=null){
+            if((!username.equals(prefManager.getUserName()))){
+                valid = false;
+                Utils.showAlert(this, "User Name Differ from Previous Login Details");
+            }
+        }
         return valid;
     }
 
     public void checkLoginScreen() {
         //local
-        loginScreenBinding.userName.setText("8931475663");
-        loginScreenBinding.password.setText("test123#$");//state local
+        /*loginScreenBinding.userName.setText("8931475663");
+        loginScreenBinding.password.setText("test123#$");//state local*/
 
-       /* loginScreenBinding.userName.setText("7877979787");
+        /*loginScreenBinding.userName.setText("7877979787");
         loginScreenBinding.password.setText("test123#$");//Dist local*/
 
 /*
@@ -205,12 +211,12 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
         final String username = loginScreenBinding.userName.getText().toString().trim();
         final String password = loginScreenBinding.password.getText().toString().trim();
-        prefManager.setUserPassword(password);
+        //prefManager.setUserPassword(password);
 
         if (Utils.isOnline()) {
             if (!validate())
                 return;
-            else if (prefManager.getUserName().length() > 0 && password.length() > 0) {
+            else if (username.length() > 0 && password.length() > 0) {
                 new ApiService(this).makeRequest("LoginScreen", Api.Method.POST, UrlGenerator.getLoginUrl(), loginParams(), "not cache", this);
             } else {
                 Utils.showAlert(this, getResources().getString(R.string.please_enter_user_name_and_password));
@@ -251,7 +257,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         params.put(AppConstant.USER_LOGIN_KEY, random);
         Log.d("randchar", "" + random);
 
-        params.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        params.put(AppConstant.KEY_USER_NAME, loginScreenBinding.userName.getText().toString().trim());
         Log.d("user", "" + loginScreenBinding.userName.getText().toString().trim());
 
         String encryptUserPass = Utils.md5(loginScreenBinding.password.getText().toString().trim());
@@ -375,18 +381,22 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                             prefManager.setStateName("");
                             getDistrictList();
                             getBlockList();
-                        }else if(jsonObject.get(AppConstant.LEVELS).equals("D")){
+                        }
+                        else if(jsonObject.get(AppConstant.LEVELS).equals("D")){
                             prefManager.setStateCode(jsonObject.get("statecode"));
                             prefManager.setDistrictCode(jsonObject.get(AppConstant.DISTRICT_CODE));
                             prefManager.setDistrictName(jsonObject.get(AppConstant.DISTRICT_NAME));
                             getBlockList();
-                        }else if(jsonObject.get(AppConstant.LEVELS).equals("B")){
+                        }
+                        else if(jsonObject.get(AppConstant.LEVELS).equals("B")){
                             prefManager.setStateCode(jsonObject.get("statecode"));
                             prefManager.setDistrictCode(jsonObject.get(AppConstant.DISTRICT_CODE));
                             prefManager.setBlockCode(jsonObject.get(AppConstant.BLOCK_CODE));
                             prefManager.setBlockName(jsonObject.get(AppConstant.BLOCK_NAME));
 
                         }
+                        prefManager.setUserName(loginScreenBinding.userName.getText().toString());
+                        prefManager.setUserPassword(loginScreenBinding.password.getText().toString());
 
 //                        getVillageList();
                         //getHabList();
@@ -483,20 +493,17 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             return null;
         }
 
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            progressHUD = ProgressHUD.show(Dashboard.this, "Downloading", true, false, null);
-//        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(LoginScreen.this, "Downloading", true, false, null);
+        }
 
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//            if (progressHUD != null) {
-//                progressHUD.cancel();
-//            }
-//
-//        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            hideProgress();
+        }
     }
     public class InsertBlockTask extends AsyncTask<JSONObject ,Void ,Void> {
 
@@ -534,19 +541,17 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             return null;
         }
 
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            progressHUD = ProgressHUD.show(Dashboard.this, "Downloading", true, false, null);
-//        }
+        @Override
+       protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(LoginScreen.this, "Downloading", true, false, null);
+       }
 
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//            if (progressHUD != null) {
-//                progressHUD.cancel();
-//            }
-//        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            hideProgress();
+        }
     }
     public class InsertVillageTask extends AsyncTask<JSONObject, Void, Void> {
 
@@ -651,4 +656,14 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             Utils.showAlert(this, getResources().getString(R.string.no_data_available_for_offline_please_turn_on_network));
         }
     }
+
+    void hideProgress() {
+        try {
+            if (progressHUD != null)
+                progressHUD.cancel();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

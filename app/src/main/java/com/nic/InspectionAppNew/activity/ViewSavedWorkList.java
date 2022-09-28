@@ -9,6 +9,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,6 +38,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -369,13 +371,13 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
             String title="Inspection";
             String work_id =WorkId;
             dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+work_id + ".pdf");
-            path="PhoneStorage/Download"+"/"+title+"_"+work_id+".pdf";
+            path=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+work_id + ".pdf";
             if (DocumentString != null && !DocumentString.equals("")) {
                 byte[] decodedString = new byte[0];
                 try {
                     //byte[] name = java.util.Base64.getEncoder().encode(fileString.getBytes());
                     decodedString = Base64.decode(DocumentString/*traders.get(position).getDocument().toString()*/, Base64.DEFAULT);
-                    System.out.println(new String(decodedString));
+                    //System.out.println(new String(decodedString));
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -396,7 +398,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                     os.flush();
                     os.close();
                     success="Success";
-                    System.out.println("Created");
+                    //System.out.println("Created");
 
 
                 } catch (IOException e) {
@@ -414,8 +416,8 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
             super.onPostExecute(s);
             hideProgress();
             if(s.equals("Success")){
-                addNotification(dwldsPath,path);
-                Utils.showAlert(ViewSavedWorkList.this,"Download Successfully File Path:"+path);
+                addNotification(dwldsPath);
+                //Utils.showAlert(ViewSavedWorkList.this,"Download Successfully File Path:"+path);
 
 
             }
@@ -426,15 +428,19 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         }
     }
 
-    private void addNotification(File dwldsPath, String filePath) {
-        Log.d("filePath >> ", "" + filePath);
+    private void addNotification(File filePath) {
+        //Log.d("filePath >> ", "" + filePath);
+        Uri uriPdfPath = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", filePath);
         NotificationManager mNotificationManager;
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this.getApplicationContext(), "notify_001");
-        Intent target = new Intent(Intent.ACTION_VIEW);
-        target.setDataAndType(Uri.parse(filePath),"application/pdf");
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, target, 0);
+        Intent pdfOpenIntent = new Intent(Intent.ACTION_VIEW);
+        pdfOpenIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        pdfOpenIntent.setClipData(ClipData.newRawUri("", uriPdfPath));
+        pdfOpenIntent.setDataAndType(uriPdfPath, "application/pdf");
+        pdfOpenIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, pdfOpenIntent, 0);
 
         NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
         bigText.bigText(null);
@@ -442,7 +448,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
 
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setSmallIcon(R.drawable.ic_message_black_24dp);
-        mBuilder.setContentTitle("Report Downloaded Successfully!");
+        mBuilder.setContentTitle("Inspection Report Downloaded Successfully!");
         mBuilder.setContentText("File Path : "+filePath);
         mBuilder.setPriority(Notification.PRIORITY_MAX);
         mBuilder.setStyle(bigText);
