@@ -647,7 +647,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
 
                     if (imageView.getDrawable() != null) {
-                        //if(!myEditTextView.getText().toString().equals("")){
+                        if(!myEditTextView.getText().toString().equals("")){
                         count = count + 1;
                         byte[] imageInByte = new byte[0];
                         String image_str = "";
@@ -707,6 +707,9 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
 
                     } else {
+                        Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description));
+                    }
+                    } else {
                         Utils.showAlert(CameraScreen.this, getResources().getString(R.string.please_capture_image));
                     }
                 }
@@ -717,7 +720,11 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     public void addImageButtonClick(){
         if(viewArrayList.size() < max_img_count) {
             if (imageView.getDrawable() != null && viewArrayList.size() > 0) {
-                updateView(CameraScreen.this, cameraScreenBinding.cameraLayout, "", "", "", "");
+                if (!myEditTextView.getText().toString().equals("") ) {
+                    updateView(CameraScreen.this, cameraScreenBinding.cameraLayout, "", "", "", "");
+                } else {
+                    Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description));
+                }
             } else {
                 Utils.showAlert(CameraScreen.this, getResources().getString(R.string.please_capture_image));
             }
@@ -907,15 +914,17 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         catch (JSONException e) {
             e.printStackTrace();
         }
+         if(true_flag){
+             if (Utils.isOnline()) {
+                 uploadDialog(maindataset);
+                 //saveImagesJsonParams(maindataset);
+                 Log.d("saveImages", "" + maindataset);
+             } else {
 
-        if (Utils.isOnline()) {
-            uploadDialog(maindataset);
-            //saveImagesJsonParams(maindataset);
-            //Log.d("saveImages", "" + maindataset);
-        } else {
+                 Utils.showAlert(CameraScreen.this, "Turn On Mobile Data To Upload");
+             }
+         }
 
-            Utils.showAlert(CameraScreen.this, "Turn On Mobile Data To Upload");
-        }
 
     }
     public String BitMapToString(Bitmap bitmap){

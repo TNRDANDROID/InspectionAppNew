@@ -354,7 +354,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             }
         });
 
-        mBuilder.setCancelable(false);
+        mBuilder.setCancelable(true);
         mBuilder.setPositiveButton(R.string.ok_label, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int position) {
@@ -582,7 +582,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             }
         });
 
-        mBuilder.setCancelable(false);
+        mBuilder.setCancelable(true);
         mBuilder.setPositiveButton(R.string.ok_label, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int position) {
@@ -790,7 +790,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             }
         });
 
-        mBuilder.setCancelable(false);
+        mBuilder.setCancelable(true);
         mBuilder.setPositiveButton(R.string.ok_label, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int position) {
