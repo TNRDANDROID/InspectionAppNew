@@ -390,10 +390,14 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 dialogInterface.dismiss();
             }
         });
+        if(districtStrings.length>0){
+            AlertDialog mDialog = mBuilder.create();
+            mDialog.show();
+        }else {
+            Utils.showAlert(this,"No Record Found!");
+        }
 
 
-        AlertDialog mDialog = mBuilder.create();
-        mDialog.show();
 
     }
 
@@ -604,17 +608,25 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         });
 
         if(prefManager.getLevels().equals("S")){
-            AlertDialog mDialog = mBuilder.create();
             if(Dcode != null && !Dcode.equals("") ) {
-                mDialog.show();
+                if(blockStrings.length>0){
+                    AlertDialog mDialog = mBuilder.create();
+                    mDialog.show();
+                }else {
+                    Utils.showAlert(this,"No Record Found!");
+                }
             }
             else {
                 Utils.showAlert(this,"Please Select District!");
                 select_village_layout.setVisibility(View.GONE);
             }
         }else {
-            AlertDialog mDialog = mBuilder.create();
-            mDialog.show();
+            if(blockStrings.length>0){
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+            }else {
+                Utils.showAlert(this,"No Record Found!");
+            }
         }
 
     }
@@ -810,9 +822,14 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         });
 
 
-        AlertDialog mDialog = mBuilder.create();
+
         if(Bcode != null && !Bcode.equals("") || prefManager.getLevels().equalsIgnoreCase("B")) {/*Used for Block level Login*/
-            mDialog.show();
+            if(villageStrings.length>0){
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+            }else {
+                Utils.showAlert(this,"No Record Found!");
+            }
         }
         else {
             Utils.showAlert(this,"Please Select Block!");
