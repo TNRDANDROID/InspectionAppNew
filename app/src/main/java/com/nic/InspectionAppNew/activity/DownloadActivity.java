@@ -93,6 +93,12 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     public SQLiteDatabase db;
     boolean workListInsert = false;
     TextView skip;
+    String Bcode="";
+    String Bname="";
+    String Dcode="";
+    String Dname="";
+    String Vcode="";
+    String Vname="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -331,8 +337,67 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         districtcheckedItems= new boolean[districtStrings.length];
 
     }
+    public void districtCheckbox() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(DownloadActivity.this);
+        mBuilder.setTitle(R.string.district_dialog_title);
+        mBuilder.setSingleChoiceItems(districtStrings, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int position) {
+                JSONArray districtCodeJsonArray = new JSONArray();
+                prefManager.setDistrictCode(District.get(position).getDistictCode());
+                districtCodeJsonArray.put(District.get(position).getDistictCode());
+                prefManager.setDistrictCodeJson(districtCodeJsonArray);
+                Dcode=District.get(position).getDistictCode();
+                Dname=District.get(position).getDistrictName();
+                Log.d("districtcode", "" + districtCodeJsonArray);
 
-    public void  districtCheckbox() {
+            }
+        });
+
+        mBuilder.setCancelable(false);
+        mBuilder.setPositiveButton(R.string.ok_label, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int position) {
+                if (Dcode != null && !Dcode.equals("")) {
+                    select_district_layout.setVisibility(View.VISIBLE);
+                    selected_district_tv.setVisibility(View.VISIBLE);
+                    selected_district_tv.setText(Dname);
+                    selected_scheme_tv.setText("");
+                    select_scheme_layout.setVisibility(View.GONE);
+                    selected_block_tv.setText("");
+                    select_block_layout.setVisibility(View.GONE);
+                    selected_village_tv.setText("");
+                    select_village_layout.setVisibility(View.GONE);
+                    loadOfflineBlockListDBValues();
+                    if(prefManager.getLevels().equalsIgnoreCase("S")) {
+                        if (Utils.isOnline()) {
+                            try {
+                                db.delete(SCHEME_TABLE_NAME, null, null);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }if(mFinYearItems.size() > 0 && !Dcode.equals("")) {
+                                getSchemeList();
+                            }
+                        } else {
+                            loadOfflineSchemeListDBValues();
+                        }
+                    }
+                }else {
+                    select_district_layout.setVisibility(View.GONE);
+                    selected_district_tv.setVisibility(View.GONE);
+                    selected_district_tv.setText("");
+                }
+                dialogInterface.dismiss();
+            }
+        });
+
+
+        AlertDialog mDialog = mBuilder.create();
+        mDialog.show();
+
+    }
+
+    public void  districtCheckboxMultipleSelection() {
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(DownloadActivity.this);
         mBuilder.setTitle(R.string.district_dialog_title);
@@ -490,23 +555,71 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 myBlockCodelist.add(jsonArray);
             }
             block_myBlockCodeList.add(Block.get(i).getBlockCode());
-            /*if (prefManager.getLevels().equalsIgnoreCase("D")) {
-                block_myBlockCodeList.add(Block.get(i).getBlockCode());
-            }*/
 
         }
 
         blockStrings = myBlockList.toArray(new String[myBlockList.size()]);
         blockCodeStrings = block_myBlockCodeList.toArray(new String[block_myBlockCodeList.size()]);
-
-       /* if (prefManager.getLevels().equalsIgnoreCase("D")) {
-         blockCodeStrings = block_myBlockCodeList.toArray(new String[block_myBlockCodeList.size()]);
-        }*/
         blockcheckedItems= new boolean[blockStrings.length];
 
     }
 
+    // Single selection Block
     public void blockCheckbox() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(DownloadActivity.this);
+        mBuilder.setTitle(R.string.block_dialog_title);
+        mBuilder.setSingleChoiceItems(blockStrings, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int position) {
+                    JSONArray blockCodeJsonArray = new JSONArray();
+                    prefManager.setBlockCode(Block.get(position).getBlockCode());
+                    blockCodeJsonArray.put(Block.get(position).getBlockCode());
+                    prefManager.setBlockCodeJson(blockCodeJsonArray);
+                    Bcode=Block.get(position).getBlockCode();
+                    Bname=Block.get(position).getBlockName();
+                    Log.d("blockcode", "" + blockCodeJsonArray);
+
+            }
+        });
+
+        mBuilder.setCancelable(false);
+        mBuilder.setPositiveButton(R.string.ok_label, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int position) {
+                if (Bcode != null && !Bcode.equals("")) {
+                    getVillageList();
+                    select_block_layout.setVisibility(View.VISIBLE);
+                    selected_block_tv.setVisibility(View.VISIBLE);
+                    selected_block_tv.setText(Bname);
+                    selected_village_tv.setText("");
+                    select_village_layout.setVisibility(View.GONE);
+
+                }else {
+                    select_block_layout.setVisibility(View.GONE);
+                    selected_block_tv.setVisibility(View.GONE);
+                    selected_block_tv.setText("");
+                }
+                dialogInterface.dismiss();
+            }
+        });
+
+        if(prefManager.getLevels().equals("S")){
+            AlertDialog mDialog = mBuilder.create();
+            if(Dcode != null && !Dcode.equals("") ) {
+                mDialog.show();
+            }
+            else {
+                Utils.showAlert(this,"Please Select District!");
+                select_village_layout.setVisibility(View.GONE);
+            }
+        }else {
+            AlertDialog mDialog = mBuilder.create();
+            mDialog.show();
+        }
+
+    }
+
+    public void blockCheckboxMultipleSelection() {
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(DownloadActivity.this);
         mBuilder.setTitle(R.string.block_dialog_title);
@@ -618,54 +731,18 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             AlertDialog mDialog = mBuilder.create();
             mDialog.show();
         }
-
-       /* AlertDialog mDialog = mBuilder.create();
-        mDialog.show();*/
     }
 
 
     public void loadOfflineVillgeListDBValues() {
 
         String villageSql = null;
-       /* if (prefManager.getLevels().equalsIgnoreCase("S")){
-            JSONArray filterVillage = prefManager.getBlockCodeJson();
-            db.execSQL("CREATE TEMPORARY TABLE IF NOT EXISTS tempData (dcode INTEGER, bcode INTEGER);");
-            db.execSQL("delete from tempData");
-
-            for (int i = 0;i<= filterVillage.length();i++) {
-                try {
-                    Log.d("insert","INSERT INTO tempData (dcode, bcode) VALUES "+filterVillage.getJSONArray(i).toString().replace("[", "(").replace("]", ")"));
-                    db.execSQL("INSERT INTO tempData (dcode, bcode) VALUES"+filterVillage.getJSONArray(i).toString().replace("[", "(").replace("]", ")")+";");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            villageSql = "SELECT *\n" +
-                    "FROM villageTable\n" +
-                    "WHERE EXISTS (\n" +
-                    "  SELECT NULL\n" +
-                    "  FROM  tempData\n" +
-                    "  WHERE tempData.dcode = villageTable.dcode\n" +
-                    "    AND tempData.bcode = villageTable.bcode\n" +
-                    ") order by pvname";
-
-        }
-        else if(prefManager.getLevels().equalsIgnoreCase("D")) {
-            JSONArray filterVillage = prefManager.getBlockCodeJson();
-            villageSql = "SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " WHERE bcode in" + filterVillage.toString().replace("[", "(").replace("]", ")") + " order by pvname asc";
-        }
-        else if (prefManager.getLevels().equalsIgnoreCase("B")){
-            String filterVillage = prefManager.getBlockCode();
-            villageSql = "SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " WHERE bcode ="+filterVillage+ " order by pvname asc";
-        }*/
         villageSql = "SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " WHERE bcode ="+prefManager.getBlockCode()+" and dcode ="+prefManager.getDistrictCode()+ " order by pvname asc";
         Log.d("villageSql", "" + villageSql);
         Cursor VillageList = getRawEvents(villageSql, null);
         Village.clear();
         final ArrayList<String> myVillageList = new ArrayList<String>();
          myVillageCodelist = new ArrayList<JSONArray>();
-
-
 
         if (VillageList.getCount() > 0) {
             if (VillageList.moveToFirst()) {
@@ -688,30 +765,75 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         JSONArray jsonArray = new JSONArray();
         for (int i = 0; i < Village.size(); i++) {
             myVillageList.add(Village.get(i).getVillageListPvName());
-            /*if(prefManager.getLevels().equalsIgnoreCase("S")) {
-                jsonArray.put(Village.get(i).getVillageListDistrictCode());
-            }
-            jsonArray.put(Village.get(i).getVillageListBlockCode());*/
             jsonArray.put(Village.get(i).getVillageListPvCode());
 
             myVillageCodelist.add(jsonArray);
         }
 
         villageStrings = myVillageList.toArray(new String[myVillageList.size()]);
-       // villageCodeStrings = myVillageCodelist.toArray(new String[myVillageCodelist.size()]);
         villageCheckedItems = new boolean[villageStrings.length];
     }
 
+    // Single Selection Village
     public void villageCheckbox() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(DownloadActivity.this);
+        mBuilder.setTitle(R.string.village_dialog_title);
+        mBuilder.setSingleChoiceItems(villageStrings, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int position) {
+                    JSONArray villageCodeJsonArray = new JSONArray();
+                    villageCodeJsonArray.put(Village.get(position).getVillageListPvCode());
+                    prefManager.setVillagePvCodeJson(villageCodeJsonArray);
+                    Vcode=Village.get(position).getVillageListPvCode();
+                    Vname=Village.get(position).getVillageListPvName();
+                    Log.d("villagecode", "" + villageCodeJsonArray);
+            }
+        });
+
+        mBuilder.setCancelable(false);
+        mBuilder.setPositiveButton(R.string.ok_label, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int position) {
+                if (Vcode != null && !Vcode.equals("")) {
+                    selected_village_tv.setText(Vname);
+                    select_village_layout.setVisibility(View.VISIBLE);
+                    selected_village_tv.setVisibility(View.VISIBLE);
+
+                }else {
+                    selected_village_tv.setText("");
+                    select_village_layout.setVisibility(View.GONE);
+                    selected_village_tv.setVisibility(View.GONE);
+                }
+                    dialogInterface.dismiss();
+
+            }
+        });
+
+
+        AlertDialog mDialog = mBuilder.create();
+        if(Bcode != null && !Bcode.equals("") || prefManager.getLevels().equalsIgnoreCase("B")) {/*Used for Block level Login*/
+            mDialog.show();
+        }
+        else {
+            Utils.showAlert(this,"Please Select Block!");
+            select_village_layout.setVisibility(View.GONE);
+        }
+
+    }
+
+
+    // Multiple Selection Village
+    public void villageCheckboxMultipleSelection() {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(DownloadActivity.this);
         mBuilder.setTitle(R.string.village_dialog_title);
         mBuilder.setMultiChoiceItems(villageStrings, villageCheckedItems, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                 if (isChecked) {
-                   /* if (!mVillageItems.contains(position)) {
+/* if (!mVillageItems.contains(position)) {
                         mVillageItems.add(position);
                     }*/
+
                     for (int i = 0; i < villageCheckedItems.length; i++) {
                         if (i == position) {
                             villageCheckedItems[i]=true;
@@ -783,7 +905,9 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         });
 
         AlertDialog mDialog = mBuilder.create();
-        if(mBlockItems.size() > 0 || prefManager.getLevels().equalsIgnoreCase("B")) {/*Used for Block level Login*/
+        if(mBlockItems.size() > 0 || prefManager.getLevels().equalsIgnoreCase("B")) {
+/*Used for Block level Login*/
+
             mDialog.show();
         }
         else {
