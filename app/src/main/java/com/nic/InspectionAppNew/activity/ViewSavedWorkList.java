@@ -95,6 +95,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
     Dialog dialog;
     int pageNumber;
     String WorkId="";
+    String inspectionID="";
 
     ArrayList<ModelClass> savedWorkList;
 
@@ -170,6 +171,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
     }
     public void getWorkReportDetails(String work_id, String inspection_id) {
         WorkId=work_id;
+        inspectionID=inspection_id;
         try {
             new ApiService(this).makeJSONObjectRequest("WorkReport", Api.Method.POST, UrlGenerator.getMainService(), workDetailsJsonParams(work_id,inspection_id), "not cache", this);
         } catch (JSONException e) {
@@ -370,8 +372,8 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
             String  success="";
             String title="Inspection";
             String work_id =WorkId;
-            dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+work_id + ".pdf");
-            path=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+work_id + ".pdf";
+            dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+inspectionID+"_"+work_id + ".pdf");
+            path=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+inspectionID+"_"+work_id + ".pdf";
             if (DocumentString != null && !DocumentString.equals("")) {
                 byte[] decodedString = new byte[0];
                 try {
