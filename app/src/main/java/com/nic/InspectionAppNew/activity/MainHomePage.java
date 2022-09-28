@@ -67,7 +67,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
 
         if (Utils.isOnline()) {
-            //getSchemeList();
+            getPhotoCount();
             getFinYearList();
             getInspection_statusList();
         }
@@ -146,9 +146,9 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             e.printStackTrace();
         }
     }
-    public void getSchemeList() {
+    public void getPhotoCount() {
         try {
-            new ApiService(this).makeJSONObjectRequest("SchemeList", Api.Method.POST, UrlGenerator.getServicesListUrl(), schemeListJsonParams(), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("PhotoCount", Api.Method.POST, UrlGenerator.getMainService(), PhotoCountJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -177,12 +177,12 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         Log.d("inspection_statusList", "" + authKey);
         return dataSet;
     }
-    public JSONObject schemeListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.schemeListDistrictWiseJsonParams(this).toString());
+    public JSONObject PhotoCountJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.PhotoCountParams(this).toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("schemeList", "" + authKey);
+        Log.d("PhotoCount", "" + dataSet);
         return dataSet;
     }
 
@@ -259,6 +259,15 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                     new Insert_Scheme_Task().execute(jsonObject);
                 }
                 Log.d("SchemeList", "" + responseDecryptedBlockKey);
+            }
+            if ("PhotoCount".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    prefManager.setPhotoCount(jsonObject.getString("COUNT"));
+                }
+                Log.d("PhotoCount", "" + responseDecryptedBlockKey);
             }
 
         } catch (JSONException e) {

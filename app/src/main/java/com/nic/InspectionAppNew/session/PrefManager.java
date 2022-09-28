@@ -63,6 +63,7 @@ public class PrefManager {
     private static final String KEY_DELETE_POSITION = "deletePosition";
     private static final String DELETE_ADAPTER_POSITION = "delete_adapter_position";
     private static final String KEY_PHOTO_TYPE = "photos_type";
+    private static final String KEY_PHOTO_COUNT = "photos_count";
     private static final String KEY_USER_TYPE = "user_type";
     private static final String KEY_WORK_TYPE = "work_type";
     private static final String KEY_WORK_ID = "work_id";
@@ -152,6 +153,15 @@ public class PrefManager {
 
     public String getPhototype() {
         return pref.getString(KEY_PHOTO_TYPE, null);
+    }
+   public Object setPhotoCount(Object key) {
+        editor.putString(KEY_PHOTO_COUNT, String.valueOf(key));
+        editor.commit();
+        return key;
+    }
+
+    public String getPhotoCount() {
+        return pref.getString(KEY_PHOTO_COUNT, null);
     }
 
     public Object setUsertype(Object key) {

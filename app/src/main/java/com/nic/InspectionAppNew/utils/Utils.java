@@ -1244,6 +1244,13 @@ public class Utils {
         Log.d("schemeListDistrictWise", "" + dataSet);
         return dataSet;
     }
+    public static JSONObject PhotoCountParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "photo_count");
+        Log.d("PhotoCount", "" + dataSet);
+        return dataSet;
+    }
 
     public static JSONObject inspection_statusListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();

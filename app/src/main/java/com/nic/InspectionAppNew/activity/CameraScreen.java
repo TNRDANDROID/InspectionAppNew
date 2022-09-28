@@ -111,7 +111,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
     int work_id;
     int min_img_count=0;
-    int max_img_count =4;
+    int max_img_count =0;
     int clicked_position;
 
     String dcode;
@@ -160,6 +160,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     public void intializeUI() {
         getIntentData();
         //work_id= getIntent().getIntExtra("work_id",0);
+        min_img_count=Integer.parseInt(prefManager.getPhotoCount());
+        max_img_count=Integer.parseInt(prefManager.getPhotoCount());
 
         viewArrayList.clear();
 
