@@ -211,7 +211,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/view_action"
+                        android:id="@+id/view_report"
                         android:gravity="center_vertical"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
@@ -220,7 +220,7 @@
                         android:drawableTint="@color/primary_text_color"
                         android:drawablePadding="@dimen/_3sdp"
                         android:textSize="@dimen/_13sdp"
-                        android:text="@string/view_action"
+                        android:text="View Report"
                         android:layout_gravity="end"
                         android:layout_marginTop="@dimen/_5sdp"
                         android:layout_marginRight="@dimen/_10sdp"

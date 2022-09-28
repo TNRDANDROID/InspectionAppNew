@@ -60,6 +60,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     private List<ModelClass> Scheme = new ArrayList<>();
     private List<ModelClass> FinYearList = new ArrayList<>();
     public LinearLayout select_fin_year_layout,select_district_layout, select_block_layout, select_village_layout, select_scheme_layout, block_hide_layout,district_hide_layout ;
+    public LinearLayout district_layout,block_layout;
     private View view;
     final ArrayList<Integer> mDistrictItems = new ArrayList<>();
     final ArrayList<Integer> mVillageItems = new ArrayList<>();
@@ -111,6 +112,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         prefManager = new PrefManager(this);
         homeimg = (ImageView) findViewById(R.id.homeimg);
         skip = (TextView) findViewById(R.id.skip);
+        district_layout = (LinearLayout) findViewById(R.id.district_layout);
+        block_layout = (LinearLayout) findViewById(R.id.block_layout);
         select_fin_year_layout = (LinearLayout) findViewById(R.id.select_fin_year_layout);
         select_block_layout = (LinearLayout) findViewById(R.id.select_block_layout);
         select_district_layout = (LinearLayout) findViewById(R.id.select_district_layout);
@@ -151,15 +154,15 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         if (prefManager.getLevels().equalsIgnoreCase("B")) {
 //            loadOfflineVillgeListDBValues();
             getVillageList();
-            district_hide_layout.setVisibility(View.GONE);
-            block_hide_layout.setVisibility(View.GONE);
+            district_layout.setVisibility(View.GONE);
+            block_layout.setVisibility(View.GONE);
         }
         if(prefManager.getLevels().equalsIgnoreCase("S")){
             loadOfflineDistrictListDBValues();
         }
         if (prefManager.getLevels().equalsIgnoreCase("D")) {
             loadOfflineBlockListDBValues();
-            district_hide_layout.setVisibility(View.GONE);
+            district_layout.setVisibility(View.GONE);
         }
 
     }
@@ -258,7 +261,9 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     select_fin_year_layout.setVisibility(View.GONE);
                 }
                 selected_finyear_tv.setText(item);
-                if(prefManager.getLevels().equalsIgnoreCase("D")) {
+                selected_scheme_tv.setText("");
+                select_scheme_layout.setVisibility(View.GONE);
+                if(!prefManager.getLevels().equalsIgnoreCase("S")) {
                     if (Utils.isOnline()) {
                         try {
                             db.delete(SCHEME_TABLE_NAME, null, null);
@@ -371,7 +376,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 prefManager.setDistrictCodeJson(districtCodeJsonArray);
                 Log.d("districtcode", "" + districtCodeJsonArray);
 
-                loadOfflineBlockListDBValues();
+
 
             }
         });
@@ -396,6 +401,13 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     select_district_layout.setVisibility(View.GONE);
                 }
                 selected_district_tv.setText(item);
+                selected_scheme_tv.setText("");
+                select_scheme_layout.setVisibility(View.GONE);
+                selected_block_tv.setText("");
+                select_block_layout.setVisibility(View.GONE);
+                selected_village_tv.setText("");
+                select_village_layout.setVisibility(View.GONE);
+                loadOfflineBlockListDBValues();
                 if(prefManager.getLevels().equalsIgnoreCase("S")) {
                     if (Utils.isOnline()) {
                         try {
@@ -567,7 +579,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     select_block_layout.setVisibility(View.GONE);
                 }
                 selected_block_tv.setText(item);
-
+                selected_village_tv.setText("");
+                select_village_layout.setVisibility(View.GONE);
 //                loadOfflineVillgeListDBValues();
                 getVillageList();
             }

@@ -663,6 +663,7 @@
                             android:layout_margin="@dimen/_10sdp"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_50sdp"
+                            android:visibility="gone"
                             android:id="@+id/view_report">
 
                             <ImageView

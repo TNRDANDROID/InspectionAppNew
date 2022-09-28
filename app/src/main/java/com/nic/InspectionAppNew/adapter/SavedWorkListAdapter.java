@@ -13,9 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.activity.SaveWorkDetailsActivity;
 import com.nic.InspectionAppNew.activity.ViewActionScreen;
-import com.nic.InspectionAppNew.dataBase.dbData;
+import com.nic.InspectionAppNew.activity.ViewSavedWorkList;
 import com.nic.InspectionAppNew.databinding.SavedWorkListItemViewBinding;
-import com.nic.InspectionAppNew.databinding.WorkListAdapterBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.utils.Utils;
@@ -72,7 +71,26 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
             Utils.addReadMore(context, "Activity : "+String.valueOf(list.get(position).getWork_name()), holder.binding.workName, 2);
         }
 
-        holder.binding.viewAction.setOnClickListener(new View.OnClickListener() {
+        holder.binding.viewReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if(Utils.isOnline()){
+                    ((ViewSavedWorkList)context).getWorkReportDetails(String.valueOf( list.get(position).getWork_id()),list.get(position).getInspection_id());
+                   /* Intent intent = new Intent(context, ViewReport.class);
+                    intent.putExtra("work_id",String.valueOf( list.get(position).getWork_id()));
+                    intent.putExtra("inspection_id", list.get(position).getInspection_id());
+                    context.startActivity(intent);*/
+
+                }else {
+                    Utils.showAlert(context,context.getResources().getString(R.string.internet_connection_not_available_please_turn_on_or_offline));
+                }
+
+
+            }
+        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(Utils.isOnline()){

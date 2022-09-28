@@ -154,6 +154,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
                 }else {
                     prefManager.setPvCode("");
+                    workListBinding.schemeSpinner.setSelection(0);
                 }
             }
 
@@ -180,6 +181,8 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
                 }else {
                     prefManager.setSchemeSeqId("");
+                    workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -197,6 +200,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
                 }else {
                     prefManager.setFinancialyearName("");
+                    workListBinding.schemeSpinner.setSelection(0);
                 }
             }
 

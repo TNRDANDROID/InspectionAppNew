@@ -49,7 +49,7 @@
                         android:layout_centerInParent="true"
                         android:text="Filter Work List"
                         android:textColor="@android:color/white"
-                        android:textSize="@dimen/_15sdp"
+                        android:textSize="@dimen/_13sdp"
                         tools:ignore="RelativeOverlap" />
 
 
@@ -92,13 +92,13 @@
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
                     android:text="Select financial year"
-                    android:textColor="@color/grey_9"
-                    android:textSize="@dimen/_15sdp" />
+                    android:textColor="@color/grey_8"
+                    android:textSize="@dimen/_13sdp" />
 
                 <RelativeLayout
                     android:id="@+id/fin_year_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/header"
+                    android:layout_height="@dimen/_35sdp"
                     android:layout_below="@+id/fin_year_tv"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
@@ -114,7 +114,7 @@
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/_15sdp"
+                        android:textSize="@dimen/_13sdp"
                         android:visibility="visible"
                         />
 
@@ -139,14 +139,14 @@
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
                     android:text="Select district"
-                    android:textColor="@color/grey_9"
-                    android:textSize="@dimen/_15sdp"
+                    android:textColor="@color/grey_8"
+                    android:textSize="@dimen/_13sdp"
                     />
 
                 <RelativeLayout
                     android:id="@+id/district_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/header"
+                    android:layout_height="@dimen/_35sdp"
                     android:layout_below="@+id/district_tv"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
@@ -162,7 +162,7 @@
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/_15sdp"
+                        android:textSize="@dimen/_13sdp"
                         android:visibility="visible"
                         />
 
@@ -187,14 +187,14 @@
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
                     android:text="Select block"
-                    android:textColor="@color/grey_9"
-                    android:textSize="@dimen/_15sdp"
+                    android:textColor="@color/grey_8"
+                    android:textSize="@dimen/_13sdp"
                     />
 
                 <RelativeLayout
                     android:id="@+id/block_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/header"
+                    android:layout_height="@dimen/_35sdp"
                     android:layout_below="@+id/block_tv"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
@@ -210,7 +210,7 @@
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/_15sdp"
+                        android:textSize="@dimen/_13sdp"
                         android:visibility="visible"
                         />
 
@@ -235,14 +235,14 @@
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
                     android:text="Select village"
-                    android:textColor="@color/grey_9"
-                    android:textSize="@dimen/_15sdp"
+                    android:textColor="@color/grey_8"
+                    android:textSize="@dimen/_13sdp"
                     />
 
                 <RelativeLayout
                     android:id="@+id/village_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/header"
+                    android:layout_height="@dimen/_35sdp"
                     android:layout_below="@+id/village_tv"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
@@ -258,7 +258,7 @@
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/_15sdp"
+                        android:textSize="@dimen/_13sdp"
                         android:visibility="visible"
                         />
 
@@ -283,13 +283,13 @@
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
                     android:text="Select scheme"
-                    android:textColor="@color/grey_9"
-                    android:textSize="@dimen/_15sdp" />
+                    android:textColor="@color/grey_8"
+                    android:textSize="@dimen/_13sdp" />
 
                 <RelativeLayout
                     android:id="@+id/scheme_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/header"
+                    android:layout_height="@dimen/_35sdp"
                     android:layout_below="@+id/scheme_tv"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
@@ -305,7 +305,7 @@
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/_15sdp"
+                        android:textSize="@dimen/_13sdp"
                         android:visibility="visible"
                         />
 

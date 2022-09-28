@@ -125,9 +125,12 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     getSchemeList();
                 }else {
                     SelectedDistrict="";
-                    workListBinding.blockSpinner.setSelection(0);
-                    workListBinding.villageSpinner.setSelection(0);
-                    workListBinding.schemeSpinner.setSelection(0);
+                    SelectedBlock="";
+                    SelectedVillage="";
+                    SelectedScheme="";
+                    workListBinding.blockSpinner.setAdapter(null);
+                    workListBinding.schemeSpinner.setAdapter(null);
+                    workListBinding.villageSpinner.setAdapter(null);
                 }
             }
 
@@ -144,7 +147,8 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     getVillageList();
                 }else {
                     SelectedBlock="";
-                    workListBinding.villageSpinner.setSelection(0);
+                    SelectedVillage="";
+                    workListBinding.villageSpinner.setAdapter(null);
                 }
             }
 
@@ -199,8 +203,13 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     }
                 }else {
                     SelectedFinYear="";
-                    workListBinding.districtSpinner.setSelection(0);
-                    workListBinding.schemeSpinner.setSelection(0);
+                    SelectedScheme="";
+                    workListBinding.schemeSpinner.setAdapter(null);
+                    if(prefManager.getLevels().equals("S")){
+                        workListBinding.districtSpinner.setSelection(0);
+                        SelectedDistrict="";
+                    }
+
                 }
             }
 

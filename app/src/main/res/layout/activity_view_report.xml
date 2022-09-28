@@ -110,14 +110,15 @@
                         />
 
                     <ImageView
-                        android:layout_width="@dimen/_20sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginEnd="@dimen/_10sdp"
-                        android:padding="@dimen/_3sdp"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/_8sdp"
+                        android:background="@drawable/rectangle_box_filled"
                         android:id="@+id/search_icon"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/back"
+                        android:tint="@color/white"
                         android:rotation="180"/>
 
 

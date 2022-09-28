@@ -191,14 +191,16 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     public void checkLoginScreen() {
         //local
-       /* loginScreenBinding.userName.setText("8931475663");
+        loginScreenBinding.userName.setText("8931475663");
         loginScreenBinding.password.setText("test123#$");//state local
-*/
-        /*loginScreenBinding.userName.setText("7877979787");
+
+       /* loginScreenBinding.userName.setText("7877979787");
         loginScreenBinding.password.setText("test123#$");//Dist local*/
 
-        /*loginScreenBinding.userName.setText("8754085962");
-        loginScreenBinding.password.setText("test123#$");//Block local*/
+/*
+        loginScreenBinding.userName.setText("8754085962");
+        loginScreenBinding.password.setText("test123#$");//Block local
+*/
 
 
         final String username = loginScreenBinding.userName.getText().toString().trim();
@@ -369,7 +371,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         prefManager.setUserPassKey(decryptedKey);
                         if(jsonObject.get(AppConstant.LEVELS).equals("S")){
                             prefManager.setStateCode(jsonObject.get("statecode"));
-                            prefManager.setStateName(jsonObject.get(AppConstant.STATE_NAME));
+//                            prefManager.setStateName(jsonObject.get(AppConstant.STATE_NAME));
+                            prefManager.setStateName("");
                             getDistrictList();
                             getBlockList();
                         }else if(jsonObject.get(AppConstant.LEVELS).equals("D")){

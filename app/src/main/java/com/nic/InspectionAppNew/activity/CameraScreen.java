@@ -195,7 +195,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         onOffType = getIntent().getStringExtra("onOffType");
 
         if(onOffType.equals("online")){
-            cameraScreenBinding.btnSave.setText("Sync Data");
+            cameraScreenBinding.btnSaveLocal.setText("Sync Data");
         }
     }
     @Override

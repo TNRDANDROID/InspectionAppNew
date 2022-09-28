@@ -129,13 +129,26 @@
 
 
                 </RelativeLayout>
-                <RelativeLayout
+                <TextView
+                    android:id="@+id/or"
                     android:layout_below="@+id/date_layout"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:text="(OR)"
+                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center" />
+
+
+                <RelativeLayout
+                    android:layout_below="@+id/or"
                     android:id="@+id/work_id_layout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/header"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginRight="@dimen/margin_left_20dp"
                     android:background="@drawable/rectangle_box"
                     android:orientation="vertical"
@@ -158,14 +171,15 @@
                         />
 
                     <ImageView
-                        android:layout_width="@dimen/_20sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginEnd="@dimen/_10sdp"
-                        android:padding="@dimen/_3sdp"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/_8sdp"
+                        android:background="@drawable/rectangle_box_filled"
                         android:id="@+id/search_icon"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/back"
+                        android:tint="@color/white"
                         android:rotation="180"/>
 
 
