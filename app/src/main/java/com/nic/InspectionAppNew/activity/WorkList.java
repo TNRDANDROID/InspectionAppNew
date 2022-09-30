@@ -320,6 +320,13 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
     }
 
     public class fetchWorkList extends AsyncTask<Void, Void,ArrayList<ModelClass>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.showProgress(WorkList.this);
+        }
+
         @Override
         protected ArrayList<ModelClass> doInBackground(Void... params) {
             dbData.open();
@@ -338,6 +345,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         @Override
         protected void onPostExecute(ArrayList<ModelClass> worklist) {
             super.onPostExecute(worklist);
+            Utils.hideProgress();
             if(!Utils.isOnline()) {
                 if (worklist.size() == 0) {
                     Utils.showAlert(WorkList.this, "No Data Available in Local Database. Please, Turn On mobile data");

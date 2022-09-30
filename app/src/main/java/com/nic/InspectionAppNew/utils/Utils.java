@@ -80,9 +80,11 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.nic.InspectionAppNew.activity.DownloadActivity;
 import com.nic.InspectionAppNew.application.NICApplication;
 import com.nic.InspectionAppNew.constant.AppConstant;
 import com.nic.InspectionAppNew.session.PrefManager;
+import com.nic.InspectionAppNew.support.ProgressHUD;
 
 
 public class Utils {
@@ -104,7 +106,7 @@ public class Utils {
     private static  boolean date_flag =true;
     private static String fromDate,toDate;
     public static boolean flag = false; //128 bits
-
+    private static ProgressHUD progressHUD;
     static DateInterface dateInterface  ;
     private static void initializeSharedPreference() {
         sharedPreferences = NICApplication.getGlobalContext()
@@ -1813,5 +1815,20 @@ public class Utils {
         }
             return val;
     }
+    public static void showProgress(Context context) {
+        try {
+            progressHUD = ProgressHUD.show(context, "Loading...", true, false, null);
+        } catch (Exception e) {
+        }
 
+    }
+    public static void hideProgress() {
+        try {
+            if (progressHUD != null)
+                progressHUD.cancel();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }

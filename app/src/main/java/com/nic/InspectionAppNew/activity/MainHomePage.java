@@ -282,7 +282,17 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     }
 
     public class Insert_Inspection_status_Task extends AsyncTask<JSONObject ,Void ,Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.showProgress(MainHomePage.this);
+        }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Utils.hideProgress();
+        }
         @Override
         protected Void doInBackground(JSONObject... params) {
 
@@ -319,7 +329,17 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
     }
     public class Insert_Scheme_Task extends AsyncTask<JSONObject ,Void ,Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.showProgress(MainHomePage.this);
+        }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Utils.hideProgress();
+        }
         @Override
         protected Void doInBackground(JSONObject... params) {
 
@@ -358,7 +378,17 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
     }
     public class Insert_FinYear_Task extends AsyncTask<JSONObject ,Void ,Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.showProgress(MainHomePage.this);
+        }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Utils.hideProgress();
+        }
         @Override
         protected Void doInBackground(JSONObject... params) {
 

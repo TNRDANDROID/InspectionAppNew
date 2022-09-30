@@ -461,6 +461,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     public class InsertDistrictTask extends AsyncTask<JSONObject ,Void ,Void> {
 
+
         @Override
         protected Void doInBackground(JSONObject... params) {
 
@@ -554,6 +555,18 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }
     }
     public class InsertVillageTask extends AsyncTask<JSONObject, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.showProgress(LoginScreen.this);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Utils.hideProgress();
+        }
 
         @Override
         protected Void doInBackground(JSONObject... params) {

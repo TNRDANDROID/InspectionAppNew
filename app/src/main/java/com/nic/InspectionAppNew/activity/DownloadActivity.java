@@ -1119,7 +1119,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 String responseDecryptedSchemeKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedSchemeKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    loadSchemeList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+//                    loadSchemeList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                    new InsertSchemeListTask().execute(jsonObject);
                 }
                Log.d("schemeAll", "" + responseDecryptedSchemeKey);
 //                int maxLogSize = 1000;
@@ -1135,7 +1136,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    workListOptionalS(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+//                    workListOptionalS(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                    new InsertWorkListTask().execute(jsonObject);
 //                    Utils.showAlert(this, "Your Data will be Downloaded");
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     workListInsert = false;
@@ -1160,6 +1162,12 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         }
     }
     public class InsertVillageTask extends AsyncTask<JSONObject, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.showProgress(DownloadActivity.this);
+        }
 
         @Override
         protected Void doInBackground(JSONObject... params) {
@@ -1197,7 +1205,149 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            Utils.hideProgress();
             loadOfflineVillgeListDBValues();
+        }
+    }
+    public class InsertWorkListTask extends AsyncTask<JSONObject, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.showProgress(DownloadActivity.this);
+        }
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            dbData.open();
+            dbData.deleteWorkListTable();
+
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                        if(jsonArray.length() >0){
+                            workListInsert = true;
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
+                                String SelectedBlockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
+                                String hab_code = jsonArray.getJSONObject(i).getString("hab_code");
+                                String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
+                                String schemeID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_ID);
+                                String scheme_group_id = jsonArray.getJSONObject(i).getString("scheme_group_id");
+                                String work_group_id = jsonArray.getJSONObject(i).getString("work_group_id");
+                                String work_type_id = jsonArray.getJSONObject(i).getString("work_type_id");
+                                String finYear = jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR);
+                                int workID = jsonArray.getJSONObject(i).getInt(AppConstant.WORK_ID);
+                                String workName = jsonArray.getJSONObject(i).getString(AppConstant.WORK_NAME);
+                                String as_value = jsonArray.getJSONObject(i).getString("as_value");
+                                String ts_value = jsonArray.getJSONObject(i).getString("ts_value");
+                                String current_stage_of_work = jsonArray.getJSONObject(i).getString("current_stage_of_work");
+                                String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
+
+                                ModelClass modelClass = new ModelClass();
+                                modelClass.setDistictCode(dcode);
+                                modelClass.setBlockCode(SelectedBlockCode);
+                                modelClass.setHabCode(hab_code);
+                                modelClass.setPvCode(pvcode);
+                                modelClass.setSchemeSequentialID(schemeID);
+                                modelClass.setScheme_group_id(scheme_group_id);
+                                modelClass.setWork_group_id(work_group_id);
+                                modelClass.setWork_type_id(work_type_id);
+                                modelClass.setFinancialYear(finYear);
+                                modelClass.setWork_id(workID);
+                                modelClass.setWork_name(workName);
+                                modelClass.setAs_value(as_value);
+                                modelClass.setTs_value(ts_value);
+                                modelClass.setCurrent_stage_of_work(current_stage_of_work);
+                                modelClass.setIs_high_value(is_high_value);
+
+                                dbData.Insert_workList("offline",modelClass);
+
+                            }
+
+                        } else {
+                            Utils.showAlert(DownloadActivity.this, "No Record Found for Corresponding Financial Year");
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Utils.hideProgress();
+            if (workListInsert){
+                Utils.showAlert(DownloadActivity.this, "Your Data Downloaded Successfully!");
+                workListInsert = false;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        openWorkListScreen();
+                    }
+                }, 1000);
+
+            }
+
+        }
+    }
+    public class InsertSchemeListTask extends AsyncTask<JSONObject, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.showProgress(DownloadActivity.this);
+        }
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            dbData.open();
+            dbData.deleteSchemeTable();
+
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                        if(jsonArray.length() >0){
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                String schemeSequentialID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_SEQUENTIAL_ID);
+                                String schemeName = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_NAME);
+                                String fin_year = jsonArray.getJSONObject(i).getString("fin_year");
+
+                                ContentValues schemeListLocalDbValues = new ContentValues();
+                                schemeListLocalDbValues.put(AppConstant.SCHEME_SEQUENTIAL_ID, schemeSequentialID);
+                                schemeListLocalDbValues.put(AppConstant.SCHEME_NAME, schemeName);
+                                schemeListLocalDbValues.put(AppConstant.FINANCIAL_YEAR, fin_year);
+
+                                db.insert(SCHEME_TABLE_NAME, null, schemeListLocalDbValues);
+                                Log.d("LocalDBSchemeList", "" + schemeListLocalDbValues);
+
+                            }
+
+                        } else {
+                            Utils.showAlert(DownloadActivity.this, "No Record Found for Corresponding Financial Year");
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Utils.hideProgress();
+            loadOfflineSchemeListDBValues();
         }
     }
 

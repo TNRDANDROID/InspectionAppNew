@@ -1,6 +1,7 @@
 package com.nic.InspectionAppNew.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,8 +10,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -627,7 +631,8 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                 String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    workListOptionalS(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+//                    workListOptionalS(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                    new InsertWorkListTask().execute(jsonObject);
 //                    Utils.showAlert(this, "Your Data will be Downloaded");
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     workListInsert = false;
@@ -666,6 +671,121 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
     public void OnError(VolleyError volleyError) {
 
     }
+    public class InsertWorkListTask extends AsyncTask<JSONObject, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.showProgress(OnlineWorkFilterScreen.this);
+        }
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            dbData.open();
+            dbData.deleteOnlineWorkListTable();
+
+            if (params.length > 0) {
+                JSONArray jsonArray = new JSONArray();
+                try {
+                    jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    if(jsonArray.length() >0){
+                        workListInsert = true;
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
+                            String SelectedBlockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
+                            String hab_code = jsonArray.getJSONObject(i).getString("hab_code");
+                            String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
+                            String schemeID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_ID);
+                            String scheme_group_id = jsonArray.getJSONObject(i).getString("scheme_group_id");
+                            String work_group_id = jsonArray.getJSONObject(i).getString("work_group_id");
+                            String work_type_id = jsonArray.getJSONObject(i).getString("work_type_id");
+                            String finYear = jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR);
+                            int workID = jsonArray.getJSONObject(i).getInt(AppConstant.WORK_ID);
+                            String workName = jsonArray.getJSONObject(i).getString(AppConstant.WORK_NAME);
+                            String as_value = jsonArray.getJSONObject(i).getString("as_value");
+                            String ts_value = jsonArray.getJSONObject(i).getString("ts_value");
+                            String current_stage_of_work = jsonArray.getJSONObject(i).getString("current_stage_of_work");
+                            String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
+
+                            ModelClass modelClass = new ModelClass();
+                            modelClass.setDistictCode(dcode);
+                            modelClass.setBlockCode(SelectedBlockCode);
+                            modelClass.setHabCode(hab_code);
+                            modelClass.setPvCode(pvcode);
+                            modelClass.setSchemeSequentialID(schemeID);
+                            modelClass.setScheme_group_id(scheme_group_id);
+                            modelClass.setWork_group_id(work_group_id);
+                            modelClass.setWork_type_id(work_type_id);
+                            modelClass.setFinancialYear(finYear);
+                            modelClass.setWork_id(workID);
+                            modelClass.setWork_name(workName);
+                            modelClass.setAs_value(as_value);
+                            modelClass.setTs_value(ts_value);
+                            modelClass.setCurrent_stage_of_work(current_stage_of_work);
+                            modelClass.setIs_high_value(is_high_value);
+
+                            dbData.Insert_workList("online",modelClass);
+
+                        }
+
+                    } else {
+                        Utils.showAlert(OnlineWorkFilterScreen.this, "No Record Found for Corresponding Financial Year");
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Utils.hideProgress();
+            if (workListInsert){
+                showAlert(OnlineWorkFilterScreen.this, "Your Data Downloaded Successfully!");
+                workListInsert = false;
+/*
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        openWorkListScreen();
+                    }
+                }, 1000);
+*/
+
+            }
+
+        }
+    }
+    public  void showAlert(Activity activity, String msg){
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.alert_dialog);
+
+            TextView text = (TextView) dialog.findViewById(R.id.tv_message);
+            text.setText(msg);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openWorkListScreen();
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void workListOptionalS(JSONArray jsonArray) {
         try {
             dbData.open();
@@ -772,6 +892,12 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
     public class InsertVillageTask extends AsyncTask<JSONObject, Void, Void> {
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.showProgress(OnlineWorkFilterScreen.this);
+        }
+
+        @Override
         protected Void doInBackground(JSONObject... params) {
             dbData.open();
             dbData.deleteVillageTable();
@@ -807,10 +933,17 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            Utils.hideProgress();
             villageFilterSpinner();
         }
     }
     public class InsertSchemeTask extends AsyncTask<JSONObject, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.showProgress(OnlineWorkFilterScreen.this);
+
+        }
 
         @Override
         protected Void doInBackground(JSONObject... params) {
@@ -846,6 +979,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            Utils.hideProgress();
             schemeFilterSpinner();
         }
     }
