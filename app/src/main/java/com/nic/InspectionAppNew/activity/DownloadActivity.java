@@ -1,6 +1,7 @@
 package com.nic.InspectionAppNew.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -1286,17 +1288,44 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             if (workListInsert){
                 Utils.showAlert(DownloadActivity.this, "Your Data Downloaded Successfully!");
                 workListInsert = false;
+/*
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         openWorkListScreen();
                     }
                 }, 1000);
+*/
 
             }
 
         }
     }
+    public  void showAlert(Activity activity, String msg){
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.alert_dialog);
+
+            TextView text = (TextView) dialog.findViewById(R.id.tv_message);
+            text.setText(msg);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openWorkListScreen();
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public class InsertSchemeListTask extends AsyncTask<JSONObject, Void, Void> {
 
         @Override
