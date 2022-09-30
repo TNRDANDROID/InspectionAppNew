@@ -1286,7 +1286,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             super.onPostExecute(aVoid);
             Utils.hideProgress();
             if (workListInsert){
-                Utils.showAlert(DownloadActivity.this, "Your Data Downloaded Successfully!");
+                showAlert(DownloadActivity.this, "Your Data Downloaded Successfully!");
                 workListInsert = false;
 /*
                 new Handler().postDelayed(new Runnable() {
