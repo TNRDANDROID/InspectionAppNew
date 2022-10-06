@@ -25,10 +25,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:padding="@dimen/_7sdp"
-                android:textStyle="bold"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_25sdp"
+                android:textSize="@dimen/_18sdp"
                 android:text="@string/login"
                 />
 
