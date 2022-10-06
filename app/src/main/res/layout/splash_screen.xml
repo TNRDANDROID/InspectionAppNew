@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="activity"
             type="com.nic.InspectionAppNew.activity.SplashScreen" />
     </data>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="#1E07B3A5"
     tools:context="com.nic.RealTimeMonitoringSystem.activity.SplashScreen">
 
     <RelativeLayout
@@ -40,10 +41,37 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/app_name"
-            android:textColor="@android:color/white"
+            android:textColor="@color/white"
             android:textSize="@dimen/large_title_text_size" />
 
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_200sdp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="0dp"
+        android:rotation="180"
+        android:background="@drawable/bottom_curve_bg_white"
+        tools:ignore="ContentDescription" />
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_150sdp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginRight="@dimen/_20sdp"
+        android:src="@drawable/inspect2"
+        android:layout_marginBottom="2dp"
+        android:background="@color/full_transparent"
+        android:scaleType="fitXY"
+        tools:ignore="ContentDescription" />
+
 
 </RelativeLayout>
 </layout>

@@ -746,8 +746,9 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             super.onPostExecute(aVoid);
             Utils.hideProgress();
             if (workListInsert){
-                showAlert(OnlineWorkFilterScreen.this, "Your Data Downloaded Successfully!");
+//                showAlert(OnlineWorkFilterScreen.this, "Your Data Downloaded Successfully!");
                 workListInsert = false;
+                openWorkListScreen();
 /*
                 new Handler().postDelayed(new Runnable() {
                     @Override
