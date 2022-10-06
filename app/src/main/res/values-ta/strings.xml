@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">InspectionAppNew</string>
+    <string name="app_name">Inspection</string>
     <string name="hint_password">கடவுச்சொல்</string>
     <string name="hint_username">பயனர் பெயர்</string>
     <string name="btn_login">உள்நுழைய</string>
