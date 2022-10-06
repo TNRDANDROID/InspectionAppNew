@@ -30,10 +30,11 @@
                     android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/back_img"
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
+                        android:layout_width="@dimen/_25sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:layout_marginLeft="-10dp"
                         android:layout_alignParentStart="true"
-                        android:layout_centerInParent="true"
+                        android:layout_centerVertical="true"
                         android:layout_gravity="start"
                         android:onClick="@{()-> activity.onBackPressed()}"
                         android:padding="@dimen/_7sdp"

@@ -46,7 +46,7 @@
                             android:src="@drawable/ic_menu_icon"
                             android:layout_centerVertical="true"
                             android:tint="@color/white"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="-5dp"
                             tools:ignore="ContentDescription" />
                         <TextView
                             android:layout_width="wrap_content"
@@ -61,12 +61,11 @@
 
                         <ImageView
                             android:id="@+id/log_out"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_centerInParent="true"
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_centerVertical="true"
                             android:layout_alignParentEnd="true"
-                            android:layout_marginTop="15dp"
-                            android:layout_marginEnd="15dp"
+                            android:layout_marginEnd="10dp"
                             android:onClick="@{()-> activity.logout()}"
                             android:adjustViewBounds="true"
                             android:scaleType="centerInside"
