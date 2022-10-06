@@ -49,7 +49,8 @@
                             android:layout_width="@dimen/_30sdp"
                             android:layout_height="@dimen/_30sdp"
                             android:rotation="270"
-                            android:src="@drawable/quater_circle_shape"/>
+                            android:src="@drawable/quater_circle_shape"
+                            tools:ignore="ContentDescription" />
                     </RelativeLayout>
 
                     <LinearLayout
@@ -57,7 +58,6 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/linear"
                         android:padding="@dimen/_5sdp"
-                        android:layout_below="@+id/view_offline_images"
                         android:orientation="vertical">
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -74,7 +74,7 @@
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text="Work id"
+                                android:text="@string/work_id"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -83,7 +83,7 @@
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text=":"
+                                android:text="@string/colan_symbol"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -111,7 +111,7 @@
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text="Work Name"
+                                android:text="@string/work_name"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -120,7 +120,7 @@
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text=":"
+                                android:text="@string/colan_symbol"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -149,7 +149,7 @@
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text="Financial Year"
+                                android:text="@string/financial_year"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -158,7 +158,7 @@
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text=":"
+                                android:text="@string/colan_symbol"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -187,7 +187,7 @@
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text="AS value"
+                                android:text="@string/as_value"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -196,7 +196,7 @@
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text=":"
+                                android:text="@string/colan_symbol"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -225,7 +225,7 @@
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text="TS value"
+                                android:text="@string/ts_value"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -234,7 +234,7 @@
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text=":"
+                                android:text="@string/colan_symbol"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -264,7 +264,7 @@
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text="Work Status"
+                                android:text="@string/work_status"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -273,7 +273,7 @@
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
                                 android:textSize="@dimen/_12sdp"
-                                android:text=":"
+                                android:text="@string/colan_symbol"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -296,19 +296,19 @@
                         android:id="@+id/take_action"
                         android:gravity="center_vertical"
                         android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:textColor="@color/darkblue"
-                        android:drawableRight="@drawable/ic_double_arrow"
+                        android:drawableEnd="@drawable/ic_double_arrow"
                         android:drawableTint="@color/darkblue"
                         android:drawablePadding="@dimen/_5sdp"
                         android:textSize="@dimen/_13sdp"
-                        android:text="Take Action"
+                        android:text="@string/take_action"
                         android:textStyle="bold"
                         android:layout_gravity="end"
                         android:layout_marginTop="@dimen/_5sdp"
                         android:layout_marginRight="@dimen/_10sdp"
                         android:layout_marginBottom="@dimen/_8sdp"
-                        />
+                        tools:ignore="RelativeOverlap,RtlHardcoded,UnusedAttribute" />
 
                 </RelativeLayout>
 

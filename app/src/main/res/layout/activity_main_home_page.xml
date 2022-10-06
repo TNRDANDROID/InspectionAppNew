@@ -47,7 +47,7 @@
                             android:layout_centerVertical="true"
                             android:tint="@color/white"
                             android:layout_marginStart="10dp"
-                            android:layout_marginLeft="10dp" />
+                            tools:ignore="ContentDescription" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -95,13 +95,14 @@
                     android:layout_centerHorizontal="true"
                     android:padding="@dimen/_13sdp"
                     android:text="@string/sync"
-                    android:drawableRight="@drawable/ic_upload_icon"
+                    android:drawableEnd="@drawable/ic_upload_icon"
                     android:drawableTint="@color/white"
                     android:drawablePadding="@dimen/_5sdp"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="UnusedAttribute" />
             </RelativeLayout>
 
             <androidx.core.widget.NestedScrollView
@@ -118,20 +119,63 @@
                     android:layout_height="match_parent">
 
 
+
+
                     <RelativeLayout
-                        android:id="@+id/rellay1"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-
-                        >
-
-                        <RelativeLayout
                             android:id="@+id/header"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_180sdp"
                             android:background="@drawable/bottom_curve_bg" />
+                    <RelativeLayout
+                        android:id="@+id/imgUser"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/_20sdp">
 
                         <RelativeLayout
+                            android:layout_width="@dimen/_100sdp"
+                            android:layout_height="@dimen/_100sdp"
+                            android:layout_centerHorizontal="true"
+                            android:id="@+id/img"
+                            android:background="@drawable/circletransparant"
+                            tools:ignore="UselessParent">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/user_img"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:layout_centerInParent="true"
+                                android:padding="8dp"
+                                android:src="@drawable/ic_user" />
+
+
+                        </RelativeLayout>
+
+
+                    </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/user_name"
+                        android:layout_below="@+id/imgUser"
+                        android:layout_centerHorizontal="true"
+                        android:padding="@dimen/_5sdp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:text="@string/user_name" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/user_level"
+                        android:textColor="@color/white"
+                        android:layout_below="@+id/user_name"
+                        android:layout_centerHorizontal="true"
+                        android:padding="@dimen/_3sdp"
+                        android:textStyle="bold"
+                        />
+
+                    <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/relative1"
@@ -156,7 +200,8 @@
                                         android:layout_width="@dimen/_40sdp"
                                         android:layout_height="@dimen/_40sdp"
                                         android:rotation="270"
-                                        android:src="@drawable/quater_circle_shape" />
+                                        android:src="@drawable/quater_circle_shape"
+                                        tools:ignore="ContentDescription" />
                                 </RelativeLayout>
 
                                 <Button
@@ -167,7 +212,7 @@
                                     android:clickable="true"
                                     android:focusable="true"
                                     android:id="@+id/rdpr_works_btn"
-                                    android:text="RDPR Works"
+                                    android:text="@string/rdpr_works"
                                     android:textAlignment="center"
                                     android:textAllCaps="false"
                                     android:textStyle="bold"
@@ -181,7 +226,8 @@
                                 android:layout_marginTop="-45dp"
                                 android:layout_below="@+id/rdpr_works"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                tools:ignore="ExtraText">
                                 ///Type User
                                 <androidx.cardview.widget.CardView
                                     android:layout_centerHorizontal="true"
@@ -195,74 +241,51 @@
                                     card_view:cardCornerRadius="25dp"
                                     card_view:cardElevation="@dimen/_12sdp">
 
-                                    <RelativeLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
+                                    <LinearLayout
+                                        android:orientation="vertical"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
                                         android:layout_gravity="center">
 
-                                        <LinearLayout
-                                            android:layout_centerInParent="true"
+
+
+                                        <com.nic.InspectionAppNew.support.MyCustomTextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:orientation="vertical">
+                                            android:layout_gravity="center_horizontal"
+                                            android:padding="@dimen/_5sdp"
+                                            android:id="@+id/go_online"
+                                            android:text="@string/go_online"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/darkblue"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold"
+                                            tools:ignore="TooDeepLayout" />
+                                        <View
+                                            android:layout_width="match_parent"
+                                            android:layout_height="0.7dp"
+                                            android:background="@color/grey_8" />
+
+                                        <com.nic.InspectionAppNew.support.MyCustomTextView
+                                            android:id="@+id/go_offline"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:padding="@dimen/_5sdp"
+                                            android:text="@string/go_offline"
+                                            android:textColor="@color/darkblue"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold"
+                                            />
 
 
-                                            <LinearLayout
-                                                android:layout_gravity="center_horizontal"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:orientation="vertical">
-
-                                                <LinearLayout
-                                                    android:layout_width="wrap_content"
-                                                    android:layout_height="wrap_content"
-                                                    android:gravity="center_horizontal"
-                                                    android:orientation="vertical"
-                                                    >
-
-                                                    <com.nic.InspectionAppNew.support.MyCustomTextView
-                                                        android:layout_width="wrap_content"
-                                                        android:layout_height="wrap_content"
-                                                        android:layout_gravity="center_horizontal"
-                                                        android:padding="@dimen/_5sdp"
-                                                        android:id="@+id/go_online"
-                                                        android:text="@string/go_online"
-                                                        android:textAlignment="center"
-                                                        android:textColor="@color/darkblue"
-                                                        android:textSize="16sp"
-                                                        android:textStyle="bold"
-                                                        />
-                                                    <View
-                                                        android:layout_width="match_parent"
-                                                        android:layout_height="0.7dp"
-                                                        android:background="@color/grey_8" />
-
-                                                    <com.nic.InspectionAppNew.support.MyCustomTextView
-                                                        android:id="@+id/go_offline"
-                                                        android:layout_width="wrap_content"
-                                                        android:layout_height="wrap_content"
-                                                        android:padding="@dimen/_5sdp"
-                                                        android:text="@string/go_offline"
-                                                        android:textColor="@color/darkblue"
-                                                        android:textSize="16sp"
-                                                        android:textStyle="bold"
-                                                        />
 
 
-                                                </LinearLayout>
-
-
-                                            </LinearLayout>
-
-
-                                        </LinearLayout>
-                                    </RelativeLayout>
+                                    </LinearLayout>
                                 </androidx.cardview.widget.CardView>
 
                             </RelativeLayout>
                         </RelativeLayout>
-                        <RelativeLayout
+                    <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/relative2"
@@ -288,7 +311,8 @@
                                         android:layout_width="@dimen/_40sdp"
                                         android:layout_height="@dimen/_40sdp"
                                         android:rotation="270"
-                                        android:src="@drawable/quater_circle_shape" />
+                                        android:src="@drawable/quater_circle_shape"
+                                        tools:ignore="ContentDescription" />
                                 </RelativeLayout>
 
                                 <Button
@@ -299,7 +323,7 @@
                                     android:clickable="true"
                                     android:focusable="true"
                                     android:id="@+id/other_works_btn"
-                                    android:text="Other Works"
+                                    android:text="@string/other_works"
                                     android:textAlignment="center"
                                     android:textAllCaps="false"
                                     android:textStyle="bold"
@@ -328,111 +352,27 @@
                                     card_view:cardElevation="@dimen/_12sdp">
 
                                     <RelativeLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
                                         android:layout_gravity="center">
 
-                                        <LinearLayout
-                                            android:layout_centerInParent="true"
+                                        <com.nic.InspectionAppNew.support.MyCustomTextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:orientation="vertical">
-
-
-                                            <LinearLayout
-                                                android:layout_gravity="center_horizontal"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:orientation="vertical">
-
-                                                <LinearLayout
-                                                    android:layout_width="wrap_content"
-                                                    android:layout_height="wrap_content"
-                                                    android:gravity="center_horizontal"
-                                                    android:orientation="vertical"
-                                                    >
-
-                                                    <com.nic.InspectionAppNew.support.MyCustomTextView
-                                                        android:layout_width="wrap_content"
-                                                        android:layout_height="wrap_content"
-                                                        android:layout_gravity="center_horizontal"
-                                                        android:padding="@dimen/_5sdp"
-                                                        android:id="@+id/go_offline_other"
-                                                        android:text="@string/go_offline"
-                                                        android:textAlignment="center"
-                                                        android:textColor="@color/darkblue"
-                                                        android:textSize="16sp"
-                                                        android:textStyle="bold"
-                                                        />
-
-                                                </LinearLayout>
-
-
-                                            </LinearLayout>
-
-
-                                        </LinearLayout>
+                                            android:layout_gravity="center_horizontal"
+                                            android:padding="@dimen/_5sdp"
+                                            android:id="@+id/go_offline_other"
+                                            android:text="@string/go_offline"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/darkblue"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold"
+                                            />
                                     </RelativeLayout>
                                 </androidx.cardview.widget.CardView>
 
                             </RelativeLayout>
                         </RelativeLayout>
-
-
-
-
-
-                        <RelativeLayout
-                            android:id="@+id/imgUser"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="@dimen/_20sdp">
-
-                            <RelativeLayout
-                                android:layout_width="@dimen/_100sdp"
-                                android:layout_height="@dimen/_100sdp"
-                                android:layout_centerHorizontal="true"
-                                android:id="@+id/img"
-                                android:background="@drawable/circletransparant"
-                                tools:ignore="UselessParent">
-
-                                <de.hdodenhof.circleimageview.CircleImageView
-                                    android:id="@+id/user_img"
-                                    android:layout_width="120dp"
-                                    android:layout_height="120dp"
-                                    android:layout_centerInParent="true"
-                                    android:padding="8dp"
-                                    android:src="@drawable/ic_user" />
-
-
-                            </RelativeLayout>
-
-
-                        </RelativeLayout>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/user_name"
-                            android:layout_below="@+id/imgUser"
-                            android:layout_centerHorizontal="true"
-                            android:padding="@dimen/_5sdp"
-                            android:textColor="@color/white"
-                            android:textStyle="bold"
-                            android:text="@string/user_name" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/user_level"
-                            android:textColor="@color/white"
-                            android:layout_below="@+id/user_name"
-                            android:layout_centerHorizontal="true"
-                            android:padding="@dimen/_3sdp"
-                            android:text="District : Tirunelveli" />
-
-                    </RelativeLayout>
-
 
                 </RelativeLayout>
 
@@ -464,147 +404,137 @@
                     >
 
                     <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_200sdp"
-                        >
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/img_layout">
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/img_layout">
 
-                            <ImageView
-                                android:layout_width="@dimen/_120sdp"
-                                android:layout_height="@dimen/_120sdp"
-                                android:rotation="270"
-                                android:layout_alignParentStart="true"
-                                android:src="@drawable/quater_circle_shape_let" />
-                        </RelativeLayout>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/name"
-                            android:layout_below="@+id/img_layout"
-                            android:padding="@dimen/_8sdp"
-                            android:gravity="start"
-                            android:layout_marginLeft="@dimen/_10sdp"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_14sdp"
-                            android:text="Name : Test User"
-                            android:textStyle="bold"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/level"
-                            android:layout_below="@+id/name"
-                            android:padding="@dimen/_8sdp"
-                            android:gravity="start"
-                            android:layout_marginLeft="@dimen/_10sdp"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_14sdp"
-                            android:text="Name : Test User"
-                            android:textStyle="bold"/>
-
-                        <RelativeLayout
+                        <ImageView
+                            android:layout_width="@dimen/_120sdp"
+                            android:layout_height="@dimen/_120sdp"
+                            android:rotation="270"
                             android:layout_alignParentStart="true"
-                            android:id="@+id/imgUser1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginLeft="10dp"
-                            >
+                            android:src="@drawable/quater_circle_shape_let"
+                            tools:ignore="ContentDescription" />
+                    </RelativeLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/name"
+                        android:layout_below="@+id/img_layout"
+                        android:padding="@dimen/_8sdp"
+                        android:gravity="start"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_14sdp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/level"
+                        android:layout_below="@+id/name"
+                        android:padding="@dimen/_8sdp"
+                        android:gravity="start"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_14sdp"
+                        android:textStyle="bold"/>
 
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:layout_width="@dimen/_60sdp"
-                                android:layout_height="@dimen/_60sdp"
-                                android:layout_margin="9dp"
-                                android:id="@+id/profile_icon"
-                                android:padding="8dp"
-                                android:src="@drawable/ic_new_avathar"
-                                />
-                            <ImageView
-                                android:visibility="gone"
-                                android:padding="@dimen/_3sdp"
-                                android:layout_centerVertical="true"
-                                android:layout_width="wrap_content"
-                                android:layout_height="@dimen/_30sdp"
-                                android:layout_toEndOf="@+id/profile_icon"
-                                android:id="@+id/time_image"
-                                />
-                            <TextView
-                                android:textStyle="bold"
-                                android:padding="@dimen/_3sdp"
-                                android:layout_centerVertical="true"
-                                android:layout_width="wrap_content"
-                                android:layout_height="@dimen/_30sdp"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="@dimen/_15sdp"
-                                android:layout_toEndOf="@+id/profile_icon"
-                                android:id="@+id/time_image_text"/>
+                    <RelativeLayout
+                        android:layout_alignParentStart="true"
+                        android:id="@+id/imgUser1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="10dp"
+                        >
 
-                        </RelativeLayout>
-                        <LinearLayout
-                            android:id="@+id/ll1"
-                            android:layout_alignParentEnd="true"
-                            android:layout_toRightOf="@+id/imgUser1"
-                            android:layout_margin="@dimen/_10sdp"
-                            android:layout_width="wrap_content"
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:layout_width="@dimen/_60sdp"
+                            android:layout_height="@dimen/_60sdp"
+                            android:layout_margin="9dp"
+                            android:id="@+id/profile_icon"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_new_avathar"
+                            />
+                        <ImageView
                             android:visibility="gone"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/district1"
-                                android:textColor="@color/white"
-                                android:layout_marginTop="@dimen/_5sdp"
-                                android:textSize="@dimen/_12sdp"
-                                android:gravity="center_horizontal"
-                                android:text="District"
-                                android:textStyle="bold"/>
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/local_body1"
-                                android:gravity="center_horizontal"
-                                android:layout_marginTop="@dimen/_5sdp"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="Village"
-                                android:textStyle="bold"/>
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/name1"
-                                android:layout_marginTop="@dimen/_5sdp"
-                                android:gravity="center_horizontal"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="Name"
-                                android:textStyle="bold"/>
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/designation1"
-                                android:textColor="@color/white"
-                                android:gravity="center_horizontal"
-                                android:textStyle="bold"
-                                android:textSize="@dimen/_12sdp"
-                                />
-                        </LinearLayout>
-                        <TextView
-                            android:layout_below="@+id/ll1"
+                            android:padding="@dimen/_3sdp"
+                            android:layout_centerVertical="true"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:id="@+id/timer"
-                            android:textColor="@color/white"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_toEndOf="@+id/profile_icon"
+                            android:id="@+id/time_image"
+                            tools:ignore="ContentDescription" />
+                        <TextView
                             android:textStyle="bold"
-                            android:textSize="@dimen/_12sdp"
-                            android:layout_marginEnd="@dimen/_10sdp"
-                            android:padding="@dimen/_10sdp"/>
+                            android:padding="@dimen/_3sdp"
+                            android:layout_centerVertical="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/_30sdp"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="@dimen/_15sdp"
+                            android:layout_toEndOf="@+id/profile_icon"
+                            android:id="@+id/time_image_text"/>
 
                     </RelativeLayout>
+                    <LinearLayout
+                        android:id="@+id/ll1"
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@+id/imgUser1"
+                        android:layout_margin="@dimen/_10sdp"
+                        android:layout_width="wrap_content"
+                        android:visibility="gone"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/district1"
+                            android:textColor="@color/white"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:textSize="@dimen/_12sdp"
+                            android:gravity="center_horizontal"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/local_body1"
+                            android:gravity="center_horizontal"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12sdp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/name1"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:gravity="center_horizontal"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12sdp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/designation1"
+                            android:textColor="@color/white"
+                            android:gravity="center_horizontal"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/_12sdp"
+                            />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_below="@+id/ll1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/timer"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/_12sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:padding="@dimen/_10sdp"/>
 
                 </RelativeLayout>
                 <View
@@ -616,15 +546,13 @@
 
                 </View>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/vv"
-                    android:background="@color/white">
+
 
                     <LinearLayout
+                        android:layout_below="@+id/vv"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
                         android:orientation="vertical">
 
                         <RelativeLayout
@@ -638,21 +566,21 @@
                                 android:layout_width="@dimen/_30sdp"
                                 android:layout_height="@dimen/_30sdp"
                                 android:src="@drawable/logo"
-                                android:id="@+id/print_icon1"/>
+                                android:id="@+id/print_icon1"
+                                tools:ignore="ContentDescription" />
 
                             <TextView
-                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_marginStart="@dimen/_10sdp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:layout_toRightOf="@+id/print_icon1"
-                                android:text="View Inspected Work"
+                                android:layout_toEndOf="@+id/print_icon1"
+                                android:text="@string/view_inspected_work"
                                 android:textColor="@color/darkblue"
                                 android:textSize="@dimen/_14sdp"/>
                         </RelativeLayout>
                         <View
                             android:id="@+id/vv1"
-                            android:layout_below="@+id/rellay2"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:background="@color/grey_4">
@@ -671,21 +599,22 @@
                                 android:layout_width="@dimen/_30sdp"
                                 android:layout_height="@dimen/_30sdp"
                                 android:src="@drawable/ic_pdf"
-                                android:id="@+id/print_icon2"/>
+                                android:id="@+id/print_icon2"
+                                tools:ignore="ContentDescription" />
 
                             <TextView
-                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_marginStart="@dimen/_10sdp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:layout_toRightOf="@+id/print_icon2"
-                                android:text="View Inspected Report"
+                                android:layout_toEndOf="@+id/print_icon2"
+                                android:text="@string/view_inspected_report"
                                 android:textColor="@color/darkblue"
                                 android:textSize="@dimen/_14sdp"/>
                         </RelativeLayout>
                     </LinearLayout>
 
-                </RelativeLayout>
+
 
             </RelativeLayout>
 

@@ -37,7 +37,8 @@
                         android:onClick="@{()-> activity.onBackPressed()}"
                         android:padding="@dimen/_7sdp"
                         android:tint="@color/white"
-                        android:src="@drawable/back" />
+                        android:src="@drawable/back"
+                        tools:ignore="ContentDescription" />
 
 
                     <TextView
@@ -46,7 +47,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:text="Work List"
+                        android:text="@string/work_list"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/_15sdp"
                         tools:ignore="RelativeOverlap" />
@@ -102,8 +103,8 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toLeftOf="@+id/calendar_icon"
+                        android:layout_marginStart="10dp"
+                        android:layout_toStartOf="@+id/calendar_icon"
                         android:ellipsize="marquee"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
@@ -120,7 +121,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginRight="@dimen/_6sdp"
+                        android:layout_marginEnd="@dimen/_6sdp"
                         android:background="@drawable/datepicker_icon"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
@@ -134,7 +135,7 @@
                     android:layout_below="@+id/date_layout"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:text="(OR)"
+                    android:text="@string/or"
                     android:layout_centerInParent="true"
                     android:layout_centerHorizontal="true"
                     android:focusable="true"
@@ -159,16 +160,16 @@
                         android:id="@+id/work_id"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingLeft="@dimen/_15sdp"
+                        android:paddingStart="@dimen/_15sdp"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
                         android:layout_centerHorizontal="true"
-                        android:hint="Enter Work Id"
+                        android:hint="@string/enter_work_id"
                         android:inputType="number"
                         android:background="@color/full_transparent"
                         android:textAlignment="viewStart"
                         android:textSize="@dimen/_13sdp"
-                        />
+                        tools:ignore="Autofill,RtlSymmetry" />
 
                     <ImageView
                         android:layout_width="@dimen/_30sdp"
@@ -180,7 +181,8 @@
                         android:layout_centerVertical="true"
                         android:src="@drawable/back"
                         android:tint="@color/white"
-                        android:rotation="180"/>
+                        android:rotation="180"
+                        tools:ignore="ContentDescription" />
 
 
                 </RelativeLayout>
@@ -192,7 +194,6 @@
                     >
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler"
-                        android:layout_below="@+id/work_tv"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="@dimen/_10sdp"
@@ -208,7 +209,6 @@
                         android:text="@string/no_data_found"
                         android:textAlignment="center"
                         android:gravity="center"
-                        android:layout_below="@+id/work_tv"
                         android:layout_marginTop="@dimen/_50sdp"
                         android:textColor="@color/grey_10"
                         android:textSize="@dimen/title_text_size"

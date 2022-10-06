@@ -8,10 +8,9 @@
     android:padding="10dp"
     android:background="@color/full_transparent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center"
     app:cardCornerRadius="10dp"
     app:cardElevation="5dp"
@@ -24,7 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
-            android:weightSum="2">
+            android:weightSum="2"
+            android:baselineAligned="false">
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -46,7 +46,6 @@
                     android:gravity="center"
                     android:textSize="@dimen/_13sdp"
                     android:layout_height="wrap_content"
-                    android:text="dd-mm-yyyy"
                     android:textColor="@color/primary_text_color"
                     android:id="@+id/fromDateValue"/>
 
@@ -72,7 +71,7 @@
                     android:gravity="center"
                     android:textSize="@dimen/_13sdp"
                     android:layout_height="wrap_content"
-                    android:text="dd-mm-yyyy"
+
                     android:textColor="@color/white"
                     android:id="@+id/toDateValue"/>
 
@@ -97,9 +96,9 @@
                 android:text="@string/cancel"
                 android:id="@+id/cancel"
                 android:gravity="top|center_horizontal"
-                android:layout_toLeftOf="@+id/ok"
+                android:layout_toStartOf="@+id/ok"
                 android:textColor="@color/colorAccent"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 android:paddingBottom="10dp"/>
             <TextView
                 android:layout_width="100dp"

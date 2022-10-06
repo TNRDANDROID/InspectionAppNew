@@ -38,7 +38,8 @@
                         android:onClick="@{()-> activity.onBackPressed()}"
                         android:padding="@dimen/_7sdp"
                         android:tint="@color/white"
-                        android:src="@drawable/back" />
+                        android:src="@drawable/back"
+                        tools:ignore="ContentDescription" />
 
 
                     <TextView
@@ -47,7 +48,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:text="Filter Work List"
+                        android:text="@string/filter_work_list"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/_13sdp"
                         tools:ignore="RelativeOverlap" />
@@ -86,12 +87,12 @@
                 android:orientation="vertical">
                 <TextView
                     android:id="@+id/fin_year_tv"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Select financial year"
+                    android:text="@string/select_fin_year"
                     android:textColor="@color/grey_8"
                     android:textSize="@dimen/_13sdp" />
 
@@ -112,11 +113,11 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
-                        android:layout_marginLeft="15dp"
+                        android:layout_marginStart="15dp"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_13sdp"
                         android:visibility="visible"
-                        />
+                        tools:ignore="RelativeOverlap" />
 
                     <Spinner
                         android:id="@+id/fin_year_spinner"
@@ -133,12 +134,12 @@
                 <TextView
                     android:id="@+id/district_tv"
                     android:layout_below="@+id/fin_year_layout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Select district"
+                    android:text="@string/select_district"
                     android:textColor="@color/grey_8"
                     android:textSize="@dimen/_13sdp"
                     />
@@ -160,11 +161,11 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
-                        android:layout_marginLeft="15dp"
+                        android:layout_marginStart="15dp"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_13sdp"
                         android:visibility="visible"
-                        />
+                        tools:ignore="RelativeOverlap" />
 
                     <Spinner
                         android:id="@+id/district_spinner"
@@ -181,12 +182,12 @@
                 <TextView
                     android:id="@+id/block_tv"
                     android:layout_below="@+id/district_layout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Select block"
+                    android:text="@string/select_block"
                     android:textColor="@color/grey_8"
                     android:textSize="@dimen/_13sdp"
                     />
@@ -208,11 +209,11 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
-                        android:layout_marginLeft="15dp"
+                        android:layout_marginStart="15dp"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_13sdp"
                         android:visibility="visible"
-                        />
+                        tools:ignore="RelativeOverlap" />
 
                     <Spinner
                         android:id="@+id/block_spinner"
@@ -229,12 +230,12 @@
                 <TextView
                     android:id="@+id/village_tv"
                     android:layout_below="@+id/block_layout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Select village"
+                    android:text="@string/select_village"
                     android:textColor="@color/grey_8"
                     android:textSize="@dimen/_13sdp"
                     />
@@ -256,11 +257,11 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
-                        android:layout_marginLeft="15dp"
+                        android:layout_marginStart="15dp"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_13sdp"
                         android:visibility="visible"
-                        />
+                        tools:ignore="RelativeOverlap" />
 
                     <Spinner
                         android:id="@+id/village_spinner"
@@ -276,13 +277,13 @@
 
                 <TextView
                     android:id="@+id/scheme_tv"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/village_layout"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Select scheme"
+                    android:text="@string/select_scheme"
                     android:textColor="@color/grey_8"
                     android:textSize="@dimen/_13sdp" />
 
@@ -303,11 +304,11 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
-                        android:layout_marginLeft="15dp"
+                        android:layout_marginStart="15dp"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_13sdp"
                         android:visibility="visible"
-                        />
+                        tools:ignore="RelativeOverlap" />
 
                     <Spinner
                         android:id="@+id/scheme_spinner"
@@ -333,8 +334,8 @@
                     android:layout_marginBottom="@dimen/_50sdp"
                     android:background="@drawable/login_button"
                     android:onClick="@{()-> activity.download()}"
-                    android:text="Submit"
-                    android:textAllCaps="true"
+                    android:text="@string/submit"
+                    android:textAllCaps="false"
                     android:textColor="@android:color/white" />
 
 

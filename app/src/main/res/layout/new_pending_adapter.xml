@@ -54,7 +54,7 @@
                                     android:gravity="start"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text="Work id"
+                                    android:text="@string/work_id"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -63,7 +63,7 @@
                                     android:gravity="center"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text=":"
+                                    android:text="@string/colan_symbol"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -91,7 +91,7 @@
                                     android:gravity="start"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text="Work Name"
+                                    android:text="@string/work_name"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -100,7 +100,7 @@
                                     android:gravity="center"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text=":"
+                                    android:text="@string/colan_symbol"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -129,7 +129,7 @@
                                     android:gravity="start"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text="Financial Year"
+                                    android:text="@string/financial_year"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -138,7 +138,7 @@
                                     android:gravity="center"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text=":"
+                                    android:text="@string/colan_symbol"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -167,7 +167,7 @@
                                     android:gravity="start"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text="AS value"
+                                    android:text="@string/as_value"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -176,7 +176,7 @@
                                     android:gravity="center"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text=":"
+                                    android:text="@string/colan_symbol"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -205,7 +205,7 @@
                                     android:gravity="start"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text="TS value"
+                                    android:text="@string/ts_value"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -214,7 +214,7 @@
                                     android:gravity="center"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text=":"
+                                    android:text="@string/colan_symbol"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -244,7 +244,7 @@
                                     android:gravity="start"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text="Work Status"
+                                    android:text="@string/work_status"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -253,7 +253,7 @@
                                     android:gravity="center"
                                     android:textColor="@color/grey_10"
                                     android:textSize="@dimen/_12sdp"
-                                    android:text=":"
+                                    android:text="@string/colan_symbol"
                                     />
                                 <TextView
                                     android:layout_width="0dp"
@@ -284,7 +284,7 @@
                                 android:padding="@dimen/_2sdp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_toLeftOf="@+id/upload"
+                                android:layout_toStartOf="@+id/upload"
                                 android:background="@drawable/button_bg_white"
                                 android:id="@+id/delete">
                                 <TextView
@@ -306,7 +306,7 @@
                                 android:layout_marginStart="@dimen/_10sdp"
                                 android:layout_marginEnd="@dimen/_10sdp"
                                 android:padding="@dimen/_2sdp"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/button_bg_white"
@@ -332,13 +332,13 @@
                             android:id="@+id/view_offline_images"
                             android:gravity="end"
                             android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             android:textColor="@color/grey_9"
                             android:textSize="@dimen/_14sdp"
                             android:text="@string/view_image"
                             android:textStyle="bold"
                             android:layout_gravity="end"
-                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
                             android:layout_marginBottom="@dimen/_8sdp"
                             />
 

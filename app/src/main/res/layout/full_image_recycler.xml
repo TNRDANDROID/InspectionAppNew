@@ -1,4 +1,4 @@
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools">
 
 <data>
     <variable
@@ -22,19 +22,23 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="@dimen/margin"
-                android:text="View Image"
+                android:text="@string/view_image"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                tools:ignore="RelativeOverlap" />
 
             <ImageView
                 android:id="@+id/back_img"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:padding="@dimen/_4sdp"
                 android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="@dimen/_12sdp"
+                android:layout_marginStart="@dimen/_12sdp"
                 android:onClick="@{()-> activity.onBackPress()}"
-                android:src="@mipmap/back_arrow" />
+                android:src="@drawable/back"
+                android:tint="@color/white"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/home_img"
@@ -42,9 +46,10 @@
                 android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
-                android:layout_marginRight="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
                 android:onClick="@{()-> activity.homePage()}"
-                android:src="@mipmap/home_img" />
+                android:src="@mipmap/home_img"
+                tools:ignore="ContentDescription" />
 
         </RelativeLayout>
 

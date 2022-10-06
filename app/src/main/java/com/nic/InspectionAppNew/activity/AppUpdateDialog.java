@@ -39,10 +39,8 @@ public class AppUpdateDialog extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_ok:
-                showGooglePlay();
-                break;
+        if (v.getId() == R.id.btn_ok) {
+            showGooglePlay();
         }
     }
 

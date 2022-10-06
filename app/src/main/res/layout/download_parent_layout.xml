@@ -18,7 +18,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:padding="@dimen/_6sdp"
-        android:text="Software Designed &amp; Developed by NIC"
+        android:text="@string/software_designed_amp_developed_by_nic"
         android:textAlignment="center"
         android:textColor="#FC46B0F3"
         android:textSize="15sp"

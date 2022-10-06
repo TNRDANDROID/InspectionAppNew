@@ -197,8 +197,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     public void checkLoginScreen() {
         //local
-        loginScreenBinding.userName.setText("8931475663");
-        loginScreenBinding.password.setText("test123#$");//state local
+        /*loginScreenBinding.userName.setText("8931475663");
+        loginScreenBinding.password.setText("test123#$");//state local*/
 
         /*loginScreenBinding.userName.setText("7877979787");
         loginScreenBinding.password.setText("test123#$");//Dist local*/
@@ -317,7 +317,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("districtList", "" + authKey);
+        Log.d("districtList", "" + dataSet);
         return dataSet;
     }
     public JSONObject blockListJsonParams() throws JSONException {
@@ -325,7 +325,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("blockListDistrictWise", "" + authKey);
+        Log.d("blockListDistrictWise", "" + dataSet);
         return dataSet;
     }
 
@@ -375,6 +375,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         prefManager.setLevels(jsonObject.get(AppConstant.LEVELS));
                         Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName() + prefManager.getName());
                         prefManager.setUserPassKey(decryptedKey);
+                        prefManager.setUserName(loginScreenBinding.userName.getText().toString());
                         if(jsonObject.get(AppConstant.LEVELS).equals("S")){
                             prefManager.setStateCode(jsonObject.get("statecode"));
 //                            prefManager.setStateName(jsonObject.get(AppConstant.STATE_NAME));

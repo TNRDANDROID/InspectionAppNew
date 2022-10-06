@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/document_layout"
     android:visibility="visible"
@@ -20,11 +21,12 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:padding="10dp"
-            android:text="Document"
+            android:text="@string/document"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="@dimen/_14sdp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="RelativeOverlap" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -33,7 +35,8 @@
             android:src="@drawable/ic_download_icon"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/_10sdp"
-            android:id="@+id/down_load_icon"/>
+            android:id="@+id/down_load_icon"
+            tools:ignore="ContentDescription" />
 
     </RelativeLayout>
 
@@ -50,7 +53,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:text="0"
         android:padding="10dp"
         android:textAlignment="center"
         android:textColor="@color/border_line"
