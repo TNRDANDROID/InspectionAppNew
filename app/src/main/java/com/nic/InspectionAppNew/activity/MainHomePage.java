@@ -44,7 +44,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     public dbData dbData = new dbData(this);
     public  DBHelper dbHelper;
     public  SQLiteDatabase db;
-    private String isHome;
+    private String isHome="";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,13 +63,17 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         if (bundle != null) {
             isHome = bundle.getString("Home");
         }
+        Utils.hideProgress();
 
 
 
         if (Utils.isOnline()) {
-            getPhotoCount();
-            getFinYearList();
-            getInspection_statusList();
+            if(!isHome.equals("Home")){
+                getPhotoCount();
+                getFinYearList();
+                getInspection_statusList();
+            }
+
         }
         syncButtonVisibility();
         homeScreenBinding.userName.setText(prefManager.getName());

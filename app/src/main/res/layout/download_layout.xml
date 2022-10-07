@@ -8,11 +8,6 @@
     android:orientation="vertical">
 
 
-    <include
-        android:id="@+id/toolbar_container"
-        layout="@layout/toolbar_with_back"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 
     <ScrollView
@@ -1218,7 +1213,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_gravity="end"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="@dimen/_15sdp"
                     android:layout_marginBottom="@dimen/_50sdp"
@@ -1239,5 +1234,10 @@
 
     </ScrollView>
 
+    <include
+        android:id="@+id/toolbar_container"
+        layout="@layout/toolbar_with_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

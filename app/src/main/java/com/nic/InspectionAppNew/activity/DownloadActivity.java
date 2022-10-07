@@ -313,7 +313,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     }
     public void loadOfflineDistrictListDBValues() {
 
-        Cursor DistrictList = getRawEvents("SELECT * FROM " + DISTRICT_TABLE_NAME, null);
+        Cursor DistrictList = getRawEvents("SELECT * FROM " + DISTRICT_TABLE_NAME+" order by dname", null);
         District.clear();
         final ArrayList<String> myDistrictList = new ArrayList<String>();
         final ArrayList<String> myDistrictCodeList = new ArrayList<String>();
@@ -1418,7 +1418,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
 
     public void loadOfflineSchemeListDBValues() {
-        String query = "SELECT distinct scheme_name,scheme_seq_id FROM " + SCHEME_TABLE_NAME + " Where fin_year in " + prefManager.getFinYearJson().toString().replace("[", "(").replace("]", ")") + " order by LTRIM(scheme_name) asc";
+        String query = "SELECT distinct scheme_name,scheme_seq_id FROM " + SCHEME_TABLE_NAME + " Where fin_year in " + prefManager.getFinYearJson().toString().replace("[", "(").replace("]", ")") +  " order by scheme_name asc";
         Cursor SchemeList = getRawEvents(query, null);
         Log.d("SchemeQuery", "" + query);
 

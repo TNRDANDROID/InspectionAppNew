@@ -51,8 +51,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         production {
-            debuggable false
-            testCoverageEnabled false
+            debuggable true
+            testCoverageEnabled true
             minifyEnabled false
             shrinkResources false
             signingConfig signingConfigs.debug

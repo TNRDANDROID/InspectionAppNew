@@ -293,7 +293,10 @@ public class dbData {
                 selection = "save_work_details_primary_id = ?";
                 selectionArgs = new String[]{save_work_details_primary_id};
             }
-            else {
+            else if(type.equals("exist")){
+                selection = "work_id = ?";
+                selectionArgs = new String[]{work_id};
+            }else {
                 selection = "save_work_details_primary_id = ? and work_id = ? and serial_no = ?";
                 selectionArgs = new String[]{save_work_details_primary_id,work_id,serial_number};
             }

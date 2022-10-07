@@ -1,5 +1,6 @@
 package com.nic.InspectionAppNew.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -83,6 +84,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
 
 
 
+    @SuppressLint("StaticFieldLeak")
     public class fetchpendingtask extends AsyncTask<JSONObject, Void,
             ArrayList<ModelClass>> {
         @Override
@@ -146,7 +148,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         return true;
     }
 
-    public JSONObject saveImagesJsonParams(JSONObject savePMAYDataSet,String save_work_details_primary_id_) {
+    public void saveImagesJsonParams(JSONObject savePMAYDataSet, String save_work_details_primary_id_) {
         save_work_details_primary_id = save_work_details_primary_id_;
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), savePMAYDataSet.toString());
         JSONObject dataSet = new JSONObject();
@@ -161,7 +163,6 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         }
 
         Log.d("saveImages", "" + dataSet);
-        return dataSet;
     }
 
 

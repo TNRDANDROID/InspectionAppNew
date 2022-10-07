@@ -453,7 +453,8 @@
                             android:layout_margin="9dp"
                             android:id="@+id/profile_icon"
                             android:padding="8dp"
-                            android:src="@drawable/ic_new_avathar"
+                            android:background="@drawable/circletransparant"
+                            android:src="@drawable/ic_user_icon"
                             />
                         <ImageView
                             android:visibility="gone"

@@ -12,25 +12,6 @@
         android:id="@+id/tool_bar_bg_rl"
         android:layout_width="match_parent"
         android:layout_height="200dp">
-        <TextView
-            android:id="@+id/skip"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_gravity="end"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:layout_marginBottom="@dimen/_25sdp"
-            android:layout_marginEnd="@dimen/_10sdp"
-            android:text="@string/skip"
-            android:drawableEnd="@drawable/ic_double_arrow"
-            android:drawableTint="@color/darkblue"
-            android:drawablePadding="0dp"
-            android:gravity="center"
-            android:textSize="@dimen/_14sdp"
-            android:textStyle="bold"
-            android:textColor="@color/darkblue"
-            tools:ignore="RelativeOverlap,UnusedAttribute" />
 
         <ImageView
             android:visibility="gone"

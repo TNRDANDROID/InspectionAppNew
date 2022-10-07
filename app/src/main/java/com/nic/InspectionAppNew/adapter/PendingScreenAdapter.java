@@ -315,7 +315,7 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, FullImageActivity.class);
         intent.putExtra("save_work_details_primary_id",save_work_details_primary_id);
-        intent.putExtra("work_id",pendingListFiltered.get(position).getWork_id());
+        intent.putExtra("work_id",String.valueOf(pendingListFiltered.get(position).getWork_id()));
         intent.putExtra("OnOffType","Offline");
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

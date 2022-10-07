@@ -112,7 +112,6 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     int work_id;
     int min_img_count=0;
     int max_img_count =0;
-    int clicked_position;
 
     String dcode;
     String bcode;
@@ -132,6 +131,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     String work_group_id;
     String work_type_id;
     String onOffType;
+    ArrayList<ModelClass> imageCount;
+    int clicked_position =0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -171,8 +172,19 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
         cameraScreenBinding.btnSaveLocal.setOnClickListener(this::onClick);
         cameraScreenBinding.imageCountTv.setText("You Can Capture up to "+max_img_count+" photos");
-        updateView(CameraScreen.this, cameraScreenBinding.cameraLayout, "", "", "", "");
+//        updateView(CameraScreen.this, cameraScreenBinding.cameraLayout, "", "","", "", "");
+        dbData.open();
+        imageCount = dbData.getParticularSavedImage("exist","",String.valueOf(work_id),"");
 
+        if(imageCount.size() > 0) {
+            for(int i=0;i<imageCount.size();i++){
+                updateView(CameraScreen.this,cameraScreenBinding.cameraLayout,imageCount.get(i).getImage_path(),imageCount.get(i).getDescription(),"",imageCount.get(i).getLatitude(),imageCount.get(i).getLongtitude());
+            }
+        }
+        else {
+            updateView(CameraScreen.this,cameraScreenBinding.cameraLayout,"","","","","");
+
+        }
     }
     private void getIntentData(){
         work_id= getIntent().getIntExtra("work_id",0);
@@ -474,7 +486,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             String filePath = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
             Bitmap rotatedBitmap = BitmapFactory.decodeFile(filePath);
 
-            /*int childCount = cameraScreenBinding.cameraLayout.getChildCount();
+            int childCount = cameraScreenBinding.cameraLayout.getChildCount();
             if (childCount > 0) {
 
                 View vv = cameraScreenBinding.cameraLayout.getChildAt(clicked_position);
@@ -492,8 +504,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 cameraScreenBinding.imageView.setVisibility(View.VISIBLE);
                 cameraScreenBinding.imageView.setImageBitmap(rotatedBitmap);
             }
-*/
-            imageView.setImageBitmap(rotatedBitmap);
+           /* imageView.setImageBitmap(rotatedBitmap);
             image_view_preview.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);
             latitude_text.setText(""+offlatTextValue);
@@ -501,7 +512,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
             cameraScreenBinding.imageViewPreview.setVisibility(View.GONE);
             cameraScreenBinding.imageView.setVisibility(View.VISIBLE);
-            cameraScreenBinding.imageView.setImageBitmap(rotatedBitmap);
+            cameraScreenBinding.imageView.setImageBitmap(rotatedBitmap);*/
         }
         else if (requestCode == CAMERA_CAPTURE_VIDEO_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -723,7 +734,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         if(viewArrayList.size() < max_img_count) {
             if (imageView.getDrawable() != null && viewArrayList.size() > 0) {
                 if (!myEditTextView.getText().toString().equals("") ) {
-                    updateView(CameraScreen.this, cameraScreenBinding.cameraLayout, "", "", "", "");
+                    updateView(CameraScreen.this, cameraScreenBinding.cameraLayout, "", "", "", "", "");
                 } else {
                     Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description));
                 }
@@ -747,7 +758,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     }
 
     //Method for update single view based on email or mobile type
-    public View updateView(final Activity activity, final LinearLayout emailOrMobileLayout, final String values, final String type, final String latitude, final String longitude) {
+    public View updateView(final Activity activity, final LinearLayout emailOrMobileLayout, final String values,final String work_description, final String type, final String latitude, final String longitude) {
         final View hiddenInfo = activity.getLayoutInflater().inflate(R.layout.image_with_description, emailOrMobileLayout, false);
         final ImageView imageView_close = (ImageView) hiddenInfo.findViewById(R.id.imageView_close);
         final LinearLayout description_layout = (LinearLayout) hiddenInfo.findViewById(R.id.description_layout);
@@ -759,7 +770,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         description_layout.setVisibility(View.VISIBLE);
 
 //        imageView.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_phone_camera));
-      /*  if(values!=null && !values.equals("") && !values.isEmpty()){
+        if(values!=null && !values.equals("") && !values.isEmpty()){
 
             offlatTextValue= Double.valueOf(latitude);
             offlongTextValue= Double.valueOf(longitude);
@@ -771,12 +782,13 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 imageView.setVisibility(View.VISIBLE);
                 latitude_text.setText(""+offlatTextValue);
                 longtitude_text.setText(""+offlongTextValue);
+                myEditTextView.setText(work_description);
 
                 cameraScreenBinding.imageViewPreview.setVisibility(View.GONE);
                 cameraScreenBinding.imageView.setVisibility(View.VISIBLE);
                 cameraScreenBinding.imageView.setImageBitmap(myBitmap);
             }
-        }*/
+        }
         imageView_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -795,7 +807,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         image_view_preview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                clicked_position =emailOrMobileLayout.indexOfChild(hiddenInfo);
                 getLatLong();
 
             }
@@ -803,7 +815,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                clicked_position =emailOrMobileLayout.indexOfChild(hiddenInfo);
                 getLatLong();
             }
         });
@@ -937,7 +949,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         return temp;
     }
 
-    public JSONObject saveImagesJsonParams(JSONObject savePMAYDataSet) {
+    public void saveImagesJsonParams(JSONObject savePMAYDataSet) {
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), savePMAYDataSet.toString());
         JSONObject dataSet = new JSONObject();
         try {
@@ -950,7 +962,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
         //Log.d("saveImages", "" + dataSet);
-        return dataSet;
+        //return dataSet;
     }
 
     private void uploadDialog(JSONObject jsonObject){

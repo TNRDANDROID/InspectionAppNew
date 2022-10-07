@@ -309,7 +309,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
 
     public void schemeFilterSpinner() {
         Cursor cursor = null;
-        cursor = db.rawQuery("SELECT distinct scheme_name,scheme_seq_id FROM " + DBHelper.SCHEME_TABLE_NAME , null);
+        cursor = db.rawQuery("SELECT distinct scheme_name,scheme_seq_id FROM " + DBHelper.SCHEME_TABLE_NAME + " order by scheme_name asc", null);
 
         Scheme.clear();
         ModelClass list = new ModelClass();
@@ -430,7 +430,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
     }
     public void loadDistrictList() {
         Cursor cursor = null;
-        cursor = db.rawQuery("SELECT * FROM " + DBHelper.DISTRICT_TABLE_NAME , null);
+        cursor = db.rawQuery("SELECT * FROM " + DBHelper.DISTRICT_TABLE_NAME+" order by dname" , null);
         District.clear();
         ModelClass list = new ModelClass();
         list.setDistrictName("Select District");
