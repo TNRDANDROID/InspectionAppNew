@@ -67,6 +67,8 @@ public class CommonAdapter extends BaseAdapter {
             tv_type.setText(pmgsySurvey.getWork_name());
         }else if (type.equalsIgnoreCase("status")) {
             tv_type.setText(pmgsySurvey.getWork_status());
+        }else if (type.equalsIgnoreCase("other_category_list")) {
+            tv_type.setText(pmgsySurvey.getOther_work_category_name());
         }
         else {
             tv_type.setText("");

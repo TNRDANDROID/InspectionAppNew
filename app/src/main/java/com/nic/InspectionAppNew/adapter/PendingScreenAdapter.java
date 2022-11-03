@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +27,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.activity.FullImageActivity;
 import com.nic.InspectionAppNew.activity.PendingScreen;
+import com.nic.InspectionAppNew.activity.SaveWorkDetailsActivity;
 import com.nic.InspectionAppNew.constant.AppConstant;
 import com.nic.InspectionAppNew.dataBase.DBHelper;
 import com.nic.InspectionAppNew.dataBase.dbData;
@@ -44,8 +44,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-
 
 
 public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScreenAdapter.MyViewHolder> implements Filterable {
@@ -182,6 +180,31 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
                 }
             }
         });
+
+        holder.pendingScreenAdapterBinding.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, SaveWorkDetailsActivity.class);
+                intent.putExtra("dcode", pendingListFiltered.get(position).getDistrictCode());
+                intent.putExtra("bcode", pendingListFiltered.get(position).getBlockCode());
+                intent.putExtra("pvcode", pendingListFiltered.get(position).getPvCode());
+                intent.putExtra("hab_code", pendingListFiltered.get(position).getHabCode());
+                intent.putExtra("scheme_group_id", pendingListFiltered.get(position).getScheme_group_id());
+                intent.putExtra("work_group_id", pendingListFiltered.get(position).getWork_group_id());
+                intent.putExtra("work_type_id", pendingListFiltered.get(position).getWork_type_id());
+                intent.putExtra("scheme_id", pendingListFiltered.get(position).getSchemeSequentialID());
+                intent.putExtra("fin_year", pendingListFiltered.get(position).getFinancialYear());
+                intent.putExtra("work_id", pendingListFiltered.get(position).getWork_id());
+                intent.putExtra("work_name", pendingListFiltered.get(position).getWork_name());
+                intent.putExtra("as_value", pendingListFiltered.get(position).getAs_value());
+                intent.putExtra("ts_value", pendingListFiltered.get(position).getTs_value());
+                intent.putExtra("current_stage_of_work", pendingListFiltered.get(position).getCurrent_stage_of_work());
+                intent.putExtra("is_high_value", pendingListFiltered.get(position).getIs_high_value());
+                intent.putExtra("onOffType","offline");
+                intent.putExtra("other_work_detail",pendingListFiltered.get(position).getOther_work_detail());
+                context.startActivity(intent);
+            }
+        });
         holder.pendingScreenAdapterBinding.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -235,7 +258,7 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
         prefManager.setDeleteAdapterPosition(position);
         try {
             maindataset.put(AppConstant.KEY_SERVICE_ID,"work_inspection_details_save");
-            dataset.put("dcode", pendingListFiltered.get(position).getDistictCode());
+            dataset.put("dcode", pendingListFiltered.get(position).getDistrictCode());
             dataset.put("bcode", pendingListFiltered.get(position).getBlockCode());
             dataset.put("pvcode", pendingListFiltered.get(position).getPvCode());
             dataset.put("hab_code", pendingListFiltered.get(position).getHabCode());
@@ -336,7 +359,11 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        if (row.getPvName().toLowerCase().contains(charString.toLowerCase()) || row.getPvName().toLowerCase().contains(charString.toUpperCase())) {
+                        if (
+                                row.getWork_name().toLowerCase().contains(charString.toLowerCase()) ||
+                                        row.getWork_name().toLowerCase().contains(charString.toUpperCase())||
+                                        String.valueOf(row.getWork_id()).toLowerCase().contains(charString.toUpperCase())
+                        ) {
                             filteredList.add(row);
                         }
                     }

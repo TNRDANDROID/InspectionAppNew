@@ -42,6 +42,7 @@ public class AppConstant {
 
     public static String KEY_VILLAGE_LIST_ALL = "village_list_all";
     public static String KEY_VILLAGE_LIST_DISTRICT_WISE = "village_list_district_wise";
+    public static String KEY_VILLAGE_LIST_LOCATION_WISE = "get_calculate_distance";
     public static String KEY_VILLAGE_LIST_DISTRICT_BLOCK_WISE = "village_list_district_block_wise";
     public static String KEY_HABITATION_LIST_DISTRICT_BLOCK_WISE = "habitation_list_district_block_wise";
     public static String KEY_SCHEME_LIST_ALL = "scheme_list_all";
@@ -54,6 +55,7 @@ public class AppConstant {
     public static String KEY_WORK_LIST_OPTIONAL_ACTION = "work_list_optional_action";
     public static String KEY_WORK_LIST_OPTIONAL = "work_list_optional";
     public static String KEY_INSPECTION_WORK_DETAILS = "get_inspection_work_details";
+    public static String KEY_INSPECTION_WORK_DETAILS_OF_LOCATION = "get_village_pending_works";
     public static String SCHEME_ID = "scheme_id";
     public static String WORK_ID = "work_id";
     public static String WORK_NAME = "work_name";

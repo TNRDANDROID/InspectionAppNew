@@ -2,7 +2,9 @@ package com.nic.InspectionAppNew.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,20 +12,37 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.nic.InspectionAppNew.R;
+import com.nic.InspectionAppNew.adapter.CheckBoxAdapter;
 import com.nic.InspectionAppNew.api.Api;
 import com.nic.InspectionAppNew.api.ApiService;
 import com.nic.InspectionAppNew.api.ServerResponse;
@@ -49,7 +68,7 @@ import static com.nic.InspectionAppNew.dataBase.DBHelper.DISTRICT_TABLE_NAME;
 import static com.nic.InspectionAppNew.dataBase.DBHelper.SCHEME_TABLE_NAME;
 
 
-public class DownloadActivity extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener {
+public class DownloadActivity extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, Api.schemeListener  {
     private Button download, btn_view_finyear,btn_view_district, btn_view_block, btn_view_village, btn_view_scheme;
 
     public MyCustomTextView title_tv, selected_finyear_tv, selected_district_tv, selected_block_tv, selected_village_tv, selected_scheme_tv;
@@ -85,7 +104,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     boolean[] villageCheckedItems;
     boolean[] schemeCheckedItems;
     String pref_Block, pref_Village, pref_Scheme, pref_finYear;
-    private ProgressHUD progressHUD;
+
     private JSONArray updatedJsonArray;
     boolean clicked = false;
     ArrayList<JSONArray> myVillageCodelist;
@@ -101,7 +120,10 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     String Dname="";
     String Vcode="";
     String Vname="";
-
+    private SearchView searchView;
+    RecyclerView scheme_recycler;
+    CheckBoxAdapter checkBoxAdapter;
+    private ArrayList<ModelClass> selectedSchemeList=new ArrayList<ModelClass>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -227,12 +249,6 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             @Override
             public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                 if (isChecked) {
-
-                    mSchemeItems.clear();
-                    select_scheme_layout.setVisibility(View.GONE);
-                    mDistrictItems.clear();
-                    select_district_layout.setVisibility(View.GONE);
-
                     if (!mFinYearItems.contains(position)) {
                         mFinYearItems.add(position);
 
@@ -240,13 +256,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 } else if (mFinYearItems.contains(position)) {
                     mFinYearItems.remove(Integer.valueOf(position));
                 }
-                JSONArray finyearJsonArray = new JSONArray();
 
-                for (int i = 0; i < mFinYearItems.size(); i++) {
-                    finyearJsonArray.put(finyearStrings[mFinYearItems.get(i)]);
-                    prefManager.setFinYearJson(finyearJsonArray);
-                    Log.d("FinYearArray", "" + finyearJsonArray);
-                }
             }
         });
 
@@ -256,21 +266,38 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
                 String item = "";
-
+                if(mFinYearItems.size() > 0){
                 for (int i = 0; i < mFinYearItems.size(); i++) {
                     item = item + finyearStrings[mFinYearItems.get(i)];
                     if (i != mFinYearItems.size() - 1) {
                         item = item + ", ";
                     }
                 }
-                if(mFinYearItems.size() > 0){
+                    JSONArray finyearJsonArray = new JSONArray();
+
+                    for (int i = 0; i < mFinYearItems.size(); i++) {
+                        finyearJsonArray.put(finyearStrings[mFinYearItems.get(i)]);
+                        prefManager.setFinYearJson(finyearJsonArray);
+                        Log.d("FinYearArray", "" + finyearJsonArray);
+                    }
                     select_fin_year_layout.setVisibility(View.VISIBLE);
-                }else {
-                    select_fin_year_layout.setVisibility(View.GONE);
-                }
+
                 selected_finyear_tv.setText(item);
                 selected_scheme_tv.setText("");
                 select_scheme_layout.setVisibility(View.GONE);
+                mSchemeItems.clear();
+                if(prefManager.getLevels().equalsIgnoreCase("S")) {
+                    mDistrictItems.clear();
+                    mBlockItems.clear();
+                    mVillageItems.clear();
+                    selected_block_tv.setText("");
+                    selected_district_tv.setText("");
+                    select_district_layout.setVisibility(View.GONE);
+                    select_block_layout.setVisibility(View.GONE);
+                    selected_village_tv.setText("");
+                    select_village_layout.setVisibility(View.GONE);
+                }
+
                 if(!prefManager.getLevels().equalsIgnoreCase("S")) {
                     if (Utils.isOnline()) {
                         try {
@@ -284,6 +311,9 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                         loadOfflineSchemeListDBValues();
                     }
                 }
+            } else {
+                select_fin_year_layout.setVisibility(View.GONE);
+            }
             }
         });
 
@@ -302,7 +332,20 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     mFinYearItems.clear();
                     selected_finyear_tv.setText("");
                     select_fin_year_layout.setVisibility(View.GONE);
-
+                    selected_scheme_tv.setText("");
+                    select_scheme_layout.setVisibility(View.GONE);
+                    mSchemeItems.clear();
+                    if(prefManager.getLevels().equalsIgnoreCase("S")) {
+                        mDistrictItems.clear();
+                        mBlockItems.clear();
+                        mVillageItems.clear();
+                        selected_block_tv.setText("");
+                        selected_district_tv.setText("");
+                        select_district_layout.setVisibility(View.GONE);
+                        select_block_layout.setVisibility(View.GONE);
+                        selected_village_tv.setText("");
+                        select_village_layout.setVisibility(View.GONE);
+                    }
                 }
             }
         });
@@ -323,7 +366,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     ModelClass districtList = new ModelClass();
                     String districtCode = DistrictList.getString(DistrictList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
                     String districtName= DistrictList.getString(DistrictList.getColumnIndexOrThrow(AppConstant.DISTRICT_NAME));
-                    districtList.setDistictCode(districtCode);
+                    districtList.setDistrictCode(districtCode);
                     districtList.setDistrictName(districtName);
                     District.add(districtList);
                 } while (DistrictList.moveToNext());
@@ -331,7 +374,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         }
         for (int i = 0; i < District.size(); i++) {
             myDistrictList.add(District.get(i).getDistrictName());
-            myDistrictCodeList.add(District.get(i).getDistictCode());
+            myDistrictCodeList.add(District.get(i).getDistrictCode());
         }
 
         districtStrings = myDistrictList.toArray(new String[myDistrictList.size()]);
@@ -345,13 +388,9 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         mBuilder.setSingleChoiceItems(districtStrings, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int position) {
-                JSONArray districtCodeJsonArray = new JSONArray();
-                prefManager.setDistrictCode(District.get(position).getDistictCode());
-                districtCodeJsonArray.put(District.get(position).getDistictCode());
-                prefManager.setDistrictCodeJson(districtCodeJsonArray);
-                Dcode=District.get(position).getDistictCode();
+                Dcode=District.get(position).getDistrictCode();
                 Dname=District.get(position).getDistrictName();
-                Log.d("districtcode", "" + districtCodeJsonArray);
+
 
             }
         });
@@ -361,6 +400,12 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             @Override
             public void onClick(DialogInterface dialogInterface, int position) {
                 if (Dcode != null && !Dcode.equals("")) {
+                    JSONArray districtCodeJsonArray = new JSONArray();
+                    prefManager.setDistrictCode(Dcode);
+                    districtCodeJsonArray.put(Dcode);
+                    prefManager.setDistrictCodeJson(districtCodeJsonArray);
+                    Log.d("districtcode", "" + districtCodeJsonArray);
+
                     select_district_layout.setVisibility(View.VISIBLE);
                     selected_district_tv.setVisibility(View.VISIBLE);
                     selected_district_tv.setText(Dname);
@@ -411,12 +456,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             @Override
             public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                 if (isChecked) {
-                    mSchemeItems.clear();
-                    select_scheme_layout.setVisibility(View.GONE);
-                    mBlockItems.clear();
-                    select_block_layout.setVisibility(View.GONE);
-                    mVillageItems.clear();
-                    select_village_layout.setVisibility(View.GONE);
+
 
                     /*if (!mDistrictItems.contains(position)) {
                         mDistrictItems.add(position);
@@ -438,14 +478,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 } else if (mDistrictItems.contains(position)) {
                     mDistrictItems.remove(Integer.valueOf(position));
                 }
-                JSONArray districtCodeJsonArray = new JSONArray();
 
-                for (int i = 0; i < mDistrictItems.size(); i++) {
-                    prefManager.setDistrictCode(districtCodeStrings[mDistrictItems.get(i)]);
-                    districtCodeJsonArray.put(districtCodeStrings[mDistrictItems.get(i)]);
-                }
-                prefManager.setDistrictCodeJson(districtCodeJsonArray);
-                Log.d("districtcode", "" + districtCodeJsonArray);
 
 
 
@@ -466,32 +499,46 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
                     }
                 }
+
                 if(mDistrictItems.size() > 0) {
+                    JSONArray districtCodeJsonArray = new JSONArray();
+
+                    for (int i = 0; i < mDistrictItems.size(); i++) {
+                        prefManager.setDistrictCode(districtCodeStrings[mDistrictItems.get(i)]);
+                        districtCodeJsonArray.put(districtCodeStrings[mDistrictItems.get(i)]);
+                    }
+                    prefManager.setDistrictCodeJson(districtCodeJsonArray);
+                    Log.d("districtcode", "" + districtCodeJsonArray);
                     select_district_layout.setVisibility(View.VISIBLE);
+                    selected_district_tv.setText(item);
+                    selected_scheme_tv.setText("");
+                    selected_block_tv.setText("");
+                    selected_village_tv.setText("");
+                    mSchemeItems.clear();
+                    select_scheme_layout.setVisibility(View.GONE);
+                    mBlockItems.clear();
+                    select_block_layout.setVisibility(View.GONE);
+                    mVillageItems.clear();
+                    select_village_layout.setVisibility(View.GONE);
+
+                    loadOfflineBlockListDBValues();
+                    if(prefManager.getLevels().equalsIgnoreCase("S")) {
+                        if (Utils.isOnline()) {
+                            try {
+                                db.delete(SCHEME_TABLE_NAME, null, null);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }if(mFinYearItems.size() > 0 && mDistrictItems.size() > 0) {
+                                getSchemeList();
+                            }
+                        } else {
+                            loadOfflineSchemeListDBValues();
+                        }
+                    }
                 }else {
                     select_district_layout.setVisibility(View.GONE);
                 }
-                selected_district_tv.setText(item);
-                selected_scheme_tv.setText("");
-                select_scheme_layout.setVisibility(View.GONE);
-                selected_block_tv.setText("");
-                select_block_layout.setVisibility(View.GONE);
-                selected_village_tv.setText("");
-                select_village_layout.setVisibility(View.GONE);
-                loadOfflineBlockListDBValues();
-                if(prefManager.getLevels().equalsIgnoreCase("S")) {
-                    if (Utils.isOnline()) {
-                        try {
-                            db.delete(SCHEME_TABLE_NAME, null, null);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }if(mFinYearItems.size() > 0 && mDistrictItems.size() > 0) {
-                            getSchemeList();
-                        }
-                    } else {
-                        loadOfflineSchemeListDBValues();
-                    }
-                }
+
 
             }
         });
@@ -511,6 +558,18 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     mDistrictItems.clear();
                     selected_district_tv.setText("");
                     select_district_layout.setVisibility(View.GONE);
+                    selected_scheme_tv.setText("");
+                    selected_block_tv.setText("");
+                    selected_village_tv.setText("");
+                    mSchemeItems.clear();
+                    select_scheme_layout.setVisibility(View.GONE);
+                    mBlockItems.clear();
+                    select_block_layout.setVisibility(View.GONE);
+                    mVillageItems.clear();
+                    select_village_layout.setVisibility(View.GONE);
+                    JSONArray districtCodeJsonArray = new JSONArray();
+                    prefManager.setDistrictCodeJson(districtCodeJsonArray);
+                    prefManager.setDistrictCode("");
                 }
             }
         });
@@ -544,7 +603,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     String districtCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
                     String blockCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.BLOCK_CODE));
                     String blockName = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.BLOCK_NAME));
-                    blockList.setDistictCode(districtCode);
+                    blockList.setDistrictCode(districtCode);
                     blockList.setBlockCode(blockCode);
                     blockList.setBlockName(blockName);
                     Block.add(blockList);
@@ -556,7 +615,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
             if (prefManager.getLevels().equalsIgnoreCase("S")) {
                 JSONArray jsonArray = new JSONArray();
-                jsonArray.put(Block.get(i).getDistictCode());
+                jsonArray.put(Block.get(i).getDistrictCode());
                 jsonArray.put(Block.get(i).getBlockCode());
                 myBlockCodelist.add(jsonArray);
             }
@@ -577,13 +636,10 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         mBuilder.setSingleChoiceItems(blockStrings, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int position) {
-                    JSONArray blockCodeJsonArray = new JSONArray();
-                    prefManager.setBlockCode(Block.get(position).getBlockCode());
-                    blockCodeJsonArray.put(Block.get(position).getBlockCode());
-                    prefManager.setBlockCodeJson(blockCodeJsonArray);
+
                     Bcode=Block.get(position).getBlockCode();
                     Bname=Block.get(position).getBlockName();
-                    Log.d("blockcode", "" + blockCodeJsonArray);
+
 
             }
         });
@@ -593,6 +649,11 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             @Override
             public void onClick(DialogInterface dialogInterface, int position) {
                 if (Bcode != null && !Bcode.equals("")) {
+                    JSONArray blockCodeJsonArray = new JSONArray();
+                    prefManager.setBlockCode(Bcode);
+                    blockCodeJsonArray.put(Bcode);
+                    prefManager.setBlockCodeJson(blockCodeJsonArray);
+                    Log.d("blockcode", "" + blockCodeJsonArray);
                     getVillageList();
                     select_block_layout.setVisibility(View.VISIBLE);
                     selected_block_tv.setVisibility(View.VISIBLE);
@@ -642,8 +703,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                 if (isChecked) {
 
-                    mVillageItems.clear();
-                    select_village_layout.setVisibility(View.GONE);
+
 
                     /*if (!mBlockItems.contains(position)) {
                         mBlockItems.add(position);
@@ -665,21 +725,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 } else if (mBlockItems.contains(position)) {
                     mBlockItems.remove(Integer.valueOf(position));
                 }
-                JSONArray blockCodeJsonArray = new JSONArray();
 
-                for (int i = 0; i < mBlockItems.size(); i++) {
-                    prefManager.setBlockCode(blockCodeStrings[mBlockItems.get(i)]);
-                    if(prefManager.getLevels().equalsIgnoreCase("S")) {
-                        blockCodeJsonArray.put(myBlockCodelist.get(mBlockItems.get(i)));
-                    }
-                    if (prefManager.getLevels().equalsIgnoreCase("D")) {
-
-                        blockCodeJsonArray.put(blockCodeStrings[mBlockItems.get(i)]);
-                    }
-
-                }
-                prefManager.setBlockCodeJson(blockCodeJsonArray);
-                Log.d("blockcode", "" + blockCodeJsonArray);
 
               // loadOfflineVillgeListDBValues();
 
@@ -701,6 +747,21 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     }
                 }
                 if(mBlockItems.size() > 0) {
+                    JSONArray blockCodeJsonArray = new JSONArray();
+
+                    for (int i = 0; i < mBlockItems.size(); i++) {
+                        prefManager.setBlockCode(blockCodeStrings[mBlockItems.get(i)]);
+                        if(prefManager.getLevels().equalsIgnoreCase("S")) {
+                            blockCodeJsonArray.put(myBlockCodelist.get(mBlockItems.get(i)));
+                        }
+                        if (prefManager.getLevels().equalsIgnoreCase("D")) {
+
+                            blockCodeJsonArray.put(blockCodeStrings[mBlockItems.get(i)]);
+                        }
+
+                    }
+                    prefManager.setBlockCodeJson(blockCodeJsonArray);
+                    Log.d("blockcode", "" + blockCodeJsonArray);
                     select_block_layout.setVisibility(View.VISIBLE);
                 }else {
                     select_block_layout.setVisibility(View.GONE);
@@ -708,6 +769,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 selected_block_tv.setText(item);
                 selected_village_tv.setText("");
                 select_village_layout.setVisibility(View.GONE);
+                mVillageItems.clear();
+
 //                loadOfflineVillgeListDBValues();
                 getVillageList();
             }
@@ -728,6 +791,12 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     mBlockItems.clear();
                     selected_block_tv.setText("");
                     select_block_layout.setVisibility(View.GONE);
+                    selected_village_tv.setText("");
+                    select_village_layout.setVisibility(View.GONE);
+                    mVillageItems.clear();
+                    JSONArray blockCodeJsonArray = new JSONArray();
+                    prefManager.setBlockCode("");
+                    prefManager.setBlockCodeJson(blockCodeJsonArray);
                 }
             }
         });
@@ -795,12 +864,10 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         mBuilder.setSingleChoiceItems(villageStrings, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int position) {
-                    JSONArray villageCodeJsonArray = new JSONArray();
-                    villageCodeJsonArray.put(Village.get(position).getVillageListPvCode());
-                    prefManager.setVillagePvCodeJson(villageCodeJsonArray);
+
                     Vcode=Village.get(position).getVillageListPvCode();
                     Vname=Village.get(position).getVillageListPvName();
-                    Log.d("villagecode", "" + villageCodeJsonArray);
+
             }
         });
 
@@ -809,6 +876,10 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             @Override
             public void onClick(DialogInterface dialogInterface, int position) {
                 if (Vcode != null && !Vcode.equals("")) {
+                    JSONArray villageCodeJsonArray = new JSONArray();
+                    villageCodeJsonArray.put(Vcode);
+                    prefManager.setVillagePvCodeJson(villageCodeJsonArray);
+                    Log.d("villagecode", "" + villageCodeJsonArray);
                     selected_village_tv.setText(Vname);
                     select_village_layout.setVisibility(View.VISIBLE);
                     selected_village_tv.setVisibility(View.VISIBLE);
@@ -869,13 +940,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 } else if (mVillageItems.contains(position)) {
                     mVillageItems.remove((Integer.valueOf(position)));
                 }
-                JSONArray villageCodeJsonArray = new JSONArray();
 
-                for (int i = 0; i < mVillageItems.size(); i++) {
-                    villageCodeJsonArray.put(Village.get(i).getVillageListPvCode());
-                }
-                prefManager.setVillagePvCodeJson(villageCodeJsonArray);
-                Log.d("villagecode", "" + villageCodeJsonArray);
 //                if (isChecked) {
 //                    mVillageItems.add(position);
 //                } else {
@@ -896,6 +961,13 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     }
                 }
                 if(mVillageItems.size() > 0) {
+                    JSONArray villageCodeJsonArray = new JSONArray();
+
+                    for (int i = 0; i < mVillageItems.size(); i++) {
+                        villageCodeJsonArray.put(Village.get(i).getVillageListPvCode());
+                    }
+                    prefManager.setVillagePvCodeJson(villageCodeJsonArray);
+                    Log.d("villagecode", "" + villageCodeJsonArray);
                     select_village_layout.setVisibility(View.VISIBLE);
                 }else {
                     select_village_layout.setVisibility(View.GONE);
@@ -919,6 +991,9 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     mVillageItems.clear();
                     selected_village_tv.setText("");
                     select_village_layout.setVisibility(View.GONE);
+                    JSONArray villageCodeJsonArray = new JSONArray();
+                    prefManager.setVillagePvCodeJson(villageCodeJsonArray);
+
                 }
             }
         });
@@ -967,7 +1042,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 villageCheckbox();
                 break;
             case R.id.btn_view_scheme:
-                schemeCheckbox();
+                schemeValidate();
+//                schemeCheckbox();
                 break;
             case R.id.btn_download:
                 download();
@@ -1163,12 +1239,19 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             e.printStackTrace();
         }
     }
-    public class InsertVillageTask extends AsyncTask<JSONObject, Void, Void> {
 
+    @Override
+    public void OnMyScheme(ArrayList<ModelClass> selSchemeList) {
+        selectedSchemeList=selSchemeList;
+    }
+
+    public class InsertVillageTask extends AsyncTask<JSONObject, Void, Void> {
+        private  ProgressHUD progressHUD;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Utils.showProgress(DownloadActivity.this);
+//            Utils.showProgress(DownloadActivity.this,progressHUD);
+            progressHUD = ProgressHUD.show(DownloadActivity.this, "Loading...", true, false, null);
         }
 
         @Override
@@ -1187,7 +1270,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     for (int i = 0; i < jsonArray.length(); i++) {
                         ModelClass villageListValue = new ModelClass();
                         try {
-                            villageListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                            villageListValue.setDistrictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
                             villageListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
                             villageListValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
                             villageListValue.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
@@ -1207,16 +1290,24 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Utils.hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             loadOfflineVillgeListDBValues();
         }
     }
     public class InsertWorkListTask extends AsyncTask<JSONObject, Void, Void> {
-
+        private  ProgressHUD progressHUD;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Utils.showProgress(DownloadActivity.this);
+//            Utils.showProgress(DownloadActivity.this,progressHUD);
+            progressHUD = ProgressHUD.show(DownloadActivity.this, "Loading...", true, false, null);
         }
 
         @Override
@@ -1248,7 +1339,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                                 String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
 
                                 ModelClass modelClass = new ModelClass();
-                                modelClass.setDistictCode(dcode);
+                                modelClass.setDistrictCode(dcode);
                                 modelClass.setBlockCode(SelectedBlockCode);
                                 modelClass.setHabCode(hab_code);
                                 modelClass.setPvCode(pvcode);
@@ -1284,7 +1375,14 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Utils.hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             if (workListInsert){
                 showAlert(DownloadActivity.this, "Your Data Downloaded Successfully!");
                 workListInsert = false;
@@ -1327,11 +1425,12 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     }
 
     public class InsertSchemeListTask extends AsyncTask<JSONObject, Void, Void> {
-
+        private  ProgressHUD progressHUD;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Utils.showProgress(DownloadActivity.this);
+            progressHUD = ProgressHUD.show(DownloadActivity.this, "Loading...", true, false, null);
+//            Utils.showProgress(DownloadActivity.this,progressHUD);
         }
 
         @Override
@@ -1375,7 +1474,14 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Utils.hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             loadOfflineSchemeListDBValues();
         }
     }
@@ -1386,7 +1492,6 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         } catch (Exception e) {
             e.printStackTrace();
         }
-        progressHUD = ProgressHUD.show(this, "Downloading...", true, false, null);
 
         try {
 
@@ -1411,9 +1516,6 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         } catch (ArrayIndexOutOfBoundsException a) {
             a.printStackTrace();
         }
-        if (progressHUD != null) {
-            progressHUD.cancel();
-        }
     }
 
 
@@ -1436,8 +1538,10 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                   //  String fin_year = SchemeList.getString(SchemeList.getColumnIndexOrThrow(AppConstant.FINANCIAL_YEAR));
                     schemeList.setSchemeSequentialID(schemeSequentialID);
                     schemeList.setSchemeName(schemeName);
+                    schemeList.setSchemeCheck(false);
                    // schemeList.setFinancialYear(fin_year);
                     Scheme.add(schemeList);
+                    selectedSchemeList.add(schemeList);
 
                 } while (SchemeList.moveToNext());
             }
@@ -1451,6 +1555,184 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         schemeCheckedItems = new boolean[schemeStrings.length];
     }
 
+    public void schemeValidate(){
+        if(mFinYearItems.size() > 0) {
+            if(prefManager.getLevels().equalsIgnoreCase("S")) {
+                if (Dcode != null && !Dcode.equals("")) {
+                    if(Scheme.size()>0){
+                        schemeCheckboxCustom();
+                    }else {
+                        Utils.showAlert(this,"No Record Found");
+                    }
+
+                }  else {
+                    Utils.showAlert(this,"Please Select District!");
+                    select_scheme_layout.setVisibility(View.GONE);
+                }
+            }else {
+                if(Scheme.size()>0){
+                    schemeCheckboxCustom();
+                }else {
+                    Utils.showAlert(this,"No Record Found");
+                }
+            }
+
+        }
+        else {
+            Utils.showAlert(this,"Please Select Financial Year!");
+            select_scheme_layout.setVisibility(View.GONE);
+        }
+    }
+    public void schemeCheckboxCustom(){
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogView = inflater.inflate(R.layout.check_box_layout, null);
+        final android.app.AlertDialog alertDialog = builder.create();
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(alertDialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        lp.windowAnimations = R.style.DialogAnimation;
+        alertDialog.getWindow().setAttributes(lp);
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        alertDialog.setView(dialogView, 0, 0, 0, 0);
+        alertDialog.setCancelable(true);
+       /* Toolbar toolbar = (Toolbar) dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);*/
+        alertDialog.show();
+        TextView dismiss = (TextView) dialogView.findViewById(R.id.dismiss);
+        TextView ok = (TextView) dialogView.findViewById(R.id.ok);
+        TextView clear = (TextView) dialogView.findViewById(R.id.clear_all);
+        EditText editText = (EditText) dialogView.findViewById(R.id.title_tv);
+        RecyclerView scheme_recycler = (RecyclerView) dialogView.findViewById(R.id.scheme_recycler);
+        scheme_recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
+        scheme_recycler.setItemAnimator(new DefaultItemAnimator());
+        scheme_recycler.setHasFixedSize(true);
+        scheme_recycler.setNestedScrollingEnabled(false);
+        scheme_recycler.setFocusable(false);
+        checkBoxAdapter = new CheckBoxAdapter(this, (ArrayList<ModelClass>) selectedSchemeList,this);
+        scheme_recycler.setAdapter(checkBoxAdapter);
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String item = "";
+                for (int i = 0; i < selectedSchemeList.size(); i++) {
+                    if(selectedSchemeList.get(i).getSchemeCheck()){
+                        item = item + selectedSchemeList.get(i).getSchemeName();
+                        if (i != selectedSchemeList.size() - 1) {
+                            item = item + ", ";
+                        }
+                    }
+
+                }
+                if(selectedSchemeList.size() > 0) {
+                    JSONArray SchemeSeqIdJsonArray = new JSONArray();
+
+                    for (int i = 0; i < selectedSchemeList.size(); i++) {
+                        if(selectedSchemeList.get(i).getSchemeCheck()){
+                            select_scheme_layout.setVisibility(View.VISIBLE);
+                            SchemeSeqIdJsonArray.put(selectedSchemeList.get(i).getSchemeSequentialID());
+                        }
+
+                    }
+                    prefManager.setSchemeSeqIdJson(SchemeSeqIdJsonArray);
+                    Log.d("schemeSeqId", "" + SchemeSeqIdJsonArray);
+
+                }else {
+                    select_scheme_layout.setVisibility(View.GONE);
+                }
+                selected_scheme_tv.setText(item);
+                alertDialog.dismiss();
+            }
+        });
+        dismiss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                for (int i =0;i<selectedSchemeList.size();i++){
+                    selectedSchemeList.get(i).setSchemeCheck(false);
+                }
+                selected_scheme_tv.setText("");
+                select_scheme_layout.setVisibility(View.GONE);
+            }
+        });
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                checkBoxAdapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+// Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    showInputMethod(view.findFocus());
+                }
+            }
+        });
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showInputMethod(view.findFocus());
+            }
+        });
+// listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+// filter recycler view when query submitted
+                checkBoxAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+// filter recycler view when text is changed
+                checkBoxAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        return true;
+    }
+    private void showInputMethod(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(view, 0);
+        }
+    }
     public void schemeCheckbox() {
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(DownloadActivity.this);
@@ -1465,13 +1747,6 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 } else if (mSchemeItems.contains(position)) {
                     mSchemeItems.remove((Integer.valueOf(position)));
                 }
-                JSONArray SchemeSeqIdJsonArray = new JSONArray();
-
-                for (int i = 0; i < mSchemeItems.size(); i++) {
-                    SchemeSeqIdJsonArray.put(schemeCodeStrings[mSchemeItems.get(i)]);
-                }
-                prefManager.setSchemeSeqIdJson(SchemeSeqIdJsonArray);
-                Log.d("schemeSeqId", "" + SchemeSeqIdJsonArray);
 
 //                if (isChecked) {
 //                    mVillageItems.add(position);
@@ -1494,6 +1769,13 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     }
                 }
                 if(mSchemeItems.size() > 0) {
+                    JSONArray SchemeSeqIdJsonArray = new JSONArray();
+
+                    for (int i = 0; i < mSchemeItems.size(); i++) {
+                        SchemeSeqIdJsonArray.put(schemeCodeStrings[mSchemeItems.get(i)]);
+                    }
+                    prefManager.setSchemeSeqIdJson(SchemeSeqIdJsonArray);
+                    Log.d("schemeSeqId", "" + SchemeSeqIdJsonArray);
                     select_scheme_layout.setVisibility(View.VISIBLE);
                 }else {
                     select_scheme_layout.setVisibility(View.GONE);
@@ -1524,7 +1806,17 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         });
         AlertDialog mDialog = mBuilder.create();
         if(mFinYearItems.size() > 0) {
-            mDialog.show();
+            if(prefManager.getLevels().equalsIgnoreCase("S")) {
+                if(mDistrictItems.size() > 0) {
+                    mDialog.show();
+                }  else {
+                    Utils.showAlert(this,"Please Select District!");
+                    select_scheme_layout.setVisibility(View.GONE);
+                }
+            }else {
+                mDialog.show();
+            }
+
         }
         else {
             Utils.showAlert(this,"Please Select Financial Year!");
@@ -1563,7 +1855,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
 
                     ModelClass modelClass = new ModelClass();
-                    modelClass.setDistictCode(dcode);
+                    modelClass.setDistrictCode(dcode);
                     modelClass.setBlockCode(SelectedBlockCode);
                     modelClass.setHabCode(hab_code);
                     modelClass.setPvCode(pvcode);
@@ -1597,14 +1889,16 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
     public void callAlert() {
         if (workListInsert){
-            Utils.showAlert(this, "Your Data Downloaded Successfully!");
+            showAlert(this, "Your Data Downloaded Successfully!");
             workListInsert = false;
+/*
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     openWorkListScreen();
                 }
             }, 1000);
+*/
 
         }
     }

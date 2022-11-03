@@ -29,6 +29,7 @@ import com.nic.InspectionAppNew.databinding.ActivityMainHomePageBinding;
 import com.nic.InspectionAppNew.dialog.MyDialog;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
+import com.nic.InspectionAppNew.support.ProgressHUD;
 import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
 
@@ -63,7 +64,13 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         if (bundle != null) {
             isHome = bundle.getString("Home");
         }
-        Utils.hideProgress();
+
+        if (prefManager.getProfileImage() != null && !prefManager.getProfileImage().equals("")) {
+            homeScreenBinding.userImg.setImageBitmap(Utils.StringToBitMap(prefManager.getProfileImage()));
+        }else {
+            homeScreenBinding.userImg.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_user));
+        }
+
 
 
 
@@ -72,11 +79,13 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 getPhotoCount();
                 getFinYearList();
                 getInspection_statusList();
+                getCategoryList();
             }
 
         }
         syncButtonVisibility();
         homeScreenBinding.userName.setText(prefManager.getName());
+        homeScreenBinding.designation.setText(prefManager.getDesignation());
         homeScreenBinding.name.setText(prefManager.getName());
         if(prefManager.getLevels().equals("S")){
             homeScreenBinding.userLevel.setText("State : "+prefManager.getStateName());
@@ -133,12 +142,20 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 openDownloadScreen();
             }
         });
+        homeScreenBinding.goOnlineOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prefManager.setWorkType("other");
+                prefManager.setOnOffType("online");
+                openOnlineWorkListScreen();
+            }
+        });
         homeScreenBinding.goOfflineOther.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 prefManager.setWorkType("other");
                 prefManager.setOnOffType("offline");
-                openDownloadScreen();
+                openOnlineWorkListScreen();
             }
         });
     }
@@ -146,6 +163,13 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     public void getInspection_statusList() {
         try {
             new ApiService(this).makeJSONObjectRequest("inspection_status", Api.Method.POST, UrlGenerator.getServicesListUrl(), inspection_statusListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public void getCategoryList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("CategoryList", Api.Method.POST, UrlGenerator.getServicesListUrl(), CategoryListJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -179,6 +203,14 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
         Log.d("inspection_statusList", "" + authKey);
+        return dataSet;
+    }
+    public JSONObject CategoryListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.CategoryListJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("CategoryList", "" + authKey);
         return dataSet;
     }
     public JSONObject PhotoCountJsonParams() throws JSONException {
@@ -245,6 +277,16 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 }
                 Log.d("inspection_status", "" + responseDecryptedBlockKey);
             }
+            if ("CategoryList".equals(urlType) /*&& responseObj != null*/) {
+//                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+//                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                String responseDecryptedBlockKey = "{\"STATUS\":\"OK\",\"RESPONSE\":\"OK\",\"JSON_DATA\":[{\"other_work_category_id\":\"1\",\"other_work_category_name\":\"PMAY\"},{\"other_work_category_id\":\"2\",\"other_work_category_name\":\"PMGSY\"},{\"other_work_category_id\":\"3\",\"other_work_category_name\":\"SBM\"},{\"other_work_category_id\":\"4\",\"other_work_category_name\":\"MGNREGS\"},{\"other_work_category_id\":\"5\",\"other_work_category_name\":\"Others\"}]}";
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new Insert_CategoryList_Task().execute(jsonObject);
+                }
+                Log.d("inspection_status", "" + responseDecryptedBlockKey);
+            }
             if ("FinYearList".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
@@ -286,16 +328,26 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     }
 
     public class Insert_Inspection_status_Task extends AsyncTask<JSONObject ,Void ,Void> {
+        private ProgressHUD progressHUD;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Utils.showProgress(MainHomePage.this);
+            progressHUD = ProgressHUD.show(MainHomePage.this, "Loading...", true, false, null);
+//            Utils.showProgress(MainHomePage.this,progressHUD);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Utils.hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
         @Override
         protected Void doInBackground(JSONObject... params) {
@@ -332,17 +384,79 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         }
 
     }
-    public class Insert_Scheme_Task extends AsyncTask<JSONObject ,Void ,Void> {
+    public class Insert_CategoryList_Task extends AsyncTask<JSONObject ,Void ,Void> {
+        private ProgressHUD progressHUD;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Utils.showProgress(MainHomePage.this);
+            progressHUD = ProgressHUD.show(MainHomePage.this, "Loading...", true, false, null);
+//            Utils.showProgress(MainHomePage.this,progressHUD);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Utils.hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+
+            if (params.length > 0) {
+                dbData.open();
+                dbData.deleteOTHER_CATEGORY_TABLETable();
+                JSONArray jsonArray = new JSONArray();
+                try {
+                    jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    try {
+                        String other_work_category_id = jsonArray.getJSONObject(i).getString("other_work_category_id");
+                        String other_work_category_name = jsonArray.getJSONObject(i).getString("other_work_category_name");
+                        ModelClass modelClass = new ModelClass();
+                        modelClass.setOther_work_category_id(Integer.parseInt(other_work_category_id));
+                        modelClass.setOther_work_category_name(other_work_category_name);
+                        dbData.insertCategoryList(modelClass);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return null;
+        }
+
+    }
+    public class Insert_Scheme_Task extends AsyncTask<JSONObject ,Void ,Void> {
+        private  ProgressHUD progressHUD;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(MainHomePage.this, "Loading...", true, false, null);
+//            Utils.showProgress(MainHomePage.this,progressHUD);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
         @Override
         protected Void doInBackground(JSONObject... params) {
@@ -382,16 +496,25 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
     }
     public class Insert_FinYear_Task extends AsyncTask<JSONObject ,Void ,Void> {
+        private  ProgressHUD progressHUD;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Utils.showProgress(MainHomePage.this);
+            progressHUD = ProgressHUD.show(MainHomePage.this, "Loading...", true, false, null);
+//            Utils.showProgress(MainHomePage.this,progressHUD);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Utils.hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
         @Override
         protected Void doInBackground(JSONObject... params) {
@@ -474,7 +597,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
     public void openOnlineWorkListScreen() {
-        Intent intent = new Intent(this, OnlineWorkFilterScreen.class);
+        Intent intent = new Intent(this, GetWorkListActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

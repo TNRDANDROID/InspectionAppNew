@@ -1,6 +1,9 @@
 package com.nic.InspectionAppNew.api;
 
 import com.android.volley.VolleyError;
+import com.nic.InspectionAppNew.model.ModelClass;
+
+import java.util.ArrayList;
 
 /**
  * Created by AchanthiSundar on 28-12-2018.
@@ -21,4 +24,9 @@ public class Api {
 
         void OnError(VolleyError volleyError);
     }
+
+    public interface schemeListener {
+        void OnMyScheme(ArrayList<ModelClass> selectedList);
+    }
+
 }

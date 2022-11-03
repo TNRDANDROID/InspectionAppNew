@@ -46,7 +46,7 @@ public class dbData {
     public ModelClass insertVillage(ModelClass pmgsySurvey) {
 
         ContentValues values = new ContentValues();
-        values.put(AppConstant.DISTRICT_CODE, pmgsySurvey.getDistictCode());
+        values.put(AppConstant.DISTRICT_CODE, pmgsySurvey.getDistrictCode());
         values.put(AppConstant.BLOCK_CODE, pmgsySurvey.getBlockCode());
         values.put(AppConstant.PV_CODE, pmgsySurvey.getPvCode());
         values.put(AppConstant.PV_NAME, pmgsySurvey.getPvName());
@@ -86,6 +86,16 @@ public class dbData {
         Log.d("Inserted_id_status", String.valueOf(id));
 
     }
+    public void insertCategoryList(ModelClass pmgsySurvey) {
+
+        ContentValues values = new ContentValues();
+        values.put("other_work_category_id", pmgsySurvey.getOther_work_category_id());
+        values.put("other_work_category_name", pmgsySurvey.getOther_work_category_name());
+
+        long id = db.insert(DBHelper.OTHER_CATEGORY_TABLE,null,values);
+        Log.d("insertCategoryList", String.valueOf(id));
+
+    }
     public ArrayList<ModelClass> getAll_Village(String dcode, String bcode) {
 
         ArrayList<ModelClass> cards = new ArrayList<>();
@@ -98,7 +108,7 @@ public class dbData {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ModelClass card = new ModelClass();
-                    card.setDistictCode(cursor.getString(cursor
+                    card.setDistrictCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
                     card.setBlockCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
@@ -172,10 +182,37 @@ public class dbData {
         }
         return cards;
     }
+    public ArrayList<ModelClass> getAll_Other_work_category() {
+
+        ArrayList<ModelClass> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("select * from "+DBHelper.OTHER_CATEGORY_TABLE,null);
+            // cursor = db.query(CardsDBHelper.TABLE_CARDS,
+            //       COLUMNS, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ModelClass card = new ModelClass();
+                    card.setOther_work_category_id(cursor.getInt(cursor.getColumnIndexOrThrow("other_work_category_id")));
+                    card.setOther_work_category_name(cursor.getString(cursor.getColumnIndexOrThrow("other_work_category_name")));
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+            e.printStackTrace();
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
     public ModelClass insertHabitation(ModelClass pmgsySurvey) {
 
         ContentValues values = new ContentValues();
-        values.put(AppConstant.DISTRICT_CODE, pmgsySurvey.getDistictCode());
+        values.put(AppConstant.DISTRICT_CODE, pmgsySurvey.getDistrictCode());
         values.put(AppConstant.BLOCK_CODE, pmgsySurvey.getBlockCode());
         values.put(AppConstant.PV_CODE, pmgsySurvey.getPvCode());
         values.put(AppConstant.HABITATION_CODE, pmgsySurvey.getHabCode());
@@ -189,7 +226,7 @@ public class dbData {
     public void Insert_workList(String type,ModelClass modelClass) {
         long id;
         ContentValues values = new ContentValues();
-        values.put("dcode", modelClass.getDistictCode());
+        values.put("dcode", modelClass.getDistrictCode());
         values.put("bcode", modelClass.getBlockCode());
         values.put("pvcode", modelClass.getPvCode());
         values.put("hab_code", modelClass.getHabCode());
@@ -225,7 +262,7 @@ public class dbData {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ModelClass card = new ModelClass();
-                    card.setDistictCode(cursor.getString(cursor
+                    card.setDistrictCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
                     card.setBlockCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
@@ -361,7 +398,7 @@ public class dbData {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ModelClass card = new ModelClass();
-                    card.setDistictCode(cursor.getString(cursor.getColumnIndexOrThrow("dcode")));
+                    card.setDistrictCode(cursor.getString(cursor.getColumnIndexOrThrow("dcode")));
                     card.setBlockCode(cursor.getString(cursor.getColumnIndexOrThrow("bcode")));
                     card.setPvCode(cursor.getString(cursor.getColumnIndexOrThrow("pvcode")));
                     card.setHabCode(cursor.getString(cursor.getColumnIndexOrThrow("hab_code")));
@@ -390,7 +427,7 @@ public class dbData {
         }
         return cards;
     }
-    public ArrayList<ModelClass> getSavedWorkList(String type,String work_id) {
+    public ArrayList<ModelClass> getSavedWorkList(String type,String work_id,String dcode,String bcode,String pvcode) {
 
         ArrayList<ModelClass> cards = new ArrayList<>();
         Cursor cursor = null;
@@ -401,8 +438,8 @@ public class dbData {
                 cursor = db.rawQuery("select * from "+DBHelper.SAVE_WORK_DETAILS,null);
             }
             else {
-                selection = "work_id = ?";
-                selectionArgs = new String[]{work_id};
+                selection = "work_id = ? and dcode = ? and bcode = ? and pvcode = ?";
+                selectionArgs = new String[]{work_id,dcode, bcode, pvcode};
 
 
                 cursor = db.query(DBHelper.SAVE_WORK_DETAILS,new String[]{"*"},
@@ -416,7 +453,7 @@ public class dbData {
                     ModelClass card = new ModelClass();
                     card.setSave_work_details_primary_id(cursor.getInt(cursor.getColumnIndexOrThrow("save_work_details_primary_id")));
                     card.setWork_id(cursor.getInt(cursor.getColumnIndexOrThrow("work_id")));
-                    card.setDistictCode(cursor.getString(cursor.getColumnIndexOrThrow("dcode")));
+                    card.setDistrictCode(cursor.getString(cursor.getColumnIndexOrThrow("dcode")));
                     card.setBlockCode(cursor.getString(cursor.getColumnIndexOrThrow("bcode")));
                     card.setPvCode(cursor.getString(cursor.getColumnIndexOrThrow("pvcode")));
                     card.setHabCode(cursor.getString(cursor.getColumnIndexOrThrow("hab_code")));
@@ -489,6 +526,9 @@ public class dbData {
     public void deleteinspection_statusTable() {
         db.execSQL("delete from " + DBHelper.STATUS_TABLE);
     }
+    public void deleteOTHER_CATEGORY_TABLETable() {
+        db.execSQL("delete from " + DBHelper.OTHER_CATEGORY_TABLE);
+    }
     public void deleteFinYearTable() {
         db.execSQL("delete from " + DBHelper.FINANCIAL_YEAR_TABLE_NAME);
     }
@@ -513,6 +553,7 @@ public class dbData {
         deleteFinYearTable();
         deleteSaveWorkDetailsTable();
         deleteOnlineWorkListTable();
+        deleteOTHER_CATEGORY_TABLETable();
 
     }
 

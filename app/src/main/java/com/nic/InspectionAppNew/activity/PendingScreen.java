@@ -2,6 +2,7 @@ package com.nic.InspectionAppNew.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,7 +10,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -91,7 +96,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         protected ArrayList<ModelClass> doInBackground(JSONObject... params) {
             dbData.open();
             pendingList = new ArrayList<>();
-            pendingList = dbData.getSavedWorkList("all","");
+            pendingList = dbData.getSavedWorkList("all","","","","");
             Log.d("PENDING_COUNT", String.valueOf(pendingList.size()));
             return pendingList;
         }
@@ -177,7 +182,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this, "Your Data is Synchronized to the server!");
+                    showAlert(this, "Your Data is Synchronized to the server!");
                     dbData.open();
                     deleteSavedImage(save_work_details_primary_id);
                     pendingScreenAdapter.removeSavedItem(prefManager.getDeleteAdapterPosition());
@@ -190,6 +195,29 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
             }
 
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public  void showAlert(Activity activity, String msg){
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.alert_dialog);
+
+            TextView text = (TextView) dialog.findViewById(R.id.tv_message);
+            text.setText(msg);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

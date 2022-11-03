@@ -1,31 +1,57 @@
 package com.nic.InspectionAppNew.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.location.Criteria;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.CommonAdapter;
-import com.nic.InspectionAppNew.adapter.WorkListAdapter;
+import com.nic.InspectionAppNew.adapter.SchemeAdapter;
+import com.nic.InspectionAppNew.adapter.VillageListAdapter;
 import com.nic.InspectionAppNew.api.Api;
 import com.nic.InspectionAppNew.api.ApiService;
 import com.nic.InspectionAppNew.api.ServerResponse;
@@ -33,9 +59,9 @@ import com.nic.InspectionAppNew.constant.AppConstant;
 import com.nic.InspectionAppNew.dataBase.DBHelper;
 import com.nic.InspectionAppNew.dataBase.dbData;
 import com.nic.InspectionAppNew.databinding.OnlineWorkFilterScreenBinding;
-import com.nic.InspectionAppNew.databinding.WorkListBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
+import com.nic.InspectionAppNew.support.MyLocationListener;
 import com.nic.InspectionAppNew.support.ProgressHUD;
 import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
@@ -46,6 +72,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
+import static com.nic.InspectionAppNew.dataBase.DBHelper.SCHEME_TABLE_NAME;
 
 public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener {
     private OnlineWorkFilterScreenBinding workListBinding;
@@ -60,7 +90,6 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
     private List<ModelClass> Village = new ArrayList<>();
     private List<ModelClass> Scheme = new ArrayList<>();
     private List<ModelClass> FinYear = new ArrayList<>();
-    private ProgressHUD progressHUD;
     boolean workListInsert = false;
 
     String SelectedDistrict = "",SelectedBlock ="",SelectedVillage ="",SelectedFinYear ="",SelectedScheme ="";
@@ -68,6 +97,16 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
     JSONArray villageCodeJsonArray = new JSONArray();
     JSONArray schemeJsonArray = new JSONArray();
     JSONArray finyearJsonArray = new JSONArray();
+
+    VillageListAdapter adapter;
+    private List<ModelClass> FinYearList = new ArrayList<>();
+    String[] finyearStrings;
+    boolean[] FinYearcheckedItems;
+    final ArrayList<Integer> mFinYearItems = new ArrayList<>();
+    ArrayList<JSONArray> myVillageCodelist;
+    String type="";
+    Dialog dialog;
+    SchemeAdapter schemeAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,6 +124,24 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null) {
             isHome = bundle.getString("Home");
+        }
+        type= getIntent().getStringExtra("type");
+
+        workListBinding.villageSelectionLayout.setVisibility(View.GONE);
+        workListBinding.filterLayout.setVisibility(View.GONE);
+        workListBinding.recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
+        workListBinding.recycler.setItemAnimator(new DefaultItemAnimator());
+        workListBinding.recycler.setHasFixedSize(true);
+        workListBinding.recycler.setNestedScrollingEnabled(false);
+        workListBinding.recycler.setFocusable(false);
+
+        workListBinding.recycler.setVisibility(View.GONE);
+        workListBinding.notFoundTv.setVisibility(View.GONE);
+
+        if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
+            workListBinding.otherWorkLayout.setVisibility(View.GONE);
+        }else {
+            workListBinding.otherWorkLayout.setVisibility(View.VISIBLE);
         }
 
         if(prefManager.getLevels().equals("S")){
@@ -114,17 +171,71 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             getVillageList();
         }
 
+        if(type.equals("village")){
+            workListBinding.villageSelectionLayout.setVisibility(View.VISIBLE);
+            workListBinding.filterLayout.setVisibility(View.GONE);
+            Bundle b = getIntent().getExtras();
+            String response=b.getString("jsonObject");
+            try {
+
+                JSONObject obj = new JSONObject(response);
+                new InsertVillageOfLocationTask().execute(obj);
+                Log.d("My App", obj.toString());
+
+            } catch (Throwable t) {
+                Log.e("My App", "Could not parse malformed JSON: \"" + response + "\"");
+            }
+
+        }else {
+            workListBinding.villageSelectionLayout.setVisibility(View.GONE);
+            workListBinding.filterLayout.setVisibility(View.VISIBLE);
+        }
+
 
 //        schemeFilterSpinner();
         finyearFilterSpinner();
+        loadOfflineFinYearListDBValues();
+        workListBinding.finYearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finYearCheckbox();
+            }
+        });
+        workListBinding.schemeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(SelectedFinYear!= null && !SelectedFinYear.equals("")){
+                    if(prefManager.getLevels().equalsIgnoreCase("S")) {
+                        if(SelectedDistrict!= null && !SelectedDistrict.equals("")){
+                            if(Scheme.size()>0){
+                                callDialog();
+                            }else {
+                                Utils.showAlert(OnlineWorkFilterScreen.this,"No Record Found");
+                            }
 
+                        }else {
+                            Utils.showAlert(OnlineWorkFilterScreen.this,"Select District");
+                        }
 
+                }else {
+                        if(Scheme.size()>0){
+                            callDialog();
+                        }else {
+                            Utils.showAlert(OnlineWorkFilterScreen.this,"No Record Found");
+                        }
+                    }
+            }else {
+                Utils.showAlert(OnlineWorkFilterScreen.this,"Select Financial Year");
+            }
+
+            }
+        });
         workListBinding.districtSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
-                    SelectedDistrict=District.get(position).getDistictCode();
-                    districtCodeJsonArray.put(District.get(position).getDistictCode());
+                    SelectedDistrict=District.get(position).getDistrictCode();
+                    districtCodeJsonArray.put(District.get(position).getDistrictCode());
                     loadBlockList();
                     getSchemeList();
                 }else {
@@ -134,6 +245,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     SelectedScheme="";
                     workListBinding.blockSpinner.setAdapter(null);
                     workListBinding.schemeSpinner.setAdapter(null);
+                    workListBinding.scheme.setText("");
                     workListBinding.villageSpinner.setAdapter(null);
                 }
             }
@@ -165,10 +277,12 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
+                    villageCodeJsonArray = new JSONArray();
                     SelectedVillage=Village.get(position).getPvCode();
                     villageCodeJsonArray.put(Village.get(position).getPvCode());
 
                 }else {
+                    villageCodeJsonArray = new JSONArray();
                     SelectedVillage="";
                 }
             }
@@ -182,10 +296,12 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
+                    schemeJsonArray = new JSONArray();
                     SelectedScheme=Scheme.get(position).getSchemeSequentialID();
                     schemeJsonArray.put(Scheme.get(position).getSchemeSequentialID());
 
                 }else {
+                    schemeJsonArray = new JSONArray();
                     SelectedScheme="";
                 }
             }
@@ -199,6 +315,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
+                    finyearJsonArray = new JSONArray();
                     SelectedFinYear=FinYear.get(position).getFinancialYear();
                     finyearJsonArray.put(FinYear.get(position).getFinancialYear());
                     workListBinding.districtSpinner.setSelection(0);
@@ -206,9 +323,11 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                         getSchemeList();
                     }
                 }else {
+                    finyearJsonArray = new JSONArray();
                     SelectedFinYear="";
                     SelectedScheme="";
                     workListBinding.schemeSpinner.setAdapter(null);
+                    workListBinding.scheme.setText("");
                     if(prefManager.getLevels().equals("S")){
                         workListBinding.districtSpinner.setSelection(0);
                         SelectedDistrict="";
@@ -237,6 +356,177 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         } catch (JSONException e) { e.printStackTrace(); }
 */
     }
+
+    private void callDialog() {
+
+        // Initialize dialog
+        dialog=new Dialog(OnlineWorkFilterScreen.this);
+
+        // set custom dialog
+        dialog.setContentView(R.layout.dialog_searchable_spinner);
+
+        // set custom height and width
+//        dialog.getWindow().setLayout(650,800);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.gravity = Gravity.CENTER;
+        lp.windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setAttributes(lp);
+        // set transparent background
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        // show dialog
+        dialog.show();
+
+        // Initialize and assign variable
+        EditText editText=dialog.findViewById(R.id.edit_text);
+        RecyclerView recycler=dialog.findViewById(R.id.list_view);
+        recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
+        recycler.setItemAnimator(new DefaultItemAnimator());
+        recycler.setHasFixedSize(true);
+        recycler.setNestedScrollingEnabled(false);
+        recycler.setFocusable(false);
+        // Initialize array adapter
+        schemeAdapter=new SchemeAdapter(OnlineWorkFilterScreen.this, (ArrayList<ModelClass>) Scheme);
+        // set adapter
+        recycler.setAdapter(schemeAdapter);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                schemeAdapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+    }
+
+    public void getScheme(String scheme,String schemeId){
+        schemeJsonArray = new JSONArray();
+        SelectedScheme=schemeId;
+        schemeJsonArray.put(schemeId);
+        workListBinding.scheme.setText(scheme);
+        dialog.dismiss();
+    }
+
+    public void loadOfflineFinYearListDBValues() {
+        dbData.open();
+        FinYearList  = new ArrayList<>();
+        //Cursor FinYear = getRawEvents("SELECT fin_year FROM " + DBHelper.FINANCIAL_YEAR_TABLE_NAME, null);
+        FinYearList.clear();
+        FinYearList.addAll(dbData.getAll_Fin_Year());
+        final ArrayList<String> myFinYearlist = new ArrayList<String>();
+
+
+        for (int i = 0; i < FinYearList.size(); i++) {
+            myFinYearlist.add(FinYearList.get(i).getFinancialYear());
+
+        }
+        String[] mStringArray = new String[myFinYearlist.size()];
+        finyearStrings = myFinYearlist.toArray(mStringArray);
+        FinYearcheckedItems = new boolean[finyearStrings.length];
+    }
+
+    public void finYearCheckbox(){
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(OnlineWorkFilterScreen.this);
+        mBuilder.setTitle(R.string.finyear_dialog_title);
+        mBuilder.setMultiChoiceItems(finyearStrings, FinYearcheckedItems, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
+                if (isChecked) {
+
+                    if (!mFinYearItems.contains(position)) {
+                        mFinYearItems.add(position);
+
+                    }
+                } else if (mFinYearItems.contains(position)) {
+                    mFinYearItems.remove(Integer.valueOf(position));
+                }
+
+
+            }
+        });
+
+        mBuilder.setCancelable(false);
+        //   final String[] finalFinYearStrings = finyearStrings;
+        mBuilder.setPositiveButton(R.string.ok_label, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                String item = "";
+
+                for (int i = 0; i < mFinYearItems.size(); i++) {
+                    item = item + finyearStrings[mFinYearItems.get(i)];
+                    if (i != mFinYearItems.size() - 1) {
+                        item = item + ", ";
+                    }
+                }
+
+                finyearJsonArray = new JSONArray();
+                for (int i = 0; i < mFinYearItems.size(); i++) {
+                    finyearJsonArray.put(finyearStrings[mFinYearItems.get(i)]);
+                    prefManager.setFinYearJson(finyearJsonArray);
+                    Log.d("FinYearArray", "" + finyearJsonArray);
+                }
+
+                if(mFinYearItems.size() > 0){
+                    workListBinding.selectedFinyearTv.setText(item);
+                    SelectedFinYear=item;
+                }else {
+                    workListBinding.selectedFinyearTv.setText("");
+                    SelectedFinYear="";
+                }
+
+                workListBinding.districtSpinner.setSelection(0);
+                if(!prefManager.getLevels().equals("S")){
+                    getSchemeList();
+                }
+            }
+        });
+
+        mBuilder.setNegativeButton(R.string.dismiss_label, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        mBuilder.setNeutralButton(R.string.clear_all_label, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                for (int i = 0; i < FinYearcheckedItems.length; i++) {
+                    FinYearcheckedItems[i] = false;
+                    mFinYearItems.clear();
+                    workListBinding.selectedFinyearTv.setText("");
+                }
+                finyearJsonArray = new JSONArray();
+                prefManager.setFinYearJson(finyearJsonArray);
+                SelectedFinYear="";
+                SelectedScheme="";
+                workListBinding.schemeSpinner.setAdapter(null);
+                workListBinding.scheme.setText("");
+                if(prefManager.getLevels().equals("S")){
+                    workListBinding.districtSpinner.setSelection(0);
+                    SelectedDistrict="";
+                }
+            }
+        });
+
+        AlertDialog mDialog = mBuilder.create();
+        mDialog.show();
+
+    }
+
 
     public void getVillageList() {
         try {
@@ -332,6 +622,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
 
         }
         workListBinding.schemeSpinner.setAdapter(new CommonAdapter(this, Scheme, "Scheme"));
+        workListBinding.scheme.setText("");
     }
     public void finyearFilterSpinner() {
         Cursor cursor = null;
@@ -434,7 +725,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         District.clear();
         ModelClass list = new ModelClass();
         list.setDistrictName("Select District");
-        list.setDistictCode("0");
+        list.setDistrictCode("0");
         District.add(list);
         if (cursor.getCount() > 0) {
             if (cursor.moveToFirst()) {
@@ -443,7 +734,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     int dcode = cursor.getInt(cursor.getColumnIndexOrThrow("dcode"));
                     String dname = cursor.getString(cursor.getColumnIndexOrThrow("dname"));
 
-                    modelClass.setDistictCode(String.valueOf(dcode));
+                    modelClass.setDistrictCode(String.valueOf(dcode));
                     modelClass.setDistrictName(dname);
 
                     District.add(modelClass);
@@ -465,12 +756,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             if(SelectedDistrict!= null && !SelectedDistrict.equals("")){
                 if(SelectedBlock!= null && !SelectedBlock.equals("")){
                     if(SelectedVillage!= null && !SelectedVillage.equals("")){
-                        if(SelectedScheme!= null && !SelectedScheme.equals("")){
-
-                            getWorkListOptional();
-                        }else {
-                            Utils.showAlert(OnlineWorkFilterScreen.this,"Select Scheme");
-                        }
+                        checkWorkType();
                     }else {
                         Utils.showAlert(OnlineWorkFilterScreen.this,"Select Village");
                     }
@@ -485,16 +771,65 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         }
 
     }
+    public void checkWorkType(){
+        if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
+            if(SelectedScheme!= null && !SelectedScheme.equals("")&& !SelectedScheme.equals("Select Scheme")){
+
+                getWorkListOptional();
+            }else {
+                Utils.showAlert(OnlineWorkFilterScreen.this,"Select Scheme");
+            }
+        }else {
+            if(workListBinding.otherWorkDetail.getText().toString()!= null && !workListBinding.otherWorkDetail.getText().toString().equals("")){
+
+                Intent intent = new Intent(this, SaveWorkDetailsActivity.class);
+                if (prefManager.getLevels().equalsIgnoreCase("S")){
+                    intent.putExtra("scode", prefManager.getStateCode());
+                    intent.putExtra("dcode", SelectedDistrict);
+                    intent.putExtra("bcode", SelectedBlock);
+                    intent.putExtra("pvcode", SelectedVillage);
+                    intent.putExtra("fin_year", SelectedFinYear);
+                }
+                else if (prefManager.getLevels().equalsIgnoreCase("D")) {
+                    intent.putExtra("scode", prefManager.getStateCode());
+                    intent.putExtra("dcode", prefManager.getDistrictCode());
+                    intent.putExtra("bcode", SelectedBlock);
+                    intent.putExtra("pvcode", SelectedVillage);
+                    intent.putExtra("fin_year", SelectedFinYear);
+                }
+                else if (prefManager.getLevels().equalsIgnoreCase("B")) {
+                    intent.putExtra("scode", prefManager.getStateCode());
+                    intent.putExtra("dcode", prefManager.getDistrictCode());
+                    intent.putExtra("bcode", prefManager.getBlockCode());
+                    intent.putExtra("pvcode", SelectedVillage);
+                    intent.putExtra("fin_year", SelectedFinYear);
+                }
+
+                intent.putExtra("hab_code", "");
+                intent.putExtra("scheme_group_id", "");
+                intent.putExtra("work_group_id", "");
+                intent.putExtra("work_type_id", "");
+                intent.putExtra("scheme_id", "");
+                intent.putExtra("work_id", 0);
+                intent.putExtra("work_name", "");
+                intent.putExtra("as_value", "");
+                intent.putExtra("ts_value", "");
+                intent.putExtra("current_stage_of_work", "");
+                intent.putExtra("is_high_value", "");
+                intent.putExtra("onOffType",prefManager.getOnOffType());
+                intent.putExtra("other_work_detail",workListBinding.otherWorkDetail.getText().toString());
+                startActivity(intent);
+            }else {
+                Utils.showAlert(OnlineWorkFilterScreen.this,"Enter Other Inspection Detail");
+            }
+        }
+
+    }
     public void projectListScreenDistrictUser(){
         if(SelectedFinYear!= null && !SelectedFinYear.equals("")){
             if(SelectedBlock!= null && !SelectedBlock.equals("")){
                 if(SelectedVillage!= null && !SelectedVillage.equals("")){
-                    if(SelectedScheme!= null && !SelectedScheme.equals("")){
-
-                            getWorkListOptional();
-                        }else {
-                            Utils.showAlert(OnlineWorkFilterScreen.this,"Select Scheme");
-                        }
+                    checkWorkType();
                     }else {
                         Utils.showAlert(OnlineWorkFilterScreen.this,"Select Village");
                     }
@@ -511,12 +846,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         if(SelectedFinYear!= null && !SelectedFinYear.equals("")){
 
             if(SelectedVillage!= null && !SelectedVillage.equals("")){
-                if(SelectedScheme!= null && !SelectedScheme.equals("")){
-
-                            getWorkListOptional();
-                        }else {
-                            Utils.showAlert(OnlineWorkFilterScreen.this,"Select Scheme");
-                        }
+                checkWorkType();
                     }else {
                         Utils.showAlert(OnlineWorkFilterScreen.this,"Select Village");
                     }
@@ -538,6 +868,13 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             }
         } else {
             Utils.showAlert(this, getResources().getString(R.string.no_internet));
+        }
+    }
+    public void getWorkListByVillage(String districtCode, String blockCode, String pvCode) {
+        try {
+            new ApiService(this).makeJSONObjectRequest("WorkListByVillage", Api.Method.POST, UrlGenerator.getMainService(), workListByVillageJsonParams(districtCode,blockCode,pvCode), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
     public void getWorkListOptional() {
@@ -597,6 +934,27 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         Log.d("workListOptional", "" + dataSet1);
         return dataSet1;
     }
+    public JSONObject workListByVillageJsonParams(String districtCode, String blockCode, String pvCode) throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), workListByVillage(this,districtCode,blockCode,pvCode).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("WorkListByVillage", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject workListByVillage(Activity activity,String districtCode, String blockCode, String pvCode) throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        JSONObject obj = new JSONObject();
+        JSONArray jsonArray=new JSONArray();
+        jsonArray.put(pvCode);
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS_OF_LOCATION);
+        dataSet.put("inspection_work_details",obj);
+        obj.put(AppConstant.DISTRICT_CODE, districtCode);
+        obj.put(AppConstant.BLOCK_CODE, blockCode);
+        obj.put(AppConstant.PV_CODE, jsonArray);
+        Log.d("workListByVillage", "" + dataSet);
+        return dataSet;
+    }
 
     @Override
     public void onBackPressed() {
@@ -631,8 +989,20 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                 String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-//                    workListOptionalS(jsonObject.getJSONArray(AppConstant.JSON_DATA));
-                    new InsertWorkListTask().execute(jsonObject);
+                    openWorkListScreenOfVillage(jsonObject);
+                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
+                    workListInsert = false;
+                    Utils.showAlert(this, "No Projects Found! for your selected items");
+                }
+                Log.d("responseWorkList", "" + responseDecryptedKey);
+
+            }
+            if ("WorkListByVillage".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    openWorkListScreenOfVillage(jsonObject);
 //                    Utils.showAlert(this, "Your Data will be Downloaded");
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     workListInsert = false;
@@ -649,6 +1019,18 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     new InsertVillageTask().execute(jsonObject);
                 }
                 Log.d("VillageList", "" + responseDecryptedBlockKey);
+            }
+            if ("VillageListOfLocation".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new InsertVillageOfLocationTask().execute(jsonObject);
+                }else {
+                    workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                }
+                Log.d("VillageListOfLocation", "" + responseDecryptedBlockKey);
             }
             if ("SchemeList".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
@@ -671,231 +1053,26 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
     public void OnError(VolleyError volleyError) {
 
     }
-    public class InsertWorkListTask extends AsyncTask<JSONObject, Void, Void> {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Utils.showProgress(OnlineWorkFilterScreen.this);
-        }
-
-        @Override
-        protected Void doInBackground(JSONObject... params) {
-            dbData.open();
-            dbData.deleteOnlineWorkListTable();
-
-            if (params.length > 0) {
-                JSONArray jsonArray = new JSONArray();
-                try {
-                    jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
-                    if(jsonArray.length() >0){
-                        workListInsert = true;
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
-                            String SelectedBlockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
-                            String hab_code = jsonArray.getJSONObject(i).getString("hab_code");
-                            String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
-                            String schemeID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_ID);
-                            String scheme_group_id = jsonArray.getJSONObject(i).getString("scheme_group_id");
-                            String work_group_id = jsonArray.getJSONObject(i).getString("work_group_id");
-                            String work_type_id = jsonArray.getJSONObject(i).getString("work_type_id");
-                            String finYear = jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR);
-                            int workID = jsonArray.getJSONObject(i).getInt(AppConstant.WORK_ID);
-                            String workName = jsonArray.getJSONObject(i).getString(AppConstant.WORK_NAME);
-                            String as_value = jsonArray.getJSONObject(i).getString("as_value");
-                            String ts_value = jsonArray.getJSONObject(i).getString("ts_value");
-                            String current_stage_of_work = jsonArray.getJSONObject(i).getString("current_stage_of_work");
-                            String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
-
-                            ModelClass modelClass = new ModelClass();
-                            modelClass.setDistictCode(dcode);
-                            modelClass.setBlockCode(SelectedBlockCode);
-                            modelClass.setHabCode(hab_code);
-                            modelClass.setPvCode(pvcode);
-                            modelClass.setSchemeSequentialID(schemeID);
-                            modelClass.setScheme_group_id(scheme_group_id);
-                            modelClass.setWork_group_id(work_group_id);
-                            modelClass.setWork_type_id(work_type_id);
-                            modelClass.setFinancialYear(finYear);
-                            modelClass.setWork_id(workID);
-                            modelClass.setWork_name(workName);
-                            modelClass.setAs_value(as_value);
-                            modelClass.setTs_value(ts_value);
-                            modelClass.setCurrent_stage_of_work(current_stage_of_work);
-                            modelClass.setIs_high_value(is_high_value);
-
-                            dbData.Insert_workList("online",modelClass);
-
-                        }
-
-                    } else {
-                        Utils.showAlert(OnlineWorkFilterScreen.this, "No Record Found for Corresponding Financial Year");
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            Utils.hideProgress();
-            if (workListInsert){
-//                showAlert(OnlineWorkFilterScreen.this, "Your Data Downloaded Successfully!");
-                workListInsert = false;
-                openWorkListScreen();
-/*
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        openWorkListScreen();
-                    }
-                }, 1000);
-*/
-
-            }
-
-        }
-    }
-    public  void showAlert(Activity activity, String msg){
-        try {
-            final Dialog dialog = new Dialog(activity);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setCancelable(false);
-            dialog.setContentView(R.layout.alert_dialog);
-
-            TextView text = (TextView) dialog.findViewById(R.id.tv_message);
-            text.setText(msg);
-
-            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
-            dialogButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openWorkListScreen();
-                    dialog.dismiss();
-                }
-            });
-
-            dialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void workListOptionalS(JSONArray jsonArray) {
-        try {
-            dbData.open();
-            dbData.deleteOnlineWorkListTable();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-
-            if (jsonArray.length() > 0) {
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
-                    String SelectedBlockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
-                    String hab_code = jsonArray.getJSONObject(i).getString("hab_code");
-                    String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
-                    String schemeID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_ID);
-                    String scheme_group_id = jsonArray.getJSONObject(i).getString("scheme_group_id");
-                    String work_group_id = jsonArray.getJSONObject(i).getString("work_group_id");
-                    String work_type_id = jsonArray.getJSONObject(i).getString("work_type_id");
-                    String finYear = jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR);
-                    int workID = jsonArray.getJSONObject(i).getInt(AppConstant.WORK_ID);
-                    String workName = jsonArray.getJSONObject(i).getString(AppConstant.WORK_NAME);
-                    String as_value = jsonArray.getJSONObject(i).getString("as_value");
-                    String ts_value = jsonArray.getJSONObject(i).getString("ts_value");
-                    String current_stage_of_work = jsonArray.getJSONObject(i).getString("current_stage_of_work");
-                    String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
-
-                    ModelClass modelClass = new ModelClass();
-                    modelClass.setDistictCode(dcode);
-                    modelClass.setBlockCode(SelectedBlockCode);
-                    modelClass.setHabCode(hab_code);
-                    modelClass.setPvCode(pvcode);
-                    modelClass.setSchemeSequentialID(schemeID);
-                    modelClass.setScheme_group_id(scheme_group_id);
-                    modelClass.setWork_group_id(work_group_id);
-                    modelClass.setWork_type_id(work_type_id);
-                    modelClass.setFinancialYear(finYear);
-                    modelClass.setWork_id(workID);
-                    modelClass.setWork_name(workName);
-                    modelClass.setAs_value(as_value);
-                    modelClass.setTs_value(ts_value);
-                    modelClass.setCurrent_stage_of_work(current_stage_of_work);
-                    modelClass.setIs_high_value(is_high_value);
-
-                    dbData.Insert_workList("online",modelClass);
-
-                }
-                workListInsert = true;
-                callAlert();
-
-            } else {
-                Utils.showAlert(this, "No Record Found for Corresponding Financial Year");
-            }
-
-        } catch (JSONException | ArrayIndexOutOfBoundsException j) {
-            j.printStackTrace();
-        }
-
-    }
-    public void callAlert() {
-        if (workListInsert){
-//            Utils.showAlert(this, "Your Data Downloaded Successfully!");
-            workListInsert = false;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    openWorkListScreen();
-                }
-            }, 1000);
-
-        }
-    }
-    public void openWorkListScreen() {
+    public void openWorkListScreenOfVillage(JSONObject jsonObject) {
         Intent intent = new Intent(this, WorkList.class);
         intent.putExtra("OnOffType","online");
-        if(prefManager.getLevels().equalsIgnoreCase("S")) {
-            intent.putExtra("dcode",SelectedDistrict);
-            intent.putExtra("bcode",SelectedBlock);
-            intent.putExtra("pvcode",SelectedVillage);
-            intent.putExtra("scheme",SelectedScheme);
-            intent.putExtra("fin_year",SelectedFinYear);
-        }
-        else if (prefManager.getLevels().equalsIgnoreCase("D")) {
-            intent.putExtra("dcode",prefManager.getDistrictCode());
-            intent.putExtra("bcode",SelectedBlock);
-            intent.putExtra("pvcode",SelectedVillage);
-            intent.putExtra("scheme",SelectedScheme);
-            intent.putExtra("fin_year",SelectedFinYear);
-        } else {
-            intent.putExtra("dcode",prefManager.getDistrictCode());
-            intent.putExtra("bcode",prefManager.getBlockCode());
-            intent.putExtra("pvcode",SelectedVillage);
-            intent.putExtra("scheme",SelectedScheme);
-            intent.putExtra("fin_year",SelectedFinYear);
-        }
 
+        Bundle b = new Bundle();
+        b.putString("jsonObject",jsonObject.toString());
+        intent.putExtras(b);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
 
     public class InsertVillageTask extends AsyncTask<JSONObject, Void, Void> {
-
+        private  ProgressHUD progressHUD;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Utils.showProgress(OnlineWorkFilterScreen.this);
+//            Utils.showProgress(OnlineWorkFilterScreen.this,progressHUD);
+            progressHUD = ProgressHUD.show(OnlineWorkFilterScreen.this, "Loading...", true, false, null);
         }
 
         @Override
@@ -914,7 +1091,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     for (int i = 0; i < jsonArray.length(); i++) {
                         ModelClass villageListValue = new ModelClass();
                         try {
-                            villageListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                            villageListValue.setDistrictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
                             villageListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
                             villageListValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
                             villageListValue.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
@@ -934,15 +1111,88 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Utils.hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             villageFilterSpinner();
         }
     }
-    public class InsertSchemeTask extends AsyncTask<JSONObject, Void, Void> {
+    public class InsertVillageOfLocationTask extends AsyncTask<JSONObject, Void, List<ModelClass>> {
+        private ProgressHUD progressHUD;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Utils.showProgress(OnlineWorkFilterScreen.this);
+            //Utils.showProgress(OnlineWorkFilterScreen.this);
+            progressHUD = ProgressHUD.show(OnlineWorkFilterScreen.this, "Loading...", true, false, null);
+
+        }
+
+        @Override
+        protected List<ModelClass> doInBackground(JSONObject... params) {
+            Village.clear();
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        ModelClass villageListValue = new ModelClass();
+                        try {
+                            villageListValue.setDistrictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                            villageListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
+                            villageListValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
+                            villageListValue.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
+
+                            Village.add(villageListValue);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+            return Village;
+        }
+
+        @Override
+        protected void onPostExecute(List<ModelClass> list) {
+            super.onPostExecute(list);
+            //Utils.hideProgress();
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if(list.size()>0){
+                adapter = new VillageListAdapter(OnlineWorkFilterScreen.this, (ArrayList<ModelClass>) list,dbData,"online");
+                workListBinding.recycler.setAdapter(adapter);
+                workListBinding.villageSelectionLayout.setVisibility(View.VISIBLE);
+                workListBinding.recycler.setVisibility(View.VISIBLE);
+                workListBinding.notFoundTv.setVisibility(View.GONE);
+            }else {
+                workListBinding.villageSelectionLayout.setVisibility(View.VISIBLE);
+                workListBinding.recycler.setVisibility(View.GONE);
+                workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+            }
+
+        }
+    }
+    public class InsertSchemeTask extends AsyncTask<JSONObject, Void, Void> {
+        private  ProgressHUD progressHUD;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(OnlineWorkFilterScreen.this, "Loading...", true, false, null);
+//            Utils.showProgress(OnlineWorkFilterScreen.this,progressHUD);
 
         }
 
@@ -980,7 +1230,14 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Utils.hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             schemeFilterSpinner();
         }
     }

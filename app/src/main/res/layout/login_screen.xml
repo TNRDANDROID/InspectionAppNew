@@ -34,6 +34,18 @@
 
 
         </RelativeLayout>
+        <TextView
+            android:id="@+id/version_hint"
+            android:layout_above="@+id/below_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_10sdp"
+            android:text="This application supports only android 9 and above versions"
+            android:textAlignment="center"
+            android:textColor="@color/subscription_type_red_color"
+            android:textSize="@dimen/_14sdp"
+            android:textStyle="normal" />
+
         <RelativeLayout
             android:background="@android:color/transparent"
             android:id="@+id/below_bg"
@@ -125,7 +137,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:padding="2dp"
-                    android:text="@string/inspection"
+                    android:text="@string/app_name"
                     android:textColor="@color/grey_8"
                     android:textSize="@dimen/_15sdp"
                     android:textStyle="bold"

@@ -6,18 +6,24 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -63,7 +69,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     JSONObject jsonObject;
 
     private PrefManager prefManager;
-    private ProgressHUD progressHUD;
+//    private ProgressHUD progressHUD;
     private int setPType;
 
     public LoginScreenBinding loginScreenBinding;
@@ -142,6 +148,20 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }
         setPType = 1;
         //loginScreenBinding.redEye.setOnClickListener(this);
+        loginScreenBinding.versionHint.setVisibility(View.GONE);
+        if(Build.VERSION.SDK_INT >= 28) {
+            //only api 28 above
+            loginScreenBinding.versionHint.setVisibility(View.GONE);
+        }else{
+            //only api 28 down
+            loginScreenBinding.versionHint.setVisibility(View.VISIBLE);
+            Animation anim = new AlphaAnimation(0.0f, 1.0f);
+            anim.setDuration(300); //You can manage the blinking time with this parameter
+            anim.setStartOffset(20);
+            anim.setRepeatMode(Animation.REVERSE);
+            anim.setRepeatCount(Animation.INFINITE);
+            loginScreenBinding.versionHint.startAnimation(anim);
+        }
     }
 
     public void showPassword() {
@@ -189,29 +209,27 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         else if(prefManager.getUserName()!=null&&prefManager.getUserPassword()!=null){
             if((!username.equals(prefManager.getUserName()))){
                 valid = false;
-                Utils.showAlert(this, "User Name Differ from Previous Login Details");
+                Utils.showAlert(this, "Previous login was successfully not logged out.So login again with old user name and password and click logout icon in home page to successfully logout the previous session");
             }
         }
         return valid;
     }
 
     public void checkLoginScreen() {
+        if(loginScreenBinding.versionHint.getVisibility() == View.GONE){
         //local
         /*loginScreenBinding.userName.setText("8931475663");
         loginScreenBinding.password.setText("test123#$");//state local*/
 
         /*loginScreenBinding.userName.setText("7877979787");
-        loginScreenBinding.password.setText("test123#$");//Dist local
-*/
-/*
-        loginScreenBinding.userName.setText("8754085962");
-        loginScreenBinding.password.setText("test123#$");//Block local
-*/
+        loginScreenBinding.password.setText("test123#$");//Dist local*/
+
+        /*loginScreenBinding.userName.setText("8754085962");
+        loginScreenBinding.password.setText("test123#$");//Block local*/
 
       //prod
-        loginScreenBinding.userName.setText("7878534575");
-        loginScreenBinding.password.setText("test123#$");//state prod
-
+        /*loginScreenBinding.userName.setText("7878534575");
+        loginScreenBinding.password.setText("test123#$");//state prod*/
         /*loginScreenBinding.userName.setText("9638527415");
         loginScreenBinding.password.setText("test123#$");//Dist prod*/
 
@@ -256,6 +274,10 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     });
             ab.show();
         }
+        }else {
+            Utils.showAlert(this, "Please update your android version to login!");
+        }
+
     }
 
 
@@ -381,7 +403,17 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         jsonObject = new JSONObject(userDataDecrypt);
 
 //                        prefManager.setPvCode(jsonObject.get(AppConstant.PV_CODE));
+                        if(jsonObject.get("profile_image_found").equals("Y")){
+                            if (!(jsonObject.get("profile_image").toString().equalsIgnoreCase("null") ||
+                                    jsonObject.get("profile_image").toString().equalsIgnoreCase(""))) {
+                                byte[] decodedString = Base64.decode(jsonObject.get("profile_image").toString(), Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                prefManager.setProfileImage(Utils.BitMapToString(decodedByte));
+                            }
 
+                        }else {
+                            prefManager.setProfileImage("");
+                        }
                         prefManager.setDesignation(jsonObject.get(AppConstant.DESIG_NAME));
                         prefManager.setName(String.valueOf(jsonObject.get(AppConstant.KEY_NAME)));
                         prefManager.setLevels(jsonObject.get(AppConstant.LEVELS));
@@ -391,7 +423,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         if(jsonObject.get(AppConstant.LEVELS).equals("S")){
                             prefManager.setStateCode(jsonObject.get("statecode"));
 //                            prefManager.setStateName(jsonObject.get(AppConstant.STATE_NAME));
-                            prefManager.setStateName("");
+                            prefManager.setStateName("Tamil Nadu");
+                            prefManager.setDistrictCode("");
+                            prefManager.setBlockCode("");
                             getDistrictList();
                             getBlockList();
                         }
@@ -399,6 +433,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                             prefManager.setStateCode(jsonObject.get("statecode"));
                             prefManager.setDistrictCode(jsonObject.get(AppConstant.DISTRICT_CODE));
                             prefManager.setDistrictName(jsonObject.get(AppConstant.DISTRICT_NAME));
+                            prefManager.setBlockCode("");
                             getBlockList();
                         }
                         else if(jsonObject.get(AppConstant.LEVELS).equals("B")){
@@ -474,7 +509,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     public class InsertDistrictTask extends AsyncTask<JSONObject ,Void ,Void> {
 
-
+        private  ProgressHUD progressHUD;
         @Override
         protected Void doInBackground(JSONObject... params) {
 
@@ -510,17 +545,25 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressHUD = ProgressHUD.show(LoginScreen.this, "Downloading", true, false, null);
+            progressHUD = ProgressHUD.show(LoginScreen.this, "Loading...", true, false, null);
+//            Utils.showProgress(MainHomePage.this,progressHUD);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
     public class InsertBlockTask extends AsyncTask<JSONObject ,Void ,Void> {
-
+        private  ProgressHUD progressHUD;
         @Override
         protected Void doInBackground(JSONObject... params) {
 
@@ -556,29 +599,45 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }
 
         @Override
-       protected void onPreExecute() {
+        protected void onPreExecute() {
             super.onPreExecute();
-            progressHUD = ProgressHUD.show(LoginScreen.this, "Downloading", true, false, null);
-       }
+            progressHUD = ProgressHUD.show(LoginScreen.this, "Loading...", true, false, null);
+//            Utils.showProgress(MainHomePage.this,progressHUD);
+        }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
     public class InsertVillageTask extends AsyncTask<JSONObject, Void, Void> {
-
+        private  ProgressHUD progressHUD;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Utils.showProgress(LoginScreen.this);
+            progressHUD = ProgressHUD.show(LoginScreen.this, "Loading...", true, false, null);
+//            Utils.showProgress(MainHomePage.this,progressHUD);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Utils.hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
         @Override
@@ -597,7 +656,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     for (int i = 0; i < jsonArray.length(); i++) {
                         ModelClass villageListValue = new ModelClass();
                         try {
-                            villageListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                            villageListValue.setDistrictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
                             villageListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
                             villageListValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
                             villageListValue.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
@@ -633,7 +692,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     for (int i = 0; i < jsonArray.length(); i++) {
                         ModelClass habListValue = new ModelClass();
                         try {
-                            habListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                            habListValue.setDistrictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
                             habListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
                             habListValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
                             habListValue.setHabCode(jsonArray.getJSONObject(i).getString(AppConstant.HABITATION_CODE));
@@ -683,6 +742,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+/*
     void hideProgress() {
         try {
             if (progressHUD != null)
@@ -691,5 +751,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             e.printStackTrace();
         }
     }
+*/
 
 }

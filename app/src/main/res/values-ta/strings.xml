@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Inspection</string>
+    <string name="app_name">TNRD Work Inspection</string>
     <string name="hint_password">கடவுச்சொல்</string>
     <string name="hint_username">பயனர் பெயர்</string>
     <string name="btn_login">உள்நுழைய</string>
@@ -78,6 +78,7 @@
     <string name="from">இருந்து</string>
     <string name="to">வரை</string>
     <string name="submit">சமர்ப்பிக்கவும்</string>
+    <string name="edit">திருத்து</string>
     <string name="species_name">இனத்தின் பெயர்</string>
     <string name="quantity">அளவு</string>
     <string name="height">உயரம்</string>
@@ -115,6 +116,7 @@
     <string name="please__select_village">கிராமத்தைத் தேர்ந்தெடுக்கவும்</string>
     <string name="atleast_capture_one_photo">குறைந்தபட்சம் ஒரு புகைப்படத்தை எடுக்கவும்</string>
     <string name="satellite_communication_not_available">ஜிபிஎஸ் ஒருங்கிணைப்பைப் பெற செயற்கைக்கோள் தொடர்பு கிடைக்கவில்லை, தயவுசெய்து திறந்த பகுதியில் புகைப்படம் எடுக்கவும்…</string>
+    <string name="satellite_communication_not_available_try_again">ஜிபிஎஸ் ஒருங்கிணைப்பைப் பெற செயற்கைக்கோள் தொடர்பு கிடைக்கவில்லை, தயவுசெய்து மீண்டும் முயற்சி செய்யவும்…</string>
     <string name="gps_not_turned_on">ஜிபிஎஸ் இயக்கப்படவில்லை…</string>
     <string name="permissions_required">அனுமதி தேவை!</string>
     <string name="camera_needs_few_permission">கேமரா சரியாக வேலை செய்ய சில அனுமதிகள் தேவை. அமைப்புகளில் அவற்றை வழங்கவும்.</string>
@@ -205,6 +207,9 @@
     <string name="select_from_and_to_Date">Select from and to Date</string>
     <string name="maximum_length_1000">(Maximum Length 1000)</string>
     <string name="select_status">Select status</string>
+    <string name="other_work_details">Other work detail</string>
+    <string name="other_inspection">Other Inspection</string>
+    <string name="enter_other_work_details">Enter the detail</string>
     <string name="clear">Clear</string>
     <string name="english_speech">English Speech</string>
     <string name="tamil_speech">Tamil Speech</string>

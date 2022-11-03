@@ -69,6 +69,7 @@ public class PrefManager {
     private static final String KEY_WORK_ID = "work_id";
     private static final String KEY_WORK_STATUS_ID = "work_status_id";
     private static final String KEY_ON_OFF_TYPE = "on_off_type";
+    private static final String KEY_PROFILE_IMAGE = "profile_image";
 
     public PrefManager(Context context) {
         this._context = context;
@@ -106,6 +107,15 @@ public class PrefManager {
 
     private String getDistrictCodeJsonList() {
         return pref.getString(KEY_DISTRICT_CODE_JSON, null);
+    }
+
+    public void setProfileImage(String profileImage) {
+        editor.putString(KEY_PROFILE_IMAGE, profileImage);
+        editor.commit();
+    }
+
+    public String getProfileImage() {
+        return pref.getString(KEY_PROFILE_IMAGE, null);
     }
 
     public JSONArray getDistrictCodeJson() {

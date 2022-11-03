@@ -20,6 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String SCHEME_TABLE_NAME = "SchemeList";
     public static final String FINANCIAL_YEAR_TABLE_NAME = "FinancialYear";
     public static final String STATUS_TABLE = "status";
+    public static final String OTHER_CATEGORY_TABLE = "other_category";
 
     private Context context;
 
@@ -60,6 +61,9 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + STATUS_TABLE + " ("
                 + "status_id INTEGER," +
                 "work_status TEXT)");
+        db.execSQL("CREATE TABLE " + OTHER_CATEGORY_TABLE + " ("
+                + "other_work_category_id INTEGER," +
+                "other_work_category_name TEXT)");
 
         db.execSQL("CREATE TABLE " + FINANCIAL_YEAR_TABLE_NAME + " ("
                 + "fin_year  varchar(32))");
@@ -145,6 +149,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + STATUS_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + FINANCIAL_YEAR_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_WORK_DETAILS);
+            db.execSQL("DROP TABLE IF EXISTS " + OTHER_CATEGORY_TABLE);
             onCreate(db);
         }
     }

@@ -10,7 +10,7 @@ public class ModelClass {
 
     private String stateCode;
     private String stateName;
-    private String distictCode;
+    private String districtCode;
     private String districtName;
     private String blockCode;
     private String HabCode;
@@ -28,6 +28,8 @@ public class ModelClass {
     private Bitmap Image;
     private int work_id;
     private String work_name;
+    private int other_work_category_id;
+    private String other_work_category_name;
     private String work_status;
     private int work_status_id;
     private String work_type;
@@ -42,6 +44,7 @@ public class ModelClass {
     private String VillageListPvName;
     private String schemeSequentialID;
     private String schemeName;
+    private boolean schemeCheck;
     private String scheme_group_id;
     private String work_type_id;
     private String as_value;
@@ -49,11 +52,57 @@ public class ModelClass {
     private String current_stage_of_work;
     private String is_high_value;
     private String work_group_id;
+    private String other_work_detail;
+    private int save_other_work_details_primary_id;
     private int save_work_details_primary_id;
     private int save_work_details_image_primary_id;
     private String work_description;
     private String inspection_id;
     private String inspectedDate;
+
+    public int getOther_work_category_id() {
+        return other_work_category_id;
+    }
+
+    public void setOther_work_category_id(int other_work_category_id) {
+        this.other_work_category_id = other_work_category_id;
+    }
+
+    public String getOther_work_category_name() {
+        return other_work_category_name;
+    }
+
+    public void setOther_work_category_name(String other_work_category_name) {
+        this.other_work_category_name = other_work_category_name;
+    }
+
+    public boolean isSchemeCheck() {
+        return schemeCheck;
+    }
+
+    public String getOther_work_detail() {
+        return other_work_detail;
+    }
+
+    public void setOther_work_detail(String other_work_detail) {
+        this.other_work_detail = other_work_detail;
+    }
+
+    public int getSave_other_work_details_primary_id() {
+        return save_other_work_details_primary_id;
+    }
+
+    public void setSave_other_work_details_primary_id(int save_other_work_details_primary_id) {
+        this.save_other_work_details_primary_id = save_other_work_details_primary_id;
+    }
+
+    public boolean getSchemeCheck() {
+        return schemeCheck;
+    }
+
+    public void setSchemeCheck(boolean schemeCheck) {
+        this.schemeCheck = schemeCheck;
+    }
 
     public String getInspection_id() {
         return inspection_id;
@@ -251,12 +300,12 @@ public class ModelClass {
         this.work_type = work_type;
     }
 
-    public String getDistictCode() {
-        return distictCode;
+    public String getDistrictCode() {
+        return districtCode;
     }
 
-    public void setDistictCode(String distictCode) {
-        this.distictCode = distictCode;
+    public void setDistrictCode(String districtCode) {
+        this.districtCode = districtCode;
     }
 
     public String getDistrictName() {

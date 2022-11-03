@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -29,6 +30,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -59,6 +61,7 @@ import com.nic.InspectionAppNew.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
@@ -106,7 +109,7 @@ public class Utils {
     private static  boolean date_flag =true;
     private static String fromDate,toDate;
     public static boolean flag = false; //128 bits
-    private static ProgressHUD progressHUD;
+
     static DateInterface dateInterface  ;
     private static void initializeSharedPreference() {
         sharedPreferences = NICApplication.getGlobalContext()
@@ -1260,6 +1263,12 @@ public class Utils {
         Log.d("observationList", "" + dataSet);
         return dataSet;
     }
+    public static JSONObject CategoryListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "CategoryList");
+        Log.d("CategoryList", "" + dataSet);
+        return dataSet;
+    }
     public static JSONObject schemeFinyearListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_SCHEME_FINYEAR_LIST_LAST_NYEARS);
@@ -1815,14 +1824,14 @@ public class Utils {
         }
             return val;
     }
-    public static void showProgress(Context context) {
+    public static void showProgress(Context context,ProgressHUD progressHUD) {
         try {
             progressHUD = ProgressHUD.show(context, "Loading...", true, false, null);
         } catch (Exception e) {
         }
 
     }
-    public static void hideProgress() {
+    public static void hideProgress(ProgressHUD progressHUD) {
         try {
             if (progressHUD != null)
                 progressHUD.cancel();
@@ -1830,5 +1839,22 @@ public class Utils {
             e.printStackTrace();
         }
 
+    }
+    public static String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+    public static Bitmap StringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
+        }
     }
 }

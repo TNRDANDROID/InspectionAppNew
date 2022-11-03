@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Inspection</string>
+    <string name="app_name">TNRD Work Inspection</string>
     <string name="hint_password">Password</string>
     <string name="hint_username">UserName</string>
     <string name="btn_login">Login</string>
@@ -78,6 +78,7 @@
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="submit">Submit</string>
+    <string name="edit">Edit</string>
     <string name="species_name">Species Name</string>
     <string name="quantity">Quantity</string>
     <string name="height">Height</string>
@@ -115,6 +116,7 @@
     <string name="please__select_village">Please Select Village</string>
     <string name="atleast_capture_one_photo">Atleast Capture one Photo</string>
     <string name="satellite_communication_not_available">Satellite communication not available to get GPS Co-ordination Please Capture Photo in Open Area..</string>
+    <string name="satellite_communication_not_available_try_again">Satellite communication not available to get GPS Co-ordination Please try again in Open Area..</string>
     <string name="gps_not_turned_on">GPS is not turned on…</string>
     <string name="permissions_required">Permissions required!</string>
     <string name="camera_needs_few_permission">Camera needs few permissions to work properly. Grant them in settings.</string>
@@ -205,6 +207,9 @@
     <string name="select_from_and_to_Date">Select from and to Date</string>
     <string name="maximum_length_1000">(Maximum Length 1000)</string>
     <string name="select_status">Select status</string>
+    <string name="other_inspection">Other Inspection</string>
+    <string name="other_work_details">Other work detail</string>
+    <string name="enter_other_work_details">Enter the detail</string>
     <string name="clear">Clear</string>
     <string name="english_speech">English Speech</string>
     <string name="tamil_speech">Tamil Speech</string>

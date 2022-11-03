@@ -20,6 +20,7 @@ import android.location.Criteria;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ExifInterface;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,6 +59,7 @@ import com.nic.InspectionAppNew.databinding.CameraScreenBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.MyLocationListener;
+import com.nic.InspectionAppNew.support.ProgressHUD;
 import com.nic.InspectionAppNew.utils.CameraUtils;
 import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
@@ -70,12 +72,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
 import in.mayanknagwanshi.imagepicker.ImageSelectActivity;
@@ -131,8 +129,11 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     String work_group_id;
     String work_type_id;
     String onOffType;
+    String other_work_detail;
     ArrayList<ModelClass> imageCount;
     int clicked_position =0;
+    boolean true_flag = false;
+    JSONObject maindataset = new JSONObject();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -161,7 +162,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     public void intializeUI() {
         getIntentData();
         //work_id= getIntent().getIntExtra("work_id",0);
-        min_img_count=Integer.parseInt(prefManager.getPhotoCount());
+        min_img_count=1/*Integer.parseInt(prefManager.getPhotoCount())*/;
         max_img_count=Integer.parseInt(prefManager.getPhotoCount());
 
         viewArrayList.clear();
@@ -207,6 +208,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         work_group_id = getIntent().getStringExtra("work_group_id");
         work_type_id = getIntent().getStringExtra("work_type_id");
         onOffType = getIntent().getStringExtra("onOffType");
+        other_work_detail = getIntent().getStringExtra("other_work_detail");
 
         if(onOffType.equals("online")){
             cameraScreenBinding.btnSaveLocal.setText("Sync Data");
@@ -219,7 +221,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 int childCount = cameraScreenBinding.cameraLayout.getChildCount();
                 if(childCount >= min_img_count){
                     if(onOffType.equals("online")){
-                        onLineUploadData();
+//                        onLineUploadData();
+                        new uploadTask().execute();
                     }
                     else {
                         saveImageButtonClick();
@@ -551,13 +554,15 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this, "Your Data is Synchronized to the server!");
+                    showAlert(this, "Your Data is Synchronized to the server!");
+/*
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             homePage();
                         }
                     }, 500);
+*/
 
 
                 }
@@ -575,6 +580,31 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     @Override
     public void OnError(VolleyError volleyError) {
 
+    }
+    public  void showAlert(Activity activity, String msg){
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.alert_dialog);
+
+            TextView text = (TextView) dialog.findViewById(R.id.tv_message);
+            text.setText(msg);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    homePage();
+
+                }
+            });
+
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void homePage() {
@@ -629,7 +659,9 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             selection = "work_id = ?";
             selectionArgs = new String[]{String.valueOf(work_id)};
             dbData.open();
-            if(dbData.getSavedWorkList("",String.valueOf(work_id)).size()>0){
+            ArrayList<ModelClass> saveCount = new ArrayList<>();
+            saveCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
+            if(saveCount.size()>0){
                 rowInsert = db.update(DBHelper.SAVE_WORK_DETAILS,values,selection,selectionArgs);
             }
             else {
@@ -857,11 +889,16 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         return mypath.toString();
     }
 
-    public void onLineUploadData() {
-        JSONObject maindataset = new JSONObject();
+    public boolean onLineUploadData() {
+        maindataset = new JSONObject();
         JSONObject dataset = new JSONObject();
         JSONArray inspection_work_details = new JSONArray();
-        boolean true_flag = false;
+        true_flag = false;
+       /* if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
+
+        }else {
+
+        }*/
         try {
             maindataset.put(AppConstant.KEY_SERVICE_ID,"work_inspection_details_save");
             dataset.put("dcode",dcode);
@@ -908,15 +945,33 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                                     true_flag = false;
                                 }
                             } catch (Exception e) {
-                                Utils.showAlert(CameraScreen.this, getResources().getString(R.string.at_least_capture_one_photo));
+                                this.runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        Utils.showAlert(CameraScreen.this, getResources().getString(R.string.at_least_capture_one_photo));
+                                    }
+                                });
+
+
                             }
                         }
                          else{
-                            Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description));
+                            this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description));
+                                }
+                            });
+
+
                          }
                     }
                     else {
-                        Utils.showAlert(CameraScreen.this, getResources().getString(R.string.please_capture_image));
+                        this.runOnUiThread(new Runnable() {
+                            public void run() {
+//                                Toast.makeText(CameraScreen.this, "Hello", Toast.LENGTH_SHORT).show();
+                                Utils.showAlert(CameraScreen.this, getResources().getString(R.string.please_capture_image));
+                            }
+                        });
+//                        Utils.showAlert(CameraScreen.this, getResources().getString(R.string.please_capture_image));
                     }
                 }
                 dataset.put("image_details",imageArray);
@@ -928,18 +983,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         catch (JSONException e) {
             e.printStackTrace();
         }
-         if(true_flag){
-             if (Utils.isOnline()) {
-                 uploadDialog(maindataset);
-                 //saveImagesJsonParams(maindataset);
-                 Log.d("saveImages", "" + maindataset);
-             } else {
-
-                 Utils.showAlert(CameraScreen.this, "Turn On Mobile Data To Upload");
-             }
-         }
-
-
+        return true_flag;
     }
     public String BitMapToString(Bitmap bitmap){
         ByteArrayOutputStream baos=new  ByteArrayOutputStream();
@@ -988,7 +1032,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             dialogButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    saveImagesJsonParams(jsonObject);
+//                    saveImagesJsonParams(jsonObject);
+                    new saveTask().execute(jsonObject);
                     dialog.dismiss();
                 }
             });
@@ -997,6 +1042,88 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public class saveTask extends AsyncTask<JSONObject, Void, JSONObject> {
+        private ProgressHUD progressHUD;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(CameraScreen.this, "Loading...", true, false, null);
+//            Utils.showProgress(CameraScreen.this,progressHUD);
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            new ApiService(CameraScreen.this).makeJSONObjectRequest("saveImage", Api.Method.POST, UrlGenerator.getMainService(), jsonObject, "not cache", CameraScreen.this
+            );
+
+        }
+
+        @Override
+        protected JSONObject doInBackground(JSONObject... params) {
+//            saveImagesJsonParams(params[0]);
+            String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), params[0].toString());
+            JSONObject dataSet = new JSONObject();
+            try {
+                dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+                dataSet.put(AppConstant.DATA_CONTENT, authKey);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return dataSet;
+        }
+
+    }
+    public class uploadTask extends AsyncTask<JSONObject, Void, Boolean> {
+        private  ProgressHUD progressHUD;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            Utils.showProgress(CameraScreen.this,progressHUD);
+            progressHUD = ProgressHUD.show(CameraScreen.this, "Loading...", true, false, null);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean true_flag) {
+            super.onPostExecute(true_flag);
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if(true_flag){
+                if (Utils.isOnline()) {
+                    uploadDialog(maindataset);
+                    //saveImagesJsonParams(maindataset);
+                    Log.d("saveImages", "" + maindataset);
+                } else {
+
+                    Utils.showAlert(CameraScreen.this, "Turn On Mobile Data To Upload");
+                }
+            }
+
+        }
+
+        @Override
+        protected Boolean doInBackground(JSONObject... params) {
+            true_flag=onLineUploadData();
+            return true_flag;
+        }
+
     }
 
 }

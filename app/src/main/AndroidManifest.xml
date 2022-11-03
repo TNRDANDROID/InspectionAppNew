@@ -29,6 +29,7 @@
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.FLAG_GRANT_READ_URI_PERMISSION" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:name=".application.NICApplication"
@@ -42,6 +43,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activity.ViewReport"></activity>
         <activity android:name=".activity.MainHomePage" />
@@ -87,6 +89,7 @@
         <activity android:name=".activity.OnlineWorkFilterScreen" />
         <activity android:name=".activity.ViewActionScreen" />
         <activity android:name=".activity.ViewSavedWorkList" />
+        <activity android:name=".activity.GetWorkListActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

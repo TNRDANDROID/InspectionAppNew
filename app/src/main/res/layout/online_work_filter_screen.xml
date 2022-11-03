@@ -37,7 +37,7 @@
                         android:layout_centerVertical="true"
                         android:layout_gravity="start"
                         android:onClick="@{()-> activity.onBackPressed()}"
-                        android:padding="@dimen/_7sdp"
+                        android:padding="@dimen/_4sdp"
                         android:tint="@color/white"
                         android:src="@drawable/back"
                         tools:ignore="ContentDescription" />
@@ -74,18 +74,21 @@
 
             </androidx.appcompat.widget.Toolbar>
 
+
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/scroll_view"
+            android:id="@+id/filter_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar"
-
+            android:visibility="visible"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/white"
                 android:orientation="vertical">
+
+
                 <TextView
                     android:id="@+id/fin_year_tv"
                     android:layout_width="wrap_content"
@@ -114,9 +117,12 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
+                        android:layout_toLeftOf="@+id/arrow"
                         android:layout_marginStart="15dp"
+                        android:id="@+id/selected_finyear_tv"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/_13sdp"
+                        android:textSize="@dimen/_12sdp"
+                        android:paddingRight="@dimen/_5sdp"
                         android:visibility="visible"
                         tools:ignore="RelativeOverlap" />
 
@@ -128,7 +134,17 @@
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
+                        android:visibility="gone"
                         android:gravity="center" />
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:src="@drawable/ic_down_arrow"
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/arrow"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/_20sdp"
+                        />
 
                 </RelativeLayout>
 
@@ -275,59 +291,121 @@
                         android:gravity="center" />
 
                 </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/scheme_tv"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/village_layout"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="@string/select_scheme"
-                    android:textColor="@color/grey_8"
-                    android:textSize="@dimen/_13sdp" />
-
-                <RelativeLayout
-                    android:id="@+id/scheme_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_35sdp"
-                    android:layout_below="@+id/scheme_tv"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:background="@drawable/rectangle_box"
-                    android:orientation="vertical">
-
+                    android:id="@+id/scheme_layout">
                     <TextView
-
+                        android:id="@+id/scheme_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginStart="15dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/_13sdp"
-                        android:visibility="visible"
-                        tools:ignore="RelativeOverlap" />
+                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginTop="@dimen/padding"
+                        android:layout_marginRight="@dimen/margin_left_20dp"
+                        android:text="@string/select_scheme"
+                        android:textColor="@color/grey_8"
+                        android:textSize="@dimen/_13sdp" />
 
-                    <Spinner
-                        android:id="@+id/scheme_spinner"
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center" />
+                        android:minHeight="@dimen/_35sdp"
+                        android:layout_below="@+id/scheme_tv"
+                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginTop="@dimen/padding"
+                        android:layout_marginRight="@dimen/margin_left_20dp"
+                        android:background="@drawable/rectangle_box"
+                        android:orientation="vertical">
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="15dp"
+                            android:id="@+id/scheme"
+                            android:layout_toLeftOf="@+id/arrow2"
+                            android:textColor="@color/grey_9"
+                            android:textSize="@dimen/_12sdp"
+                            android:visibility="visible"
+                            tools:ignore="RelativeOverlap" />
+
+                        <Spinner
+                            android:id="@+id/scheme_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:visibility="gone"
+                            android:gravity="center" />
+                        <ImageView
+                            android:layout_width="@dimen/_10sdp"
+                            android:layout_height="@dimen/_10sdp"
+                            android:src="@drawable/ic_down_arrow"
+                            android:layout_alignParentEnd="true"
+                            android:id="@+id/arrow2"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/_20sdp"
+                            />
+
+                    </RelativeLayout>
 
                 </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/scheme_layout"
+                    android:id="@+id/other_work_layout">
+                    <TextView
+                        android:id="@+id/other_work_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginTop="@dimen/padding"
+                        android:layout_marginRight="@dimen/margin_left_20dp"
+                        android:text="@string/other_inspection"
+                        android:textColor="@color/grey_8"
+                        android:textSize="@dimen/_13sdp" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:minHeight="@dimen/header"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/other_work_tv"
+                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginTop="@dimen/padding"
+                        android:layout_marginRight="@dimen/margin_left_20dp"
+                        android:background="@drawable/rectangle_box"
+                        android:orientation="vertical">
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/other_work_detail"
+                            android:background="@color/full_transparent"
+                            android:hint="@string/enter_other_work_details"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sdp"
+                            tools:ignore="Autofill,TextFields" />
+
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
 
                 <Button
                     android:id="@+id/btn_submit"
                     android:layout_width="120dp"
                     android:layout_height="40dp"
-                    android:layout_below="@+id/scheme_layout"
+                    android:layout_below="@+id/other_work_layout"
                     android:layout_alignParentEnd="true"
                     android:layout_gravity="center"
                     android:layout_marginTop="21dp"
@@ -341,7 +419,54 @@
 
 
             </RelativeLayout>
+
         </androidx.core.widget.NestedScrollView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"
+            android:visibility="gone"
+            android:id="@+id/village_selection_layout"
+            >
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Village List"
+                android:textAlignment="center"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:textColor="@color/darkblue"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_below="@+id/header"
+                android:fadeScrollbars="false"
+                android:scrollbarSize="4dp"
+                android:scrollbars="vertical"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/not_found_tv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/no_data_found"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_50sdp"
+                android:textColor="@color/grey_10"
+                android:textSize="@dimen/title_text_size"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 </layout>

@@ -156,6 +156,46 @@
                                 android:layout_width="match_parent"
                                 android:weightSum="2"
                                 android:padding="@dimen/_3sdp"
+                                android:visibility="gone"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:id="@+id/other_work_detail_layout"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.8"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/other_work_detail_h"
+                                    android:gravity="start"
+                                    android:textColor="@color/grey_10"
+                                    android:textSize="@dimen/_12sdp"
+                                    android:text="@string/other_work_details"
+                                    />
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.2"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/grey_10"
+                                    android:textSize="@dimen/_12sdp"
+                                    android:text="@string/colan_symbol"
+                                    />
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/other_work_detail"
+                                    android:gravity="start"
+                                    android:textColor="@color/grey_8"
+                                    android:textSize="@dimen/_12sdp"
+                                    />
+
+
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:weightSum="2"
+                                android:padding="@dimen/_3sdp"
+                                android:visibility="gone"
                                 android:layout_marginBottom="@dimen/_5sdp"
                                 android:id="@+id/as_value_layout"
                                 android:layout_height="wrap_content">
@@ -194,6 +234,7 @@
                                 android:layout_width="match_parent"
                                 android:weightSum="2"
                                 android:padding="@dimen/_3sdp"
+                                android:visibility="gone"
                                 android:layout_marginBottom="@dimen/_5sdp"
                                 android:id="@+id/ts_value_layout"
                                 android:layout_height="wrap_content">
@@ -232,7 +273,7 @@
                                 android:layout_width="match_parent"
                                 android:weightSum="2"
                                 android:padding="@dimen/_3sdp"
-                                android:visibility="gone"
+                                android:visibility="visible"
                                 android:layout_marginBottom="@dimen/_5sdp"
                                 android:id="@+id/work_status_layout"
                                 android:layout_height="wrap_content">
@@ -267,6 +308,45 @@
 
 
                             </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:weightSum="2"
+                                android:padding="@dimen/_3sdp"
+                                android:visibility="gone"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:id="@+id/description_layout"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.8"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description_h"
+                                    android:gravity="start"
+                                    android:textColor="@color/grey_10"
+                                    android:textSize="@dimen/_12sdp"
+                                    android:text="@string/description"
+                                    />
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.2"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/grey_10"
+                                    android:textSize="@dimen/_12sdp"
+                                    android:text="@string/colan_symbol"
+                                    />
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description"
+                                    android:gravity="start"
+                                    android:textColor="@color/grey_8"
+                                    android:textSize="@dimen/_12sdp"
+                                    />
+
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
@@ -281,10 +361,36 @@
 
                             <RelativeLayout
                                 android:layout_gravity="center_vertical"
+                                android:paddingTop="@dimen/_2sdp"
+                                android:paddingBottom="@dimen/_2sdp"
+                                android:paddingRight="@dimen/_8sdp"
+                                android:paddingLeft="@dimen/_8sdp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toStartOf="@+id/delete"
+                                android:background="@drawable/button_bg_white"
+                                android:id="@+id/edit">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/sky_blue"
+                                    android:text="@string/edit"
+                                    android:layout_centerHorizontal="true"
+                                    android:textSize="@dimen/_13sdp"
+                                    android:textStyle="bold"
+                                    android:paddingTop="@dimen/_3sdp"
+                                    android:paddingBottom="@dimen/_4sdp"
+                                    android:paddingLeft="@dimen/_15sdp"
+                                    android:paddingRight="@dimen/_15sdp"/>
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:layout_gravity="center_vertical"
                                 android:padding="@dimen/_2sdp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_toStartOf="@+id/upload"
+                                android:layout_marginStart="@dimen/_10sdp"
+
                                 android:background="@drawable/button_bg_white"
                                 android:id="@+id/delete">
                                 <TextView

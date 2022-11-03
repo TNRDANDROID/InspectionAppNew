@@ -1,18 +1,19 @@
 package com.nic.InspectionAppNew.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.app.SearchManager;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +26,6 @@ import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.CommonAdapter;
 import com.nic.InspectionAppNew.adapter.WorkListAdapter;
 import com.nic.InspectionAppNew.api.Api;
-import com.nic.InspectionAppNew.api.ApiService;
 import com.nic.InspectionAppNew.api.ServerResponse;
 import com.nic.InspectionAppNew.constant.AppConstant;
 import com.nic.InspectionAppNew.dataBase.DBHelper;
@@ -34,7 +34,6 @@ import com.nic.InspectionAppNew.databinding.WorkListBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.ProgressHUD;
-import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
 
 import org.json.JSONArray;
@@ -62,9 +61,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
     private ArrayList<ModelClass> workList = new ArrayList<>();
     private ProgressHUD progressHUD;
     WorkListAdapter workListAdapter;
-    String sDistrict,sBlock,sVillage,sScheme,sFinyear;
-
-
+    private SearchView searchView;
     String onOffType;
 
     @Override
@@ -73,6 +70,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         workListBinding = DataBindingUtil.setContentView(this, R.layout.work_list);
         workListBinding.setActivity(this);
+        setSupportActionBar(workListBinding.toolbar);
         prefManager = new PrefManager(this);
         try {
             dbHelper = new DBHelper(this);
@@ -92,26 +90,31 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         workListBinding.recycler.setFocusable(false);
 
         workListBinding.recycler.setVisibility(View.GONE);
-        workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+        workListBinding.notFoundTv.setVisibility(View.GONE);
 
-        if(onOffType.equals("online")){
+        if(onOffType.equals("online")) {
             workListBinding.filters.setVisibility(View.GONE);
             workListBinding.workTv.setVisibility(View.GONE);
-            sDistrict=getIntent().getStringExtra("dcode");
-            sBlock=getIntent().getStringExtra("bcode");
-            sVillage=getIntent().getStringExtra("pvcode");
-            sScheme=getIntent().getStringExtra("scheme");
-            sFinyear=getIntent().getStringExtra("fin_year");
+            Bundle b = getIntent().getExtras();
+            String response=b.getString("jsonObject");
+            try {
 
-            new fetchWorkList().execute();
+                JSONObject obj = new JSONObject(response);
+                new GetWorkListTask().execute(obj);
+                Log.d("My App", obj.toString());
 
-        }else {
-            workListBinding.filters.setVisibility(View.VISIBLE);
-            workListBinding.workTv.setVisibility(View.VISIBLE);
-            villageFilterSpinner();
-            schemeFilterSpinner();
-            finyearFilterSpinner();
-        }
+            } catch (Throwable t) {
+                Log.e("My App", "Could not parse malformed JSON: \"" + response + "\"");
+            }
+
+        } else {
+                workListBinding.filters.setVisibility(View.VISIBLE);
+                workListBinding.workTv.setVisibility(View.VISIBLE);
+                villageFilterSpinner();
+                schemeFilterSpinner();
+                finyearFilterSpinner();
+            }
+
 
 
 
@@ -320,24 +323,20 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
     }
 
     public class fetchWorkList extends AsyncTask<Void, Void,ArrayList<ModelClass>> {
-
+        private  ProgressHUD progressHUD;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Utils.showProgress(WorkList.this);
+            progressHUD = ProgressHUD.show(WorkList.this, "Loading...", true, false, null);
+//            Utils.showProgress(WorkList.this,progressHUD);
         }
 
         @Override
         protected ArrayList<ModelClass> doInBackground(Void... params) {
             dbData.open();
             workList = new ArrayList<>();
-            if(onOffType.equals("online")){
-                workList = dbData.getAllWorkList("online","",sDistrict,sBlock,sVillage,sFinyear,sScheme);
+            workList = dbData.getAllWorkList("offline","",prefManager.getDistrictCode(),prefManager.getBlockCode(),prefManager.getPvCode(),prefManager.getFinancialyearName(),prefManager.getSchemeSeqId());
 
-            }else {
-                workList = dbData.getAllWorkList("offline","",prefManager.getDistrictCode(),prefManager.getBlockCode(),prefManager.getPvCode(),prefManager.getFinancialyearName(),prefManager.getSchemeSeqId());
-
-            }
             Log.d("Wlist_COUNT", String.valueOf(workList.size()));
             return workList;
         }
@@ -345,7 +344,14 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         @Override
         protected void onPostExecute(ArrayList<ModelClass> worklist) {
             super.onPostExecute(worklist);
-            Utils.hideProgress();
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             if(!Utils.isOnline()) {
                 if (worklist.size() == 0) {
                     Utils.showAlert(WorkList.this, "No Data Available in Local Database. Please, Turn On mobile data");
@@ -364,6 +370,99 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         }
         }
 
+    public class GetWorkListTask extends AsyncTask<JSONObject, Void, ArrayList<ModelClass>> {
+        private  ProgressHUD progressHUD;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            Utils.showProgress(WorkList.this,progressHUD);
+            progressHUD = ProgressHUD.show(WorkList.this, "Loading...", true, false, null);
+        }
+
+        @Override
+        protected ArrayList<ModelClass> doInBackground(JSONObject... params) {
+            workList = new ArrayList<>();
+            if (params.length > 0) {
+                JSONArray jsonArray = new JSONArray();
+                try {
+                    jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    if(jsonArray.length() >0){
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
+                            String SelectedBlockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
+                            String hab_code = jsonArray.getJSONObject(i).getString("hab_code");
+                            String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
+                            String schemeID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_ID);
+                            String scheme_group_id = jsonArray.getJSONObject(i).getString("scheme_group_id");
+                            String work_group_id = jsonArray.getJSONObject(i).getString("work_group_id");
+                            String work_type_id = jsonArray.getJSONObject(i).getString("work_type_id");
+                            String finYear = jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR);
+                            int workID = jsonArray.getJSONObject(i).getInt(AppConstant.WORK_ID);
+                            String workName = jsonArray.getJSONObject(i).getString(AppConstant.WORK_NAME);
+                            String as_value = jsonArray.getJSONObject(i).getString("as_value");
+                            String ts_value = jsonArray.getJSONObject(i).getString("ts_value");
+                            String current_stage_of_work = jsonArray.getJSONObject(i).getString("current_stage_of_work");
+                            String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
+
+                            ModelClass modelClass = new ModelClass();
+                            modelClass.setDistrictCode(dcode);
+                            modelClass.setBlockCode(SelectedBlockCode);
+                            modelClass.setHabCode(hab_code);
+                            modelClass.setPvCode(pvcode);
+                            modelClass.setSchemeSequentialID(schemeID);
+                            modelClass.setScheme_group_id(scheme_group_id);
+                            modelClass.setWork_group_id(work_group_id);
+                            modelClass.setWork_type_id(work_type_id);
+                            modelClass.setFinancialYear(finYear);
+                            modelClass.setWork_id(workID);
+                            modelClass.setWork_name(workName);
+                            modelClass.setAs_value(as_value);
+                            modelClass.setTs_value(ts_value);
+                            modelClass.setCurrent_stage_of_work(current_stage_of_work);
+                            modelClass.setIs_high_value(is_high_value);
+
+                            workList.add(modelClass);
+
+                        }
+
+                    } else {
+                        Utils.showAlert(WorkList.this, "No Record Found for Corresponding Financial Year");
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            return workList;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<ModelClass> worklist) {
+            super.onPostExecute(worklist);
+//            Utils.hideProgress(progressHUD);
+
+            if (worklist.size() > 0) {
+                workListBinding.recycler.setVisibility(View.VISIBLE);
+                workListBinding.notFoundTv.setVisibility(View.GONE);
+                workListAdapter = new WorkListAdapter(WorkList.this, worklist,dbData,"online");
+                workListBinding.recycler.setAdapter(workListAdapter);
+
+            }else {
+                workListBinding.recycler.setVisibility(View.GONE);
+                workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+            }
+
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -405,6 +504,36 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+// Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+// listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+// filter recycler view when query submitted
+                workListAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+// filter recycler view when text is changed
+                workListAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        return true;
+    }
 
 
 
