@@ -23,6 +23,7 @@ public class AppConstant {
     public static String USER_DATA = "user_data";
     public static String KEY_NAME = "name";
 
+    public static String STATE_CODE_ = "statecode";
     public static String STATE_CODE = "scode";
     public static String STATE_NAME = "sname";
     public static String DISTRICT_CODE = "dcode";

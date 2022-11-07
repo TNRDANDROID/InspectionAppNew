@@ -361,45 +361,39 @@
                     android:layout_below="@+id/scheme_layout"
                     android:id="@+id/other_work_layout">
                     <TextView
-                        android:id="@+id/other_work_tv"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/other_works_tv"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin_left_20dp"
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/margin_left_20dp"
                         android:text="@string/other_inspection"
-                        android:textColor="@color/grey_8"
-                        android:textSize="@dimen/_13sdp" />
+                        android:textColor="@color/grey_9"
+                        android:textSize="@dimen/_14sdp" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:minHeight="@dimen/header"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/other_work_tv"
+                        android:layout_below="@+id/other_works_tv"
                         android:layout_marginLeft="@dimen/margin_left_20dp"
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/margin_left_20dp"
                         android:background="@drawable/rectangle_box"
                         android:orientation="vertical">
-
-                        <EditText
+                        <Spinner
+                            android:id="@+id/other_work_spinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/other_work_detail"
-                            android:background="@color/full_transparent"
-                            android:hint="@string/enter_other_work_details"
-                            android:layout_marginStart="@dimen/_10sdp"
-                            android:layout_marginEnd="@dimen/_10sdp"
-                            android:layout_marginTop="@dimen/_10sdp"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/_12sdp"
-                            tools:ignore="Autofill,TextFields" />
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center" />
 
 
                     </RelativeLayout>
-
                 </RelativeLayout>
-
 
                 <Button
                     android:id="@+id/btn_submit"

@@ -86,16 +86,16 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         syncButtonVisibility();
         homeScreenBinding.userName.setText(prefManager.getName());
         homeScreenBinding.designation.setText(prefManager.getDesignation());
-        homeScreenBinding.name.setText(prefManager.getName());
+        homeScreenBinding.navigationLayout.name.setText(prefManager.getName());
         if(prefManager.getLevels().equals("S")){
             homeScreenBinding.userLevel.setText("State : "+prefManager.getStateName());
-            homeScreenBinding.level.setText("State : "+prefManager.getStateName());
+            homeScreenBinding.navigationLayout.level.setText("State : "+prefManager.getStateName());
         }else if(prefManager.getLevels().equals("D")){
             homeScreenBinding.userLevel.setText("District : "+prefManager.getDistrictName());
-            homeScreenBinding.level.setText("District : "+prefManager.getDistrictName());
+            homeScreenBinding.navigationLayout.level.setText("District : "+prefManager.getDistrictName());
         }else if(prefManager.getLevels().equals("B")){
             homeScreenBinding.userLevel.setText("Block : "+prefManager.getBlockName());
-            homeScreenBinding.level.setText("Block : "+prefManager.getBlockName());
+            homeScreenBinding.navigationLayout.level.setText("Block : "+prefManager.getBlockName());
 
         }
 
@@ -112,18 +112,18 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 openMenuDrawer();
             }
         });
-        homeScreenBinding.viewInspection.setOnClickListener(new View.OnClickListener() {
+        homeScreenBinding.navigationLayout.viewInspection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
                 gotoViewSavedWorkScreen();
             }
         });
-        homeScreenBinding.viewReport.setOnClickListener(new View.OnClickListener() {
+        homeScreenBinding.navigationLayout.viewInspectedOtherWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
-                gotoViewReportViaPdf();
+                gotoViewSavedOtherWorkScreen();
             }
         });
         homeScreenBinding.goOnline.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +147,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             public void onClick(View view) {
                 prefManager.setWorkType("other");
                 prefManager.setOnOffType("online");
-                openOnlineWorkListScreen();
+                openWorkFilterScreen();
             }
         });
         homeScreenBinding.goOfflineOther.setOnClickListener(new View.OnClickListener() {
@@ -158,6 +158,13 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 openOnlineWorkListScreen();
             }
         });
+    }
+
+    private void openWorkFilterScreen() {
+        Intent intent = new Intent(this, OnlineWorkFilterScreen.class);
+        intent.putExtra("type","work");
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     public void getInspection_statusList() {
@@ -620,8 +627,8 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
-    private void gotoViewReportViaPdf(){
-        Intent intent = new Intent(MainHomePage.this,ViewReport.class);
+    private void gotoViewSavedOtherWorkScreen(){
+        Intent intent = new Intent(MainHomePage.this, ViewSavedOtherWorkList.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

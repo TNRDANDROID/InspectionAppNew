@@ -51,13 +51,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/linear"
-                        android:padding="@dimen/_5sdp"
                         android:orientation="vertical">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:weightSum="2"
-                            android:layout_marginTop="@dimen/_20sdp"
+                            android:layout_marginTop="@dimen/_25sdp"
                             android:padding="@dimen/_3sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:id="@+id/work_layout"
                             android:layout_height="wrap_content">
                             <TextView
@@ -95,6 +96,8 @@
                             android:layout_width="match_parent"
                             android:weightSum="2"
                             android:padding="@dimen/_3sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:id="@+id/work_name_layout"
                             android:layout_height="wrap_content">
                             <TextView
@@ -132,7 +135,86 @@
                             android:layout_width="match_parent"
                             android:weightSum="2"
                             android:padding="@dimen/_3sdp"
-                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:id="@+id/other_work_name_layout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/other_work_h"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="Other Work Name"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/colan_symbol"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/other_work_name"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:padding="@dimen/_3sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:id="@+id/other_work_category_name_layout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/other_work_category_name_h"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="Category Name"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/colan_symbol"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/other_work_category_name"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:padding="@dimen/_3sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:id="@+id/fin_year_layout"
                             android:layout_height="wrap_content">
                             <TextView
@@ -170,7 +252,9 @@
                             android:layout_width="match_parent"
                             android:weightSum="2"
                             android:padding="@dimen/_3sdp"
-                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
                             android:id="@+id/as_value_layout"
                             android:layout_height="wrap_content">
                             <TextView
@@ -205,6 +289,25 @@
 
                         </LinearLayout>
 
+                        <RelativeLayout
+                            android:layout_width="@dimen/_30sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_gravity="end"
+                            android:id="@+id/edit"
+                            android:background="@drawable/quater_circle_shape_right"
+                            android:gravity="bottom"
+                            android:visibility="gone">
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_3sdp"
+                                android:layout_marginRight="@dimen/_3sdp"
+                                android:layout_alignParentEnd="true"
+                                android:tint="@color/primary_text_color"
+                                android:src="@drawable/ic_edit_pencil_icon"
+                                tools:ignore="ContentDescription" />
+                        </RelativeLayout>
+
 
                     </LinearLayout>
 
@@ -226,6 +329,26 @@
                         android:layout_marginEnd="@dimen/_10sdp"
                         android:layout_marginBottom="@dimen/_8sdp"
                         tools:ignore="RelativeOverlap,UnusedAttribute" />
+<!--
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/edit"
+                        android:layout_toLeftOf="@+id/view_report"
+                        android:gravity="center_vertical"
+                        android:layout_alignParentTop="true"
+                        android:textColor="@color/primary_text_color"
+                        android:drawableEnd="@drawable/ic_edit_icon"
+                        android:drawableTint="@color/primary_text_color"
+                        android:drawablePadding="@dimen/_3sdp"
+                        android:textSize="@dimen/_13sdp"
+                        android:text="@string/edit"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        tools:ignore="RelativeOverlap,UnusedAttribute" />
+-->
 
                 </RelativeLayout>
 

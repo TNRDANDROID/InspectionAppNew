@@ -54,7 +54,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
     private ProgressHUD progressHUD;
     private List<ModelClass> status_list = new ArrayList<>();
-    private List<ModelClass> other_category_list = new ArrayList<>();
+
     int work_id=0;
     String dcode;
     String bcode;
@@ -67,16 +67,21 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     String current_stage_of_work;
     String is_high_value;
     String work_status;
-    String other_work_category_id="";
-    String other_work_category_name="";
+
     String hab_code;
     String scheme_group_id;
     String work_group_id;
     String work_type_id;
-    String other_work_detail;
+    String other_work_detail="";
+    String other_work_category_id="";
+    String other_work_inspection_id="";
+    String flag="";
     int min_img_count=0;
     int max_img_count=0;
+    int work_status_id=0;
     String onOffType;
+    String type;
+    String  activityImage="";
     private static final int SPEECH_REQUEST_CODE = 103;
 
     private static final int REQUEST_RECORD_PERMISSION = 100;
@@ -104,7 +109,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
 
         statusFilterSpinner();
-        otherWorkFilterSpinner();
+
         getIntentData();
         if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
             saveWorkDetailsActivityBinding.otherWorksLayout.setVisibility(View.GONE);
@@ -117,29 +122,12 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                 if (position > 0) {
                     prefManager.setWorkStatusId(String.valueOf(status_list.get(position).getWork_status_id()));
                     work_status = status_list.get(position).getWork_status();
+                    work_status_id = status_list.get(position).getWork_status_id();
 
                 }else {
                     prefManager.setWorkStatusId("");
                     work_status = "";
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        saveWorkDetailsActivityBinding.otherWorkSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0) {
-                    other_work_category_id=(String.valueOf(other_category_list.get(position).getOther_work_category_id()));
-                    other_work_category_name = other_category_list.get(position).getOther_work_category_name();
-
-                }else {
-
-                    other_work_category_id = "";
-                    other_work_category_name = "";
+                    work_status_id=0;
                 }
             }
 
@@ -183,6 +171,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     }
 
     private void getIntentData(){
+        type= getIntent().getStringExtra("type");
         onOffType= getIntent().getStringExtra("onOffType");
         work_id= getIntent().getIntExtra("work_id",0);
         dcode = getIntent().getStringExtra("dcode");
@@ -200,31 +189,53 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         scheme_group_id = getIntent().getStringExtra("scheme_group_id");
         work_group_id = getIntent().getStringExtra("work_group_id");
         work_type_id = getIntent().getStringExtra("work_type_id");
-        other_work_detail = getIntent().getStringExtra("other_work_detail");
+        other_work_category_id = getIntent().getStringExtra("other_work_category_id");
+        flag = getIntent().getStringExtra("flag");
 
         dbData.open();
-        ArrayList<ModelClass> savedCount = new ArrayList<>();
-        savedCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
 
-        if(savedCount.size()>0){
-            saveWorkDetailsActivityBinding.description.setText(savedCount.get(0).getWork_description());
+        if(flag.equalsIgnoreCase("edit")){
+            other_work_inspection_id = getIntent().getStringExtra("other_work_inspection_id");
+            String  other_work_category_name = getIntent().getStringExtra("other_work_category_name");
+            work_status_id = getIntent().getIntExtra("status_id",0);
+            String  status = getIntent().getStringExtra("status");
+            String  other_work_detail = getIntent().getStringExtra("other_work_detail");
+            String  description = getIntent().getStringExtra("description");
+            activityImage = getIntent().getStringExtra("activityImage");
+            saveWorkDetailsActivityBinding.description.setText(description);
+            saveWorkDetailsActivityBinding.otherWorkDetail.setText(other_work_detail);
+            saveWorkDetailsActivityBinding.takePhoto.setText("View Photo");
             for(int i=0;i<status_list.size();i++){
-                if(status_list.get(i).getWork_status_id() == savedCount.get(0).getWork_status_id()){
+                if(status_list.get(i).getWork_status_id() == work_status_id){
                     saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
                 }
             }
 
-        }
-        else {
-            saveWorkDetailsActivityBinding.description.setText("");
-            saveWorkDetailsActivityBinding.statusSpinner.setSelection(0);
+        }else {
+            dbData.open();
+            ArrayList<ModelClass> savedCount = new ArrayList<>();
+            savedCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
+
+            if(savedCount.size()>0){
+                saveWorkDetailsActivityBinding.description.setText(savedCount.get(0).getWork_description());
+                for(int i=0;i<status_list.size();i++){
+                    if(status_list.get(i).getWork_status_id() == savedCount.get(0).getWork_status_id()){
+                        saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
+                    }
+                }
+
+            }
+            else {
+                saveWorkDetailsActivityBinding.description.setText("");
+                saveWorkDetailsActivityBinding.statusSpinner.setSelection(0);
+            }
         }
     }
 
     public void gotoCameraScreen()
     {
-        if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
-            if(!prefManager.getWorkStatusId().equals("")){
+        if(type.equalsIgnoreCase("rdpr")){
+            if(work_status_id != 0){
                 if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
                     Intent intent = new Intent(this, CameraScreen.class);
                     intent.putExtra("dcode", dcode);
@@ -242,12 +253,16 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                     intent.putExtra("as_value", as_value);
                     intent.putExtra("ts_value", ts_value);
                     intent.putExtra("current_stage_of_work", current_stage_of_work);
-                    intent.putExtra("current_stage_of_work", current_stage_of_work);
-                    intent.putExtra("work_status_id", prefManager.getWorkStatusId());
+                    intent.putExtra("work_status_id", work_status_id);
                     intent.putExtra("work_status", work_status);
                     intent.putExtra("onOffType", onOffType);
                     intent.putExtra("work_description", saveWorkDetailsActivityBinding.description.getText().toString());
+                    intent.putExtra("other_work_category_id", other_work_category_id);
                     intent.putExtra("other_work_detail", other_work_detail);
+                    intent.putExtra("activityImage",activityImage);
+                    intent.putExtra("type","rdpr");
+                    intent.putExtra("flag",flag);
+
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 }
@@ -258,9 +273,10 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             else {
                 Utils.showAlert(SaveWorkDetailsActivity.this,"Please Select Status");
             }
-        }else {
-            if(!other_work_category_id.equals("")){
-            if(!prefManager.getWorkStatusId().equals("")){
+        }
+        else {
+            if(!saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString().equals("")){
+            if(work_status_id != 0){
                 if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
                     Intent intent = new Intent(this, CameraScreen.class);
                     intent.putExtra("dcode", dcode);
@@ -278,12 +294,18 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                     intent.putExtra("as_value", as_value);
                     intent.putExtra("ts_value", ts_value);
                     intent.putExtra("current_stage_of_work", current_stage_of_work);
-                    intent.putExtra("current_stage_of_work", current_stage_of_work);
-                    intent.putExtra("work_status_id", prefManager.getWorkStatusId());
+                    intent.putExtra("work_status_id", work_status_id);
                     intent.putExtra("work_status", work_status);
                     intent.putExtra("onOffType", onOffType);
                     intent.putExtra("work_description", saveWorkDetailsActivityBinding.description.getText().toString());
-                    intent.putExtra("other_work_detail", other_work_detail);
+                    intent.putExtra("other_work_category_id", other_work_category_id);
+                    intent.putExtra("other_work_detail", saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString());
+                    intent.putExtra("activityImage",activityImage);
+                    intent.putExtra("type","other");
+                    intent.putExtra("flag",flag);
+                    if(flag.equalsIgnoreCase("edit")){
+                        intent.putExtra("other_work_inspection_id",other_work_inspection_id);
+                    }
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 }
@@ -296,7 +318,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             }
             }
             else {
-                Utils.showAlert(SaveWorkDetailsActivity.this,"Please select category of other work");
+                Utils.showAlert(SaveWorkDetailsActivity.this,"Enter Other Inspection Detail");
             }
         }
 
@@ -311,17 +333,6 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         dbData.open();
         status_list.addAll(dbData.getAll_Work_Status());
         saveWorkDetailsActivityBinding.statusSpinner.setAdapter(new CommonAdapter(this, status_list, "status"));
-    }
-    public void otherWorkFilterSpinner() {
-        other_category_list = new ArrayList<>();
-        other_category_list.clear();
-        ModelClass list = new ModelClass();
-        list.setOther_work_category_id(0);
-        list.setOther_work_category_name("Select Category");
-        other_category_list.add(list);
-        dbData.open();
-        other_category_list.addAll(dbData.getAll_Other_work_category());
-        saveWorkDetailsActivityBinding.otherWorkSpinner.setAdapter(new CommonAdapter(this, other_category_list, "other_category_list"));
     }
 
 

@@ -1,6 +1,7 @@
 package com.nic.InspectionAppNew.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -53,6 +54,8 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
     private ProgressHUD progressHUD;
     int work_id;
     String inspection_id;
+    String other_work_inspection_id;
+    String type;
     ImageAdapter imageAdapter;
     String pref_Village;
 
@@ -69,16 +72,41 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
         } catch (Exception e) {
             e.printStackTrace();
         }
-        work_id=getIntent().getIntExtra("work_id",0);
-        inspection_id=getIntent().getStringExtra("inspection_id");
+
+        type=getIntent().getStringExtra("type");
+        if(type.equalsIgnoreCase("rdpr")){
+            binding.workNameLayout.setVisibility(View.VISIBLE);
+            binding.otherWorkCategoryNameLayout.setVisibility(View.GONE);
+            binding.otherWorkDetailLayout.setVisibility(View.GONE);
+            binding.finYearLayout.setVisibility(View.GONE);
+            binding.workH.setText(getApplicationContext().getResources().getString(R.string.work_id));
+            binding.titleTv.setText(getApplicationContext().getResources().getString(R.string.inspection_taken));
+
+            work_id=getIntent().getIntExtra("work_id",0);
+            inspection_id=getIntent().getStringExtra("inspection_id");
+            if (Utils.isOnline()) {
+                getWorkDetails();
+            }else {
+                Utils.showAlert(this, getResources().getString(R.string.internet_connection_not_available_please_turn_on_or_offline));
+            }
+        }else {
+            binding.otherWorkCategoryNameLayout.setVisibility(View.VISIBLE);
+            binding.otherWorkDetailLayout.setVisibility(View.VISIBLE);
+            binding.finYearLayout.setVisibility(View.VISIBLE);
+            binding.workNameLayout.setVisibility(View.GONE);
+            binding.workH.setText(getApplicationContext().getResources().getString(R.string.other_work_id));
+            binding.titleTv.setText(getApplicationContext().getResources().getString(R.string.other_inspection_taken));
+            other_work_inspection_id=getIntent().getStringExtra("other_work_inspection_id");
+            if (Utils.isOnline()) {
+                getOtherWorkDetails();
+            }else {
+                Utils.showAlert(this, getResources().getString(R.string.internet_connection_not_available_please_turn_on_or_offline));
+            }
+        }
 
         binding.workId.setText(""+work_id);
 
-        if (Utils.isOnline()) {
-            getWorkDetails();
-        }else {
-            Utils.showAlert(this, getResources().getString(R.string.internet_connection_not_available_please_turn_on_or_offline));
-        }
+
 
     }
     public void getWorkDetails() {
@@ -104,6 +132,31 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
         dataSet.put("inspection_id", inspection_id);
 
         Log.d("WorkDetails", "" + dataSet);
+        return dataSet;
+    }
+
+    public void getOtherWorkDetails() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("OtherWorkDetails", Api.Method.POST, UrlGenerator.getMainService(), otherworkDetailsJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public JSONObject otherworkDetailsJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), otherworkDetailsParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("OtherWorkDetails", "" + authKey);
+        return dataSet;
+    }
+    public  JSONObject otherworkDetailsParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "other_inspection_details_view");
+        dataSet.put("other_work_inspection_id", other_work_inspection_id);
+
+        Log.d("OtherWorkDetails", "" + dataSet);
         return dataSet;
     }
 
@@ -146,6 +199,18 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
                 }
                 Log.d("responseWorkList", "" + responseDecryptedKey);
+
+            }
+            if ("OtherWorkDetails".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    otherWorkListOptionalS(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
+                    Utils.showAlert(this, jsonObject.getString("RESPONSE"));
+                }
+                Log.d("responseOtherWorkList", "" + responseDecryptedKey);
 
             }
 
@@ -212,6 +277,80 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
                             binding.recycler.setVisibility(View.GONE);
                             binding.notFoundTv.setVisibility(View.VISIBLE);
                         }
+                    }
+
+                }
+
+            } else {
+                Utils.showAlert(this, "No Record Found for Corresponding Work");
+            }
+
+        } catch (JSONException | ArrayIndexOutOfBoundsException j) {
+            j.printStackTrace();
+        }
+
+    }
+    private void otherWorkListOptionalS(JSONArray jsonArray) {
+        try {
+
+            if (jsonArray.length() > 0) {
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    String statecode = jsonArray.getJSONObject(i).getString(AppConstant.STATE_CODE_);
+                    String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
+                    String bCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
+                    String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
+                    String other_work_inspection_id = jsonArray.getJSONObject(i).getString("other_work_inspection_id");
+                    String inspection_date = jsonArray.getJSONObject(i).getString("inspection_date");
+                    String status_id = jsonArray.getJSONObject(i).getString("status_id");
+                    String status = jsonArray.getJSONObject(i).getString("status");
+                    String description = jsonArray.getJSONObject(i).getString("description");
+                    String other_work_category_id = jsonArray.getJSONObject(i).getString("other_work_category_id");
+                    String other_work_category_name = jsonArray.getJSONObject(i).getString("other_work_category_name");
+                    String other_work_detail = jsonArray.getJSONObject(i).getString("other_work_detail");
+                    String fin_year = jsonArray.getJSONObject(i).getString("fin_year");
+
+                    binding.workId.setText(Utils.notNullString(other_work_inspection_id));
+                    binding.finYear.setText(Utils.notNullString(fin_year));
+                    binding.otherWorkCategoryName.setText(Utils.notNullString(other_work_category_name));
+                    binding.otherWorkDetail.setText(Utils.notNullString(other_work_detail));
+                    binding.status.setText(Utils.notNullString(status));
+                    binding.description.setText(Utils.notNullString(description));
+
+
+                    JSONArray imgarray=new JSONArray();
+                    imgarray=jsonArray.getJSONObject(i).getJSONArray("inspection_image");
+                    if(imgarray.length() > 0){
+                        ArrayList<ModelClass> activityImage = new ArrayList<>();
+                        for(int j = 0; j < imgarray.length(); j++ ) {
+                            try {
+                                ModelClass imageOnline = new ModelClass();
+                                imageOnline.setDescription(imgarray.getJSONObject(j).getString("image_description"));
+                                if (!(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase("null") ||
+                                        imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase(""))) {
+                                    byte[] decodedString = Base64.decode(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE), Base64.DEFAULT);
+                                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                    imageOnline.setImage(decodedByte);
+                                    activityImage.add(imageOnline);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        if (activityImage.size() > 0) {
+                            binding.recycler.setVisibility(View.VISIBLE);
+                            binding.notFoundTv.setVisibility(View.GONE);
+                            binding.recycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                            imageAdapter = new ImageAdapter(ViewActionScreen.this, activityImage,dbData);
+                            binding.recycler.setAdapter(imageAdapter);
+                        }else {
+                            binding.recycler.setVisibility(View.GONE);
+                            binding.notFoundTv.setVisibility(View.VISIBLE);
+                        }
+
+
                     }
 
                 }

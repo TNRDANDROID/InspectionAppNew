@@ -107,7 +107,9 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
     String type="";
     Dialog dialog;
     SchemeAdapter schemeAdapter;
-
+    String other_work_category_id="";
+    String other_work_category_name="";
+    private List<ModelClass> other_category_list = new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,9 +141,15 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         workListBinding.notFoundTv.setVisibility(View.GONE);
 
         if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
+            workListBinding.schemeLayout.setVisibility(View.VISIBLE);
             workListBinding.otherWorkLayout.setVisibility(View.GONE);
+            workListBinding.finYearSpinner.setVisibility(View.GONE);
+            workListBinding.selectedFinyearTv.setVisibility(View.VISIBLE);
         }else {
             workListBinding.otherWorkLayout.setVisibility(View.VISIBLE);
+            workListBinding.finYearSpinner.setVisibility(View.VISIBLE);
+            workListBinding.schemeLayout.setVisibility(View.GONE);
+            workListBinding.selectedFinyearTv.setVisibility(View.GONE);
         }
 
         if(prefManager.getLevels().equals("S")){
@@ -191,11 +199,11 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             workListBinding.filterLayout.setVisibility(View.VISIBLE);
         }
 
-
+        otherWorkFilterSpinner();
 //        schemeFilterSpinner();
         finyearFilterSpinner();
         loadOfflineFinYearListDBValues();
-        workListBinding.finYearLayout.setOnClickListener(new View.OnClickListener() {
+        workListBinding.selectedFinyearTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finYearCheckbox();
@@ -314,25 +322,58 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         workListBinding.finYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0) {
-                    finyearJsonArray = new JSONArray();
-                    SelectedFinYear=FinYear.get(position).getFinancialYear();
-                    finyearJsonArray.put(FinYear.get(position).getFinancialYear());
-                    workListBinding.districtSpinner.setSelection(0);
-                    if(!prefManager.getLevels().equals("S")){
-                        getSchemeList();
+                if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
+                    if (position > 0) {
+                        finyearJsonArray = new JSONArray();
+                        SelectedFinYear=FinYear.get(position).getFinancialYear();
+                        finyearJsonArray.put(FinYear.get(position).getFinancialYear());
+                        workListBinding.districtSpinner.setSelection(0);
+                        if(!prefManager.getLevels().equals("S")){
+                            getSchemeList();
+                        }
+                    }else
+                        {
+                        finyearJsonArray = new JSONArray();
+                        SelectedFinYear="";
+                        SelectedScheme="";
+                        workListBinding.schemeSpinner.setAdapter(null);
+                        workListBinding.scheme.setText("");
+                        if(prefManager.getLevels().equals("S")){
+                            workListBinding.districtSpinner.setSelection(0);
+                            SelectedDistrict="";
+                        }
+
                     }
                 }else {
-                    finyearJsonArray = new JSONArray();
-                    SelectedFinYear="";
-                    SelectedScheme="";
-                    workListBinding.schemeSpinner.setAdapter(null);
-                    workListBinding.scheme.setText("");
-                    if(prefManager.getLevels().equals("S")){
-                        workListBinding.districtSpinner.setSelection(0);
-                        SelectedDistrict="";
-                    }
+                    if (position > 0) {
+                        finyearJsonArray = new JSONArray();
+                        SelectedFinYear=FinYear.get(position).getFinancialYear();
+                        finyearJsonArray.put(FinYear.get(position).getFinancialYear());
+                    }else {
+                        finyearJsonArray = new JSONArray();
+                        SelectedFinYear="";
 
+                    }
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        workListBinding.otherWorkSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    other_work_category_id=(String.valueOf(other_category_list.get(position).getOther_work_category_id()));
+                    other_work_category_name = other_category_list.get(position).getOther_work_category_name();
+
+                }else {
+
+                    other_work_category_id = "";
+                    other_work_category_name = "";
                 }
             }
 
@@ -419,6 +460,17 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         workListBinding.scheme.setText(scheme);
         dialog.dismiss();
     }
+    public void otherWorkFilterSpinner() {
+        other_category_list = new ArrayList<>();
+        other_category_list.clear();
+        ModelClass list = new ModelClass();
+        list.setOther_work_category_id(0);
+        list.setOther_work_category_name("Select Category");
+        other_category_list.add(list);
+        dbData.open();
+        other_category_list.addAll(dbData.getAll_Other_work_category());
+        workListBinding.otherWorkSpinner.setAdapter(new CommonAdapter(this, other_category_list, "other_category_list"));
+    }
 
     public void loadOfflineFinYearListDBValues() {
         dbData.open();
@@ -465,32 +517,32 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             public void onClick(DialogInterface dialogInterface, int which) {
                 String item = "";
 
-                for (int i = 0; i < mFinYearItems.size(); i++) {
-                    item = item + finyearStrings[mFinYearItems.get(i)];
-                    if (i != mFinYearItems.size() - 1) {
-                        item = item + ", ";
-                    }
-                }
-
-                finyearJsonArray = new JSONArray();
-                for (int i = 0; i < mFinYearItems.size(); i++) {
-                    finyearJsonArray.put(finyearStrings[mFinYearItems.get(i)]);
-                    prefManager.setFinYearJson(finyearJsonArray);
-                    Log.d("FinYearArray", "" + finyearJsonArray);
-                }
-
                 if(mFinYearItems.size() > 0){
+                    for (int i = 0; i < mFinYearItems.size(); i++) {
+                        item = item + finyearStrings[mFinYearItems.get(i)];
+                        if (i != mFinYearItems.size() - 1) {
+                            item = item + ", ";
+                        }
+                    }
+
+                    finyearJsonArray = new JSONArray();
+                    for (int i = 0; i < mFinYearItems.size(); i++) {
+                        finyearJsonArray.put(finyearStrings[mFinYearItems.get(i)]);
+                        prefManager.setFinYearJson(finyearJsonArray);
+                        Log.d("FinYearArray", "" + finyearJsonArray);
+                    }
                     workListBinding.selectedFinyearTv.setText(item);
                     SelectedFinYear=item;
+                    workListBinding.districtSpinner.setSelection(0);
+                    if(!prefManager.getLevels().equals("S")){
+                        getSchemeList();
+                    }
                 }else {
                     workListBinding.selectedFinyearTv.setText("");
                     SelectedFinYear="";
                 }
 
-                workListBinding.districtSpinner.setSelection(0);
-                if(!prefManager.getLevels().equals("S")){
-                    getSchemeList();
-                }
+
             }
         });
 
@@ -780,7 +832,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                 Utils.showAlert(OnlineWorkFilterScreen.this,"Select Scheme");
             }
         }else {
-            if(workListBinding.otherWorkDetail.getText().toString()!= null && !workListBinding.otherWorkDetail.getText().toString().equals("")){
+            if(other_work_category_id!= null && !other_work_category_id.equals("")){
 
                 Intent intent = new Intent(this, SaveWorkDetailsActivity.class);
                 if (prefManager.getLevels().equalsIgnoreCase("S")){
@@ -817,10 +869,12 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                 intent.putExtra("current_stage_of_work", "");
                 intent.putExtra("is_high_value", "");
                 intent.putExtra("onOffType",prefManager.getOnOffType());
-                intent.putExtra("other_work_detail",workListBinding.otherWorkDetail.getText().toString());
+                intent.putExtra("other_work_category_id",other_work_category_id);
+                intent.putExtra("flag","");
+                intent.putExtra("type","other");
                 startActivity(intent);
             }else {
-                Utils.showAlert(OnlineWorkFilterScreen.this,"Enter Other Inspection Detail");
+                Utils.showAlert(OnlineWorkFilterScreen.this,"Select other work category");
             }
         }
 

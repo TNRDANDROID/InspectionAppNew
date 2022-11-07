@@ -117,6 +117,8 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.MyView
                 intent.putExtra("is_high_value", listFilteredValue.get(position).getIs_high_value());
                 intent.putExtra("onOffType",onOffType);
                 intent.putExtra("other_work_detail","");
+                intent.putExtra("flag","");
+                intent.putExtra("type","rdpr");
                 context.startActivity(intent);
 
 
@@ -143,6 +145,8 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.MyView
                 intent.putExtra("is_high_value", listFilteredValue.get(position).getIs_high_value());
                 intent.putExtra("onOffType",onOffType);
                 intent.putExtra("other_work_detail","");
+                intent.putExtra("flag","");
+                intent.putExtra("type","rdpr");
                 context.startActivity(intent);
 
             }

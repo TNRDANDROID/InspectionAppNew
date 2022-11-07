@@ -2,11 +2,13 @@ package com.nic.InspectionAppNew.model;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by Kavitha M on 19-09-2022.
  */
 
-public class ModelClass {
+public class ModelClass implements Serializable {
 
     private String stateCode;
     private String stateName;
@@ -466,5 +468,15 @@ public class ModelClass {
 
     public void setMax_no_of_photos(int max_no_of_photos) {
         this.max_no_of_photos = max_no_of_photos;
+    }
+
+    private String other_work_inspection_id;
+
+    public String getOther_work_inspection_id() {
+        return other_work_inspection_id;
+    }
+
+    public void setOther_work_inspection_id(String other_work_inspection_id) {
+        this.other_work_inspection_id = other_work_inspection_id;
     }
 }

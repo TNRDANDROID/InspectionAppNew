@@ -208,6 +208,7 @@
     <string name="maximum_length_1000">(Maximum Length 1000)</string>
     <string name="select_status">Select status</string>
     <string name="other_inspection">Other Inspection</string>
+    <string name="other_inspection_taken">Other Inspection Taken</string>
     <string name="other_work_details">Other work detail</string>
     <string name="enter_other_work_details">Enter the detail</string>
     <string name="clear">Clear</string>
@@ -226,6 +227,8 @@
     <string name="download">Download</string>
     <string name="skip">Skip</string>
     <string name="work_id">Work id</string>
+    <string name="other_work_id">Other Work id</string>
+    <string name="other_work_name">Other Work Name</string>
     <string name="work_name">Work Name</string>
     <string name="as_value">AS value</string>
     <string name="ts_value">TS value</string>
@@ -244,7 +247,8 @@
     <string name="or">(OR)</string>
     <string name="colan_symbol">:</string>
     <string name="other_works">Other Works</string>
-    <string name="view_inspected_work">View Inspected Work</string>
+    <string name="view_inspected_work">View Inspected RDPR Work</string>
+    <string name="view_inspected_other_work">View Inspected Other Work</string>
     <string name="view_inspected_report">View Inspected Report</string>
     <string name="no_inspection_history_found">No Inspection History Found</string>
 </resources>

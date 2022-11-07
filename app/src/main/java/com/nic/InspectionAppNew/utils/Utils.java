@@ -1265,7 +1265,7 @@ public class Utils {
     }
     public static JSONObject CategoryListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "CategoryList");
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "other_work_category_list");
         Log.d("CategoryList", "" + dataSet);
         return dataSet;
     }

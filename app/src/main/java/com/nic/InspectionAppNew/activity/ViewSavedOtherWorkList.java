@@ -1,5 +1,14 @@
 package com.nic.InspectionAppNew.activity;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,13 +22,11 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -28,16 +35,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.volley.VolleyError;
 import com.github.barteksc.pdfviewer.PDFView;
@@ -49,12 +46,9 @@ import com.nic.InspectionAppNew.api.Api;
 import com.nic.InspectionAppNew.api.ApiService;
 import com.nic.InspectionAppNew.api.ServerResponse;
 import com.nic.InspectionAppNew.constant.AppConstant;
-import com.nic.InspectionAppNew.dataBase.DBHelper;
-import com.nic.InspectionAppNew.dataBase.dbData;
-import com.nic.InspectionAppNew.databinding.ViewSavedWorkListBinding;
+import com.nic.InspectionAppNew.databinding.ActivityViewSavedOtherWorkBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
-import com.nic.InspectionAppNew.support.ProgressHUD;
 import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
 
@@ -69,101 +63,85 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, DateInterface {
-    private ViewSavedWorkListBinding workListBinding;
-    private PrefManager prefManager;
-    public dbData dbData = new dbData(this);
-    public  DBHelper dbHelper;
-    public  SQLiteDatabase db;
-    private String isHome;
-    Handler myHandler = new Handler();
-    private ArrayList<ModelClass> workList = new ArrayList<>();
-    private ProgressHUD progressHUD;
-    SavedWorkListAdapter savedWorkListAdapter;
-
-
-    String onOffType;
-    String fromDate;
-    String toDate;
-    String work_id="";
-    private static final int MY_REQUEST_CODE_PERMISSION = 1000;
-    ProgressDialog progressBar;
+public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.ServerResponseListener, DateInterface {
+    ActivityViewSavedOtherWorkBinding binding;
     Dialog dialog;
     int pageNumber;
+    String work_id;
+    private PrefManager prefManager;
+    private static final int MY_REQUEST_CODE_PERMISSION = 1000;
+    ProgressDialog progressBar;
+    String fromDate;
+    String toDate;
+
+    ArrayList<ModelClass> otherSavedWorkList;
+    SavedWorkListAdapter savedWorkListAdapter;
     String WorkId="";
     String inspectionID="";
 
-    ArrayList<ModelClass> savedWorkList;
-
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_view_saved_other_work);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        workListBinding = DataBindingUtil.setContentView(this, R.layout.view_saved_work_list);
-        workListBinding.setActivity(this);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_view_saved_other_work);
+        binding.setActivity(this);
         prefManager = new PrefManager(this);
-        try {
-            dbHelper = new DBHelper(this);
-            db = dbHelper.getWritableDatabase();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
+        binding.recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
+        binding.recycler.setItemAnimator(new DefaultItemAnimator());
+        binding.recycler.setHasFixedSize(true);
+        binding.recycler.setNestedScrollingEnabled(false);
+        binding.recycler.setFocusable(false);
 
-        workListBinding.recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
-        workListBinding.recycler.setItemAnimator(new DefaultItemAnimator());
-        workListBinding.recycler.setHasFixedSize(true);
-        workListBinding.recycler.setNestedScrollingEnabled(false);
-        workListBinding.recycler.setFocusable(false);
-
-        workListBinding.recycler.setVisibility(View.GONE);
-        workListBinding.notFoundTv.setVisibility(View.VISIBLE);
-
-        workListBinding.searchIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!workListBinding.workId.getText().toString().isEmpty()){
-                    work_id = workListBinding.workId.getText().toString();
-                    workListBinding.workId.setText("");
-                    workListBinding.date.setText("Select Date");
-                    fromDate = "";
-                    toDate = "";
-                    workListBinding.recycler.setAdapter(null);
-                    getWorkDetails();
-                }
-                else {
-                    Utils.showAlert(ViewSavedWorkList.this,"Please Enter Work ID");
-                }
-            }
-        });
-
-
+        binding.recycler.setVisibility(View.GONE);
+        binding.notFoundTv.setVisibility(View.GONE);
     }
 
     public void showDatePickerDialog(){
         Utils.showDatePickerDialog(this);
 
     }
-
-
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        setResult(Activity.RESULT_CANCELED);
-        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    public void getDate(String date) {
+        String[] separated = date.split(":");
+        fromDate = separated[0]; // this will contain "Fruit"
+        toDate = separated[1];
+        binding.date.setText(fromDate+" to "+toDate);
+
+        if(Utils.isOnline()){
+            binding.recycler.setAdapter(null);
+            getOtherWorkReportDetails();
+        }
+        else {
+            Utils.showAlert(ViewSavedOtherWorkList.this,"No Internet");
+        }
+
     }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
+    public void getOtherWorkReportDetails() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("OtherWorkDetails", Api.Method.POST, UrlGenerator.getMainService(), otherWorkDetailsJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
+    public JSONObject otherWorkDetailsJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), otherWorkDetailsParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("WorkDetails", "" + authKey);
+        return dataSet;
+    }
+    public  JSONObject otherWorkDetailsParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "date_wise_other_inspection_details_view");
+        dataSet.put("from_date", fromDate);
+        dataSet.put("to_date", toDate);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
+        Log.d("WorkDetails", "" + dataSet);
+        return dataSet;
     }
     public void getWorkReportDetails(String work_id, String inspection_id) {
         WorkId=work_id;
@@ -186,33 +164,32 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
     public  JSONObject workDetailsParams(Activity activity,String work_id, String inspection_id) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-            dataSet.put(AppConstant.KEY_SERVICE_ID, "pdf_download");
-            dataSet.put("work_id", work_id);
-            dataSet.put("inspection_id", inspection_id);
-
+            dataSet.put(AppConstant.KEY_SERVICE_ID, "other_work_pdf_download");
+            dataSet.put("other_work_inspection_id", inspection_id);
         Log.d("WorkDetails", "" + dataSet);
         return dataSet;
     }
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
-
         try {
             String urlType = serverResponse.getApi();
             JSONObject responseObj = serverResponse.getJsonResponse();
 
-            if ("WorkDetails".equals(urlType) && responseObj != null) {
+            if ("OtherWorkDetails".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     workListData(jsonObject.getJSONArray(AppConstant.JSON_DATA));
-                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
+                }
+                else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
                 }
-                Log.d("responseWorkList", "" + jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                Log.d("responseWorkList", "" + jsonObject);
 
             }
+
             if ("WorkReport".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
@@ -233,17 +210,76 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
 
             }
 
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-
     @Override
     public void OnError(VolleyError volleyError) {
 
     }
+    private void workListData(JSONArray jsonArray) {
+        try {
+
+            if (jsonArray.length() > 0) {
+                otherSavedWorkList = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
+                    String bcode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
+                    String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
+                    String other_work_inspection_id = jsonArray.getJSONObject(i).getString("other_work_inspection_id");
+                    String inspection_date = jsonArray.getJSONObject(i).getString("inspection_date");
+                    String status_id = jsonArray.getJSONObject(i).getString("status_id");
+                    String status = jsonArray.getJSONObject(i).getString("status");
+                    String description = jsonArray.getJSONObject(i).getString("description");
+                    String other_work_category_name = jsonArray.getJSONObject(i).getString("other_work_category_name");
+                    String other_work_category_id = jsonArray.getJSONObject(i).getString("other_work_category_id");
+                    String other_work_detail = jsonArray.getJSONObject(i).getString("other_work_detail");
+                    String fin_year = jsonArray.getJSONObject(i).getString("fin_year");
+
+                    ModelClass modelClass = new ModelClass();
+                    modelClass.setDistrictCode(dcode);
+                    modelClass.setBlockCode(bcode);
+                    modelClass.setPvCode(pvcode);
+                    modelClass.setOther_work_inspection_id(other_work_inspection_id);
+                    modelClass.setInspectedDate(inspection_date);
+                    modelClass.setWork_status_id(Integer.parseInt(status_id));
+                    modelClass.setWork_status(status);
+                    modelClass.setDescription(description);
+                    modelClass.setOther_work_category_name(other_work_category_name);
+                    modelClass.setOther_work_category_id(Integer.parseInt(other_work_category_id));
+                    modelClass.setOther_work_detail(other_work_detail);
+                    modelClass.setFinancialYear(fin_year);
+                    otherSavedWorkList.add(modelClass);
+
+                }
+
+                if (otherSavedWorkList.size()>0){
+                    savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,otherSavedWorkList,"other_work");
+                    binding.recycler.setVisibility(View.VISIBLE);
+                    binding.notFoundTv.setVisibility(View.GONE);
+                    binding.recycler.setAdapter(savedWorkListAdapter);
+                }
+                else {
+                    binding.recycler.setVisibility(View.GONE);
+                    binding.notFoundTv.setVisibility(View.VISIBLE);
+                    binding.recycler.setAdapter(null);
+                }
+
+            } else {
+                Utils.showAlert(this, "No Record Found for Corresponding Work");
+                binding.recycler.setVisibility(View.GONE);
+                binding.notFoundTv.setVisibility(View.VISIBLE);
+                binding.recycler.setAdapter(null);
+            }
+
+        } catch (JSONException | ArrayIndexOutOfBoundsException j) {
+            j.printStackTrace();
+        }
+
+    }
+
     private boolean checkPermissions() {
         String[] permissions = new String[] {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -253,7 +289,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         int result;
         List<String> listPermissionsNeeded = new ArrayList<>();
         for (String p:permissions) {
-            result = ContextCompat.checkSelfPermission(ViewSavedWorkList.this,p);
+            result = ContextCompat.checkSelfPermission(ViewSavedOtherWorkList.this,p);
             if (result != PackageManager.PERMISSION_GRANTED) {
                 listPermissionsNeeded.add(p);
             }
@@ -420,7 +456,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
 
             }
             else {
-                Utils.showAlert(ViewSavedWorkList.this,"Download Fail");
+                Utils.showAlert(ViewSavedOtherWorkList.this,"Download Fail");
             }
 
         }
@@ -510,113 +546,5 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
     }
     void hideProgress(){
         progressBar.hide();
-    }
-
-
-    @Override
-    public void getDate(String date) {
-        String[] separated = date.split(":");
-        fromDate = separated[0]; // this will contain "Fruit"
-        toDate = separated[1];
-        workListBinding.date.setText(fromDate+" to "+toDate);
-
-        if(Utils.isOnline()){
-            work_id = "";
-            workListBinding.workId.setText("");
-            workListBinding.recycler.setAdapter(null);
-            getWorkDetails();
-        }
-        else {
-            Utils.showAlert(ViewSavedWorkList.this,"No Internet");
-        }
-
-    }
-    public void getWorkDetails() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("WorkDetails", Api.Method.POST, UrlGenerator.getMainService(), workDetailsJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-    public JSONObject workDetailsJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), workDetailsParams(this).toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("WorkDetails", "" + authKey);
-        return dataSet;
-    }
-    public  JSONObject workDetailsParams(Activity activity) throws JSONException {
-        prefManager = new PrefManager(activity);
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "date_wise_inspection_details_view");
-        if(!work_id.isEmpty()){
-            dataSet.put("work_id", work_id);
-            dataSet.put("type", 1);
-        }
-        else {
-            dataSet.put("type", 2);
-            dataSet.put("from_date", fromDate);
-            dataSet.put("to_date", toDate);
-        }
-        Log.d("WorkDetails", "" + dataSet);
-        return dataSet;
-    }
-
-    private void workListData(JSONArray jsonArray) {
-        try {
-
-            if (jsonArray.length() > 0) {
-                savedWorkList = new ArrayList<>();
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
-                    String bcode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
-                    String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
-                    String inspection_id = jsonArray.getJSONObject(i).getString("inspection_id");
-                    String inspection_date = jsonArray.getJSONObject(i).getString("inspection_date");
-                    String status_id = jsonArray.getJSONObject(i).getString("status_id");
-                    String status = jsonArray.getJSONObject(i).getString("status");
-                    String description = jsonArray.getJSONObject(i).getString("description");
-                    String work_name = jsonArray.getJSONObject(i).getString("work_name");
-                    String work_id = jsonArray.getJSONObject(i).getString("work_id");
-
-                    ModelClass modelClass = new ModelClass();
-                    modelClass.setDistrictCode(dcode);
-                    modelClass.setBlockCode(bcode);
-                    modelClass.setPvCode(pvcode);
-                    modelClass.setInspection_id(inspection_id);
-                    modelClass.setInspectedDate(inspection_date);
-                    modelClass.setWork_status_id(Integer.parseInt(status_id));
-                    modelClass.setWork_status(status);
-                    modelClass.setDescription(description);
-                    modelClass.setWork_name(work_name);
-                    modelClass.setWork_id(Integer.parseInt(work_id));
-                    savedWorkList.add(modelClass);
-
-                }
-
-                if (savedWorkList.size()>0){
-                    savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedWorkList.this,savedWorkList,"rdpr");
-                    workListBinding.recycler.setVisibility(View.VISIBLE);
-                    workListBinding.notFoundTv.setVisibility(View.GONE);
-                    workListBinding.recycler.setAdapter(savedWorkListAdapter);
-                }
-                else {
-                    workListBinding.recycler.setVisibility(View.GONE);
-                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
-                    workListBinding.recycler.setAdapter(null);
-                }
-
-            } else {
-                Utils.showAlert(this, "No Record Found for Corresponding Work");
-                workListBinding.recycler.setVisibility(View.GONE);
-                workListBinding.notFoundTv.setVisibility(View.VISIBLE);
-                workListBinding.recycler.setAdapter(null);
-            }
-
-        } catch (JSONException | ArrayIndexOutOfBoundsException j) {
-            j.printStackTrace();
-        }
-
     }
 }

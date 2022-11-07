@@ -81,41 +81,31 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/other_works_layout">
                     <TextView
-                        android:id="@+id/other_works_tv"
-                        android:layout_width="match_parent"
+                        android:id="@+id/other_work_tv"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin_left_20dp"
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/margin_left_20dp"
                         android:text="@string/other_work_details"
-                        android:textColor="@color/grey_9"
-                        android:textSize="@dimen/_14sdp" />
+                        android:textColor="@color/grey_8"
+                        android:textSize="@dimen/_13sdp" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:minHeight="@dimen/header"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/other_works_tv"
+                        android:layout_below="@+id/other_work_tv"
                         android:layout_marginLeft="@dimen/margin_left_20dp"
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/margin_left_20dp"
                         android:background="@drawable/rectangle_box"
                         android:orientation="vertical">
-                        <Spinner
-                            android:id="@+id/other_work_spinner"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerInParent="true"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:gravity="center" />
 
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/other_details"
-                            android:visibility="gone"
+                            android:id="@+id/other_work_detail"
                             android:background="@color/full_transparent"
                             android:hint="@string/enter_other_work_details"
                             android:layout_marginStart="@dimen/_10sdp"
@@ -127,6 +117,7 @@
 
 
                     </RelativeLayout>
+
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"

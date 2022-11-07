@@ -70,6 +70,7 @@ public class PrefManager {
     private static final String KEY_WORK_STATUS_ID = "work_status_id";
     private static final String KEY_ON_OFF_TYPE = "on_off_type";
     private static final String KEY_PROFILE_IMAGE = "profile_image";
+    private static final String KEY_IMAGE_ARRAY = "image_array";
 
     public PrefManager(Context context) {
         this._context = context;
@@ -131,6 +132,27 @@ public class PrefManager {
         Log.d("prefDistrictJson",""+jsonData);
         return jsonData;
     }
+    public void setImageJson(JSONArray jsonarray) {
+        editor.putString(KEY_IMAGE_ARRAY, jsonarray.toString());
+        editor.commit();
+    }
+    private String getImageJsonList() {
+        return pref.getString(KEY_IMAGE_ARRAY, null);
+    }
+    public JSONArray getImageJson() {
+        JSONArray jsonData = null;
+        String strJson = getImageJsonList();//second parameter is necessary ie.,Value to return if this preference does not exist.
+        try {
+            if (strJson != null) {
+                jsonData = new JSONArray(strJson);
+            }
+        } catch (Exception e) {
+
+        }
+        Log.d("prefJson",""+jsonData);
+        return jsonData;
+    }
+
     public void setFinYearJson(JSONArray jsonarray) {
         editor.putString(KEY_FIN_YEAR_JSON, jsonarray.toString());
         editor.commit();
