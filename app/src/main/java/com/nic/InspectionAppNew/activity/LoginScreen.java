@@ -368,7 +368,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("villageListDistrictWise", "" + authKey);
+        Log.d("villageListDistrictWise", "" + dataSet);
         return dataSet;
     }
 
@@ -378,7 +378,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("HabitationList", "" + authKey);
+        Log.d("HabitationList", "" + dataSet);
         return dataSet;
     }
 
@@ -399,6 +399,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         String user_data = responseObj.getString(AppConstant.USER_DATA);
                         String decryptedKey = Utils.decrypt(prefManager.getEncryptPass(), key);
                         String userDataDecrypt = Utils.decrypt(prefManager.getEncryptPass(), user_data);
+                        Log.d("userdatadecry", "" + responseObj.toString());
                         Log.d("userdatadecry", "" + userDataDecrypt);
                         jsonObject = new JSONObject(userDataDecrypt);
 
@@ -471,6 +472,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new InsertDistrictTask().execute(jsonObject);
                 }
+                Log.d("DistrictList", "" + responseObj.toString());
                 Log.d("DistrictList", "" + responseDecryptedBlockKey);
             }
             if ("BlockList".equals(urlType) && responseObj != null) {
@@ -480,6 +482,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new InsertBlockTask().execute(jsonObject);
                 }
+                Log.d("BlockList", "" + responseObj.toString());
                 Log.d("BlockList", "" + responseDecryptedBlockKey);
             }
 
@@ -490,6 +493,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new InsertVillageTask().execute(jsonObject);
                 }
+                Log.d("VillageList", "" + responseObj.toString());
                 Log.d("VillageList", "" + responseDecryptedBlockKey);
             }
             if ("HabitationList".equals(urlType) && responseObj != null) {
@@ -499,6 +503,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new InsertHabTask().execute(jsonObject);
                 }
+                Log.d("HabitationList", "" + responseObj.toString());
                 Log.d("HabitationList", "" + responseDecryptedBlockKey);
             }
 

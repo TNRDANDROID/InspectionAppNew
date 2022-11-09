@@ -201,7 +201,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("finYearList", "" + authKey);
+        Log.d("finYearList", "" + dataSet);
         return dataSet;
     }
     public JSONObject inspection_statusListJsonParams() throws JSONException {
@@ -209,7 +209,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("inspection_statusList", "" + authKey);
+        Log.d("inspection_statusList", "" + dataSet);
         return dataSet;
     }
     public JSONObject CategoryListJsonParams() throws JSONException {
@@ -217,7 +217,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("CategoryList", "" + authKey);
+        Log.d("CategoryList", "" + dataSet);
         return dataSet;
     }
     public JSONObject PhotoCountJsonParams() throws JSONException {
@@ -282,6 +282,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new Insert_Inspection_status_Task().execute(jsonObject);
                 }
+                Log.d("inspection_status", "" + responseObj.toString());
                 Log.d("inspection_status", "" + responseDecryptedBlockKey);
             }
             if ("CategoryList".equals(urlType) /*&& responseObj != null*/) {
@@ -292,6 +293,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new Insert_CategoryList_Task().execute(jsonObject);
                 }
+                Log.d("inspection_status", "" + responseObj.toString());
                 Log.d("inspection_status", "" + responseDecryptedBlockKey);
             }
             if ("FinYearList".equals(urlType) && responseObj != null) {
@@ -301,6 +303,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new Insert_FinYear_Task().execute(jsonObject);
                 }
+                Log.d("FinYearList", "" + responseObj.toString());
                 Log.d("FinYearList", "" + responseDecryptedBlockKey);
             }
 
@@ -311,6 +314,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new Insert_Scheme_Task().execute(jsonObject);
                 }
+                Log.d("SchemeList", "" + responseObj.toString());
                 Log.d("SchemeList", "" + responseDecryptedBlockKey);
             }
             if ("PhotoCount".equals(urlType) && responseObj != null) {
@@ -320,6 +324,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     prefManager.setPhotoCount(jsonObject.getString("COUNT"));
                 }
+                Log.d("PhotoCount", "" + responseObj.toString());
                 Log.d("PhotoCount", "" + responseDecryptedBlockKey);
             }
 

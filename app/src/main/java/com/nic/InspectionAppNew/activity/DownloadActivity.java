@@ -208,7 +208,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("villageListDistrictWise", "" + authKey);
+        Log.d("villageListDistrictWise", "" + dataSet);
         return dataSet;
     }
 
@@ -1169,7 +1169,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("schemeList", "" + authKey);
+        Log.d("schemeList", "" + dataSet);
         return dataSet;
     }
 
@@ -1200,6 +1200,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 //                    loadSchemeList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
                     new InsertSchemeListTask().execute(jsonObject);
                 }
+               Log.d("schemeAll", "" + responseObj.toString());
                Log.d("schemeAll", "" + responseDecryptedSchemeKey);
 //                int maxLogSize = 1000;
 //                        for(int i = 0; i <= responseDecryptedSchemeKey.length() / maxLogSize; i++) {
@@ -1221,6 +1222,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     workListInsert = false;
                     Utils.showAlert(this, "No Projects Found! for your selected items");
                 }
+                Log.d("responseWorkList", "" + responseObj.toString());
                 Log.d("responseWorkList", "" + responseDecryptedKey);
 
             }
@@ -1231,6 +1233,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new InsertVillageTask().execute(jsonObject);
                 }
+                Log.d("VillageList", "" + responseObj.toString());
                 Log.d("VillageList", "" + responseDecryptedBlockKey);
             }
 

@@ -121,7 +121,7 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("WorkDetails", "" + authKey);
+        Log.d("WorkDetails", "" + dataSet);
         return dataSet;
     }
     public  JSONObject workDetailsParams(Activity activity) throws JSONException {
@@ -147,7 +147,7 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("OtherWorkDetails", "" + authKey);
+        Log.d("OtherWorkDetails", "" + dataSet);
         return dataSet;
     }
     public  JSONObject otherworkDetailsParams(Activity activity) throws JSONException {
@@ -198,6 +198,7 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
                 }
+                Log.d("responseWorkList", "" + responseObj.toString());
                 Log.d("responseWorkList", "" + responseDecryptedKey);
 
             }
@@ -210,6 +211,7 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
                 }
+                Log.d("responseOtherWorkList", "" + responseObj.toString());
                 Log.d("responseOtherWorkList", "" + responseDecryptedKey);
 
             }

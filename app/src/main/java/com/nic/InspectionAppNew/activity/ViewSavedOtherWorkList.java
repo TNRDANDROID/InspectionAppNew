@@ -130,7 +130,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("WorkDetails", "" + authKey);
+        Log.d("WorkDetails", "" + dataSet);
         return dataSet;
     }
     public  JSONObject otherWorkDetailsParams(Activity activity) throws JSONException {
@@ -158,7 +158,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("WorkDetails", "" + authKey);
+        Log.d("WorkDetails", "" + dataSet);
         return dataSet;
     }
     public  JSONObject workDetailsParams(Activity activity,String work_id, String inspection_id) throws JSONException {
@@ -186,7 +186,8 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                 else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
                 }
-                Log.d("responseWorkList", "" + jsonObject);
+                Log.d("responseWorkList", "" + responseObj.toString());
+                Log.d("responseWorkList", "" + responseDecryptedKey);
 
             }
 
@@ -206,7 +207,8 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                 else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
                 }
-                Log.d("responseWorkList", "" + jsonObject);
+                Log.d("responseWorkList", "" + responseObj.toString());
+                Log.d("responseWorkList", "" + responseDecryptedKey);
 
             }
 

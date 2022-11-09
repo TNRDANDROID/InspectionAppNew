@@ -45,8 +45,9 @@ public class AppVersionHelper implements Api.ServerResponseListener {
 
         params.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VERSION_CHECK);
         params.put(AppConstant.KEY_APP_CODE, "NS");
-
+        Log.d("versionCheckparams", "" + params);
         return params;
+
     }
 
     public static JSONObject versionCheck() throws JSONException {

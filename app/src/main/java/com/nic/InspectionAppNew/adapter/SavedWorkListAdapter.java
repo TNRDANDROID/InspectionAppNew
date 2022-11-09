@@ -81,6 +81,7 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(context, jsonObject.getString("RESPONSE"));
                 }
+                Log.d("responseOtherWorkList", "" + responseObj.toString());
                 Log.d("responseOtherWorkList", "" + responseDecryptedKey);
 
             }
@@ -212,7 +213,7 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("OtherWorkDetails", "" + authKey);
+        Log.d("OtherWorkDetails", "" + dataSet);
         return dataSet;
     }
     public  JSONObject otherworkDetailsParams(Activity activity,String other_work_inspection_id) throws JSONException {

@@ -181,16 +181,14 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         cameraScreenBinding.btnSaveLocal.setOnClickListener(this::onClick);
         cameraScreenBinding.imageCountTv.setText("You Can Capture up to "+max_img_count+" photos");
         cameraScreenBinding.btnAdd.setVisibility(View.VISIBLE);
-        cameraScreenBinding.imageViewPreview.setEnabled(true);
-        cameraScreenBinding.imageView.setEnabled(true);
+
 //        updateView(CameraScreen.this, cameraScreenBinding.cameraLayout, "", "","", "", "");
         dbData.open();
         if(flag.equalsIgnoreCase("edit")){
             try {
 
                 cameraScreenBinding.btnAdd.setVisibility(View.GONE);
-                cameraScreenBinding.imageViewPreview.setEnabled(false);
-                cameraScreenBinding.imageView.setEnabled(false);
+
                 JSONArray imgarray=prefManager.getImageJson();
                 if(imgarray.length() > 0){
 
@@ -275,7 +273,12 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             other_work_inspection_id = getIntent().getStringExtra("other_work_inspection_id");
         }
         if(onOffType.equals("online")){
-            cameraScreenBinding.btnSaveLocal.setText("Sync Data");
+            if(flag.equalsIgnoreCase("edit")){
+                cameraScreenBinding.btnSaveLocal.setText("Update Data");
+            }else {
+                cameraScreenBinding.btnSaveLocal.setText("Sync Data");
+            }
+
         }
     }
     @Override
@@ -349,6 +352,9 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     }
 
     public void getLatLong() {
+        if(flag.equalsIgnoreCase("edit")){
+            Utils.showAlert(CameraScreen.this, "You can't edit inspected photo");
+        }else {
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new MyLocationListener();
         Criteria criteria = new Criteria();
@@ -404,6 +410,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         } else {
             Utils.showAlert(CameraScreen.this, getResources().getString(R.string.gps_not_turned_on));
         }
+    }
     }
 
     private void requestCameraPermission(final int type) {
@@ -641,6 +648,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")) {
                     Utils.showAlert(this, jsonObject.getString("MESSAGE"));
                 }
+                Log.d("savedImage", "" + responseObj.toString());
                 Log.d("savedImage", "" + responseDecryptedBlockKey);
             }
 
@@ -872,7 +880,14 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         latitude_text = hiddenInfo.findViewById(R.id.latitude);
         longtitude_text = hiddenInfo.findViewById(R.id.longtitude);
         description_layout.setVisibility(View.VISIBLE);
-
+        imageView_close.setVisibility(View.VISIBLE);
+        myEditTextView.setEnabled(true);
+        myEditTextView.setClickable(true);
+        if(flag.equalsIgnoreCase("edit")){
+            imageView_close.setVisibility(View.GONE );
+            myEditTextView.setEnabled(false);
+            myEditTextView.setClickable(false);
+        }
 //        imageView.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_phone_camera));
         if(values!=null && !values.equals("") && !values.isEmpty()){
 
@@ -1198,7 +1213,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         try {
             dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
             dataSet.put(AppConstant.DATA_CONTENT, authKey);
-
+            Log.d("saveImage", "" + savePMAYDataSet.toString());
+            Log.d("saveImage", "" + dataSet);
             new ApiService(this).makeJSONObjectRequest("saveImage", Api.Method.POST, UrlGenerator.getMainService(), dataSet, "not cache", this);
 
         } catch (JSONException e) {
@@ -1280,6 +1296,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Log.d("saveImage", "" +  params[0].toString());
+            Log.d("saveImage", "" + dataSet);
             return dataSet;
         }
 

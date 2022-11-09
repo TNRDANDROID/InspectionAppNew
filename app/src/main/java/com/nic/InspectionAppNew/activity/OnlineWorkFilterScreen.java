@@ -593,7 +593,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("villageListDistrictWise", "" + authKey);
+        Log.d("villageListDistrictWise", "" + dataSet);
         return dataSet;
     }
     public  JSONObject villageListDistrictWiseJsonParams(Activity activity) throws JSONException {
@@ -628,7 +628,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("schemeList", "" + authKey);
+        Log.d("schemeList", "" + dataSet);
         return dataSet;
     }
     public  JSONObject schemeListDistrictWiseJsonParams(Activity activity) throws JSONException {
@@ -872,6 +872,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                 intent.putExtra("other_work_category_id",other_work_category_id);
                 intent.putExtra("flag","");
                 intent.putExtra("type","other");
+                prefManager.setWorkType("other");
                 startActivity(intent);
             }else {
                 Utils.showAlert(OnlineWorkFilterScreen.this,"Select other work category");
@@ -1048,6 +1049,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     workListInsert = false;
                     Utils.showAlert(this, "No Projects Found! for your selected items");
                 }
+                Log.d("responseWorkList", "" + responseObj.toString());
                 Log.d("responseWorkList", "" + responseDecryptedKey);
 
             }
@@ -1062,6 +1064,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     workListInsert = false;
                     Utils.showAlert(this, "No Projects Found! for your selected items");
                 }
+                Log.d("responseWorkList", "" + responseObj.toString());
                 Log.d("responseWorkList", "" + responseDecryptedKey);
 
             }
@@ -1072,6 +1075,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new InsertVillageTask().execute(jsonObject);
                 }
+                Log.d("VillageList", "" + responseObj.toString());
                 Log.d("VillageList", "" + responseDecryptedBlockKey);
             }
             if ("VillageListOfLocation".equals(urlType) && responseObj != null) {
@@ -1084,6 +1088,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     workListBinding.recycler.setVisibility(View.GONE);
                     workListBinding.notFoundTv.setVisibility(View.VISIBLE);
                 }
+                Log.d("VillageListOfLocation", "" + responseObj.toString());
                 Log.d("VillageListOfLocation", "" + responseDecryptedBlockKey);
             }
             if ("SchemeList".equals(urlType) && responseObj != null) {
@@ -1093,6 +1098,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new InsertSchemeTask().execute(jsonObject);
                 }
+                Log.d("schemeAll", "" + responseObj.toString());
                 Log.d("schemeAll", "" + responseDecryptedSchemeKey);
             }
 

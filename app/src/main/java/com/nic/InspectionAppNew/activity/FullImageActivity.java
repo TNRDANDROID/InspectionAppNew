@@ -141,7 +141,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("utils_ImageEncrydataSet", "" + authKey);
+        Log.d("utils_ImageEncrydataSet", "" + ImagesListJsonParams().toString());
+        Log.d("utils_ImageEncrydataSet", "" + dataSet);
         return dataSet;
     }
 
@@ -169,6 +170,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                     generateImageArrayList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
                     Log.d("Length", "" + jsonObject.getJSONArray(AppConstant.JSON_DATA).length());
                 }
+                Log.d("resp_OnlineImage", "" + responseObj.toString());
                 Log.d("resp_OnlineImage", "" + responseDecryptedBlockKey);
             }
         } catch (JSONException e) {

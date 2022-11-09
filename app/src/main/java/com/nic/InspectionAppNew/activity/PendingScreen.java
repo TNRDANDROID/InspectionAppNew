@@ -167,6 +167,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
             e.printStackTrace();
         }
 
+        Log.d("saveImages", "" + savePMAYDataSet.toString());
         Log.d("saveImages", "" + dataSet);
     }
 
@@ -191,6 +192,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")) {
                     Utils.showAlert(this, jsonObject.getString("MESSAGE"));
                 }
+                Log.d("savedImage", "" + responseObj.toString());
                 Log.d("savedImage", "" + responseDecryptedBlockKey);
             }
 
