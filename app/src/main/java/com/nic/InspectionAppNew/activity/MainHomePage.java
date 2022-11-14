@@ -3,6 +3,7 @@ package com.nic.InspectionAppNew.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -10,14 +11,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.android.volley.VolleyError;
+import com.nic.InspectionAppNew.ImageZoom.ImageMatrixTouchHandler;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.api.Api;
 import com.nic.InspectionAppNew.api.ApiService;
@@ -32,6 +36,7 @@ import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.ProgressHUD;
 import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,8 +75,14 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         }else {
             homeScreenBinding.userImg.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_user));
         }
-
-
+        homeScreenBinding.userImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (prefManager.getProfileImage() != null && !prefManager.getProfileImage().equals("")) {
+                ExpandedImage(prefManager.getProfileImage());
+            }
+            }
+        });
 
 
         if (Utils.isOnline()) {
@@ -115,6 +126,8 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         homeScreenBinding.navigationLayout.viewInspection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                prefManager.setWorkType("rdpr");
+                prefManager.setOnOffType("online");
                 homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
                 gotoViewSavedWorkScreen();
             }
@@ -122,6 +135,8 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         homeScreenBinding.navigationLayout.viewInspectedOtherWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                prefManager.setWorkType("other");
+                prefManager.setOnOffType("online");
                 homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
                 gotoViewSavedOtherWorkScreen();
             }
@@ -176,7 +191,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     }
     public void getCategoryList() {
         try {
-            new ApiService(this).makeJSONObjectRequest("CategoryList", Api.Method.POST, UrlGenerator.getServicesListUrl(), CategoryListJsonParams(), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("CategoryList", Api.Method.POST, UrlGenerator.getMainService(), CategoryListJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -285,16 +300,16 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 Log.d("inspection_status", "" + responseObj.toString());
                 Log.d("inspection_status", "" + responseDecryptedBlockKey);
             }
-            if ("CategoryList".equals(urlType) /*&& responseObj != null*/) {
-//                String key = responseObj.getString(AppConstant.ENCODE_DATA);
-//                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
-                String responseDecryptedBlockKey = "{\"STATUS\":\"OK\",\"RESPONSE\":\"OK\",\"JSON_DATA\":[{\"other_work_category_id\":\"1\",\"other_work_category_name\":\"PMAY\"},{\"other_work_category_id\":\"2\",\"other_work_category_name\":\"PMGSY\"},{\"other_work_category_id\":\"3\",\"other_work_category_name\":\"SBM\"},{\"other_work_category_id\":\"4\",\"other_work_category_name\":\"MGNREGS\"},{\"other_work_category_id\":\"5\",\"other_work_category_name\":\"Others\"}]}";
+            if ("CategoryList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+//                String responseDecryptedBlockKey = "{\"STATUS\":\"OK\",\"RESPONSE\":\"OK\",\"JSON_DATA\":[{\"other_work_category_id\":\"1\",\"other_work_category_name\":\"PMAY\"},{\"other_work_category_id\":\"2\",\"other_work_category_name\":\"PMGSY\"},{\"other_work_category_id\":\"3\",\"other_work_category_name\":\"SBM\"},{\"other_work_category_id\":\"4\",\"other_work_category_name\":\"MGNREGS\"},{\"other_work_category_id\":\"5\",\"other_work_category_name\":\"Others\"}]}";
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new Insert_CategoryList_Task().execute(jsonObject);
                 }
-                Log.d("inspection_status", "" + responseObj.toString());
-                Log.d("inspection_status", "" + responseDecryptedBlockKey);
+                Log.d("CategoryList_status", "" + responseObj.toString());
+                Log.d("CategoryList_status", "" + responseDecryptedBlockKey);
             }
             if ("FinYearList".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
@@ -637,4 +652,45 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
+    private void ExpandedImage(String ProfileImage) {
+        try {
+
+            String ZoomImageURL = ProfileImage;
+            //We need to get the instance of the LayoutInflater, use the context of this activity
+            LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            //Inflate the view from a predefined XML layout
+            View ImagePopupLayout = inflater.inflate(R.layout.image_custom_layout, null);
+
+            ImageView zoomImage = (ImageView) ImagePopupLayout.findViewById(R.id.imgZoomProfileImage);
+            zoomImage.setImageBitmap(Utils.StringToBitMap(prefManager.getProfileImage()));
+/*
+            Picasso.with(this)
+                    .load(ZoomImageURL)
+                    .placeholder(R.drawable.progress_animation)
+                    .error(R.drawable.grey_user_head_icon_250)
+                    .into(zoomImage);
+*/
+            ImageMatrixTouchHandler imageMatrixTouchHandler = new ImageMatrixTouchHandler(this);
+            zoomImage.setOnTouchListener(imageMatrixTouchHandler);
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            dialogBuilder.setView(ImagePopupLayout);
+
+            final AlertDialog alert = dialogBuilder.create();
+            alert.getWindow().getAttributes().windowAnimations = R.style.dialog_animation_zoomInOut;
+            alert.show();
+            alert.getWindow().setBackgroundDrawableResource(R.color.full_transparent);
+            alert.setCanceledOnTouchOutside(true);
+
+            zoomImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alert.dismiss();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

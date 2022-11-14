@@ -51,8 +51,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         production {
-            debuggable true
-            testCoverageEnabled true
+            debuggable false
+            testCoverageEnabled false
             minifyEnabled false
             shrinkResources false
             signingConfig signingConfigs.debug
@@ -135,4 +135,5 @@ dependencies {
     //PDF viewer
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    api 'com.squareup.picasso:picasso:2.5.2'
 }

@@ -111,11 +111,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         statusFilterSpinner();
 
         getIntentData();
-        if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
-            saveWorkDetailsActivityBinding.otherWorksLayout.setVisibility(View.GONE);
-        }else {
-            saveWorkDetailsActivityBinding.otherWorksLayout.setVisibility(View.VISIBLE);
-        }
+
         saveWorkDetailsActivityBinding.statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -192,6 +188,11 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         other_work_category_id = getIntent().getStringExtra("other_work_category_id");
         flag = getIntent().getStringExtra("flag");
 
+        if(type.equalsIgnoreCase("rdpr")){
+            saveWorkDetailsActivityBinding.otherWorksLayout.setVisibility(View.GONE);
+        }else {
+            saveWorkDetailsActivityBinding.otherWorksLayout.setVisibility(View.VISIBLE);
+        }
         dbData.open();
 
         if(flag.equalsIgnoreCase("edit")){
