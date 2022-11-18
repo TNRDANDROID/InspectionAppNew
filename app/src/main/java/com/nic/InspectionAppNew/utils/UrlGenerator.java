@@ -26,7 +26,9 @@ public class UrlGenerator {
     public static String getTnrdHostName() {
         return NICApplication.getAppString(R.string.TNRD_HOST_NAME);
     }
-
+    public static String getOpenUrl() {
+        return NICApplication.getAppString(R.string.OPEN_SERVICES_URL);
+    }
 
 
 }

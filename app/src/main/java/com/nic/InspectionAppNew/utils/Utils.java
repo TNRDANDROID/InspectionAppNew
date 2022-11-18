@@ -33,6 +33,7 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -166,6 +167,13 @@ public class Utils {
         Matcher matcher = pattern.matcher(inputStr);
 
         flag = matcher.matches();
+        return flag;
+
+    }
+    public static boolean isEmailValid1(String email) {
+
+        boolean flag;
+        flag = Patterns.EMAIL_ADDRESS.matcher(email).matches();
         return flag;
 
     }

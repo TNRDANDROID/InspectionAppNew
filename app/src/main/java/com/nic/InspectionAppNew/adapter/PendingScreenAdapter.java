@@ -203,7 +203,7 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
                 intent.putExtra("onOffType","offline");
                 intent.putExtra("other_work_detail",pendingListFiltered.get(position).getOther_work_detail());
                 intent.putExtra("flag","");
-                intent.putExtra("type","other");
+                intent.putExtra("type","rdpr");
                 context.startActivity(intent);
             }
         });

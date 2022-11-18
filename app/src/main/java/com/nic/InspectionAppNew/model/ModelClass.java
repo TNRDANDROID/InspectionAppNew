@@ -479,4 +479,70 @@ public class ModelClass implements Serializable {
     public void setOther_work_inspection_id(String other_work_inspection_id) {
         this.other_work_inspection_id = other_work_inspection_id;
     }
+
+    private String gender_code;
+    private String gender_name_en;
+    private String gender_name_ta;
+
+    private String localbody_name;
+    private String localbody_code;
+
+    private String desig_code;
+    private String desig_name;
+
+    public String getDesig_code() {
+        return desig_code;
+    }
+
+    public void setDesig_code(String desig_code) {
+        this.desig_code = desig_code;
+    }
+
+    public String getDesig_name() {
+        return desig_name;
+    }
+
+    public void setDesig_name(String desig_name) {
+        this.desig_name = desig_name;
+    }
+
+    public String getLocalbody_name() {
+        return localbody_name;
+    }
+
+    public void setLocalbody_name(String localbody_name) {
+        this.localbody_name = localbody_name;
+    }
+
+    public String getLocalbody_code() {
+        return localbody_code;
+    }
+
+    public void setLocalbody_code(String localbody_code) {
+        this.localbody_code = localbody_code;
+    }
+
+    public String getGender_code() {
+        return gender_code;
+    }
+
+    public void setGender_code(String gender_code) {
+        this.gender_code = gender_code;
+    }
+
+    public String getGender_name_en() {
+        return gender_name_en;
+    }
+
+    public void setGender_name_en(String gender_name_en) {
+        this.gender_name_en = gender_name_en;
+    }
+
+    public String getGender_name_ta() {
+        return gender_name_ta;
+    }
+
+    public void setGender_name_ta(String gender_name_ta) {
+        this.gender_name_ta = gender_name_ta;
+    }
 }

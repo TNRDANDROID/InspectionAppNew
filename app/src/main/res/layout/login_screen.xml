@@ -38,6 +38,7 @@
             android:id="@+id/version_hint"
             android:layout_above="@+id/below_bg"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:padding="@dimen/_10sdp"
             android:text="This application supports only android 9 and above versions"
@@ -225,9 +226,10 @@
                                                     android:layout_width="match_parent"
                                                     android:layout_height="match_parent"
                                                     android:background="@android:color/transparent"
-                                                    android:inputType="textPersonName"
+                                                    android:inputType="phone"
+                                                    android:maxLength="10"
                                                     android:padding="0dp"
-                                                    android:hint="@string/username"
+                                                    android:hint="@string/user_name"
                                                     />
 
                                             </com.google.android.material.textfield.TextInputLayout>
@@ -355,7 +357,71 @@
                             customfontdemo:ignore="ContentDescription" />
 
                     </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/new_user_layout"
+                        >
+                        <LinearLayout
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:id="@+id/sign_up"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:layout_gravity="center_horizontal"
+                            android:orientation="horizontal">
 
+                            <TextView
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="New User"
+                                android:layout_marginEnd="@dimen/_5sdp"
+                                android:textAlignment="center"
+                                android:textColor="@color/d_grey2"
+                                android:textSize="@dimen/_15sdp"
+                                android:textStyle="bold" />
+                            <TextView
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Register"
+                                android:textAllCaps="true"
+                                android:textAlignment="center"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="@dimen/_15sdp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:id="@+id/verify_otp_layout"
+                            android:layout_below="@id/sign_up"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center_horizontal"
+                            android:orientation="horizontal">
+
+                            <TextView
+
+                                android:layout_width="@dimen/_200sdp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:padding="@dimen/_3sdp"
+                                android:text="@string/verify_mobile"
+                                android:layout_marginEnd="@dimen/_5sdp"
+                                android:textAlignment="center"
+                                android:lineSpacingExtra="@dimen/_3sdp"
+                                android:textColor="@color/d_grey2"
+                                android:textSize="@dimen/_13sdp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
                 </LinearLayout>
 
 

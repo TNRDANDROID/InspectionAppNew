@@ -772,7 +772,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
 
                     if (imageView.getDrawable() != null) {
-                        if(!myEditTextView.getText().toString().equals("")){
+                       // if(!myEditTextView.getText().toString().equals("")){
                         count = count + 1;
                         byte[] imageInByte = new byte[0];
                         String image_str = "";
@@ -831,9 +831,10 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                         }
 
 
-                    } else {
+                   /* }
+                        else {
                         Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description));
-                    }
+                    }*/
                     } else {
                         Utils.showAlert(CameraScreen.this, getResources().getString(R.string.please_capture_image));
                     }
@@ -845,11 +846,11 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     public void addImageButtonClick(){
         if(viewArrayList.size() < max_img_count) {
             if (imageView.getDrawable() != null && viewArrayList.size() > 0) {
-                if (!myEditTextView.getText().toString().equals("") ) {
+                //if (!myEditTextView.getText().toString().equals("") ) {
                     updateView(CameraScreen.this, cameraScreenBinding.cameraLayout, img, "", "", "", "", "");
-                } else {
+                /*} else {
                     Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description));
-                }
+                }*/
             } else {
                 Utils.showAlert(CameraScreen.this, getResources().getString(R.string.please_capture_image));
             }
@@ -1016,7 +1017,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                     longtitude_text = vv.findViewById(R.id.longtitude);
 
                     if (imageView.getDrawable() != null) {
-                        if(!myEditTextView.getText().toString().equals("")){
+                        //if(!myEditTextView.getText().toString().equals("")){
                             count = count + 1;
                             String image_str = "";
                             String description = "";
@@ -1038,10 +1039,10 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                             } catch (Exception e) {
                                 this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(CameraScreen.this, getResources().getString(R.string.at_least_capture_one_photo)); }});
                             }
-                        }
+                        /*}
                          else{
                             this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description)); }});
-                         }
+                         }*/
                     }
                     else {
                         this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(CameraScreen.this, getResources().getString(R.string.please_capture_image)); }});
@@ -1087,7 +1088,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                     longtitude_text = vv.findViewById(R.id.longtitude);
 
                     if (imageView.getDrawable() != null) {
-                        if(!myEditTextView.getText().toString().equals("")){
+                        //if(!myEditTextView.getText().toString().equals("")){
                             count = count + 1;
                             String image_str = "";
                             String description = "";
@@ -1108,10 +1109,10 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                             } catch (Exception e) {
                                 this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(CameraScreen.this, getResources().getString(R.string.at_least_capture_one_photo)); }});
                             }
-                        }
+                        /*}
                          else{
                             this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description)); }});
-                         }
+                         }*/
                     }
                     else {
                         this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(CameraScreen.this, getResources().getString(R.string.please_capture_image)); }});

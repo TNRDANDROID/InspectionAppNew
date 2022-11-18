@@ -79,7 +79,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         prefManager = new PrefManager(this);
         loginScreenBinding = DataBindingUtil.setContentView(this, R.layout.login_screen);
         loginScreenBinding.setActivity(this);
@@ -162,6 +162,26 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             anim.setRepeatCount(Animation.INFINITE);
             loginScreenBinding.versionHint.startAnimation(anim);
         }
+
+        loginScreenBinding.signUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gotoRegisterScreen = new Intent(LoginScreen.this,RegistrationScreen.class);
+                gotoRegisterScreen.putExtra("key","login");
+                startActivity(gotoRegisterScreen);
+                overridePendingTransition(R.anim.slide_in,R.anim.slide_out);
+            }
+        });
+        loginScreenBinding.verifyOtpLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginScreen.this,OtpVerfication.class);
+                intent.putExtra("mobile_number","");
+                intent.putExtra("flag","login");
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in,R.anim.slide_out);
+            }
+        });
     }
 
     public void showPassword() {
@@ -218,13 +238,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public void checkLoginScreen() {
         if(loginScreenBinding.versionHint.getVisibility() == View.GONE){
         //local
-        loginScreenBinding.userName.setText("8931475663");
-        loginScreenBinding.password.setText("test123#$");//state local
+        /*loginScreenBinding.userName.setText("8931475663");
+        loginScreenBinding.password.setText("test123#$");//state local*/
 
         /*loginScreenBinding.userName.setText("7877979787");
         loginScreenBinding.password.setText("test123#$");//Dist local*/
 
-        /*loginScreenBinding.userName.setText("8754085962");
+       /* loginScreenBinding.userName.setText("8754085962");
         loginScreenBinding.password.setText("test123#$");//Block local*/
 
       //prod
@@ -449,7 +469,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
 //                        getVillageList();
                         //getHabList();
-
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {

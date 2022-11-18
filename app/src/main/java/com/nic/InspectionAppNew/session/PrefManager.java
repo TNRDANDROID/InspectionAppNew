@@ -71,7 +71,7 @@ public class PrefManager {
     private static final String KEY_ON_OFF_TYPE = "on_off_type";
     private static final String KEY_PROFILE_IMAGE = "profile_image";
     private static final String KEY_IMAGE_ARRAY = "image_array";
-
+    private static final String GENDER_LIST= "GENDER_LIST";
     public PrefManager(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(AppConstant.PREF_NAME, PRIVATE_MODE);
@@ -559,5 +559,12 @@ public class PrefManager {
     public String getVillageListPvName() {
         return pref.getString(KEY_VILLAGE_LIST_PV_NAME, null);
     }
+    public void setGenderList(String genderList) {
+        editor.putString(GENDER_LIST, genderList);
+        editor.commit();
+    }
 
+    public String   getGenderList() {
+        return pref.getString(GENDER_LIST, null);
+    }
 }

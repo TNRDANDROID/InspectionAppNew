@@ -141,6 +141,16 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 gotoViewSavedOtherWorkScreen();
             }
         });
+        homeScreenBinding.navigationLayout.editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
+                Intent gotoRegisterScreen = new Intent(MainHomePage.this,RegistrationScreen.class);
+                gotoRegisterScreen.putExtra("key","home");
+                startActivity(gotoRegisterScreen);
+                overridePendingTransition(R.anim.slide_in,R.anim.slide_out);
+            }
+        });
         homeScreenBinding.goOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
