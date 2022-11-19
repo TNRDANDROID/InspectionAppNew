@@ -175,7 +175,7 @@
             android:layout_margin="@dimen/_10sdp"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:id="@+id/edit_profile">
 
             <ImageView
@@ -200,7 +200,7 @@
             android:id="@+id/vv3"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:background="@color/grey_4">
 
         </View>

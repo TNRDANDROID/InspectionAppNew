@@ -44,6 +44,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.nic.InspectionAppNew.utils.Utils.showAlert;
+
 public class MainHomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
     private ActivityMainHomePageBinding homeScreenBinding;
     private PrefManager prefManager;
@@ -145,10 +147,8 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             @Override
             public void onClick(View view) {
                 homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
-                Intent gotoRegisterScreen = new Intent(MainHomePage.this,RegistrationScreen.class);
-                gotoRegisterScreen.putExtra("key","home");
-                startActivity(gotoRegisterScreen);
-                overridePendingTransition(R.anim.slide_in,R.anim.slide_out);
+                getProfileData();
+
             }
         });
         homeScreenBinding.goOnline.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +184,35 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             }
         });
     }
+
+    private void getProfileData() {
+        if (Utils.isOnline()) {
+            try {
+                new ApiService(MainHomePage.this).makeJSONObjectRequest("getProfileData", Api.Method.POST, UrlGenerator.getMainService(),  getProfileJsonParams(), "not cache", MainHomePage.this);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }else {
+            showAlert(MainHomePage.this,"No Internet Connection!");
+        }
+    }
+    public JSONObject getProfileJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), getProfileParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("getProfile", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject getProfileParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "work_inspection_profile_list");
+        Log.d("getProfile", "" + dataSet);
+        return dataSet;
+    }
+
 
     private void openWorkFilterScreen() {
         Intent intent = new Intent(this, OnlineWorkFilterScreen.class);
@@ -300,6 +329,26 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             String urlType = serverResponse.getApi();
             String status;
             String response;
+            if ("getProfileData".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+
+                Log.d("registration", "" + jsonObject.toString());
+                status  = jsonObject.getString(AppConstant.KEY_STATUS);
+                response = jsonObject.getString(AppConstant.KEY_RESPONSE);
+                if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")){
+                    Intent gotoRegisterScreen = new Intent(MainHomePage.this,RegistrationScreen.class);
+                    gotoRegisterScreen.putExtra("key","home");
+                    gotoRegisterScreen.putExtra("profile_data",jsonObject.toString());
+                    startActivity(gotoRegisterScreen);
+                    overridePendingTransition(R.anim.slide_in,R.anim.slide_out);
+                }else {
+                    showAlert(this, jsonObject.getString(AppConstant.KEY_MESSAGE));
+                }
+
+            }
+
             if ("inspection_status".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);

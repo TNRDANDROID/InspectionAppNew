@@ -64,6 +64,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     String level_id;
     String designation_id;
     String key="";
+    String profile_data="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,19 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
             registrationScreenBinding.mobileNo.setEnabled(false);
             registrationScreenBinding.tick1.setVisibility(View.GONE);
             registrationScreenBinding.btnRegister.setText("Update");
-            getProfileData();
+            profile_data=getIntent().getStringExtra("profile_data");
+            try
+            {
+                JSONObject jsonObject = new JSONObject(profile_data);
+                System.out.println("JSON Object: "+jsonObject);
+                setProfileData(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+            }
+            catch (JSONException e)
+            {
+                System.out.println("Error "+e.toString());
+            }
+
+
         }
         
         
@@ -257,34 +270,6 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         fetchResponce();
     }
 
-    private void getProfileData() {
-        if (Utils.isOnline()) {
-            try {
-                new ApiService(RegistrationScreen.this).makeJSONObjectRequest("getProfileData", Api.Method.POST, UrlGenerator.getMainService(),  getProfileJsonParams(), "not cache", RegistrationScreen.this);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }else {
-            showAlert(RegistrationScreen.this,"No Internet Connection!");
-        }
-    }
-    public JSONObject getProfileJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), getProfileParams(this).toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("getProfile", "" + dataSet);
-        return dataSet;
-    }
-    public  JSONObject getProfileParams(Activity activity) throws JSONException {
-        prefManager = new PrefManager(activity);
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "getProfile");
-        Log.d("getProfile", "" + dataSet);
-        return dataSet;
-    }
-
     private void validate(String mobile) {
         if (Utils.isOnline()) {
             try {
@@ -393,8 +378,8 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         try {
             JSONObject responseObj = serverResponse.getJsonResponse();
             String urlType = serverResponse.getApi();
-            String status = responseObj.getString(AppConstant.KEY_STATUS);
-            String response = responseObj.getString(AppConstant.KEY_RESPONSE);
+            String status ;
+            String response ;
             if ("MobileVerify".equals(urlType) && responseObj != null) {
 
                 if (responseObj.getString("STATUS").equalsIgnoreCase("OK") && responseObj.getString("RESPONSE").equalsIgnoreCase("OK")) {
@@ -487,17 +472,6 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")){
                     Toasty.success(RegistrationScreen.this,responseObj.getString("MESSAGE"), Toast.LENGTH_SHORT).show();
                     gotoOtpVerification();
-                }else {
-                    showAlert(this, responseObj.getString(AppConstant.KEY_MESSAGE));
-                }
-
-            }
-            if ("getProfileData".equals(urlType) && responseObj != null) {
-                Log.d("registration", "" + responseObj.toString());
-                status  = responseObj.getString(AppConstant.KEY_STATUS);
-                response = responseObj.getString(AppConstant.KEY_RESPONSE);
-                if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")){
-                    setProfileData(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 }else {
                     showAlert(this, responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
@@ -862,7 +836,12 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     private void saveDetails(){
         try {
             JSONObject data_set = new JSONObject();
-            data_set.put(AppConstant.KEY_SERVICE_ID,"register");
+            if(key.equalsIgnoreCase("login")){
+                data_set.put(AppConstant.KEY_SERVICE_ID,"register");
+            }else {
+                data_set.put(AppConstant.KEY_SERVICE_ID,"Update_work_inspection_profile");
+            }
+
             data_set.put("name",registrationScreenBinding.name.getText().toString());
             data_set.put("mobile_number",registrationScreenBinding.mobileNo.getText().toString());
             data_set.put("gender",gender_code);
