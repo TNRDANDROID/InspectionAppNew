@@ -97,21 +97,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
         }
         syncButtonVisibility();
-        homeScreenBinding.userName.setText(prefManager.getName());
-        homeScreenBinding.designation.setText(prefManager.getDesignation());
-        homeScreenBinding.navigationLayout.name.setText(prefManager.getName());
-        if(prefManager.getLevels().equals("S")){
-            homeScreenBinding.userLevel.setText("State : "+prefManager.getStateName());
-            homeScreenBinding.navigationLayout.level.setText("State : "+prefManager.getStateName());
-        }else if(prefManager.getLevels().equals("D")){
-            homeScreenBinding.userLevel.setText("District : "+prefManager.getDistrictName());
-            homeScreenBinding.navigationLayout.level.setText("District : "+prefManager.getDistrictName());
-        }else if(prefManager.getLevels().equals("B")){
-            homeScreenBinding.userLevel.setText("Block : "+prefManager.getBlockName());
-            homeScreenBinding.navigationLayout.level.setText("Block : "+prefManager.getBlockName());
-
-        }
-
+        setProfile();
 
         homeScreenBinding.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,6 +169,24 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 openOnlineWorkListScreen();
             }
         });
+    }
+
+    private void setProfile() {
+
+        homeScreenBinding.userName.setText(prefManager.getName());
+        homeScreenBinding.designation.setText(prefManager.getDesignation());
+        homeScreenBinding.navigationLayout.name.setText(prefManager.getName());
+        if(prefManager.getLevels().equals("S")){
+            homeScreenBinding.userLevel.setText("State : "+prefManager.getStateName());
+            homeScreenBinding.navigationLayout.level.setText("State : "+prefManager.getStateName());
+        }else if(prefManager.getLevels().equals("D")){
+            homeScreenBinding.userLevel.setText("District : "+prefManager.getDistrictName());
+            homeScreenBinding.navigationLayout.level.setText("District : "+prefManager.getDistrictName());
+        }else if(prefManager.getLevels().equals("B")){
+            homeScreenBinding.userLevel.setText("Block : "+prefManager.getBlockName());
+            homeScreenBinding.navigationLayout.level.setText("Block : "+prefManager.getBlockName());
+
+        }
     }
 
     private void getProfileData() {
@@ -317,6 +321,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     protected void onResume() {
         super.onResume();
         syncButtonVisibility();
+        setProfile();
 
     }
 

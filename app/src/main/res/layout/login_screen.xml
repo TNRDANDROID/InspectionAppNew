@@ -381,7 +381,7 @@
                                 android:layout_marginEnd="@dimen/_5sdp"
                                 android:textAlignment="center"
                                 android:textColor="@color/d_grey2"
-                                android:textSize="@dimen/_15sdp"
+                                android:textSize="@dimen/_13sdp"
                                 android:textStyle="bold" />
                             <TextView
 
@@ -392,7 +392,7 @@
                                 android:textAllCaps="true"
                                 android:textAlignment="center"
                                 android:textColor="@color/colorPrimaryDark"
-                                android:textSize="@dimen/_15sdp"
+                                android:textSize="@dimen/_14sdp"
                                 android:textStyle="bold" />
                         </LinearLayout>
                         <LinearLayout

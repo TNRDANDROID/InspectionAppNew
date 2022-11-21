@@ -549,4 +549,16 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
     void hideProgress(){
         progressBar.hide();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
+    public void onBackPress() {
+        super.onBackPressed();
+        setResult(Activity.RESULT_CANCELED);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
 }

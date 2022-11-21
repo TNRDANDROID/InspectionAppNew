@@ -1,5 +1,6 @@
 package com.nic.InspectionAppNew.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -54,6 +55,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.nic.InspectionAppNew.utils.Utils.showAlert;
 
 
 /**
@@ -406,6 +409,33 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         Log.d("HabitationList", "" + dataSet);
         return dataSet;
     }
+    private void getProfileData() {
+        if (Utils.isOnline()) {
+            try {
+                new ApiService(LoginScreen.this).makeJSONObjectRequest("getProfileData", Api.Method.POST, UrlGenerator.getMainService(),  getProfileJsonParams(), "not cache", LoginScreen.this);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }else {
+            showAlert(LoginScreen.this,"No Internet Connection!");
+        }
+    }
+    public JSONObject getProfileJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), getProfileParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("getProfile", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject getProfileParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "work_inspection_profile_list");
+        Log.d("getProfile", "" + dataSet);
+        return dataSet;
+    }
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
@@ -446,6 +476,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName() + prefManager.getName());
                         prefManager.setUserPassKey(decryptedKey);
                         prefManager.setUserName(loginScreenBinding.userName.getText().toString());
+                        getProfileData();
+
                         if(jsonObject.get(AppConstant.LEVELS).equals("S")){
                             prefManager.setStateCode(jsonObject.get("statecode"));
 //                            prefManager.setStateName(jsonObject.get(AppConstant.STATE_NAME));
@@ -489,6 +521,39 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 }
 
             }
+            if ("getProfileData".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+
+                Log.d("registration", "" + jsonObject.toString());
+                status  = jsonObject.getString(AppConstant.KEY_STATUS);
+                response = jsonObject.getString(AppConstant.KEY_RESPONSE);
+                if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")){
+                    if (jsonObject.getJSONArray(AppConstant.JSON_DATA).length() > 0) {
+                        JSONArray jsonArray=jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            String name=jsonArray.getJSONObject(i).getString("name");
+                            String mobile_number=jsonArray.getJSONObject(i).getString("mobile");
+                            String gender=jsonArray.getJSONObject(i).getString("gender");
+                            String level=jsonArray.getJSONObject(i).getString("level");
+                            String designation_code=jsonArray.getJSONObject(i).getString("desig_code");
+                            String designation=jsonArray.getJSONObject(i).getString("desig_name");
+                            String dcode=jsonArray.getJSONObject(i).getString("dcode");
+                            String bcode=jsonArray.getJSONObject(i).getString("bcode");
+                            String office_address=jsonArray.getJSONObject(i).getString("office_address");
+                            String email=jsonArray.getJSONObject(i).getString("email");
+                            prefManager.setDesignation(designation);
+                            prefManager.setName(String.valueOf(name));
+                        }
+                    }
+
+                }else {
+                    showAlert(this, jsonObject.getString(AppConstant.KEY_MESSAGE));
+                }
+
+            }
+
             if ("DistrictList".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);

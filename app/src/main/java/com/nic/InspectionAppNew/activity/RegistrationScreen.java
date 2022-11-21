@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -16,7 +17,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -61,9 +65,12 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
 
     String gender_code="";
     String dcode="";
-    String bcode;
+    String dcodeSelected="0";
+    String bcode="";
+    String bcodeSelected="0";
     String level_id="";
     String designation_id="";
+    String designation_idSelected="0";
     String key="";
     String profile_data="";
 
@@ -111,16 +118,18 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
 
                     }
                     else if(level_id.equalsIgnoreCase("D")){
+                        getDistrictList();
                         registrationScreenBinding.districtLayout.setVisibility(View.VISIBLE);
                         registrationScreenBinding.designationLayout.setVisibility(View.VISIBLE);
                         registrationScreenBinding.blockLayout.setVisibility(View.GONE);
                     }
                     else {
+                        getDistrictList();
                         registrationScreenBinding.districtLayout.setVisibility(View.VISIBLE);
                         registrationScreenBinding.designationLayout.setVisibility(View.VISIBLE);
                         registrationScreenBinding.blockLayout.setVisibility(View.VISIBLE);
                     }
-                    getDistrictList();
+
                     getDesignationList();
                 }
                 else {
@@ -477,12 +486,88 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 }
 
             }
+            if ("update".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    showAlert(this, "User data updated successfully!");
+                    getProfileData();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                           onBackPress();
+                        }
+                    }, 1000);
+
+                }
+//                Log.d("update", "" + responseDecryptedBlockKey);
+            }
+            if ("getProfileData".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+
+                Log.d("registration", "" + jsonObject.toString());
+                status  = jsonObject.getString(AppConstant.KEY_STATUS);
+                response = jsonObject.getString(AppConstant.KEY_RESPONSE);
+                if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")){
+                    if (jsonObject.getJSONArray(AppConstant.JSON_DATA).length() > 0) {
+                        JSONArray jsonArray=jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            String name=jsonArray.getJSONObject(i).getString("name");
+                            String mobile_number=jsonArray.getJSONObject(i).getString("mobile");
+                            String gender=jsonArray.getJSONObject(i).getString("gender");
+                            String level=jsonArray.getJSONObject(i).getString("level");
+                            String designation_code=jsonArray.getJSONObject(i).getString("desig_code");
+                            String designation=jsonArray.getJSONObject(i).getString("desig_name");
+                            String dcode=jsonArray.getJSONObject(i).getString("dcode");
+                            String bcode=jsonArray.getJSONObject(i).getString("bcode");
+                            String office_address=jsonArray.getJSONObject(i).getString("office_address");
+                            String email=jsonArray.getJSONObject(i).getString("email");
+                            prefManager.setDesignation(designation);
+                            prefManager.setName(String.valueOf(name));
+                        }
+                    }
+
+                }else {
+                    showAlert(this, jsonObject.getString(AppConstant.KEY_MESSAGE));
+                }
+
+            }
+
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+    private void getProfileData() {
+        if (Utils.isOnline()) {
+            try {
+                new ApiService(RegistrationScreen.this).makeJSONObjectRequest("getProfileData", Api.Method.POST, UrlGenerator.getMainService(),  getProfileJsonParams(), "not cache", RegistrationScreen.this);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
+        }else {
+            showAlert(RegistrationScreen.this,"No Internet Connection!");
+        }
+    }
+    public JSONObject getProfileJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), getProfileParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("getProfile", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject getProfileParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "work_inspection_profile_list");
+        Log.d("getProfile", "" + dataSet);
+        return dataSet;
+    }
     private void setProfileData(JSONArray jsonArray) {
         if (jsonArray.length() > 0) {
 
@@ -497,7 +582,10 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     String bcode=jsonArray.getJSONObject(i).getString("bcode");
                     String office_address=jsonArray.getJSONObject(i).getString("office_address");
                     String email=jsonArray.getJSONObject(i).getString("email");
-                    
+                    dcodeSelected=dcode;
+                    bcodeSelected=bcode;
+                    designation_idSelected=designation;
+
                     registrationScreenBinding.name.setText(name);
                     registrationScreenBinding.mobileNo.setText(mobile_number);
                     registrationScreenBinding.mobileNo.setFocusable(false);
@@ -530,19 +618,21 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                             registrationScreenBinding.level.setSelection(getSpinnerIndex("Level",levelList,level));
                             }
                     }, 500);
+/*
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             if(level.equalsIgnoreCase("D")){
                                 registrationScreenBinding.district.setSelection(getSpinnerIndex("District",districtList,dcode));
                             }
-                            else {
+                            else if(level.equalsIgnoreCase("B")){
                                 registrationScreenBinding.district.setSelection(getSpinnerIndex("District",districtList,dcode));
                                 registrationScreenBinding.block.setSelection(getSpinnerIndex("Block",blockList,bcode));
                             }
                             registrationScreenBinding.designation.setSelection(getSpinnerIndex("Designation",designationList,designation));
                         }
                     }, 500);
+*/
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -619,6 +709,12 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     o2.getDistrictName()));
             districtList.addAll(districtList1);*/
             registrationScreenBinding.district.setAdapter(new CommonAdapter(RegistrationScreen.this,districtList,"District"));
+            if(key.equalsIgnoreCase("home")){
+                if(!dcodeSelected.equalsIgnoreCase("0")&& !dcodeSelected.equalsIgnoreCase("")){
+                    registrationScreenBinding.district.setSelection(getSpinnerIndex("District",districtList,dcodeSelected));
+                }
+
+            }
         }
 
     }
@@ -682,6 +778,13 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     o2.getDistrictName()));
             blockList.addAll(blockList1);*/
             registrationScreenBinding.block.setAdapter(new CommonAdapter(RegistrationScreen.this,blockList,"Block"));
+
+            if(key.equalsIgnoreCase("home")){
+                if(!bcodeSelected.equalsIgnoreCase("0")&& !bcodeSelected.equalsIgnoreCase("")){
+                    registrationScreenBinding.block.setSelection(getSpinnerIndex("Block",blockList,bcodeSelected));
+                }
+
+            }
         }
     }
 
@@ -763,6 +866,13 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     designationList.add(roadListValue);
                 }
                 registrationScreenBinding.designation.setAdapter(new CommonAdapter(this, designationList, "DesignationList"));
+
+                if(key.equalsIgnoreCase("home")){
+                    if(!designation_idSelected.equalsIgnoreCase("0")&& !designation_idSelected.equalsIgnoreCase("")){
+                        registrationScreenBinding.designation.setSelection(getSpinnerIndex("Designation",designationList,designation_idSelected));
+                    }
+
+                }
             }
 
         } catch (JSONException e) {
@@ -778,7 +888,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                             if(level_id.equalsIgnoreCase("S")){
                                 if(!registrationScreenBinding.officeAddress.getText().toString().isEmpty()){
                                     if(!registrationScreenBinding.emailId.getText().toString().isEmpty()&&Utils.isEmailValid1(registrationScreenBinding.emailId.getText().toString())){
-                                        saveDetails();
+                                        saveDataAlert();
                                     }
                                     else {
                                         registrationScreenBinding.emailId.setError("Enter Valid Email");
@@ -794,7 +904,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                                 if(!dcode.isEmpty()){
                                     if(!registrationScreenBinding.officeAddress.getText().toString().isEmpty()){
                                         if(!registrationScreenBinding.emailId.getText().toString().isEmpty()&&Utils.isEmailValid(registrationScreenBinding.emailId.getText().toString())){
-                                            saveDetails();
+                                            saveDataAlert();
                                         }
                                         else {
                                             registrationScreenBinding.emailId.setError("Enter Valid Email");
@@ -814,7 +924,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                                 if(!bcode.isEmpty()){
                                     if(!registrationScreenBinding.officeAddress.getText().toString().isEmpty()){
                                         if(!registrationScreenBinding.emailId.getText().toString().isEmpty()&&Utils.isEmailValid(registrationScreenBinding.emailId.getText().toString())){
-                                            saveDetails();
+                                            saveDataAlert();
                                         }
                                         else {
                                             registrationScreenBinding.emailId.setError("Enter Email");
@@ -854,42 +964,118 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         }
     }
 
-    private void saveDetails(){
+    private void saveDataAlert(){
         try {
-            JSONObject data_set = new JSONObject();
+            final Dialog dialog = new Dialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.alert_dialog);
+
+            TextView text = (TextView) dialog.findViewById(R.id.tv_message);
             if(key.equalsIgnoreCase("login")){
-                data_set.put(AppConstant.KEY_SERVICE_ID,"register");
+                text.setText("Are you sure you want to register?");
             }else {
-                data_set.put(AppConstant.KEY_SERVICE_ID,"Update_work_inspection_profile");
+                text.setText("Are you sure you want update data to server?");
             }
 
-            data_set.put("name",registrationScreenBinding.name.getText().toString());
-            data_set.put("mobile_number",registrationScreenBinding.mobileNo.getText().toString());
-            data_set.put("gender",gender_code);
-            data_set.put("level",level_id);
-            data_set.put("designation",designation_id);
-            data_set.put("dcode",dcode);
-            if(level_id.equalsIgnoreCase("B")){
-                data_set.put("bcode",bcode);
-            }
-            data_set.put("office_address",registrationScreenBinding.officeAddress.getText().toString());
-            data_set.put("email",registrationScreenBinding.emailId.getText().toString());
-            Log.d("json",data_set.toString());
 
-            if(Utils.isOnline()){
-                registration(data_set);
-            }
-            else {
-                Utils.showAlert(RegistrationScreen.this,"No Internet");
-            }
-        }
-        catch (JSONException e){
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+            Button cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+            cancel.setVisibility(View.VISIBLE);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saveDetails();
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        } catch (Exception e) {
             e.printStackTrace();
+        }
+
+    }
+    private void saveDetails(){
+        if(key.equalsIgnoreCase("login")){
+            try {
+                JSONObject data_set = new JSONObject();
+                data_set.put(AppConstant.KEY_SERVICE_ID,"register");
+                data_set.put("name",registrationScreenBinding.name.getText().toString());
+                data_set.put("mobile_number",registrationScreenBinding.mobileNo.getText().toString());
+                data_set.put("gender",gender_code);
+                data_set.put("level",level_id);
+                data_set.put("designation",designation_id);
+                data_set.put("dcode",dcode);
+                if(level_id.equalsIgnoreCase("B")){
+                    data_set.put("bcode",bcode);
+                }
+                data_set.put("office_address",registrationScreenBinding.officeAddress.getText().toString());
+                data_set.put("email",registrationScreenBinding.emailId.getText().toString());
+                Log.d("register_json",data_set.toString());
+
+                if(Utils.isOnline()){
+                    registration(data_set);
+                }
+                else {
+                    Utils.showAlert(RegistrationScreen.this,"No Internet");
+                }
+            }
+            catch (JSONException e){
+                e.printStackTrace();
+            }
+
+        }else {
+            try {
+                JSONObject data_set = new JSONObject();
+                data_set.put(AppConstant.KEY_SERVICE_ID,"Update_work_inspection_profile");
+                data_set.put("name",registrationScreenBinding.name.getText().toString());
+                data_set.put("mobile_number",registrationScreenBinding.mobileNo.getText().toString());
+                data_set.put("gender",gender_code);
+                data_set.put("level",level_id);
+                data_set.put("designation",designation_id);
+                data_set.put("dcode",dcode);
+                if(level_id.equalsIgnoreCase("B")){
+                    data_set.put("bcode",bcode);
+                }
+                data_set.put("office_address",registrationScreenBinding.officeAddress.getText().toString());
+                data_set.put("email",registrationScreenBinding.emailId.getText().toString());
+
+                String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), data_set.toString());
+                JSONObject dataSet = new JSONObject();
+                dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+                dataSet.put(AppConstant.DATA_CONTENT, authKey);
+                Log.d("update_param", "" + dataSet.toString());
+
+                if(Utils.isOnline()){
+                    update(dataSet);
+                }
+                else {
+                    Utils.showAlert(RegistrationScreen.this,"No Internet");
+                }
+            }
+            catch (JSONException e){
+                e.printStackTrace();
+            }
+
         }
     }
     public void registration(JSONObject jsonObject) {
         try {
             new ApiService(this).makeJSONObjectRequest("registration", Api.Method.POST, UrlGenerator.getOpenUrl(), jsonObject, "not cache", this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void update(JSONObject jsonObject) {
+        try {
+            new ApiService(this).makeJSONObjectRequest("update", Api.Method.POST, UrlGenerator.getMainService(), jsonObject, "not cache", this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -928,7 +1114,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
             }
             else {
                 for (int i=0;i<blockList.size();i++){
-                    if (blockList.get(i).getDistrictCode().equals(myString)){
+                    if (blockList.get(i).getBlockCode().equals(myString)){
                         index = i;
                     }
                 }
@@ -936,5 +1122,16 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         }
         catch (NumberFormatException e){ e.printStackTrace(); }
         return index;
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
+    public void onBackPress() {
+        super.onBackPressed();
+        setResult(Activity.RESULT_CANCELED);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 }
