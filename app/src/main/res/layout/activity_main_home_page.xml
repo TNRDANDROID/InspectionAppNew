@@ -153,16 +153,17 @@
 
 
                     </RelativeLayout>
+
                     <TextView
+                        android:id="@+id/user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/user_name"
                         android:layout_below="@+id/imgUser"
                         android:layout_centerHorizontal="true"
                         android:padding="@dimen/_3sdp"
+                        android:text="@string/user_name"
                         android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:text="@string/user_name" />
+                        android:textStyle="bold" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

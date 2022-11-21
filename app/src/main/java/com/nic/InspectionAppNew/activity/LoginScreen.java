@@ -240,6 +240,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         //local
         /*loginScreenBinding.userName.setText("8931475663");
         loginScreenBinding.password.setText("test123#$");//state local*/
+        //local
+       loginScreenBinding.userName.setText("9080873403");
+        loginScreenBinding.password.setText("crd45#$");//state local
 
         /*loginScreenBinding.userName.setText("7877979787");
         loginScreenBinding.password.setText("test123#$");//Dist local*/
@@ -271,7 +274,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             } else {
                 Utils.showAlert(this, getResources().getString(R.string.please_enter_user_name_and_password));
             }
-        } else {
+        }
+        else {
             //Utils.showAlert(this, getResources().getString(R.string.no_internet));
             AlertDialog.Builder ab = new AlertDialog.Builder(
                     LoginScreen.this);
@@ -294,7 +298,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     });
             ab.show();
         }
-        }else {
+        }
+        else {
             Utils.showAlert(this, "Please update your android version to login!");
         }
 

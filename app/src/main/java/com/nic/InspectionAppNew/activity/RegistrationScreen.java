@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -58,11 +59,11 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     ArrayList<ModelClass> levelList=new ArrayList<>();
     ArrayList<ModelClass> designationList=new ArrayList<>();
 
-    String gender_code;
-    String dcode;
+    String gender_code="";
+    String dcode="";
     String bcode;
-    String level_id;
-    String designation_id;
+    String level_id="";
+    String designation_id="";
     String key="";
     String profile_data="";
 
@@ -75,33 +76,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         prefManager = new PrefManager(this);
 
         key=getIntent().getStringExtra("key");
-        if(key.equalsIgnoreCase("login")){
-            registrationScreenBinding.detailsLayout.setVisibility(View.GONE);
-            registrationScreenBinding.mobileNo.setEnabled(true);
-            registrationScreenBinding.tick1.setVisibility(View.VISIBLE);
-            registrationScreenBinding.btnRegister.setText("Register");
-        }else {
-            registrationScreenBinding.detailsLayout.setVisibility(View.VISIBLE);
-            registrationScreenBinding.mobileNo.setEnabled(false);
-            registrationScreenBinding.tick1.setVisibility(View.GONE);
-            registrationScreenBinding.btnRegister.setText("Update");
-            profile_data=getIntent().getStringExtra("profile_data");
-            try
-            {
-                JSONObject jsonObject = new JSONObject(profile_data);
-                System.out.println("JSON Object: "+jsonObject);
-                setProfileData(jsonObject.getJSONArray(AppConstant.JSON_DATA));
-            }
-            catch (JSONException e)
-            {
-                System.out.println("Error "+e.toString());
-            }
-
-
-        }
-        
-        
-
+        fetchResponce();
         registrationScreenBinding.genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -267,7 +242,32 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
             }
         });
 
-        fetchResponce();
+
+        if(key.equalsIgnoreCase("login")){
+            registrationScreenBinding.detailsLayout.setVisibility(View.GONE);
+            registrationScreenBinding.mobileNo.setEnabled(true);
+            registrationScreenBinding.tick1.setVisibility(View.VISIBLE);
+            registrationScreenBinding.btnRegister.setText("Register");
+        }
+        else {
+            registrationScreenBinding.detailsLayout.setVisibility(View.VISIBLE);
+            registrationScreenBinding.mobileNo.setEnabled(false);
+            registrationScreenBinding.tick1.setVisibility(View.GONE);
+            registrationScreenBinding.btnRegister.setText("Update");
+            profile_data=getIntent().getStringExtra("profile_data");
+            try
+            {
+                JSONObject jsonObject = new JSONObject(profile_data);
+                System.out.println("JSON Object: "+jsonObject);
+                setProfileData(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+            }
+            catch (JSONException e)
+            {
+                System.out.println("Error "+e.toString());
+            }
+
+
+        }
     }
 
     private void validate(String mobile) {
@@ -489,19 +489,24 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     String name=jsonArray.getJSONObject(i).getString("name");
-                    String mobile_number=jsonArray.getJSONObject(i).getString("mobile_number");
+                    String mobile_number=jsonArray.getJSONObject(i).getString("mobile");
                     String gender=jsonArray.getJSONObject(i).getString("gender");
                     String level=jsonArray.getJSONObject(i).getString("level");
-                    String designation=jsonArray.getJSONObject(i).getString("designation");
+                    String designation=jsonArray.getJSONObject(i).getString("desig_code");
                     String dcode=jsonArray.getJSONObject(i).getString("dcode");
+                    String bcode=jsonArray.getJSONObject(i).getString("bcode");
                     String office_address=jsonArray.getJSONObject(i).getString("office_address");
                     String email=jsonArray.getJSONObject(i).getString("email");
                     
                     registrationScreenBinding.name.setText(name);
                     registrationScreenBinding.mobileNo.setText(mobile_number);
+                    registrationScreenBinding.mobileNo.setFocusable(false);
+                    registrationScreenBinding.tick1.setClickable(false);
+                    registrationScreenBinding.tick1.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_arrow_forward_black_24dp));
+                    registrationScreenBinding.detailsLayout.setVisibility(View.VISIBLE);
                     registrationScreenBinding.officeAddress.setText(office_address);
                     registrationScreenBinding.emailId.setText(email);
-                    for(int j=0;j<genderList.size();j++){
+                   /* for(int j=0;j<genderList.size();j++){
                         if(genderList.get(j).getGender_code() .equalsIgnoreCase(gender) ){
                             registrationScreenBinding.genderSpinner.setSelection(j);
                         }
@@ -515,13 +520,29 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                         if(designationList.get(k).getDesig_code() .equalsIgnoreCase(designation) ){
                             registrationScreenBinding.designation.setSelection(k);
                         }
-                    }
+                    }*/
 
-                    if(level.equalsIgnoreCase("B")){
-                        String bcode=jsonArray.getJSONObject(i).getString("bcode");
-                    }
-                    
 
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            registrationScreenBinding.genderSpinner.setSelection(getSpinnerIndex("Gender",genderList,gender));
+                            registrationScreenBinding.level.setSelection(getSpinnerIndex("Level",levelList,level));
+                            }
+                    }, 500);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(level.equalsIgnoreCase("D")){
+                                registrationScreenBinding.district.setSelection(getSpinnerIndex("District",districtList,dcode));
+                            }
+                            else {
+                                registrationScreenBinding.district.setSelection(getSpinnerIndex("District",districtList,dcode));
+                                registrationScreenBinding.block.setSelection(getSpinnerIndex("Block",blockList,bcode));
+                            }
+                            registrationScreenBinding.designation.setSelection(getSpinnerIndex("Designation",designationList,designation));
+                        }
+                    }, 500);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -872,5 +893,48 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private int getSpinnerIndex(String type,ArrayList<ModelClass> list,String myString){
+        int index = 0;
+        try {
+            if(type.equals("Gender")){
+                for (int i=0;i<list.size();i++){
+                    if (list.get(i).getGender_code().equals(myString)){
+                        index = i;
+                    }
+                }
+            }
+            else if(type.equals("Level")){
+                for (int i=0;i<list.size();i++){
+                    if (list.get(i).getLocalbody_code().equals(myString)){
+                        index = i;
+                    }
+                }
+            }
+            else if(type.equals("District")){
+                for (int i=0;i<list.size();i++){
+                    if (list.get(i).getDistrictCode().equals(myString)){
+                        index = i;
+                    }
+                }
+            }
+            else if(type.equals("Designation")){
+                for (int i=0;i<list.size();i++){
+                    if (list.get(i).getDesig_code().equals(myString)){
+                        index = i;
+                    }
+                }
+            }
+            else {
+                for (int i=0;i<blockList.size();i++){
+                    if (blockList.get(i).getDistrictCode().equals(myString)){
+                        index = i;
+                    }
+                }
+            }
+        }
+        catch (NumberFormatException e){ e.printStackTrace(); }
+        return index;
     }
 }
