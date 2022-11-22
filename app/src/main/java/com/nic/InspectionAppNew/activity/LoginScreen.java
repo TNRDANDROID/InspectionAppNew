@@ -114,6 +114,16 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             }
         });
+        loginScreenBinding.forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginScreen.this,OtpVerfication.class);
+                intent.putExtra("mobile_number","");
+                intent.putExtra("flag","forgot_password");
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in,R.anim.slide_out);
+            }
+        });
         intializeUI();
 
     }

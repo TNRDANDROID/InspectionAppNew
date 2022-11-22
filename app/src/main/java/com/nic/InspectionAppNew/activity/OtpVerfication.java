@@ -54,10 +54,16 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
         if(flag.equalsIgnoreCase("login")){
             otpVerficationBinding.sendOtpLayout.setVisibility(View.VISIBLE);
             otpVerficationBinding.otpVerificationLayout.setVisibility(View.GONE);
+            otpVerficationBinding.changePasswordLayout.setVisibility(View.GONE);
+        }else if(flag.equalsIgnoreCase("forgot_password")){
+            otpVerficationBinding.sendOtpLayout.setVisibility(View.VISIBLE);
+            otpVerficationBinding.otpVerificationLayout.setVisibility(View.GONE);
+            otpVerficationBinding.changePasswordLayout.setVisibility(View.GONE);
         }else {
             mobile_number=getIntent().getStringExtra("mobile_number");
             otpVerficationBinding.sendOtpLayout.setVisibility(View.GONE);
             otpVerficationBinding.otpVerificationLayout.setVisibility(View.VISIBLE);
+            otpVerficationBinding.changePasswordLayout.setVisibility(View.GONE);
         }
         otpVerficationBinding.verifyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +71,13 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
                 if(!otpVerficationBinding.otp.getText().toString().equalsIgnoreCase("")){
                     if (Utils.isOnline()) {
                         try {
-                            new ApiService(OtpVerfication.this).makeJSONObjectRequest("OTP", Api.Method.POST, UrlGenerator.getOpenUrl(), otpParams(), "not cache", OtpVerfication.this);
+                            if(flag.equalsIgnoreCase("forgot_password")){
+                                new ApiService(OtpVerfication.this).makeJSONObjectRequest("FORGOT_PASSWORD_OTP", Api.Method.POST, UrlGenerator.getOpenUrl(), FORGOT_PASSWORD_OTP_Params(), "not cache", OtpVerfication.this);
+
+                            }else {
+                                new ApiService(OtpVerfication.this).makeJSONObjectRequest("OTP", Api.Method.POST, UrlGenerator.getOpenUrl(), otpParams(), "not cache", OtpVerfication.this);
+
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -100,7 +112,13 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
                     if (!otpVerficationBinding.mobileNo.getText().toString().isEmpty()&&Utils.isValidMobile1(otpVerficationBinding.mobileNo.getText().toString())) {
                         if (Utils.isOnline()) {
                         try {
-                            new ApiService(OtpVerfication.this).makeJSONObjectRequest("OTP_SEND", Api.Method.POST, UrlGenerator.getOpenUrl(),  send_otpParams(), "not cache", OtpVerfication.this);
+                            if(flag.equalsIgnoreCase("forgot_password")){
+                                new ApiService(OtpVerfication.this).makeJSONObjectRequest("FORGOT_PASSWORD_OTP_SEND", Api.Method.POST, UrlGenerator.getOpenUrl(),  FORGOT_PASSWORD_send_otpParams(), "not cache", OtpVerfication.this);
+
+                            }else {
+                                new ApiService(OtpVerfication.this).makeJSONObjectRequest("OTP_SEND", Api.Method.POST, UrlGenerator.getOpenUrl(),  send_otpParams(), "not cache", OtpVerfication.this);
+
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -114,6 +132,12 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
 
             }
         });
+        otpVerficationBinding.passwordBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validatePassword();
+            }
+        });
 
         if(!mobile_number.isEmpty()){
             String mask = mobile_number.replaceAll("\\w(?=\\w{4})", "*");
@@ -125,9 +149,43 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
             otpVerficationBinding.mobileNumberTxt1.setText(mobile_number);
         }
     }
+
+    private void validatePassword() {
+        if(!otpVerficationBinding.password.getText().toString().equalsIgnoreCase("") && !otpVerficationBinding.password.getText().toString().isEmpty()){
+            if(!otpVerficationBinding.confirmPassword.getText().toString().equalsIgnoreCase("") && !otpVerficationBinding.password.getText().toString().isEmpty()){
+                if(otpVerficationBinding.password.getText().toString().equals(otpVerficationBinding.confirmPassword.getText().toString()) ){
+                    if (Utils.isOnline()) {
+                        try {
+                            new ApiService(OtpVerfication.this).makeJSONObjectRequest("CHANGE_PASSWORD", Api.Method.POST, UrlGenerator.getOpenUrl(),  change_password_Params(), "not cache", OtpVerfication.this);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }else {
+                        showAlert(OtpVerfication.this,"No Internet Connection!");
+                    }
+                }else {
+                    showAlert(OtpVerfication.this,"Your Password and Confirm Password does not match");
+                }
+            }else {
+                showAlert(OtpVerfication.this,"Enter Confirm Password");
+            }
+        }else {
+            showAlert(OtpVerfication.this,"Enter New Password");
+        }
+    }
+
     public  JSONObject otpParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "VerifyOtp");
+        dataSet.put("mobile_otp", otpVerficationBinding.otp.getText().toString());
+        dataSet.put("mobile_number",mobile_number);
+        Log.d("otp", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject FORGOT_PASSWORD_OTP_Params() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "ChangePasswordVerifyOtp");
         dataSet.put("mobile_otp", otpVerficationBinding.otp.getText().toString());
         dataSet.put("mobile_number",mobile_number);
         Log.d("otp", "" + dataSet);
@@ -140,9 +198,25 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
         Log.d("resend_otp", "" + dataSet);
         return dataSet;
     }
+    public  JSONObject  change_password_Params() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "change_password");
+        dataSet.put("mobile_number",mobile_number);
+        dataSet.put("passwrd",otpVerficationBinding.password.getText().toString());
+        dataSet.put("confpasswrd",otpVerficationBinding.confirmPassword.getText().toString());
+        Log.d("resend_otp", "" + dataSet);
+        return dataSet;
+    }
     public  JSONObject  send_otpParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "ResendOtp");
+        dataSet.put("mobile_number",otpVerficationBinding.mobileNo.getText().toString());
+        Log.d("send_otp", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject  FORGOT_PASSWORD_send_otpParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "sendOTP_for_change_password");
         dataSet.put("mobile_number",otpVerficationBinding.mobileNo.getText().toString());
         Log.d("send_otp", "" + dataSet);
         return dataSet;
@@ -173,7 +247,21 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
                     //showSignInScreen();
 
                 }else {
+                    showAlert(this, responseObj.getString(AppConstant.KEY_RESPONSE));
+                }
+                Log.d("OTP", "" + responseObj.toString());
+
+            }
+            if ("FORGOT_PASSWORD_OTP".equals(urlType) && responseObj != null) {
+                if (responseObj.getString("STATUS").equalsIgnoreCase("OK") && responseObj.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     showAlert(this, responseObj.getString(AppConstant.KEY_MESSAGE));
+                    mobile_number=otpVerficationBinding.mobileNo.getText().toString();
+                    otpVerficationBinding.sendOtpLayout.setVisibility(View.GONE);
+                    otpVerficationBinding.changePasswordLayout.setVisibility(View.VISIBLE);
+                    otpVerficationBinding.otpVerificationLayout.setVisibility(View.GONE);
+
+                }else {
+                    showAlert(this, responseObj.getString(AppConstant.KEY_RESPONSE));
                 }
                 Log.d("OTP", "" + responseObj.toString());
 
@@ -183,7 +271,7 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
                 if (responseObj.getString("STATUS").equalsIgnoreCase("OK") && responseObj.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     showAlert(this, responseObj.getString("MESSAGE"));
                 }else {
-                    showAlert(this, responseObj.getString(AppConstant.KEY_MESSAGE));
+                    showAlert(this, responseObj.getString(AppConstant.KEY_RESPONSE));
                 }
                 Log.d("OTP_RESEND", "" + responseObj.toString());
 
@@ -196,12 +284,41 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
                     String mask = mobile_number.replaceAll("\\w(?=\\w{4})", "*");
                     otpVerficationBinding.mobileNumberTxt1.setText("( "+mask+" )");
                     otpVerficationBinding.sendOtpLayout.setVisibility(View.GONE);
+                    otpVerficationBinding.changePasswordLayout.setVisibility(View.GONE);
                     otpVerficationBinding.otpVerificationLayout.setVisibility(View.VISIBLE);
 
                 }else {
-                    showAlert(this, responseObj.getString(AppConstant.KEY_MESSAGE));
+                    showAlert(this, responseObj.getString(AppConstant.KEY_RESPONSE));
                 }
                 Log.d("OTP_RESEND", "" + responseObj.toString());
+
+            }
+            if ("FORGOT_PASSWORD_OTP_SEND".equals(urlType) && responseObj != null) {
+
+                if (responseObj.getString("STATUS").equalsIgnoreCase("OK") && responseObj.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    showAlert(this, responseObj.getString("MESSAGE"));
+                    mobile_number=otpVerficationBinding.mobileNo.getText().toString();
+                    String mask = mobile_number.replaceAll("\\w(?=\\w{4})", "*");
+                    otpVerficationBinding.mobileNumberTxt1.setText("( "+mask+" )");
+                    otpVerficationBinding.sendOtpLayout.setVisibility(View.GONE);
+                    otpVerficationBinding.changePasswordLayout.setVisibility(View.GONE);
+                    otpVerficationBinding.otpVerificationLayout.setVisibility(View.VISIBLE);
+
+                }else {
+                    showAlert(this, responseObj.getString(AppConstant.KEY_RESPONSE));
+                }
+                Log.d("FORGOT_PW_OTP_SEND", "" + responseObj.toString());
+
+            }
+            if ("CHANGE_PASSWORD".equals(urlType) && responseObj != null) {
+
+                if (responseObj.getString("STATUS").equalsIgnoreCase("OK") && responseObj.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    showAlert1(responseObj.getString("MESSAGE"));
+
+                }else {
+                    showAlert(this, responseObj.getString(AppConstant.KEY_RESPONSE));
+                }
+                Log.d("FORGOT_PW_OTP_SEND", "" + responseObj.toString());
 
             }
 

@@ -252,5 +252,6 @@
     <string name="view_inspected_report">View Inspected Report</string>
     <string name="no_inspection_history_found">No Inspection History Found</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="forgot_password"><u> Forgot Password?</u></string>
     <string name="verify_mobile"><u>Verify mobile number</u>, if you are not done otp verification</string>
 </resources>

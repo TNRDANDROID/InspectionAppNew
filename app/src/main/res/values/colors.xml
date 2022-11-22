@@ -105,7 +105,9 @@
     <item name="purple" type="color">#FFAA66CC</item>
 
 
-
+    <item name="lite_blue" type="color">#e1f5fe</item>
+    <item name="lite_blue2" type="color">#edf9fe</item>
+    <item name="lite_blue3" type="color">#f6fcfe</item>
     <item name="darkblue" type="color">#A90099CC</item>
     <item name="darkpurple" type="color">#A99933CC</item>
     <item name="darkgreen" type="color">#DA4CAF50</item>

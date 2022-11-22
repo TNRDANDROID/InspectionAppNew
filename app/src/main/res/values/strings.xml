@@ -252,5 +252,6 @@
     <string name="view_inspected_report">View Inspected Report</string>
     <string name="no_inspection_history_found">No Inspection History Found</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="forgot_password"><u> Forgot Password?</u></string>
     <string name="verify_mobile">If you have not completed OTP verification due to some reason,<u> Click here </u>to regenerate New OTP for Completing Registration.</string>
 </resources>

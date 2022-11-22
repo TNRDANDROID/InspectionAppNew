@@ -137,8 +137,113 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_40sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
             android:visibility="visible"
+            android:layout_below="@+id/otp_verification_icon_layout"
+            android:id="@+id/change_password_layout">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/change_password_text_layout"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textAlignment="center"
+                    android:id="@+id/change_password_tv_1"
+                    android:text="Change Password"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_15sdp"
+                    android:textColor="@color/blue_background"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/change_password_tv_2"
+                    android:layout_below="@id/change_password_tv_1"
+                    android:textSize="@dimen/_13sdp"
+                    android:layout_marginLeft="@dimen/_20sdp"
+                    android:layout_marginRight="@dimen/_20sdp"
+                    android:text="Please Enter New Password and Confirm Password"
+                    android:layout_centerHorizontal="true"
+                    android:textAlignment="center"
+                    android:layout_marginTop="@dimen/_10sdp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/change_password_text_layout"
+                android:layout_marginTop="@dimen/_10sdp">
+
+                <RelativeLayout
+                    android:id="@+id/change_password_rl1"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_30sdp"
+                    android:layout_marginEnd="@dimen/_30sdp"
+                    android:background="@drawable/elevation_design_top_bottom_bg">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_35sdp"
+                        android:textAlignment="center"
+                        android:id="@+id/password"
+                        android:background="@color/full_transparent"
+                        android:textColor="@color/blue_background"
+                        android:hint="Enter New Password"
+                        android:textSize="@dimen/_13sdp"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/confirm_password_rl1"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_below="@+id/change_password_rl1"
+                    android:layout_marginStart="@dimen/_30sdp"
+                    android:layout_marginEnd="@dimen/_30sdp"
+                    android:background="@drawable/elevation_design_top_bottom_bg">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_35sdp"
+                        android:textAlignment="center"
+                        android:id="@+id/confirm_password"
+                        android:background="@color/full_transparent"
+                        android:textColor="@color/blue_background"
+                        android:hint="Enter Confirm Password"
+                        android:textSize="@dimen/_13sdp"/>
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginStart="@dimen/_30sdp"
+                android:layout_marginEnd="@dimen/_30sdp"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:id="@+id/password_btn"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:text="Submit"
+                android:background="@drawable/button_background"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_40sdp"
+            android:visibility="gone"
             android:layout_below="@+id/otp_verification_icon_layout"
             android:id="@+id/send_otp_layout">
 
