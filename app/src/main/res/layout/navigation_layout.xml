@@ -165,115 +165,178 @@
 
 
 
-    <LinearLayout
+    <ScrollView
         android:layout_below="@+id/vv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_margin="@dimen/_10sdp"
+        android:background="@color/white">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
-            android:visibility="visible"
-            android:id="@+id/edit_profile">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_centerVertical="true"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
-                android:src="@drawable/user"
-                android:id="@+id/profile_image"
-                android:padding="@dimen/_5sdp"
-                tools:ignore="ContentDescription" />
+            <RelativeLayout
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:visibility="visible"
+                android:id="@+id/edit_profile">
 
-            <TextView
-                android:layout_marginStart="@dimen/_5sdp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/profile_image"
-                android:text="@string/edit_profile"
-                android:textColor="@color/darkblue"
-                android:textSize="@dimen/_12sdp"/>
-        </RelativeLayout>
-        <View
-            android:id="@+id/vv3"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:visibility="visible"
-            android:background="@color/grey_2">
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:src="@drawable/user"
+                    android:id="@+id/profile_image"
+                    android:padding="@dimen/_5sdp"
+                    tools:ignore="ContentDescription" />
 
-        </View>
- <RelativeLayout
-            android:layout_margin="@dimen/_10sdp"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
-            android:id="@+id/view_inspection">
+                <TextView
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/profile_image"
+                    android:text="@string/edit_profile"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_12sdp"/>
+            </RelativeLayout>
+            <View
+                android:id="@+id/vv3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:visibility="visible"
+                android:background="@color/grey_2">
 
-            <ImageView
-                android:layout_centerVertical="true"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
-                android:src="@drawable/logo"
-                android:id="@+id/print_icon1"
-                android:padding="@dimen/_5sdp"
-                tools:ignore="ContentDescription" />
+            </View>
+            <RelativeLayout
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:id="@+id/view_inspection">
 
-            <TextView
-                android:layout_marginStart="@dimen/_5sdp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/print_icon1"
-                android:text="@string/view_inspected_work"
-                android:textColor="@color/darkblue"
-                android:textSize="@dimen/_12sdp"/>
-        </RelativeLayout>
-        <View
-            android:id="@+id/vv1"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey_2">
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:src="@drawable/logo"
+                    android:id="@+id/print_icon1"
+                    android:padding="@dimen/_5sdp"
+                    tools:ignore="ContentDescription" />
 
-        </View>
+                <TextView
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/print_icon1"
+                    android:text="@string/view_inspected_work"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_12sdp"/>
+            </RelativeLayout>
+            <View
+                android:id="@+id/vv1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_2">
 
-        <RelativeLayout
-            android:layout_margin="@dimen/_10sdp"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
-            android:visibility="visible"
-            android:id="@+id/view_inspected_other_work">
+            </View>
 
-            <ImageView
-                android:layout_centerVertical="true"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
-                android:src="@drawable/infrastructure"
-                android:id="@+id/print_icon2"
-                android:padding="@dimen/_5sdp"
-                tools:ignore="ContentDescription" />
+            <RelativeLayout
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:visibility="visible"
+                android:id="@+id/view_inspected_other_work">
 
-            <TextView
-                android:layout_marginStart="@dimen/_5sdp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/print_icon2"
-                android:text="@string/view_inspected_other_work"
-                android:textColor="@color/darkblue"
-                android:textSize="@dimen/_12sdp"/>
-        </RelativeLayout>
-        <View
-            android:id="@+id/vv4"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey_2">
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:src="@drawable/infrastructure"
+                    android:id="@+id/print_icon2"
+                    android:padding="@dimen/_5sdp"
+                    tools:ignore="ContentDescription" />
 
-        </View>
+                <TextView
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/print_icon2"
+                    android:text="@string/view_inspected_other_work"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_12sdp"/>
+            </RelativeLayout>
+            <View
+                android:id="@+id/vv4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_2">
 
-    </LinearLayout>
+            </View>
+
+            <RelativeLayout
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:visibility="visible"
+                android:id="@+id/change_password">
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:src="@drawable/change_password"
+                    android:id="@+id/change_password_icon"
+                    android:padding="@dimen/_5sdp"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/change_password_icon"
+                    android:text="Change Password"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_12sdp"/>
+            </RelativeLayout>
+            <View
+                android:id="@+id/vv5"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_2">
+
+            </View>
+            <RelativeLayout
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:visibility="visible"
+                android:id="@+id/log_out_layout">
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:src="@drawable/log_out"
+                    android:id="@+id/log_out_layout_icon"
+                    android:padding="@dimen/_5sdp"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/log_out_layout_icon"
+                    android:text="Log Out"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_12sdp"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
 
 
 

@@ -159,6 +159,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 if(position>0){
                     dcode = districtList.get(position).getDistrictCode();
+                    bcodeSelected="0";
                     getBlockList();
                 }
                 else {
@@ -921,24 +922,30 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                                 }
                             }
                             else {
-                                if(!bcode.isEmpty()){
-                                    if(!registrationScreenBinding.officeAddress.getText().toString().isEmpty()){
-                                        if(!registrationScreenBinding.emailId.getText().toString().isEmpty()&&Utils.isEmailValid(registrationScreenBinding.emailId.getText().toString())){
-                                            saveDataAlert();
+                                if(!dcode.isEmpty()){
+                                    if(!bcode.isEmpty()){
+                                        if(!registrationScreenBinding.officeAddress.getText().toString().isEmpty()){
+                                            if(!registrationScreenBinding.emailId.getText().toString().isEmpty()&&Utils.isEmailValid(registrationScreenBinding.emailId.getText().toString())){
+                                                saveDataAlert();
+                                            }
+                                            else {
+                                                registrationScreenBinding.emailId.setError("Enter Email");
+                                                registrationScreenBinding.emailId.requestFocus();
+                                            }
                                         }
                                         else {
-                                            registrationScreenBinding.emailId.setError("Enter Email");
-                                            registrationScreenBinding.emailId.requestFocus();
+                                            registrationScreenBinding.officeAddress.setError("Enter Address");
+                                            registrationScreenBinding.officeAddress.requestFocus();
                                         }
                                     }
                                     else {
-                                        registrationScreenBinding.officeAddress.setError("Enter Address");
-                                        registrationScreenBinding.officeAddress.requestFocus();
+                                        Utils.showAlert(RegistrationScreen.this,"Please Select Block");
                                     }
                                 }
                                 else {
-                                    Utils.showAlert(RegistrationScreen.this,"Please Select Block");
+                                    Utils.showAlert(RegistrationScreen.this,"Please Select District");
                                 }
+
                             }
                         }
                         else {

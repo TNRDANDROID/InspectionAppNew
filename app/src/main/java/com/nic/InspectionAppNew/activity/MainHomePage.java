@@ -137,6 +137,14 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
             }
         });
+        homeScreenBinding.navigationLayout.logOutLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
+                logout();
+
+            }
+        });
         homeScreenBinding.goOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
