@@ -145,6 +145,17 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
             }
         });
+        homeScreenBinding.navigationLayout.changePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainHomePage.this,OtpVerfication.class);
+                intent.putExtra("mobile_number","");
+                intent.putExtra("flag","forgot_password");
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in,R.anim.slide_out);
+            }
+        });
+
         homeScreenBinding.goOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
