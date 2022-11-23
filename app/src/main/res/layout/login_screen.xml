@@ -342,7 +342,6 @@
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
                                         android:text="@string/forgot_password"
-                                        android:layout_marginEnd="@dimen/_5sdp"
                                         android:textAlignment="center"
                                         android:textColor="@color/colorPrimaryDark"
                                         android:textSize="@dimen/_12sdp"

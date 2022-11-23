@@ -60,6 +60,10 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
             otpVerficationBinding.sendOtpLayout.setVisibility(View.VISIBLE);
             otpVerficationBinding.otpVerificationLayout.setVisibility(View.GONE);
             otpVerficationBinding.changePasswordLayout.setVisibility(View.GONE);
+        }else if(flag.equalsIgnoreCase("change_password")){
+            otpVerficationBinding.sendOtpLayout.setVisibility(View.VISIBLE);
+            otpVerficationBinding.otpVerificationLayout.setVisibility(View.GONE);
+            otpVerficationBinding.changePasswordLayout.setVisibility(View.GONE);
         }else {
             mobile_number=getIntent().getStringExtra("mobile_number");
             otpVerficationBinding.sendOtpLayout.setVisibility(View.GONE);
@@ -74,6 +78,9 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
                         try {
                             if(flag.equalsIgnoreCase("forgot_password")){
                                 new ApiService(OtpVerfication.this).makeJSONObjectRequest("FORGOT_PASSWORD_OTP", Api.Method.POST, UrlGenerator.getOpenUrl(), FORGOT_PASSWORD_OTP_Params(), "not cache", OtpVerfication.this);
+
+                            }else if(flag.equalsIgnoreCase("change_password")){
+                                new ApiService(OtpVerfication.this).makeJSONObjectRequest("FORGOT_PASSWORD_OTP", Api.Method.POST, UrlGenerator.getOpenUrl(), change_password_OTP_Params(), "not cache", OtpVerfication.this);
 
                             }else {
                                 new ApiService(OtpVerfication.this).makeJSONObjectRequest("OTP", Api.Method.POST, UrlGenerator.getOpenUrl(), otpParams(), "not cache", OtpVerfication.this);
@@ -96,7 +103,16 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
             public void onClick(View view) {
                     if (Utils.isOnline()) {
                         try {
-                            new ApiService(OtpVerfication.this).makeJSONObjectRequest("OTP_RESEND", Api.Method.POST, UrlGenerator.getOpenUrl(),  resend_otpParams(), "not cache", OtpVerfication.this);
+                            if(flag.equalsIgnoreCase("forgot_password")){
+                                new ApiService(OtpVerfication.this).makeJSONObjectRequest("ResendOtpChangePassword", Api.Method.POST, UrlGenerator.getOpenUrl(),  ResendOtpForgotPasswordParams(), "not cache", OtpVerfication.this);
+
+                            }else if(flag.equalsIgnoreCase("change_password")){
+                                new ApiService(OtpVerfication.this).makeJSONObjectRequest("ResendOtpChangePassword", Api.Method.POST, UrlGenerator.getOpenUrl(),  ResendOtpChangePasswordParams(), "not cache", OtpVerfication.this);
+
+                            }else {
+                                new ApiService(OtpVerfication.this).makeJSONObjectRequest("OTP_RESEND", Api.Method.POST, UrlGenerator.getOpenUrl(),  resend_otpParams(), "not cache", OtpVerfication.this);
+
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -115,6 +131,9 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
                         try {
                             if(flag.equalsIgnoreCase("forgot_password")){
                                 new ApiService(OtpVerfication.this).makeJSONObjectRequest("FORGOT_PASSWORD_OTP_SEND", Api.Method.POST, UrlGenerator.getOpenUrl(),  FORGOT_PASSWORD_send_otpParams(), "not cache", OtpVerfication.this);
+
+                            }else if(flag.equalsIgnoreCase("change_password")){
+                                new ApiService(OtpVerfication.this).makeJSONObjectRequest("FORGOT_PASSWORD_OTP_SEND", Api.Method.POST, UrlGenerator.getOpenUrl(),  change_password_send_otpParams(), "not cache", OtpVerfication.this);
 
                             }else {
                                 new ApiService(OtpVerfication.this).makeJSONObjectRequest("OTP_SEND", Api.Method.POST, UrlGenerator.getOpenUrl(),  send_otpParams(), "not cache", OtpVerfication.this);
@@ -200,11 +219,35 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
         Log.d("otp", "" + dataSet);
         return dataSet;
     }
+    public  JSONObject change_password_OTP_Params() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "ChangePasswordVerifyOtp");
+        dataSet.put("mobile_otp", otpVerficationBinding.otp.getText().toString());
+        dataSet.put("mobile_number",mobile_number);
+        Log.d("otp", "" + dataSet);
+        return dataSet;
+    }
     public  JSONObject  resend_otpParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "ResendOtp");
         dataSet.put("mobile_number",mobile_number);
         Log.d("resend_otp", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject  ResendOtpForgotPasswordParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "ResendOtpChangePassword");
+        dataSet.put("password_mode_type", "Forgot");
+        dataSet.put("mobile_number",mobile_number);
+        Log.d("ResendOtpChangePassword", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject  ResendOtpChangePasswordParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "ResendOtpChangePassword");
+        dataSet.put("password_mode_type", "Change");
+        dataSet.put("mobile_number",mobile_number);
+        Log.d("ResendOtpChangePassword", "" + dataSet);
         return dataSet;
     }
     public  JSONObject  change_password_Params() throws JSONException {
@@ -227,22 +270,24 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
     public  JSONObject  FORGOT_PASSWORD_send_otpParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "sendOTP_for_change_password");
+        dataSet.put("password_mode_type", "Forgot");
+        dataSet.put("mobile_number",otpVerficationBinding.mobileNo.getText().toString());
+        Log.d("send_otp", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject  change_password_send_otpParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "sendOTP_for_change_password");
+        dataSet.put("password_mode_type", "Change");
         dataSet.put("mobile_number",otpVerficationBinding.mobileNo.getText().toString());
         Log.d("send_otp", "" + dataSet);
         return dataSet;
     }
     private void showSignInScreen() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent i = new Intent(OtpVerfication.this, LoginScreen.class);
-                startActivity(i);
-
-                finish();
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-            }
-        }, SPLASH_TIME_OUT);
-    }
+        Intent i = new Intent(OtpVerfication.this, LoginScreen.class);
+        startActivity(i);
+        finish();
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);    }
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
@@ -275,6 +320,16 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
                     showAlert(this, responseObj.getString(AppConstant.KEY_RESPONSE));
                 }
                 Log.d("OTP", "" + responseObj.toString());
+
+            }
+            if ("ResendOtpChangePassword".equals(urlType) && responseObj != null) {
+
+                if (responseObj.getString("STATUS").equalsIgnoreCase("OK") && responseObj.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    showAlert(this, responseObj.getString("MESSAGE"));
+                }else {
+                    showAlert(this, responseObj.getString(AppConstant.KEY_RESPONSE));
+                }
+                Log.d("ResendOtpChangePassword", "" + responseObj.toString());
 
             }
             if ("OTP_RESEND".equals(urlType) && responseObj != null) {

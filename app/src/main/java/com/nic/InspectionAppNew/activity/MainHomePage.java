@@ -150,7 +150,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             public void onClick(View view) {
                 Intent intent = new Intent(MainHomePage.this,OtpVerfication.class);
                 intent.putExtra("mobile_number","");
-                intent.putExtra("flag","forgot_password");
+                intent.putExtra("flag","change_password");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in,R.anim.slide_out);
             }
@@ -358,7 +358,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
 
-                Log.d("registration", "" + jsonObject.toString());
+                Log.d("getProfileData", "" + jsonObject.toString());
                 status  = jsonObject.getString(AppConstant.KEY_STATUS);
                 response = jsonObject.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")){
