@@ -37,6 +37,7 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
     ActivityOtpVerficationBinding otpVerficationBinding;
     private PrefManager prefManager;
     String  mobile_number="";
+    String  otp="";
     String  flag="";
     private static int SPLASH_TIME_OUT = 2000;
     @Override
@@ -208,9 +209,10 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
     }
     public  JSONObject  change_password_Params() throws JSONException {
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "change_password");
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "ChangePassword");
         dataSet.put("mobile_number",mobile_number);
-        dataSet.put("password",otpVerficationBinding.password.getText().toString());
+        dataSet.put("otp",otp);
+        dataSet.put("new_password",otpVerficationBinding.password.getText().toString());
         dataSet.put("confirm_password",otpVerficationBinding.confirmPassword.getText().toString());
         Log.d("change_password", "" + dataSet);
         return dataSet;
@@ -263,6 +265,7 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
             if ("FORGOT_PASSWORD_OTP".equals(urlType) && responseObj != null) {
                 if (responseObj.getString("STATUS").equalsIgnoreCase("OK") && responseObj.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     showAlert(this, responseObj.getString(AppConstant.KEY_MESSAGE));
+                    otp=otpVerficationBinding.otp.getText().toString();
                     mobile_number=otpVerficationBinding.mobileNo.getText().toString();
                     otpVerficationBinding.sendOtpLayout.setVisibility(View.GONE);
                     otpVerficationBinding.changePasswordLayout.setVisibility(View.VISIBLE);

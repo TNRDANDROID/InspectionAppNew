@@ -1279,8 +1279,8 @@ public class Utils {
     }
     public static JSONObject schemeFinyearListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_SCHEME_FINYEAR_LIST_LAST_NYEARS);
-        dataSet.put(AppConstant.N_YEAR,3);
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.FINANCIAL_YEAR);
+//        dataSet.put(AppConstant.N_YEAR,3);
         Log.d("schemeFinyearList", "" + dataSet);
         return dataSet;
     }
