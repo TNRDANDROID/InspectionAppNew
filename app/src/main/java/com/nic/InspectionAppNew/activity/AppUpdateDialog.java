@@ -13,6 +13,7 @@ import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.databinding.AppUpdateDialogBinding;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.MyCustomTextView;
+import com.nic.InspectionAppNew.utils.UrlGenerator;
 
 
 public class AppUpdateDialog extends AppCompatActivity implements View.OnClickListener {
@@ -47,9 +48,9 @@ public class AppUpdateDialog extends AppCompatActivity implements View.OnClickLi
     public void showGooglePlay() {
         final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
         try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://drdpr.tn.gov.in/")));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(prefManager.getAppUrl())));
         } catch (android.content.ActivityNotFoundException anfe) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://drdpr.tn.gov.in/")));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(prefManager.getAppUrl())));
         }
     }
 }

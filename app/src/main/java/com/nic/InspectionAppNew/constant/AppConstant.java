@@ -11,6 +11,7 @@ public class AppConstant {
     public static String KEY_VERSION_CHECK= "version_check";
     public static String DATA_CONTENT = "data_content";
     public static String ENCODE_DATA = "enc_data";
+    public static String APK_PATH = "apk_path";
 
 
     public static String USER_LOGIN_KEY = "user_login_key";

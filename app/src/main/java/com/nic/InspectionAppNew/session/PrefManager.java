@@ -72,12 +72,17 @@ public class PrefManager {
     private static final String KEY_PROFILE_IMAGE = "profile_image";
     private static final String KEY_IMAGE_ARRAY = "image_array";
     private static final String GENDER_LIST= "GENDER_LIST";
+    private static final String APP_URL= "APP_URL";
     public PrefManager(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(AppConstant.PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
     }
 
+    public void clearSession() {
+        editor.clear();
+        editor.commit();
+    }
 
     public void setSchemeSeqIdJson(JSONArray jsonarray) {
         editor.putString(KEY_SCHEME_SEQUENTIAL_ID_JSON, jsonarray.toString());
@@ -255,12 +260,6 @@ public class PrefManager {
 
     public String getAppKey() {
         return pref.getString(APP_KEY, null);
-    }
-
-
-    public void clearSession() {
-        editor.clear();
-        editor.commit();
     }
 
 
@@ -566,5 +565,14 @@ public class PrefManager {
 
     public String   getGenderList() {
         return pref.getString(GENDER_LIST, null);
+    }
+
+    public void setAppUrl(String appUrl) {
+        editor.putString(APP_URL, appUrl);
+        editor.commit();
+    }
+
+    public String   getAppUrl() {
+        return pref.getString(APP_URL, null);
     }
 }
