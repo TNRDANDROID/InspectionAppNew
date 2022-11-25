@@ -72,7 +72,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     JSONObject jsonObject;
 
     private PrefManager prefManager;
-//    private ProgressHUD progressHUD;
+    private ProgressHUD progressHUD;
     private int setPType;
 
     public LoginScreenBinding loginScreenBinding;

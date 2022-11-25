@@ -159,7 +159,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 if(position>0){
                     dcode = districtList.get(position).getDistrictCode();
-                    bcodeSelected="0";
+                    bcode="0";
                     getBlockList();
                 }
                 else {
@@ -368,17 +368,20 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     public JSONObject genderParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "get_profile_gender");
+        Log.d("object", "" + dataSet);
         return dataSet;
     }
     public JSONObject stageLevelParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "get_profile_level");
+        Log.d("object", "" + dataSet);
         return dataSet;
     }
     public JSONObject designationParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "get_mobile_designation");
         dataSet.put("level_id", level_id);
+        Log.d("object", "" + dataSet);
         return dataSet;
     }
 
@@ -399,7 +402,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 }else {
                     showAlert(this, responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
-                Log.d("OTP_RESEND", "" + responseObj.toString());
+                Log.d("MobileVerify", "" + responseObj.toString());
 
             }
 
@@ -411,7 +414,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                        JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
                        //prefManager.setGenderList(jsonarray.toString());
                        loadGenderList(jsonarray);
-                       Log.d("Gender", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+                       Log.d("Gender", "" + responseObj.toString());
                    }
                    catch (Exception e){
                        e.printStackTrace();
@@ -426,7 +429,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     try {
                         JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
                         loadLevelList(jsonarray);
-                        Log.d("Level", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+                        Log.d("Level", "" + responseObj.toString());
                     }
                     catch (Exception e){
                         e.printStackTrace();
@@ -443,7 +446,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     try {
                         JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
                         loadDesignationList(jsonarray);
-                        Log.d("Designation", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+                        Log.d("Designation", "" + responseObj.toString());
                     }
                     catch (Exception e){
                         e.printStackTrace();
@@ -459,9 +462,9 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
                     new  InsertDistrictTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
-                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
+                    Log.d("Record", responseObj.toString());
                 }
-                //Log.d("DistrictList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+                Log.d("DistrictList", "" + responseObj.toString());
             }
             if ("BlockList".equals(urlType) && responseObj != null) {
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
@@ -469,10 +472,10 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
                     new  InsertBlockTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
-                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
+                    Log.d("Record", responseObj.toString());
                     registrationScreenBinding.block.setAdapter(null);
                 }
-                //Log.d("BlockList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+                Log.d("BlockList", "" + responseObj.toString());
             }
 
             if ("registration".equals(urlType) && responseObj != null) {
@@ -502,14 +505,14 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     }, 1000);
 
                 }
-//                Log.d("update", "" + responseDecryptedBlockKey);
+                Log.d("update", "" + responseDecryptedBlockKey);
             }
             if ("getProfileData".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
 
-                Log.d("registration", "" + jsonObject.toString());
+                Log.d("getProfileData", "" + jsonObject.toString());
                 status  = jsonObject.getString(AppConstant.KEY_STATUS);
                 response = jsonObject.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")){
@@ -1058,6 +1061,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 JSONObject dataSet = new JSONObject();
                 dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
                 dataSet.put(AppConstant.DATA_CONTENT, authKey);
+                Log.d("update_param", "" + data_set.toString());
                 Log.d("update_param", "" + dataSet.toString());
 
                 if(Utils.isOnline()){

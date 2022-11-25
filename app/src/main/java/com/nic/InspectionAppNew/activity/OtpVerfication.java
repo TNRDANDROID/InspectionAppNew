@@ -216,7 +216,7 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
         dataSet.put(AppConstant.KEY_SERVICE_ID, "ChangePasswordVerifyOtp");
         dataSet.put("mobile_otp", otpVerficationBinding.otp.getText().toString());
         dataSet.put("mobile_number",mobile_number);
-        Log.d("otp", "" + dataSet);
+        Log.d("FORGOT_PASSVerifyOtp", "" + dataSet);
         return dataSet;
     }
     public  JSONObject change_password_OTP_Params() throws JSONException {
@@ -224,7 +224,7 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
         dataSet.put(AppConstant.KEY_SERVICE_ID, "ChangePasswordVerifyOtp");
         dataSet.put("mobile_otp", otpVerficationBinding.otp.getText().toString());
         dataSet.put("mobile_number",mobile_number);
-        Log.d("otp", "" + dataSet);
+        Log.d("ChangePasswordVerifyOtp", "" + dataSet);
         return dataSet;
     }
     public  JSONObject  resend_otpParams() throws JSONException {
@@ -239,7 +239,7 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
         dataSet.put(AppConstant.KEY_SERVICE_ID, "ResendOtpChangePassword");
         dataSet.put("password_mode_type", "Forgot");
         dataSet.put("mobile_number",mobile_number);
-        Log.d("ResendOtpChangePassword", "" + dataSet);
+        Log.d("ResendOtpForgotPassword", "" + dataSet);
         return dataSet;
     }
     public  JSONObject  ResendOtpChangePasswordParams() throws JSONException {
@@ -272,7 +272,7 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
         dataSet.put(AppConstant.KEY_SERVICE_ID, "sendOTP_for_change_password");
         dataSet.put("password_mode_type", "Forgot");
         dataSet.put("mobile_number",otpVerficationBinding.mobileNo.getText().toString());
-        Log.d("send_otp", "" + dataSet);
+        Log.d("sendOTP_FORGOT_password", "" + dataSet);
         return dataSet;
     }
     public  JSONObject  change_password_send_otpParams() throws JSONException {
