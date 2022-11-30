@@ -403,6 +403,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                             String as_value = jsonArray.getJSONObject(i).getString("as_value");
                             String ts_value = jsonArray.getJSONObject(i).getString("ts_value");
                             String current_stage_of_work = jsonArray.getJSONObject(i).getString("current_stage_of_work");
+                            String stage_name = jsonArray.getJSONObject(i).getString("stage_name");
                             String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
 
                             ModelClass modelClass = new ModelClass();
@@ -420,6 +421,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                             modelClass.setAs_value(as_value);
                             modelClass.setTs_value(ts_value);
                             modelClass.setCurrent_stage_of_work(current_stage_of_work);
+                            modelClass.setStage_name(stage_name);
                             modelClass.setIs_high_value(is_high_value);
 
                             workList.add(modelClass);

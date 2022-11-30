@@ -133,6 +133,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     String other_work_detail="";
     String other_work_category_id="";
     String other_work_inspection_id="";
+    String inspection_id="";
     String flag="";
 //    String activityImage;
     ArrayList<ModelClass> imageCount;
@@ -269,9 +270,17 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 //        activityImage = (ArrayList<ModelClass>) getIntent().getSerializableExtra("activityImage");
         type = getIntent().getStringExtra("type");
         flag = getIntent().getStringExtra("flag");
-        if(flag.equalsIgnoreCase("edit")){
-            other_work_inspection_id = getIntent().getStringExtra("other_work_inspection_id");
+
+        if(type.equalsIgnoreCase("rdpr")){
+            if(flag.equalsIgnoreCase("edit")){
+                inspection_id = getIntent().getStringExtra("inspection_id");
+            }
+        }else {
+            if(flag.equalsIgnoreCase("edit")){
+                other_work_inspection_id = getIntent().getStringExtra("other_work_inspection_id");
+            }
         }
+
         if(onOffType.equals("online")){
             if(flag.equalsIgnoreCase("edit")){
                 cameraScreenBinding.btnSaveLocal.setText("Update Data");
@@ -676,7 +685,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
-                    homePage();
+//                    homePage();
+                    onBackPress();
 
                 }
             });
@@ -703,6 +713,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     }
 
     public void onBackPress() {
+        prefManager.setAppBack("back");
         super.onBackPressed();
         setResult(Activity.RESULT_CANCELED);
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
@@ -921,6 +932,21 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 cameraScreenBinding.imageViewPreview.setVisibility(View.GONE);
                 cameraScreenBinding.imageView.setVisibility(View.VISIBLE);
                 cameraScreenBinding.imageView.setImageBitmap(imgBitmap);
+        }else if(type.equalsIgnoreCase("rdpr")){
+            if(flag.equalsIgnoreCase("edit")){
+            offlatTextValue= Double.valueOf(latitude);
+            offlongTextValue= Double.valueOf(longitude);
+                imageView.setImageBitmap(imgBitmap);
+                image_view_preview.setVisibility(View.GONE);
+                imageView.setVisibility(View.VISIBLE);
+                latitude_text.setText(""+offlatTextValue);
+                longtitude_text.setText(""+offlongTextValue);
+                myEditTextView.setText(work_description);
+
+                cameraScreenBinding.imageViewPreview.setVisibility(View.GONE);
+                cameraScreenBinding.imageView.setVisibility(View.VISIBLE);
+                cameraScreenBinding.imageView.setImageBitmap(imgBitmap);
+        }
         }
         imageView_close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1053,6 +1079,73 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 maindataset.put("inspection_work_details",inspection_work_details);
             }
 
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true_flag;
+    }
+    public boolean onLineRDPREditUploadData() {
+        maindataset = new JSONObject();
+        JSONObject dataset = new JSONObject();
+        JSONArray inspection_work_details = new JSONArray();
+        true_flag = false;
+        try {
+            maindataset.put(AppConstant.KEY_SERVICE_ID,"work_inspection_details_save");
+            dataset.put("dcode",dcode);
+            dataset.put("bcode", bcode);
+            dataset.put("pvcode",pvcode);
+            dataset.put("hab_code",hab_code);
+            dataset.put("work_id", work_id);
+//            dataset.put("status_id", work_status_id);
+            dataset.put("description", work_description);
+            dataset.put("inspection_id", inspection_id);
+
+            /*int childCount = cameraScreenBinding.cameraLayout.getChildCount();
+            int count = 0;
+            JSONArray imageArray = new JSONArray();
+            if (childCount > 0) {
+                for (int i = 0; i < childCount; i++) {
+                    View vv = cameraScreenBinding.cameraLayout.getChildAt(i);
+                    imageView = vv.findViewById(R.id.image_view);
+                    myEditTextView = vv.findViewById(R.id.description);
+                    latitude_text = vv.findViewById(R.id.latitude);
+                    longtitude_text = vv.findViewById(R.id.longtitude);
+
+                    if (imageView.getDrawable() != null) {
+                        //if(!myEditTextView.getText().toString().equals("")){
+                            count = count + 1;
+                            String image_str = "";
+                            String description = "";
+                            try {
+                                description = myEditTextView.getText().toString();
+                                Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                                image_str = BitMapToString(bitmap);
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("latitude",latitude_text.getText().toString());
+                                jsonObject.put("longitude",longtitude_text.getText().toString());
+                                jsonObject.put("serial_no",count);
+                                jsonObject.put("image_description",description);
+                                jsonObject.put("image",image_str);
+                                imageArray.put(jsonObject);
+
+                                if(count==childCount)
+                                { true_flag = true; }
+                                else { true_flag = false; }
+                            } catch (Exception e) {
+                                this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(CameraScreen.this, getResources().getString(R.string.at_least_capture_one_photo)); }});
+                            }
+                    } else {
+                        this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(CameraScreen.this, getResources().getString(R.string.please_capture_image)); }});
+                    }
+                }
+                dataset.put("image_details",imageArray);
+                inspection_work_details.put(dataset);
+                maindataset.put("inspection_work_details",inspection_work_details);
+            }*/
+            inspection_work_details.put(dataset);
+            maindataset.put("inspection_work_details",inspection_work_details);
+            true_flag = true;
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -1339,7 +1432,12 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         @Override
         protected Boolean doInBackground(JSONObject... params) {
             if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
-                true_flag=onLineUploadData();
+
+                if(flag.equalsIgnoreCase("edit")){
+                    true_flag=onLineRDPREditUploadData();
+                }else {
+                    true_flag=onLineUploadData();
+                }
             }else {
                 if(flag.equalsIgnoreCase("edit")){
                     true_flag=onlineOtherWorkEditUploadData();

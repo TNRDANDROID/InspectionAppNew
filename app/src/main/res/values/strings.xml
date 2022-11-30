@@ -230,6 +230,7 @@
     <string name="other_work_id">Other Work id</string>
     <string name="other_work_name">Other Work Name</string>
     <string name="work_name">Work Name</string>
+    <string name="stage_name">Stage Name</string>
     <string name="as_value">AS value</string>
     <string name="ts_value">TS value</string>
     <string name="work_status">Work Status</string>

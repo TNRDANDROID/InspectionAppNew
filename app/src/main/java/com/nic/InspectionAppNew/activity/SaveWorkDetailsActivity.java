@@ -75,6 +75,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     String other_work_detail="";
     String other_work_category_id="";
     String other_work_inspection_id="";
+    String inspection_id="";
     String flag="";
     int min_img_count=0;
     int max_img_count=0;
@@ -196,21 +197,38 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         dbData.open();
 
         if(flag.equalsIgnoreCase("edit")){
-            other_work_inspection_id = getIntent().getStringExtra("other_work_inspection_id");
-            String  other_work_category_name = getIntent().getStringExtra("other_work_category_name");
-            work_status_id = getIntent().getIntExtra("status_id",0);
-            String  status = getIntent().getStringExtra("status");
-            String  other_work_detail = getIntent().getStringExtra("other_work_detail");
-            String  description = getIntent().getStringExtra("description");
-            activityImage = getIntent().getStringExtra("activityImage");
-            saveWorkDetailsActivityBinding.description.setText(description);
-            saveWorkDetailsActivityBinding.otherWorkDetail.setText(other_work_detail);
-            saveWorkDetailsActivityBinding.takePhoto.setText("View Photo");
-            for(int i=0;i<status_list.size();i++){
-                if(status_list.get(i).getWork_status_id() == work_status_id){
-                    saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
+            if(type.equalsIgnoreCase("rdpr")){
+                work_status_id = getIntent().getIntExtra("status_id",0);
+                String  status = getIntent().getStringExtra("status");
+                String  work_name = getIntent().getStringExtra("work_name");
+                String  description = getIntent().getStringExtra("description");
+                inspection_id = getIntent().getStringExtra("inspection_id");
+                activityImage = getIntent().getStringExtra("activityImage");
+                saveWorkDetailsActivityBinding.description.setText(description);
+                saveWorkDetailsActivityBinding.takePhoto.setText("View Photo");
+                for(int i=0;i<status_list.size();i++){
+                    if(status_list.get(i).getWork_status_id() == work_status_id){
+                        saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
+                    }
+                }
+            }else {
+                other_work_inspection_id = getIntent().getStringExtra("other_work_inspection_id");
+                String  other_work_category_name = getIntent().getStringExtra("other_work_category_name");
+                work_status_id = getIntent().getIntExtra("status_id",0);
+                String  status = getIntent().getStringExtra("status");
+                String  other_work_detail = getIntent().getStringExtra("other_work_detail");
+                String  description = getIntent().getStringExtra("description");
+                activityImage = getIntent().getStringExtra("activityImage");
+                saveWorkDetailsActivityBinding.description.setText(description);
+                saveWorkDetailsActivityBinding.otherWorkDetail.setText(other_work_detail);
+                saveWorkDetailsActivityBinding.takePhoto.setText("View Photo");
+                for(int i=0;i<status_list.size();i++){
+                    if(status_list.get(i).getWork_status_id() == work_status_id){
+                        saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
+                    }
                 }
             }
+
 
         }else {
             dbData.open();
@@ -263,7 +281,9 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                     intent.putExtra("activityImage",activityImage);
                     intent.putExtra("type","rdpr");
                     intent.putExtra("flag",flag);
-
+                    if(flag.equalsIgnoreCase("edit")){
+                        intent.putExtra("inspection_id",inspection_id);
+                    }
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 }
@@ -498,6 +518,9 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     @Override
     public void onResume() {
         super.onResume();
+        if(prefManager.getAppBack() != null && prefManager.getAppBack().equalsIgnoreCase("back")){
+            onBackPressed();
+        }
     }
 
     @Override

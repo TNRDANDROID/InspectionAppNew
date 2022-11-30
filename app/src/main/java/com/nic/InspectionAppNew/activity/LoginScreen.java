@@ -251,12 +251,12 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public void checkLoginScreen() {
         if(loginScreenBinding.versionHint.getVisibility() == View.GONE){
         //local
-        //loginScreenBinding.userName.setText("8931475663");
-        //loginScreenBinding.password.setText("test123#$");//state local
+      /*  loginScreenBinding.userName.setText("8931475663");
+        loginScreenBinding.password.setText("test123#$");//state local*/
         //local
        /*loginScreenBinding.userName.setText("9080873403");
-        loginScreenBinding.password.setText("crd45#$");//state local*/
-
+        loginScreenBinding.password.setText("crd45#$");//state local
+*/
         /*loginScreenBinding.userName.setText("7877979787");
         loginScreenBinding.password.setText("test123#$");//Dist local*/
 

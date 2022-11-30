@@ -52,6 +52,7 @@ public class ModelClass implements Serializable {
     private String as_value;
     private String ts_value;
     private String current_stage_of_work;
+    private String stage_name;
     private String is_high_value;
     private String work_group_id;
     private String other_work_detail;
@@ -61,6 +62,14 @@ public class ModelClass implements Serializable {
     private String work_description;
     private String inspection_id;
     private String inspectedDate;
+
+    public String getStage_name() {
+        return stage_name;
+    }
+
+    public void setStage_name(String stage_name) {
+        this.stage_name = stage_name;
+    }
 
     public int getOther_work_category_id() {
         return other_work_category_id;

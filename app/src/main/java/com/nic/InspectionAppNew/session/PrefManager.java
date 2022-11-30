@@ -73,6 +73,7 @@ public class PrefManager {
     private static final String KEY_IMAGE_ARRAY = "image_array";
     private static final String GENDER_LIST= "GENDER_LIST";
     private static final String APP_URL= "APP_URL";
+    private static final String APP_BACK= "APP_BACK";
     public PrefManager(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(AppConstant.PREF_NAME, PRIVATE_MODE);
@@ -574,5 +575,13 @@ public class PrefManager {
 
     public String   getAppUrl() {
         return pref.getString(APP_URL, null);
+    }
+    public void setAppBack(String appUrl) {
+        editor.putString(APP_BACK, appUrl);
+        editor.commit();
+    }
+
+    public String   getAppBack() {
+        return pref.getString(APP_BACK, null);
     }
 }

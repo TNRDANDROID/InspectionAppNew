@@ -1178,6 +1178,23 @@ public class Utils {
         Date date = new Date();
         return formatter.format(date);
     }
+    public static boolean compareDate(String my_date) {
+        boolean flag;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current Date => " + c);
+        String curDate = sdf.format(c);
+
+        Date strDate = null;
+        try {
+            strDate = sdf.parse(my_date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        flag = curDate .equalsIgnoreCase(my_date);
+        return flag;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static String getCurrentDate() {

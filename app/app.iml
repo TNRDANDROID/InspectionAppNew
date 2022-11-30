@@ -30,10 +30,10 @@
     <output-test url="file://$MODULE_DIR$/build/intermediates/javac/local_hostUnitTest/compileLocal_hostUnitTestJavaWithJavac/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/local_host" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/aidl_source_output_dir/local_host/compileLocal_hostAidl/out" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/local_host" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/renderscript_source_output_dir/local_host/compileLocal_hostRenderscript/out" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/local_host" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/local_host" type="java-resource" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/local_host" type="java-resource" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/test/local_host" isTestSource="true" generated="true" />
