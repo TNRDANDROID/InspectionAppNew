@@ -47,12 +47,16 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activity.OtpVerfication"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:windowSoftInputMode="stateUnchanged|adjustPan"></activity>
         <activity android:name=".activity.RegistrationScreen"
+            android:exported="true"
             android:windowSoftInputMode="stateUnchanged|adjustPan"/>
         <activity android:name=".activity.ViewSavedOtherWorkList"
+            android:exported="true"
             android:windowSoftInputMode="stateUnchanged|adjustPan"/>
         <activity android:name=".activity.MainHomePage"
+            android:exported="true"
             android:windowSoftInputMode="stateUnchanged|adjustPan"/>
 
         <uses-library
@@ -60,7 +64,8 @@
             android:required="false" />
 
         <activity android:name=".activity.SplashScreen"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -76,29 +81,40 @@
         </activity>
         <activity
             android:name=".activity.LoginScreen"
+            android:exported="true"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
         <activity
             android:name=".activity.WorkList"
+            android:exported="true"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
         <activity
             android:name=".activity.AppUpdateDialog"
+            android:exported="true"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
         <activity android:name=".activity.CameraScreen"
-            />
-        <activity android:name=".activity.FullImageActivity" />
-        <activity android:name=".activity.PendingScreen" />
-        <activity android:name=".activity.SaveWorkDetailsActivity" />
-        <activity android:name=".activity.DownloadActivity" />
-        <activity android:name=".activity.OnlineWorkFilterScreen" />
-        <activity android:name=".activity.ViewActionScreen" />
-        <activity android:name=".activity.ViewSavedWorkList" />
-        <activity android:name=".activity.GetWorkListActivity" />
+            android:exported="true"/>
+        <activity android:name=".activity.FullImageActivity"
+            android:exported="true"/>
+        <activity android:name=".activity.PendingScreen"
+            android:exported="true"/>
+        <activity android:name=".activity.SaveWorkDetailsActivity"
+            android:exported="true"/>
+        <activity android:name=".activity.DownloadActivity"
+            android:exported="true"/>
+        <activity android:name=".activity.OnlineWorkFilterScreen"
+            android:exported="true"/>
+        <activity android:name=".activity.ViewActionScreen"
+            android:exported="true"/>
+        <activity android:name=".activity.ViewSavedWorkList"
+            android:exported="true"/>
+        <activity android:name=".activity.GetWorkListActivity"
+            android:exported="true"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -110,7 +126,8 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <receiver android:name=".utils.Receiver">
+        <receiver android:name=".utils.Receiver"
+            android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.categeory.DEFAULT" />
             </intent-filter>

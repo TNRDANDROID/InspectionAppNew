@@ -188,17 +188,33 @@
                     android:layout_marginStart="@dimen/_30sdp"
                     android:layout_marginEnd="@dimen/_30sdp"
                     android:background="@drawable/elevation_design_top_bottom_bg">
-
-                    <EditText
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_35sdp"
-                        android:textAlignment="center"
-                        android:id="@+id/password"
-                        android:maxLength="15"
-                        android:background="@color/full_transparent"
-                        android:textColor="@color/blue_background"
-                        android:hint="Enter New Password"
-                        android:textSize="@dimen/_13sdp"/>
+                        android:layout_height="wrap_content"
+                        app:endIconMode="password_toggle"
+                        android:hint="@string/password"
+                        app:hintEnabled="false"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/password_img"
+                        android:layout_marginStart="@dimen/_4sdp"
+
+                        android:padding="0dp"
+                        android:textColor="@android:color/black">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/password"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/transparent"
+                            android:padding="0dp"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:maxLength="15"
+                            android:longClickable="false"
+                            android:hint="Enter New Password"
+                            android:inputType="textPassword"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/confirm_password_rl1"
@@ -210,17 +226,33 @@
                     android:layout_marginStart="@dimen/_30sdp"
                     android:layout_marginEnd="@dimen/_30sdp"
                     android:background="@drawable/elevation_design_top_bottom_bg">
-
-                    <EditText
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_35sdp"
-                        android:textAlignment="center"
-                        android:maxLength="15"
-                        android:id="@+id/confirm_password"
-                        android:background="@color/full_transparent"
-                        android:textColor="@color/blue_background"
-                        android:hint="Enter Confirm Password"
-                        android:textSize="@dimen/_13sdp"/>
+                        android:layout_height="wrap_content"
+                        app:endIconMode="password_toggle"
+                        android:hint="@string/password"
+                        app:hintEnabled="false"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/password_img"
+                        android:layout_marginStart="@dimen/_4sdp"
+
+                        android:padding="0dp"
+                        android:textColor="@android:color/black">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/confirm_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/transparent"
+                            android:padding="0dp"
+                            android:maxLength="15"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:longClickable="false"
+                            android:hint="Enter Confirm Password"
+                            android:inputType="textPassword"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
                 </RelativeLayout>
 
 
