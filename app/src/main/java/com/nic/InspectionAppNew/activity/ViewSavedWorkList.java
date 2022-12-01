@@ -13,6 +13,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -40,6 +41,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.volley.VolleyError;
+import com.ghanshyam.graphlibs.GraphData;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.nic.InspectionAppNew.Interface.DateInterface;
@@ -67,6 +69,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, DateInterface {
@@ -118,6 +121,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
 
         workListBinding.recycler.setVisibility(View.GONE);
         workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+        workListBinding.inspectionCountListLayout.setVisibility(View.GONE);
 
         workListBinding.searchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +137,115 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                 }
                 else {
                     Utils.showAlert(ViewSavedWorkList.this,"Please Enter Work ID");
+                }
+            }
+        });
+
+        workListBinding.totalInspectionLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (savedWorkList.size()>0){
+                    savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedWorkList.this,savedWorkList,"rdpr");
+                    workListBinding.recycler.setVisibility(View.VISIBLE);
+                    workListBinding.notFoundTv.setVisibility(View.GONE);
+                    workListBinding.recycler.setAdapter(savedWorkListAdapter);
+                }
+                else {
+                    workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                    workListBinding.recycler.setAdapter(null);
+                }
+            }
+        });
+
+        workListBinding.satisfiedLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (savedWorkList.size()>0){
+                    ArrayList<ModelClass> satisfiedList = new ArrayList<>();
+                    for(int i=0;i<savedWorkList.size();i++){
+                        if(savedWorkList.get(i).getWork_status_id()==1){
+                            satisfiedList.add(savedWorkList.get(i));
+                        }
+                    }
+                    if(satisfiedList.size()>0){
+                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedWorkList.this,satisfiedList,"rdpr");
+                        workListBinding.recycler.setVisibility(View.VISIBLE);
+                        workListBinding.notFoundTv.setVisibility(View.GONE);
+                        workListBinding.recycler.setAdapter(savedWorkListAdapter);
+                    }
+                    else {
+                        workListBinding.recycler.setVisibility(View.GONE);
+                        workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                        workListBinding.recycler.setAdapter(null);
+                    }
+
+                }
+                else {
+                    workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.inspectionCountListLayout.setVisibility(View.GONE);
+                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                    workListBinding.recycler.setAdapter(null);
+                }
+            }
+        });
+        workListBinding.unSatisfiedLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (savedWorkList.size()>0){
+                    ArrayList<ModelClass> unsatisfiedList = new ArrayList<>();
+                    for(int i=0;i<savedWorkList.size();i++){
+                        if(savedWorkList.get(i).getWork_status_id()==2){
+                            unsatisfiedList.add(savedWorkList.get(i));
+                        }
+                    }
+                    if(unsatisfiedList.size()>0){
+                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedWorkList.this,unsatisfiedList,"rdpr");
+                        workListBinding.recycler.setVisibility(View.VISIBLE);
+                        workListBinding.notFoundTv.setVisibility(View.GONE);
+                        workListBinding.recycler.setAdapter(savedWorkListAdapter);
+                    }
+                    else {
+                        workListBinding.recycler.setVisibility(View.GONE);
+                        workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                        workListBinding.recycler.setAdapter(null);
+                    }
+
+                }
+                else {
+                    workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                    workListBinding.recycler.setAdapter(null);
+                }
+            }
+        });
+        workListBinding.needImprovementLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (savedWorkList.size()>0){
+                    ArrayList<ModelClass> needImprovementList = new ArrayList<>();
+                    for(int i=0;i<savedWorkList.size();i++){
+                        if(savedWorkList.get(i).getWork_status_id()==3){
+                            needImprovementList.add(savedWorkList.get(i));
+                        }
+                    }
+                    if(needImprovementList.size()>0){
+                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedWorkList.this,needImprovementList,"rdpr");
+                        workListBinding.recycler.setVisibility(View.VISIBLE);
+                        workListBinding.notFoundTv.setVisibility(View.GONE);
+                        workListBinding.recycler.setAdapter(savedWorkListAdapter);
+                    }
+                    else {
+                        workListBinding.recycler.setVisibility(View.GONE);
+                        workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                        workListBinding.recycler.setAdapter(null);
+                    }
+
+                }
+                else {
+                    workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                    workListBinding.recycler.setAdapter(null);
                 }
             }
         });
@@ -569,8 +682,10 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         try {
 
             if (jsonObject.length() > 0) {
-                JSONArray jsonArray = new JSONArray(jsonObject.getJSONArray("inspection_details"));
-                JSONArray status_wise_count = new JSONArray(jsonObject.getJSONArray("status_wise_count"));
+                JSONArray jsonArray = new JSONArray();
+                jsonArray=jsonObject.getJSONArray("inspection_details");
+                JSONArray status_wise_count = new JSONArray();
+                status_wise_count = jsonObject.getJSONArray("status_wise_count");
                 savedWorkList = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
@@ -600,6 +715,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                 }
 
                 if (savedWorkList.size()>0){
+                    workListBinding.inspectionCountListLayout.setVisibility(View.VISIBLE);
                     savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedWorkList.this,savedWorkList,"rdpr");
                     workListBinding.recycler.setVisibility(View.VISIBLE);
                     workListBinding.notFoundTv.setVisibility(View.GONE);
@@ -607,14 +723,38 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                 }
                 else {
                     workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.inspectionCountListLayout.setVisibility(View.GONE);
                     workListBinding.notFoundTv.setVisibility(View.VISIBLE);
                     workListBinding.recycler.setAdapter(null);
+                }
+                if(status_wise_count.length()>0){
+                    for(int j=0;j<status_wise_count.length();j++){
+                        try {
+                            int satisfied_count = status_wise_count.getJSONObject(j).getInt("satisfied");
+                            int un_satisfied_count = status_wise_count.getJSONObject(j).getInt("unsatisfied");
+                            int need_improvement_count = status_wise_count.getJSONObject(j).getInt("need_improvement");
+                            int total_inspection_count = satisfied_count+un_satisfied_count+need_improvement_count;
+
+                            workListBinding.satisfiedCount.setText(String.valueOf(satisfied_count));
+                            workListBinding.unSatisfiedCount.setText(String.valueOf(un_satisfied_count));
+                            workListBinding.needImprovementCount.setText(String.valueOf(need_improvement_count));
+                            workListBinding.totalCount.setText(String.valueOf(total_inspection_count));
+                            showPieChart(satisfied_count,un_satisfied_count,need_improvement_count,total_inspection_count);
+                        } catch (JSONException e){
+
+                        }
+
+                    }
+                }
+                else {
+
                 }
 
             }
             else {
                 Utils.showAlert(this, "No Record Found for Corresponding Work");
                 workListBinding.recycler.setVisibility(View.GONE);
+                workListBinding.inspectionCountListLayout.setVisibility(View.GONE);
                 workListBinding.notFoundTv.setVisibility(View.VISIBLE);
                 workListBinding.recycler.setAdapter(null);
             }
@@ -623,5 +763,25 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
             j.printStackTrace();
         }
 
+    }
+
+    private void showPieChart(int satisfied,int unsatisfied,int need_improvement,int total_inspection_count){
+        workListBinding.graph.setMinValue(0f);
+        workListBinding.graph.setMaxValue(total_inspection_count);
+        workListBinding.graph.setDevideSize(0.5f);
+        workListBinding.graph.setBackgroundShapeWidthInDp(10);
+        workListBinding.graph.setShapeForegroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        workListBinding.graph.setShapeBackgroundColor(getResources().getColor(R.color.colorAccent));
+        workListBinding.totalCountGraph.setText(String.valueOf(total_inspection_count));
+        workListBinding.satisfiedCountGraph.setText(String.valueOf(satisfied));
+        workListBinding.unSatisfiedCountGraph.setText(String.valueOf(unsatisfied));
+        workListBinding.needImprovementCountGraph.setText(String.valueOf(need_improvement));
+        workListBinding.totalCountTitle1.setText(String.valueOf(total_inspection_count));
+        Resources resources = getResources();
+        Collection<GraphData> data = new ArrayList<>();
+        data.add(new GraphData(satisfied, resources.getColor(R.color.account_status_green_color)));
+        data.add(new GraphData(unsatisfied, resources.getColor(R.color.red)));
+        data.add(new GraphData(need_improvement, resources.getColor(R.color.pink)));
+        workListBinding.graph.setData(data);
     }
 }

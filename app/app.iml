@@ -74,9 +74,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/shaders" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 29 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 29 Platform (2)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: __local_aars__:D./Android Projects/InspectionAppNew/InspectionAppNew/app/libs/volley.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:F./Android_Projects/InspectionAppNew/app/libs/volley.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.picasso:picasso:2.5.2@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.databinding:databinding-common:3.4.2@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-common-java8:2.0.0@jar" level="project" />
@@ -108,6 +108,7 @@
     <orderEntry type="library" name="Gradle: com.github.maayyaannkk:ImagePicker:1.0.13@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.paging:paging-runtime:2.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-location:17.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.ghanshyam34:RoundedPieGraph:fcd69a2acb@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.viewpager2:viewpager2:1.0.0-alpha06@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base:17.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-places-placereport:17.0.0@aar" level="project" />
