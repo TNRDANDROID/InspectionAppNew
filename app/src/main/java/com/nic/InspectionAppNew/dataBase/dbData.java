@@ -240,6 +240,7 @@ public class dbData {
         values.put("as_value", modelClass.getAs_value());
         values.put("ts_value", modelClass.getTs_value());
         values.put("current_stage_of_work", modelClass.getCurrent_stage_of_work());
+        values.put("stage_name", modelClass.getStage_name());
         values.put("is_high_value", modelClass.getIs_high_value());
         if(type.equals("offline")){
              id = db.insert(DBHelper.WORK_LIST,null,values);
@@ -412,6 +413,7 @@ public class dbData {
                     card.setAs_value(cursor.getString(cursor.getColumnIndexOrThrow("as_value")));
                     card.setTs_value(cursor.getString(cursor.getColumnIndexOrThrow("ts_value")));
                     card.setCurrent_stage_of_work(cursor.getString(cursor.getColumnIndexOrThrow("current_stage_of_work")));
+                    card.setStage_name(cursor.getString(cursor.getColumnIndexOrThrow("stage_name")));
                     card.setIs_high_value(cursor.getString(cursor.getColumnIndexOrThrow("is_high_value")));
 
                     cards.add(card);

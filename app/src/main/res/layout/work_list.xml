@@ -88,6 +88,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/filters"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/padding"
                 android:orientation="vertical">
                 <TextView
                     android:id="@+id/village_tv"
@@ -234,8 +236,41 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/filters"
-                    android:layout_marginTop="@dimen/padding"
                     >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:id="@+id/tab_layout"
+                         android:weightSum="2">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:text="@string/ongoing"
+                            android:id="@+id/ongoing"
+                            android:gravity="center"
+                            android:background="@drawable/left_button_color"
+                            android:textSize="@dimen/_13sdp"
+                            android:textColor="@color/white"
+                            />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/right_button"
+                            android:text="@string/completed"
+                            android:id="@+id/completed"
+                            android:gravity="center"
+                            android:textColor="@color/grey_8"
+                            android:textSize="@dimen/_13sdp"
+                            />
+
+                    </LinearLayout>
+<!--
                     <TextView
                         android:id="@+id/work_tv"
                         android:layout_width="match_parent"
@@ -244,22 +279,23 @@
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/margin_left_20dp"
                         android:text="@string/work_list"
+                        android:visibility="gone"
                         android:padding="@dimen/_3sdp"
                         android:gravity="center_horizontal"
                         android:layout_centerHorizontal="true"
                         android:textColor="@color/grey_10"
                         android:textStyle="bold"
                         android:textSize="@dimen/_15sdp" />
+-->
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler"
-                        android:layout_below="@+id/work_tv"
+                        android:layout_below="@+id/tab_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/_5sdp"
                         android:fadeScrollbars="false"
-                        android:scrollbarSize="4dp"
+                        android:scrollbarSize="1dp"
                         android:scrollbars="vertical"
-                        android:visibility="gone"/>
+                        android:visibility="visible"/>
 
                     <TextView
                         android:id="@+id/not_found_tv"
@@ -269,11 +305,11 @@
                         android:textAlignment="center"
                         android:gravity="center"
                         android:layout_below="@+id/work_tv"
-                        android:layout_marginTop="@dimen/_50sdp"
+                        android:layout_marginTop="@dimen/_100sdp"
                         android:textColor="@color/grey_10"
                         android:textSize="@dimen/title_text_size"
                         android:textStyle="bold"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
 
             </RelativeLayout>
             </RelativeLayout>

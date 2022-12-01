@@ -1017,6 +1017,14 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         setResult(Activity.RESULT_CANCELED);
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
+    public void homePage() {
+        Intent intent = new Intent(this, MainHomePage.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("Home", "Home");
+        startActivity(intent);
+        finish();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
 
     @Override
     public void onClick(View v) {

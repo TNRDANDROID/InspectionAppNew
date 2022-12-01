@@ -188,7 +188,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         work_type_id = getIntent().getStringExtra("work_type_id");
         other_work_category_id = getIntent().getStringExtra("other_work_category_id");
         flag = getIntent().getStringExtra("flag");
-
+        saveWorkDetailsActivityBinding.notEditable.setVisibility(View.GONE);
         if(type.equalsIgnoreCase("rdpr")){
             saveWorkDetailsActivityBinding.otherWorksLayout.setVisibility(View.GONE);
         }else {
@@ -209,6 +209,8 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                 for(int i=0;i<status_list.size();i++){
                     if(status_list.get(i).getWork_status_id() == work_status_id){
                         saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
+                        saveWorkDetailsActivityBinding.statusSpinner.setEnabled(false);
+                        saveWorkDetailsActivityBinding.notEditable.setVisibility(View.VISIBLE);
                     }
                 }
             }else {
@@ -366,6 +368,14 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
+    public void homePage() {
+        Intent intent = new Intent(this, MainHomePage.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("Home", "Home");
+        startActivity(intent);
+        finish();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
 
 
     @Override
@@ -519,6 +529,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     public void onResume() {
         super.onResume();
         if(prefManager.getAppBack() != null && prefManager.getAppBack().equalsIgnoreCase("back")){
+            prefManager.setAppBack("");
             onBackPressed();
         }
     }

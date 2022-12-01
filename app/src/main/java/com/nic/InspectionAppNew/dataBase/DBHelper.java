@@ -93,6 +93,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "as_value TEXT," +
                 "ts_value TEXT," +
                 "current_stage_of_work TEXT," +
+                "stage_name TEXT," +
                 "is_high_value TEXT)");
         db.execSQL("CREATE TABLE " + ONLINE_WORK_LIST + " ("
                 + "dcode INTEGER," +
@@ -109,6 +110,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "as_value TEXT," +
                 "ts_value TEXT," +
                 "current_stage_of_work TEXT," +
+                "stage_name TEXT," +
                 "is_high_value TEXT)");
         db.execSQL("CREATE TABLE " + SAVE_WORK_DETAILS + " ("
                 + "save_work_details_primary_id INTEGER PRIMARY KEY AUTOINCREMENT," +

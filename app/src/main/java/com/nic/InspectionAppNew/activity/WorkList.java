@@ -59,6 +59,8 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
     private List<ModelClass> Scheme = new ArrayList<>();
     private List<ModelClass> FinYear = new ArrayList<>();
     private ArrayList<ModelClass> workList = new ArrayList<>();
+    private ArrayList<ModelClass> completed_workList = new ArrayList<>();
+    private ArrayList<ModelClass> ongoing_workList = new ArrayList<>();
     private ProgressHUD progressHUD;
     WorkListAdapter workListAdapter;
     private SearchView searchView;
@@ -82,6 +84,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         if (bundle != null) {
             isHome = bundle.getString("Home");
         }
+        dbData.open();
         onOffType=getIntent().getStringExtra("OnOffType");
         workListBinding.recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
         workListBinding.recycler.setItemAnimator(new DefaultItemAnimator());
@@ -94,7 +97,8 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
         if(onOffType.equals("online")) {
             workListBinding.filters.setVisibility(View.GONE);
-            workListBinding.workTv.setVisibility(View.GONE);
+            workListBinding.tabLayout.setVisibility(View.VISIBLE);
+//            workListBinding.workTv.setVisibility(View.GONE);
             Bundle b = getIntent().getExtras();
             String response=b.getString("jsonObject");
             try {
@@ -109,7 +113,8 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
         } else {
                 workListBinding.filters.setVisibility(View.VISIBLE);
-                workListBinding.workTv.setVisibility(View.VISIBLE);
+            workListBinding.tabLayout.setVisibility(View.GONE);
+//                workListBinding.workTv.setVisibility(View.GONE);
                 villageFilterSpinner();
                 schemeFilterSpinner();
                 finyearFilterSpinner();
@@ -185,7 +190,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                 }else {
                     prefManager.setSchemeSeqId("");
                     workListBinding.recycler.setVisibility(View.GONE);
-                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                    workListBinding.notFoundTv.setVisibility(View.GONE);
                 }
             }
 
@@ -209,6 +214,51 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        workListBinding.ongoing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                workListBinding.ongoing.setTextColor(getApplicationContext().getResources().getColor(R.color.white));
+                workListBinding.ongoing.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button_color));
+                workListBinding.completed.setTextColor(getApplicationContext().getResources().getColor(R.color.grey_8));
+                workListBinding.completed.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.right_button));
+
+                if (ongoing_workList.size() > 0) {
+                    workListBinding.recycler.setVisibility(View.VISIBLE);
+                    workListBinding.notFoundTv.setVisibility(View.GONE);
+                    workListAdapter = new WorkListAdapter(WorkList.this, ongoing_workList,dbData,onOffType);
+                    workListBinding.recycler.setAdapter(workListAdapter);
+                    workListAdapter.notifyDataSetChanged();
+                }else {
+                    ongoing_workList =new ArrayList<>();
+                    workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                }
+
+
+            }
+        });
+        workListBinding.completed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                workListBinding.ongoing.setTextColor(getApplicationContext().getResources().getColor(R.color.grey_8));
+                workListBinding.ongoing.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button));
+                workListBinding.completed.setTextColor(getApplicationContext().getResources().getColor(R.color.white));
+                workListBinding.completed.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.right_button_color));
+                if (completed_workList.size() > 0) {
+                    workListBinding.recycler.setVisibility(View.VISIBLE);
+                    workListBinding.notFoundTv.setVisibility(View.GONE);
+                    workListAdapter = new WorkListAdapter(WorkList.this, completed_workList,dbData,onOffType);
+                    workListBinding.recycler.setAdapter(workListAdapter);
+                    workListAdapter.notifyDataSetChanged();
+                }else {
+                    completed_workList =new ArrayList<>();
+                    workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                }
 
             }
         });
@@ -335,6 +385,8 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         protected ArrayList<ModelClass> doInBackground(Void... params) {
             dbData.open();
             workList = new ArrayList<>();
+            completed_workList = new ArrayList<>();
+            ongoing_workList = new ArrayList<>();
             workList = dbData.getAllWorkList("offline","",prefManager.getDistrictCode(),prefManager.getBlockCode(),prefManager.getPvCode(),prefManager.getFinancialyearName(),prefManager.getSchemeSeqId());
 
             Log.d("Wlist_COUNT", String.valueOf(workList.size()));
@@ -345,12 +397,6 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         protected void onPostExecute(ArrayList<ModelClass> worklist) {
             super.onPostExecute(worklist);
 //            Utils.hideProgress(progressHUD);
-            try {
-                if (progressHUD != null)
-                    progressHUD.cancel();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             if(!Utils.isOnline()) {
                 if (worklist.size() == 0) {
@@ -358,13 +404,44 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                 }
             }
             if (worklist.size() > 0) {
+                workListBinding.tabLayout.setVisibility(View.VISIBLE);
                 workListBinding.recycler.setVisibility(View.VISIBLE);
                 workListBinding.notFoundTv.setVisibility(View.GONE);
-                workListAdapter = new WorkListAdapter(WorkList.this, worklist,dbData,onOffType);
-                workListBinding.recycler.setAdapter(workListAdapter);
+                for(int i=0;i<worklist.size();i++){
+                    if(worklist.get(i).getCurrent_stage_of_work().equalsIgnoreCase("11")){
+                        completed_workList.add(worklist.get(i));
+                    }else {
+                        ongoing_workList.add(worklist.get(i));
+                    }
+                }
+                workListBinding.ongoing.setTextColor(getApplicationContext().getResources().getColor(R.color.white));
+                workListBinding.ongoing.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button_color));
+                workListBinding.completed.setTextColor(getApplicationContext().getResources().getColor(R.color.grey_8));
+                workListBinding.completed.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.right_button));
+
+                if (ongoing_workList.size() > 0) {
+                    workListBinding.recycler.setVisibility(View.VISIBLE);
+                    workListBinding.notFoundTv.setVisibility(View.GONE);
+                    workListAdapter = new WorkListAdapter(WorkList.this, ongoing_workList,dbData,onOffType);
+                    workListBinding.recycler.setAdapter(workListAdapter);
+                }else {
+                    ongoing_workList =new ArrayList<>();
+                    workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                }
+               /* workListAdapter = new WorkListAdapter(WorkList.this, worklist,dbData,onOffType);
+                workListBinding.recycler.setAdapter(workListAdapter);*/
             }else {
+                completed_workList =new ArrayList<>();
+                ongoing_workList =new ArrayList<>();
                 workListBinding.recycler.setVisibility(View.GONE);
                 workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+            }
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
         }
@@ -382,6 +459,8 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         @Override
         protected ArrayList<ModelClass> doInBackground(JSONObject... params) {
             workList = new ArrayList<>();
+            completed_workList = new ArrayList<>();
+            ongoing_workList = new ArrayList<>();
             if (params.length > 0) {
                 JSONArray jsonArray = new JSONArray();
                 try {
@@ -449,10 +528,34 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             if (worklist.size() > 0) {
                 workListBinding.recycler.setVisibility(View.VISIBLE);
                 workListBinding.notFoundTv.setVisibility(View.GONE);
-                workListAdapter = new WorkListAdapter(WorkList.this, worklist,dbData,"online");
-                workListBinding.recycler.setAdapter(workListAdapter);
+                for(int i=0;i<worklist.size();i++){
+                    if(worklist.get(i).getCurrent_stage_of_work().equalsIgnoreCase("11")){
+                        completed_workList.add(worklist.get(i));
+                    }else {
+                        ongoing_workList.add(worklist.get(i));
+                    }
+                }
+                workListBinding.ongoing.setTextColor(getApplicationContext().getResources().getColor(R.color.white));
+                workListBinding.ongoing.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button_color));
+                workListBinding.completed.setTextColor(getApplicationContext().getResources().getColor(R.color.grey_8));
+                workListBinding.completed.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.right_button));
+
+                if (ongoing_workList.size() > 0) {
+                    workListBinding.recycler.setVisibility(View.VISIBLE);
+                    workListBinding.notFoundTv.setVisibility(View.GONE);
+                    workListAdapter = new WorkListAdapter(WorkList.this, ongoing_workList,dbData,onOffType);
+                    workListBinding.recycler.setAdapter(workListAdapter);
+                }else {
+                    ongoing_workList =new ArrayList<>();
+                    workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.notFoundTv.setVisibility(View.VISIBLE);
+                }
+                /*workListAdapter = new WorkListAdapter(WorkList.this, worklist,dbData,"online");
+                workListBinding.recycler.setAdapter(workListAdapter);*/
 
             }else {
+                completed_workList =new ArrayList<>();
+                ongoing_workList =new ArrayList<>();
                 workListBinding.recycler.setVisibility(View.GONE);
                 workListBinding.notFoundTv.setVisibility(View.VISIBLE);
             }

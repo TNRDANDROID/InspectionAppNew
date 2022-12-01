@@ -212,6 +212,9 @@
     <string name="other_inspection_taken">Other Inspection Taken</string>
     <string name="enter_other_work_details">Enter the detail</string>
     <string name="clear">Clear</string>
+    <string name="ongoing">Ongoing</string>
+    <string name="completed">Completed</string>
+    <string name="not_editable">(Not Editable)</string>
     <string name="english_speech">English Speech</string>
     <string name="tamil_speech">Tamil Speech</string>
     <string name="work_details">Work Details</string>

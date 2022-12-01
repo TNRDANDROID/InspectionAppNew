@@ -267,7 +267,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     }
     public void getFinYearList() {
         try {
-            new ApiService(this).makeJSONObjectRequest("FinYearList", Api.Method.POST, UrlGenerator.getServicesListUrl(), finyearListJsonParams(), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("FinYearList", Api.Method.POST, UrlGenerator.getMainService(), finyearListJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
