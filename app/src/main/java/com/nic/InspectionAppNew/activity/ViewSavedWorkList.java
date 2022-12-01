@@ -206,7 +206,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                 String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    workListData(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                    workListData(jsonObject.getJSONObject(AppConstant.JSON_DATA));
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
                 }
@@ -565,10 +565,12 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         return dataSet;
     }
 
-    private void workListData(JSONArray jsonArray) {
+    private void workListData(JSONObject jsonObject) {
         try {
 
-            if (jsonArray.length() > 0) {
+            if (jsonObject.length() > 0) {
+                JSONArray jsonArray = new JSONArray(jsonObject.getJSONArray("inspection_details"));
+                JSONArray status_wise_count = new JSONArray(jsonObject.getJSONArray("status_wise_count"));
                 savedWorkList = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
@@ -609,7 +611,8 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                     workListBinding.recycler.setAdapter(null);
                 }
 
-            } else {
+            }
+            else {
                 Utils.showAlert(this, "No Record Found for Corresponding Work");
                 workListBinding.recycler.setVisibility(View.GONE);
                 workListBinding.notFoundTv.setVisibility(View.VISIBLE);

@@ -189,8 +189,148 @@
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/inspection_count_list"
                     android:layout_below="@+id/work_id_layout"
+                    android:layout_marginTop="@dimen/padding">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_80sdp"
+                        android:orientation="horizontal"
+                        >
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbars="none">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <RelativeLayout
+                                    android:layout_width="@dimen/_80sdp"
+                                    android:layout_height="match_parent"
+                                    >
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Total Count"
+                                        android:layout_centerHorizontal="true"
+                                        android:id="@+id/total_count_title"/>
+
+                                    <RelativeLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/count_circle_background"
+                                        android:layout_centerHorizontal="true"
+                                        android:layout_below="@+id/total_count_title">
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="10000"
+                                            android:layout_centerInParent="true"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/white"
+                                            android:layout_centerHorizontal="true"
+                                            android:id="@+id/total_count"/>
+                                    </RelativeLayout>
+                                </RelativeLayout>
+                                <RelativeLayout
+                                    android:layout_width="@dimen/_80sdp"
+                                    android:layout_height="match_parent"
+                                    >
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Satisfied"
+                                        android:layout_centerHorizontal="true"
+                                        android:id="@+id/satisfied_count_title"/>
+                                    <RelativeLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/count_circle_background"
+                                        android:layout_centerHorizontal="true"
+                                        android:layout_below="@+id/satisfied_count_title">
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="10000"
+                                            android:layout_centerInParent="true"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/white"
+                                            android:layout_centerHorizontal="true"
+                                            android:id="@+id/satisfied_count"/>
+                                    </RelativeLayout>
+                                </RelativeLayout>
+                                <RelativeLayout
+                                    android:layout_width="@dimen/_100sdp"
+                                    android:layout_height="match_parent"
+                                    >
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Un Satisfied"
+                                        android:layout_centerHorizontal="true"
+                                        android:id="@+id/un_satisfied_count_title"/>
+                                    <RelativeLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/count_circle_background"
+                                        android:layout_centerHorizontal="true"
+                                        android:layout_below="@+id/un_satisfied_count_title">
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="10000"
+                                            android:layout_centerInParent="true"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/white"
+                                            android:layout_centerHorizontal="true"
+                                            android:id="@+id/un_satisfied_count"/>
+                                    </RelativeLayout>
+                                </RelativeLayout>
+                                <RelativeLayout
+                                    android:layout_width="@dimen/_100sdp"
+                                    android:layout_height="match_parent"
+                                    >
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Need Improvement"
+                                        android:layout_centerHorizontal="true"
+                                        android:id="@+id/need_improvement_count_title"/>
+                                    <RelativeLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/count_circle_background"
+                                        android:layout_centerHorizontal="true"
+                                        android:layout_below="@+id/need_improvement_count_title">
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="10000"
+                                            android:layout_centerInParent="true"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/white"
+                                            android:layout_centerHorizontal="true"
+                                            android:id="@+id/need_improvement_count"/>
+                                    </RelativeLayout>
+
+                                </RelativeLayout>
+                            </LinearLayout>
+                        </HorizontalScrollView>
+
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/inspection_count_list"
                     android:layout_marginTop="@dimen/padding"
                     >
                     <androidx.recyclerview.widget.RecyclerView
