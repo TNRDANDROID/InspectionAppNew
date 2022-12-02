@@ -59,7 +59,6 @@ import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.ProgressHUD;
 import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,7 +94,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
     int pageNumber;
     String WorkId="";
     String inspectionID="";
-
+    String pdf_string_actual ="";
     ArrayList<ModelClass> savedWorkList;
 
     @Override
@@ -336,8 +335,9 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                     jsonObject1 = jsonObject.getJSONObject("JSON_DATA");
                     String pdf_string ="";
                     pdf_string = jsonObject1.getString("pdf_string");
+                    pdf_string_actual=pdf_string;
                     if(checkPermissions()){
-                        viewPdf1(pdf_string);
+                        viewPdf1(pdf_string_actual);
                     }
                 }
                 else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
@@ -394,8 +394,8 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     Log.i( "LOG_TAG","Permission granted");
-                    Toast.makeText(this.getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
-
+//                    Toast.makeText(this.getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
+                    viewPdf1(pdf_string_actual);
 
 //                    this.doBrowseFile();
                 }
@@ -768,7 +768,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
     private void showPieChart(int satisfied,int unsatisfied,int need_improvement,int total_inspection_count){
         workListBinding.graph.setMinValue(0f);
         workListBinding.graph.setMaxValue(total_inspection_count);
-        workListBinding.graph.setDevideSize(0.5f);
+        workListBinding.graph.setDevideSize(0.0f);
         workListBinding.graph.setBackgroundShapeWidthInDp(10);
         workListBinding.graph.setShapeForegroundColor(getResources().getColor(R.color.colorPrimaryDark));
         workListBinding.graph.setShapeBackgroundColor(getResources().getColor(R.color.colorAccent));
@@ -776,12 +776,12 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         workListBinding.satisfiedCountGraph.setText(String.valueOf(satisfied));
         workListBinding.unSatisfiedCountGraph.setText(String.valueOf(unsatisfied));
         workListBinding.needImprovementCountGraph.setText(String.valueOf(need_improvement));
-        workListBinding.totalCountTitle1.setText(String.valueOf(total_inspection_count));
+        workListBinding.totalCount1.setText(String.valueOf(total_inspection_count));
         Resources resources = getResources();
         Collection<GraphData> data = new ArrayList<>();
-        data.add(new GraphData(satisfied, resources.getColor(R.color.account_status_green_color)));
-        data.add(new GraphData(unsatisfied, resources.getColor(R.color.red)));
-        data.add(new GraphData(need_improvement, resources.getColor(R.color.pink)));
+        data.add(new GraphData(Float.valueOf(satisfied), resources.getColor(R.color.account_status_green_color)));
+        data.add(new GraphData(Float.valueOf(unsatisfied), resources.getColor(R.color.red)));
+        data.add(new GraphData(Float.valueOf(need_improvement), resources.getColor(R.color.pink)));
         workListBinding.graph.setData(data);
     }
 }

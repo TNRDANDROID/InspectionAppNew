@@ -78,6 +78,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
     SavedWorkListAdapter savedWorkListAdapter;
     String WorkId="";
     String inspectionID="";
+    String pdf_string_actual ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,8 +201,9 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                     jsonObject1 = jsonObject.getJSONObject("JSON_DATA");
                     String pdf_string ="";
                     pdf_string = jsonObject1.getString("pdf_string");
+                    pdf_string_actual=pdf_string;
                     if(checkPermissions()){
-                        viewPdf1(pdf_string);
+                        viewPdf1(pdf_string_actual);
                     }
                 }
                 else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
@@ -317,8 +319,8 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     Log.i( "LOG_TAG","Permission granted");
-                    Toast.makeText(this.getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
-
+//                    Toast.makeText(this.getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
+                    viewPdf1(pdf_string_actual);
 
 //                    this.doBrowseFile();
                 }

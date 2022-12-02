@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ import com.nic.InspectionAppNew.dataBase.dbData;
 import com.nic.InspectionAppNew.databinding.GetWorkListActivityBinding;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.MyLocationListener;
+import com.nic.InspectionAppNew.utils.CameraUtils;
 import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
 
@@ -52,7 +54,8 @@ public class GetWorkListActivity extends AppCompatActivity implements Api.Server
     LocationListener mlocListener;
     Double offlatTextValue, offlongTextValue;
     private static final int PERMISSION_REQUEST_CODE = 200;
-    
+    private static final int PERMISSION_FINE_LOCATION = 100;
+    int i=0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,29 +133,27 @@ public class GetWorkListActivity extends AppCompatActivity implements Api.Server
 
         }
 
-        if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ActivityCompat.checkSelfPermission(GetWorkListActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(GetWorkListActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                    requestPermissions(new String[]{CAMERA, ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-            } else {
-                if (ActivityCompat.checkSelfPermission(GetWorkListActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(GetWorkListActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(GetWorkListActivity.this, new String[]{ACCESS_FINE_LOCATION}, 1);
 
+                if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (ActivityCompat.checkSelfPermission(GetWorkListActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(GetWorkListActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                            requestPermissions(new String[]{CAMERA, ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+                        }else {
+                            getLocation();
+                        }
+
+                    } else {
+                        if (ActivityCompat.checkSelfPermission(GetWorkListActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(GetWorkListActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(GetWorkListActivity.this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_FINE_LOCATION);
+
+                        }else {
+                            getLocation();
+                        }
+                    }
+
+                } else {
+                    Utils.showAlert(GetWorkListActivity.this, getResources().getString(R.string.gps_not_turned_on));
                 }
-            }
-            if (MyLocationListener.latitude > 0) {
-                offlatTextValue = MyLocationListener.latitude;
-                offlongTextValue = MyLocationListener.longitude;
-                Log.d("Locations", "" + offlatTextValue + "," + offlongTextValue);
-//                Utils.showAlert(GetWorkListActivity.this, getResources().getString(R.string.success));
-                getVillageListOfLocation();
-
-            } else {
-                Utils.showAlert(GetWorkListActivity.this, getResources().getString(R.string.satellite_communication_not_available_try_again));
-            }
-        } else {
-            Utils.showAlert(GetWorkListActivity.this, getResources().getString(R.string.gps_not_turned_on));
-        }
 
         }else {
             Utils.showAlert(GetWorkListActivity.this, "Enter distance upto 10km");
@@ -161,6 +162,104 @@ public class GetWorkListActivity extends AppCompatActivity implements Api.Server
             Utils.showAlert(GetWorkListActivity.this, "Please enter distance in km");
         }
     }
+
+    public void getLocation() {
+        int count=3;
+        mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mlocListener = new MyLocationListener();
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setPowerRequirement(Criteria.POWER_HIGH);
+        criteria.setAltitudeRequired(false);
+        criteria.setSpeedRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setBearingRequired(false);
+
+        //API level 9 and up
+        criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+        criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
+        Integer gpsFreqInMillis = 1000;
+        Integer gpsFreqInDistance = 1;
+
+        // permission was granted, yay! Do the
+        // location-related task you need to do.
+        if (ContextCompat.checkSelfPermission(GetWorkListActivity.this,
+                ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            //Request location updates:
+            //mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+            mlocManager.requestLocationUpdates(gpsFreqInMillis, gpsFreqInDistance, criteria, mlocListener, null);
+
+        }
+        if (MyLocationListener.latitude > 0) {
+            offlatTextValue = MyLocationListener.latitude;
+            offlongTextValue = MyLocationListener.longitude;
+            Log.d("Locations", "" + offlatTextValue + "," + offlongTextValue);
+//                Utils.showAlert(GetWorkListActivity.this, getResources().getString(R.string.success));
+            getVillageListOfLocation();
+        } else {
+            if(i<count){
+                i++;
+                getLocation();
+            }else {
+                Utils.showAlert(GetWorkListActivity.this, getResources().getString(R.string.satellite_communication_not_available));
+
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE: {
+
+                // Note: If request is cancelled, the result arrays are empty.
+                // Permissions granted (CALL_PHONE).
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.i( "LOG_TAG","Permission granted");
+//                    Toast.makeText(this.getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
+                    getLocation();
+
+//                    this.doBrowseFile();
+                }
+                // Cancelled or denied.
+                else {
+                    Log.i("LOG_TAG","Permission denied");
+                    Toast.makeText(this.getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            break;
+            case PERMISSION_FINE_LOCATION: {
+
+                // Note: If request is cancelled, the result arrays are empty.
+                // Permissions granted (CALL_PHONE).
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.i( "LOG_TAG","Permission granted");
+//                    Toast.makeText(this.getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
+                    getLocation();
+
+//                    this.doBrowseFile();
+                }
+                // Cancelled or denied.
+                else {
+                    Log.i("LOG_TAG","Permission denied");
+                    Toast.makeText(this.getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+        }
+    }
+
     public void getVillageListOfLocation() {
         try {
             new ApiService(this).makeJSONObjectRequest("VillageListOfLocation", Api.Method.POST, UrlGenerator.getMainService(), villageListOfLocationJsonParams(), "not cache", this);

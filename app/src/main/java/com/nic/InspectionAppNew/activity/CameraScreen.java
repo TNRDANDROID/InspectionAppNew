@@ -88,6 +88,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 2500;
     private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
     private static final int PERMISSION_REQUEST_CODE = 200;
+    private static final int PERMISSION_FINE_LOCATION = 100;
     private static String imageStoragePath;
     public static final int BITMAP_SAMPLE_SIZE = 8;
     LocationManager mlocManager = null;
@@ -142,6 +143,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     JSONObject maindataset = new JSONObject();
     ArrayList<ModelClass> activityImage=new ArrayList<>();
     Bitmap img;
+    int i=0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -394,32 +396,126 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
         if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ActivityCompat.checkSelfPermission(CameraScreen.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(CameraScreen.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                if (ActivityCompat.checkSelfPermission(CameraScreen.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(CameraScreen.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
                     requestPermissions(new String[]{CAMERA, ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+                }else {
+                    getLocation();
+                }
+
             } else {
                 if (ActivityCompat.checkSelfPermission(CameraScreen.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(CameraScreen.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(CameraScreen.this, new String[]{ACCESS_FINE_LOCATION}, 1);
+                    ActivityCompat.requestPermissions(CameraScreen.this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_FINE_LOCATION);
 
+                }else {
+                    getLocation();
                 }
             }
-            if (MyLocationListener.latitude > 0) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (CameraUtils.checkPermissions(CameraScreen.this)) {
-                        captureImage();
-                    } else {
-                        requestCameraPermission(MEDIA_TYPE_IMAGE);
-                    }
-//                            checkPermissionForCamera();
-                } else {
-                    captureImage();
-                }
-            } else {
-                Utils.showAlert(CameraScreen.this, getResources().getString(R.string.satellite_communication_not_available));
-            }
+
         } else {
             Utils.showAlert(CameraScreen.this, getResources().getString(R.string.gps_not_turned_on));
         }
     }
+    }
+    public void getLocation() {
+        int count=3;
+        mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mlocListener = new MyLocationListener();
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setPowerRequirement(Criteria.POWER_HIGH);
+        criteria.setAltitudeRequired(false);
+        criteria.setSpeedRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setBearingRequired(false);
+
+        //API level 9 and up
+        criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+        criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
+        Integer gpsFreqInMillis = 1000;
+        Integer gpsFreqInDistance = 1;
+
+        // permission was granted, yay! Do the
+        // location-related task you need to do.
+        if (ContextCompat.checkSelfPermission(CameraScreen.this,
+                ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            //Request location updates:
+            //mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+            mlocManager.requestLocationUpdates(gpsFreqInMillis, gpsFreqInDistance, criteria, mlocListener, null);
+
+        }
+        if (MyLocationListener.latitude > 0) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (CameraUtils.checkPermissions(CameraScreen.this)) {
+                    captureImage();
+                } else {
+                    requestCameraPermission(MEDIA_TYPE_IMAGE);
+                }
+//                            checkPermissionForCamera();
+            } else {
+                captureImage();
+            }
+        } else {
+            if(i<count){
+                i++;
+                getLocation();
+            }else {
+                Utils.showAlert(CameraScreen.this, getResources().getString(R.string.satellite_communication_not_available));
+
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE: {
+
+                // Note: If request is cancelled, the result arrays are empty.
+                // Permissions granted (CALL_PHONE).
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.i( "LOG_TAG","Permission granted");
+//                    Toast.makeText(this.getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
+                    getLocation();
+
+//                    this.doBrowseFile();
+                }
+                // Cancelled or denied.
+                else {
+                    Log.i("LOG_TAG","Permission denied");
+                    Toast.makeText(this.getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            break;
+            case PERMISSION_FINE_LOCATION: {
+
+                // Note: If request is cancelled, the result arrays are empty.
+                // Permissions granted (CALL_PHONE).
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.i( "LOG_TAG","Permission granted");
+//                    Toast.makeText(this.getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
+                    getLocation();
+
+//                    this.doBrowseFile();
+                }
+                // Cancelled or denied.
+                else {
+                    Log.i("LOG_TAG","Permission denied");
+                    Toast.makeText(this.getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+        }
     }
 
     private void requestCameraPermission(final int type) {
@@ -565,7 +661,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                         .show();
             }
         }
-        else if(requestCode == 1213){
+        else if(requestCode == 1213) {
+            if (resultCode == RESULT_OK) {
             String filePath = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
             Bitmap rotatedBitmap = BitmapFactory.decodeFile(filePath);
 
@@ -596,6 +693,17 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             cameraScreenBinding.imageViewPreview.setVisibility(View.GONE);
             cameraScreenBinding.imageView.setVisibility(View.VISIBLE);
             cameraScreenBinding.imageView.setImageBitmap(rotatedBitmap);*/
+        }else if (resultCode == RESULT_CANCELED) {
+            // user cancelled Image capture
+            Toast.makeText(getApplicationContext(),
+                    getResources().getString(R.string.user_cancelled_image_capture), Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            // failed to capture image
+            Toast.makeText(getApplicationContext(),
+                    getResources().getString(R.string.sorry_failed_to_capture_image), Toast.LENGTH_SHORT)
+                    .show();
+        }
         }
         else if (requestCode == CAMERA_CAPTURE_VIDEO_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -685,8 +793,14 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
+                    if(type.equalsIgnoreCase("rdpr")){
+                        onBackPress();
+                    }else {
+                        prefManager.setAppBack("");
+                        homePage();
+                    }
 //                    homePage();
-                    onBackPress();
+
 
                 }
             });
@@ -993,7 +1107,13 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         Toasty.success(CameraScreen.this,s,Toast.LENGTH_SHORT,true).show();
        /* super.onBackPressed();
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);*/
-        homePage();
+       if(type.equalsIgnoreCase("rdpr")){
+           onBackPress();
+       }else {
+           prefManager.setAppBack("");
+           homePage();
+       }
+
     }
 
     public String fileDirectory(Bitmap bitmap,String type,String count){
