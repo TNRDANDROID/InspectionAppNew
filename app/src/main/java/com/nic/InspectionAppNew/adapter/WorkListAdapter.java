@@ -16,10 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.activity.SaveWorkDetailsActivity;
+import com.nic.InspectionAppNew.activity.WorkList;
 import com.nic.InspectionAppNew.dataBase.dbData;
 import com.nic.InspectionAppNew.databinding.WorkListAdapterBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
+import com.nic.InspectionAppNew.support.ProgressHUD;
 import com.nic.InspectionAppNew.utils.Utils;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.MyView
     private final com.nic.InspectionAppNew.dataBase.dbData dbData;
     private LayoutInflater layoutInflater;
     String onOffType;
-
+    ProgressHUD progressHUD;
     private static DiffUtil.ItemCallback<ModelClass> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<ModelClass>() {
                 @Override

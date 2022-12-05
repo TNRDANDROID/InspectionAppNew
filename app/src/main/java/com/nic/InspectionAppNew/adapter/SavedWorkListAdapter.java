@@ -143,9 +143,13 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
 
         }
         else {
+            if(Utils.compareDate(String.valueOf(list.get(position).getInspectedDate()))){
+                holder.binding.edit.setVisibility(View.VISIBLE);
+            }else {
+                holder.binding.edit.setVisibility(View.GONE);
+            }
             holder.binding.otherWorkNameLayout.setVisibility(View.VISIBLE);
             holder.binding.otherWorkCategoryNameLayout.setVisibility(View.VISIBLE);
-            holder.binding.edit.setVisibility(View.VISIBLE);
             holder.binding.workNameLayout.setVisibility(View.GONE);
             holder.binding.workH.setText(context.getResources().getString(R.string.other_work_id));
             holder.binding.workId.setText(String.valueOf(list.get(position).getOther_work_inspection_id()));

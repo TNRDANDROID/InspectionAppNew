@@ -22,6 +22,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.ghanshyam.graphlibs.GraphData;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.nic.InspectionAppNew.Interface.DateInterface;
@@ -61,6 +63,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.ServerResponseListener, DateInterface {
@@ -97,6 +100,118 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
 
         binding.recycler.setVisibility(View.GONE);
         binding.notFoundTv.setVisibility(View.GONE);
+        binding.inspectionCountListLayout.setVisibility(View.GONE);
+
+
+
+        binding.totalInspectionLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (otherSavedWorkList.size()>0){
+                    savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,otherSavedWorkList,"rdpr");
+                    binding.recycler.setVisibility(View.VISIBLE);
+                    binding.notFoundTv.setVisibility(View.GONE);
+                    binding.recycler.setAdapter(savedWorkListAdapter);
+                }
+                else {
+                    binding.recycler.setVisibility(View.GONE);
+                    binding.notFoundTv.setVisibility(View.VISIBLE);
+                    binding.recycler.setAdapter(null);
+                }
+            }
+        });
+
+        binding.satisfiedLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (otherSavedWorkList.size()>0){
+                    ArrayList<ModelClass> satisfiedList = new ArrayList<>();
+                    for(int i=0;i<otherSavedWorkList.size();i++){
+                        if(otherSavedWorkList.get(i).getWork_status_id()==1){
+                            satisfiedList.add(otherSavedWorkList.get(i));
+                        }
+                    }
+                    if(satisfiedList.size()>0){
+                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,satisfiedList,"rdpr");
+                        binding.recycler.setVisibility(View.VISIBLE);
+                        binding.notFoundTv.setVisibility(View.GONE);
+                        binding.recycler.setAdapter(savedWorkListAdapter);
+                    }
+                    else {
+                        binding.recycler.setVisibility(View.GONE);
+                        binding.notFoundTv.setVisibility(View.VISIBLE);
+                        binding.recycler.setAdapter(null);
+                    }
+
+                }
+                else {
+                    binding.recycler.setVisibility(View.GONE);
+                    binding.inspectionCountListLayout.setVisibility(View.GONE);
+                    binding.notFoundTv.setVisibility(View.VISIBLE);
+                    binding.recycler.setAdapter(null);
+                }
+            }
+        });
+        binding.unSatisfiedLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (otherSavedWorkList.size()>0){
+                    ArrayList<ModelClass> unsatisfiedList = new ArrayList<>();
+                    for(int i=0;i<otherSavedWorkList.size();i++){
+                        if(otherSavedWorkList.get(i).getWork_status_id()==2){
+                            unsatisfiedList.add(otherSavedWorkList.get(i));
+                        }
+                    }
+                    if(unsatisfiedList.size()>0){
+                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,unsatisfiedList,"rdpr");
+                        binding.recycler.setVisibility(View.VISIBLE);
+                        binding.notFoundTv.setVisibility(View.GONE);
+                        binding.recycler.setAdapter(savedWorkListAdapter);
+                    }
+                    else {
+                        binding.recycler.setVisibility(View.GONE);
+                        binding.notFoundTv.setVisibility(View.VISIBLE);
+                        binding.recycler.setAdapter(null);
+                    }
+
+                }
+                else {
+                    binding.recycler.setVisibility(View.GONE);
+                    binding.notFoundTv.setVisibility(View.VISIBLE);
+                    binding.recycler.setAdapter(null);
+                }
+            }
+        });
+        binding.needImprovementLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (otherSavedWorkList.size()>0){
+                    ArrayList<ModelClass> needImprovementList = new ArrayList<>();
+                    for(int i=0;i<otherSavedWorkList.size();i++){
+                        if(otherSavedWorkList.get(i).getWork_status_id()==3){
+                            needImprovementList.add(otherSavedWorkList.get(i));
+                        }
+                    }
+                    if(needImprovementList.size()>0){
+                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,needImprovementList,"rdpr");
+                        binding.recycler.setVisibility(View.VISIBLE);
+                        binding.notFoundTv.setVisibility(View.GONE);
+                        binding.recycler.setAdapter(savedWorkListAdapter);
+                    }
+                    else {
+                        binding.recycler.setVisibility(View.GONE);
+                        binding.notFoundTv.setVisibility(View.VISIBLE);
+                        binding.recycler.setAdapter(null);
+                    }
+
+                }
+                else {
+                    binding.recycler.setVisibility(View.GONE);
+                    binding.notFoundTv.setVisibility(View.VISIBLE);
+                    binding.recycler.setAdapter(null);
+                }
+            }
+        });
     }
 
     public void showDatePickerDialog(){
@@ -182,7 +297,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                 String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    workListData(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                    workListData(jsonObject);
                 }
                 else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
@@ -223,10 +338,14 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
     public void OnError(VolleyError volleyError) {
 
     }
-    private void workListData(JSONArray jsonArray) {
+    private void workListData(JSONObject jsonObject) {
         try {
 
-            if (jsonArray.length() > 0) {
+            if (jsonObject.length() > 0) {
+                JSONArray jsonArray = new JSONArray();
+                jsonArray=jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                JSONArray status_wise_count = new JSONArray();
+//                status_wise_count = jsonObject.getJSONArray("status_wise_count");
                 otherSavedWorkList = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
@@ -264,13 +383,37 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                     binding.recycler.setVisibility(View.VISIBLE);
                     binding.notFoundTv.setVisibility(View.GONE);
                     binding.recycler.setAdapter(savedWorkListAdapter);
+                    binding.inspectionCountListLayout.setVisibility(View.VISIBLE);
                 }
                 else {
+                    binding.inspectionCountListLayout.setVisibility(View.GONE);
                     binding.recycler.setVisibility(View.GONE);
                     binding.notFoundTv.setVisibility(View.VISIBLE);
                     binding.recycler.setAdapter(null);
                 }
 
+                if(status_wise_count.length()>0){
+                    for(int j=0;j<status_wise_count.length();j++){
+                        try {
+                            int satisfied_count = status_wise_count.getJSONObject(j).getInt("satisfied");
+                            int un_satisfied_count = status_wise_count.getJSONObject(j).getInt("unsatisfied");
+                            int need_improvement_count = status_wise_count.getJSONObject(j).getInt("need_improvement");
+                            int total_inspection_count = satisfied_count+un_satisfied_count+need_improvement_count;
+
+                            binding.satisfiedCount.setText(String.valueOf(satisfied_count));
+                            binding.unSatisfiedCount.setText(String.valueOf(un_satisfied_count));
+                            binding.needImprovementCount.setText(String.valueOf(need_improvement_count));
+                            binding.totalCount.setText(String.valueOf(total_inspection_count));
+                            showPieChart(satisfied_count,un_satisfied_count,need_improvement_count,total_inspection_count);
+                        } catch (JSONException e){
+
+                        }
+
+                    }
+                }
+                else {
+
+                }
             } else {
                 Utils.showAlert(this, "No Record Found for Corresponding Work");
                 binding.recycler.setVisibility(View.GONE);
@@ -282,6 +425,25 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
             j.printStackTrace();
         }
 
+    }
+    private void showPieChart(int satisfied,int unsatisfied,int need_improvement,int total_inspection_count){
+        binding.graph.setMinValue(0f);
+        binding.graph.setMaxValue(total_inspection_count);
+        binding.graph.setDevideSize(0.0f);
+        binding.graph.setBackgroundShapeWidthInDp(10);
+        binding.graph.setShapeForegroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        binding.graph.setShapeBackgroundColor(getResources().getColor(R.color.colorAccent));
+        binding.totalCountGraph.setText(String.valueOf(total_inspection_count));
+        binding.satisfiedCountGraph.setText(String.valueOf(satisfied));
+        binding.unSatisfiedCountGraph.setText(String.valueOf(unsatisfied));
+        binding.needImprovementCountGraph.setText(String.valueOf(need_improvement));
+        binding.totalCount1.setText(String.valueOf(total_inspection_count));
+        Resources resources = getResources();
+        Collection<GraphData> data = new ArrayList<>();
+        data.add(new GraphData(Float.valueOf(satisfied), resources.getColor(R.color.account_status_green_color)));
+        data.add(new GraphData(Float.valueOf(unsatisfied), resources.getColor(R.color.red)));
+        data.add(new GraphData(Float.valueOf(need_improvement), resources.getColor(R.color.pink)));
+        binding.graph.setData(data);
     }
 
     private boolean checkPermissions() {

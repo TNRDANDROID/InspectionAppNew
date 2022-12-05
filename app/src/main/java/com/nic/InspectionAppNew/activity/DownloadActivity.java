@@ -402,6 +402,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 if (Dcode != null && !Dcode.equals("")) {
                     JSONArray districtCodeJsonArray = new JSONArray();
                     prefManager.setDistrictCode(Dcode);
+                    prefManager.setDistrictCodeSelected(Dcode);
                     districtCodeJsonArray.put(Dcode);
                     prefManager.setDistrictCodeJson(districtCodeJsonArray);
                     Log.d("districtcode", "" + districtCodeJsonArray);
@@ -505,6 +506,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
                     for (int i = 0; i < mDistrictItems.size(); i++) {
                         prefManager.setDistrictCode(districtCodeStrings[mDistrictItems.get(i)]);
+                        prefManager.setDistrictCodeSelected(districtCodeStrings[mDistrictItems.get(i)]);
                         districtCodeJsonArray.put(districtCodeStrings[mDistrictItems.get(i)]);
                     }
                     prefManager.setDistrictCodeJson(districtCodeJsonArray);
@@ -570,6 +572,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     JSONArray districtCodeJsonArray = new JSONArray();
                     prefManager.setDistrictCodeJson(districtCodeJsonArray);
                     prefManager.setDistrictCode("");
+                    prefManager.setDistrictCodeSelected("");
                 }
             }
         });
@@ -651,6 +654,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 if (Bcode != null && !Bcode.equals("")) {
                     JSONArray blockCodeJsonArray = new JSONArray();
                     prefManager.setBlockCode(Bcode);
+                    prefManager.setBlockCodeSelected(Bcode);
                     blockCodeJsonArray.put(Bcode);
                     prefManager.setBlockCodeJson(blockCodeJsonArray);
                     Log.d("blockcode", "" + blockCodeJsonArray);
@@ -751,6 +755,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
                     for (int i = 0; i < mBlockItems.size(); i++) {
                         prefManager.setBlockCode(blockCodeStrings[mBlockItems.get(i)]);
+                        prefManager.setBlockCodeSelected(blockCodeStrings[mBlockItems.get(i)]);
                         if(prefManager.getLevels().equalsIgnoreCase("S")) {
                             blockCodeJsonArray.put(myBlockCodelist.get(mBlockItems.get(i)));
                         }
@@ -796,6 +801,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     mVillageItems.clear();
                     JSONArray blockCodeJsonArray = new JSONArray();
                     prefManager.setBlockCode("");
+                    prefManager.setBlockCodeSelected("");
                     prefManager.setBlockCodeJson(blockCodeJsonArray);
                 }
             }
@@ -1056,6 +1062,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 ArrayList<ModelClass> workList = new ArrayList<>();
                 workList = new ArrayList<>();
                 workList = dbData.getAllWorkList("offline","all","","","","","");
+                System.out.println("workList >>"+workList.size());
                 if(workList.size() > 0){
                     openWorkListScreen();
                 }else {

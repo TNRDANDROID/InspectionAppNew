@@ -256,4 +256,11 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
     public void OnError(VolleyError volleyError) {
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new fetchpendingtask().execute();
+    }
+
 }

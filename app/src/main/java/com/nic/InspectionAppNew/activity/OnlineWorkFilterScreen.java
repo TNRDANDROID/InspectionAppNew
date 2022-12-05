@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -827,7 +828,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
             if(SelectedScheme!= null && !SelectedScheme.equals("")&& !SelectedScheme.equals("Select Scheme")){
 
-                getWorkListOptional();
+                openWorkListScreenOfFilter();
             }else {
                 Utils.showAlert(OnlineWorkFilterScreen.this,"Select Scheme");
             }
@@ -989,6 +990,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         Log.d("workListOptional", "" + dataSet1);
         return dataSet1;
     }
+
     public JSONObject workListByVillageJsonParams(String districtCode, String blockCode, String pvCode) throws JSONException {
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), workListByVillage(this,districtCode,blockCode,pvCode).toString());
         JSONObject dataSet = new JSONObject();
@@ -1002,11 +1004,11 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
         JSONObject obj = new JSONObject();
         JSONArray jsonArray=new JSONArray();
         jsonArray.put(pvCode);
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS_OF_LOCATION);
-        dataSet.put("inspection_work_details",obj);
         obj.put(AppConstant.DISTRICT_CODE, districtCode);
         obj.put(AppConstant.BLOCK_CODE, blockCode);
         obj.put(AppConstant.PV_CODE, jsonArray);
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS_OF_LOCATION);
+        dataSet.put("inspection_work_details",obj);
         Log.d("workListByVillage", "" + dataSet);
         return dataSet;
     }
@@ -1125,12 +1127,57 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
     public void openWorkListScreenOfVillage(JSONObject jsonObject) {
         Intent intent = new Intent(this, WorkList.class);
         intent.putExtra("OnOffType","online");
-
+        intent.putExtra("flag","village");
         Bundle b = new Bundle();
         b.putString("jsonObject",jsonObject.toString());
         intent.putExtras(b);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+    public void openWorkListScreenOfFilter() {
+        try {
+        Intent intent = new Intent(this, WorkList.class);
+        intent.putExtra("OnOffType","online");
+        intent.putExtra("flag","filter");
+        if (prefManager.getLevels().equalsIgnoreCase("S")){
+            intent.putExtra("SelectedDistrict",SelectedDistrict);
+            intent.putExtra("SelectedBlock",SelectedBlock);
+            JSONObject object=new JSONObject();
+            object.put("villageCodeJsonArray",villageCodeJsonArray);
+            object.put("schemeJsonArray",schemeJsonArray);
+            object.put("finyearJsonArray",finyearJsonArray);
+            Bundle b = new Bundle();
+            b.putString("jsonObject",object.toString());
+            intent.putExtras(b);
+
+        }else if (prefManager.getLevels().equalsIgnoreCase("D")) {
+            intent.putExtra("SelectedBlock",SelectedBlock);
+            JSONObject object=new JSONObject();
+            object.put("villageCodeJsonArray",villageCodeJsonArray);
+            object.put("schemeJsonArray",schemeJsonArray);
+            object.put("finyearJsonArray",finyearJsonArray);
+            Bundle b = new Bundle();
+            b.putString("jsonObject",object.toString());
+            intent.putExtras(b);
+        }else if (prefManager.getLevels().equalsIgnoreCase("B")) {
+            JSONObject object=new JSONObject();
+            object.put("villageCodeJsonArray",villageCodeJsonArray);
+            object.put("schemeJsonArray",schemeJsonArray);
+            object.put("finyearJsonArray",finyearJsonArray);
+            Bundle b = new Bundle();
+            b.putString("jsonObject",object.toString());
+            intent.putExtras(b);
+        }
+
+
+       /* Bundle b = new Bundle();
+        b.putString("jsonObject",jsonObject.toString());
+        intent.putExtras(b);*/
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -70,9 +70,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
-            debuggable false
-            testCoverageEnabled false
-            minifyEnabled false
+            debuggable true
+            testCoverageEnabled true
+            minifyEnabled true
             shrinkResources false
             signingConfig signingConfigs.debug
             resValue "string", "LOGIN_URL", "https://tnrd.tn.gov.in/project/webservices_forms/login_service/login_services.php"

@@ -201,7 +201,7 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
             }
             else {
                 otpVerficationBinding.password.requestFocus();
-                showAlert(OtpVerfication.this,"Password Must Contain One capital letter,One Number,One Special Character and length should be above 8 character");
+                showAlert(OtpVerfication.this,"Password Must Contain One capital letter,One small letter,One Number,One Special Character and length should be above 8 character");
             }
         }
         else {

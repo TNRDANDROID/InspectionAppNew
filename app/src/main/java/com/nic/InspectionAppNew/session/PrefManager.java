@@ -38,6 +38,8 @@ public class PrefManager {
     private static final String KEY_STATE_CODE = "State_Code";
     private static final String KEY_STATE_NAME = "State_Name";
     private static final String KEY_DISTRICT_CODE = "District_Code";
+    private static final String KEY_DISTRICT_CODE_SELECTED = "District_Code_Selected";
+    private static final String KEY_BLOCK_CODE_SELECTED = "Block_Code_Selected";
     private static final String KEY_BLOCK_CODE = "Block_Code";
     private static final String KEY_PV_CODE = "Pv_Code";
     private static final String KEY_HAB_CODE = "Hab_Code";
@@ -347,6 +349,15 @@ public class PrefManager {
     public String getDistrictCode() {
         return pref.getString(KEY_DISTRICT_CODE, null);
     }
+ public Object setDistrictCodeSelected(Object key) {
+        editor.putString(KEY_DISTRICT_CODE_SELECTED, String.valueOf(key));
+        editor.commit();
+        return key;
+    }
+
+    public String getDistrictCodeSelected() {
+        return pref.getString(KEY_DISTRICT_CODE_SELECTED, null);
+    }
 
    public Object setStateCode(Object key) {
         editor.putString(KEY_STATE_CODE, String.valueOf(key));
@@ -378,6 +389,16 @@ public class PrefManager {
 
     public String getBlockCode() {
         return pref.getString(KEY_BLOCK_CODE, null);
+    }
+
+  public Object setBlockCodeSelected(Object key) {
+        editor.putString(KEY_BLOCK_CODE_SELECTED, String.valueOf(key));
+        editor.commit();
+        return key;
+    }
+
+    public String getBlockCodeSelected() {
+        return pref.getString(KEY_BLOCK_CODE_SELECTED, null);
     }
 
 
