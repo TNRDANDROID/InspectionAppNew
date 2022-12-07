@@ -135,6 +135,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         try {
             dbHelper = new DBHelper(this);
             db = dbHelper.getWritableDatabase();
+            dbData.open();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -194,6 +195,9 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             loadOfflineBlockListDBValues();
             district_layout.setVisibility(View.GONE);
         }
+        if(dbData.getAll_Stage("all","","","").size()==0){
+            getStageList();
+        }
 
     }
     public void getVillageList() {
@@ -250,10 +254,17 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                 if (isChecked) {
                     if (!mFinYearItems.contains(position)) {
-                        mFinYearItems.add(position);
-
+                        if(mFinYearItems.size()<2){
+                            mFinYearItems.add(position);
+                        }
+                        else {
+                            ((AlertDialog) dialogInterface).getListView().setItemChecked(position,false);
+                            FinYearcheckedItems[position]=false;
+                            Utils.showAlert(DownloadActivity.this,"Maximum 2 Years Can be Selected");
+                        }
                     }
                 } else if (mFinYearItems.contains(position)) {
+                    FinYearcheckedItems[position]=false;
                     mFinYearItems.remove(Integer.valueOf(position));
                 }
 
@@ -298,19 +309,19 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     select_village_layout.setVisibility(View.GONE);
                 }
 
-                if(!prefManager.getLevels().equalsIgnoreCase("S")) {
+               /* if(!prefManager.getLevels().equalsIgnoreCase("S")) {
                     if (Utils.isOnline()) {
                         try {
                             db.delete(SCHEME_TABLE_NAME, null, null);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }if(mFinYearItems.size() > 0) {
-                            getSchemeList();
+                            //getSchemeList();
                         }
                     } else {
                         loadOfflineSchemeListDBValues();
                     }
-                }
+                }*/
             } else {
                 select_fin_year_layout.setVisibility(View.GONE);
             }
@@ -417,19 +428,19 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     selected_village_tv.setText("");
                     select_village_layout.setVisibility(View.GONE);
                     loadOfflineBlockListDBValues();
-                    if(prefManager.getLevels().equalsIgnoreCase("S")) {
+                    /*if(prefManager.getLevels().equalsIgnoreCase("S")) {
                         if (Utils.isOnline()) {
                             try {
                                 db.delete(SCHEME_TABLE_NAME, null, null);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }if(mFinYearItems.size() > 0 && !Dcode.equals("")) {
-                                getSchemeList();
+                                //getSchemeList();
                             }
                         } else {
                             loadOfflineSchemeListDBValues();
                         }
-                    }
+                    }*/
                 }else {
                     select_district_layout.setVisibility(View.GONE);
                     selected_district_tv.setVisibility(View.GONE);
@@ -524,7 +535,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     select_village_layout.setVisibility(View.GONE);
 
                     loadOfflineBlockListDBValues();
-                    if(prefManager.getLevels().equalsIgnoreCase("S")) {
+                    /*if(prefManager.getLevels().equalsIgnoreCase("S")) {
                         if (Utils.isOnline()) {
                             try {
                                 db.delete(SCHEME_TABLE_NAME, null, null);
@@ -536,7 +547,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                         } else {
                             loadOfflineSchemeListDBValues();
                         }
-                    }
+                    }*/
                 }else {
                     select_district_layout.setVisibility(View.GONE);
                 }
@@ -885,10 +896,20 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     JSONArray villageCodeJsonArray = new JSONArray();
                     villageCodeJsonArray.put(Vcode);
                     prefManager.setVillagePvCodeJson(villageCodeJsonArray);
+                    prefManager.setPvCode(Vcode);
                     Log.d("villagecode", "" + villageCodeJsonArray);
                     selected_village_tv.setText(Vname);
                     select_village_layout.setVisibility(View.VISIBLE);
                     selected_village_tv.setVisibility(View.VISIBLE);
+                    if (Utils.isOnline()) {
+                        try {
+                            db.delete(SCHEME_TABLE_NAME, null, null);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }if(mFinYearItems.size() > 0 && !Dcode.equals("")) {
+                            getSchemeList();
+                        }
+                    }
 
                 }else {
                     selected_village_tv.setText("");
@@ -1061,7 +1082,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 dbData.open();
                 ArrayList<ModelClass> workList = new ArrayList<>();
                 workList = new ArrayList<>();
-                workList = dbData.getAllWorkList("offline","all","","","","","");
+                workList = dbData.getAllWorkList("offline","all","","","","");
                 System.out.println("workList >>"+workList.size());
                 if(workList.size() > 0){
                     openWorkListScreen();
@@ -1155,7 +1176,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
     public void getSchemeList() {
         try {
-            new ApiService(this).makeJSONObjectRequest("SchemeList", Api.Method.POST, UrlGenerator.getServicesListUrl(), schemeListJsonParams(), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("SchemeList", Api.Method.POST, UrlGenerator.getMainService(), schemeListJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1169,7 +1190,21 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         }
     }
 
-
+    public void getStageList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("StageList", Api.Method.POST, UrlGenerator.getMainService(), stageListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public JSONObject stageListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.stageListJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("StageList", "" + authKey);
+        return dataSet;
+    }
 
     public JSONObject schemeListJsonParams() throws JSONException {
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.schemeListDistrictWiseJsonParams(this).toString());
@@ -1242,6 +1277,15 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                 }
                 Log.d("VillageList", "" + responseObj.toString());
                 Log.d("VillageList", "" + responseDecryptedBlockKey);
+            }
+            if ("StageList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new InsertStageTask().execute(jsonObject);
+                }
+                Log.d("StageList", "" + responseDecryptedKey);
             }
 
 
@@ -1456,14 +1500,14 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                         jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
                         if(jsonArray.length() >0){
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                String schemeSequentialID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_SEQUENTIAL_ID);
+                                String schemeSequentialID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_ID);
                                 String schemeName = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_NAME);
-                                String fin_year = jsonArray.getJSONObject(i).getString("fin_year");
+                                //String fin_year = jsonArray.getJSONObject(i).getString("fin_year");
 
                                 ContentValues schemeListLocalDbValues = new ContentValues();
                                 schemeListLocalDbValues.put(AppConstant.SCHEME_SEQUENTIAL_ID, schemeSequentialID);
                                 schemeListLocalDbValues.put(AppConstant.SCHEME_NAME, schemeName);
-                                schemeListLocalDbValues.put(AppConstant.FINANCIAL_YEAR, fin_year);
+                                //schemeListLocalDbValues.put(AppConstant.FINANCIAL_YEAR, fin_year);
 
                                 db.insert(SCHEME_TABLE_NAME, null, schemeListLocalDbValues);
                                 Log.d("LocalDBSchemeList", "" + schemeListLocalDbValues);
@@ -1497,7 +1541,52 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             loadOfflineSchemeListDBValues();
         }
     }
+    public class InsertStageTask extends AsyncTask<JSONObject, Void, Void> {
+        private  ProgressHUD progressHUD;
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            ArrayList<ModelClass> stage_count = dbData.getAll_Stage("all","","","");
+            if (stage_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        ModelClass stage = new ModelClass();
+                        try {
+                            stage.setWork_group_id(jsonArray.getJSONObject(i).getString(AppConstant.WORK_GROUP_ID));
+                            stage.setWork_type_id(jsonArray.getJSONObject(i).getString(AppConstant.WORK_TYPE_ID));
+                            stage.setWork_stage_order(jsonArray.getJSONObject(i).getString(AppConstant.WORK_STAGE_ORDER));
+                            stage.setWork_stage_code(jsonArray.getJSONObject(i).getString(AppConstant.WORK_STAGE_CODE));
+                            stage.setWork_stage_name(jsonArray.getJSONObject(i).getString(AppConstant.WORK_SATGE_NAME));
 
+                            dbData.insertStage(stage);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (progressHUD != null) {
+                progressHUD.cancel();
+            }
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(DownloadActivity.this, "Downloading", true, false, null);
+        }
+    }
     private void loadSchemeList(JSONArray jsonArray) {
         try {
             db.delete(SCHEME_TABLE_NAME, null, null);
@@ -1532,7 +1621,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
 
 
     public void loadOfflineSchemeListDBValues() {
-        String query = "SELECT distinct scheme_name,scheme_seq_id FROM " + SCHEME_TABLE_NAME + " Where fin_year in " + prefManager.getFinYearJson().toString().replace("[", "(").replace("]", ")") +  " order by scheme_name asc";
+        String query = "SELECT distinct scheme_name,scheme_seq_id FROM " + SCHEME_TABLE_NAME  +  " order by scheme_name asc";
         Cursor SchemeList = getRawEvents(query, null);
         Log.d("SchemeQuery", "" + query);
 

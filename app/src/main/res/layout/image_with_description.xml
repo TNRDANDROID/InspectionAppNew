@@ -38,10 +38,11 @@
 
                     <ImageView
                         android:id="@+id/image_view_preview"
-                        android:layout_width="match_parent"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_gravity="center_horizontal"
                         android:layout_height="@dimen/_100sdp"
                         android:scaleType="fitXY"
-                        android:background="@drawable/ic_phone_camera"
+                        android:background="@drawable/camera_icon_new"
                         tools:ignore="ContentDescription" />
 
                     <ImageView

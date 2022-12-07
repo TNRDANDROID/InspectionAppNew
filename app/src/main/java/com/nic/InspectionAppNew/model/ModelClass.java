@@ -554,4 +554,32 @@ public class ModelClass implements Serializable {
     public void setGender_name_ta(String gender_name_ta) {
         this.gender_name_ta = gender_name_ta;
     }
+
+    String work_stage_code;
+    String work_stage_order;
+    String work_stage_name;
+
+    public String getWork_stage_code() {
+        return work_stage_code;
+    }
+
+    public void setWork_stage_code(String work_stage_code) {
+        this.work_stage_code = work_stage_code;
+    }
+
+    public String getWork_stage_order() {
+        return work_stage_order;
+    }
+
+    public void setWork_stage_order(String work_stage_order) {
+        this.work_stage_order = work_stage_order;
+    }
+
+    public String getWork_stage_name() {
+        return work_stage_name;
+    }
+
+    public void setWork_stage_name(String work_stage_name) {
+        this.work_stage_name = work_stage_name;
+    }
 }

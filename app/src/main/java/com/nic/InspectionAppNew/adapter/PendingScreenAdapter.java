@@ -254,6 +254,9 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
         String work_id = String.valueOf(pendingListFiltered.get(position).getWork_id());
         String status_id = String.valueOf(pendingListFiltered.get(position).getWork_status_id());
         String description = String.valueOf(pendingListFiltered.get(position).getWork_description());
+        String work_group_id = String.valueOf(pendingListFiltered.get(position).getWork_group_id());
+        String work_type_id = String.valueOf(pendingListFiltered.get(position).getWork_type_id());
+        String work_stage_code = String.valueOf(pendingListFiltered.get(position).getWork_stage_code());
         String save_work_details_primary_id = String.valueOf(pendingListFiltered.get(position).getSave_work_details_primary_id());
 
         prefManager.setWorkId(work_id);
@@ -267,6 +270,9 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
             dataset.put("work_id", work_id);
             dataset.put("status_id", status_id);
             dataset.put("description", description);
+            dataset.put("work_group_id", work_group_id);
+            dataset.put("work_type_id", work_type_id);
+            dataset.put("work_stage_code", work_stage_code);
 
 
         } catch (JSONException e) {

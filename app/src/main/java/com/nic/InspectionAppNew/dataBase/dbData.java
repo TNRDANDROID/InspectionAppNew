@@ -60,7 +60,7 @@ public class dbData {
         ContentValues values = new ContentValues();
         values.put(AppConstant.SCHEME_SEQUENTIAL_ID, pmgsySurvey.getSchemeSequentialID());
         values.put(AppConstant.SCHEME_NAME, pmgsySurvey.getSchemeName());
-        values.put(AppConstant.FINANCIAL_YEAR, pmgsySurvey.getFinancialYear());
+        //values.put(AppConstant.FINANCIAL_YEAR, pmgsySurvey.getFinancialYear());
 
         long id = db.insert(DBHelper.SCHEME_TABLE_NAME,null,values);
         Log.d("Inserted_id_scheme", String.valueOf(id));
@@ -251,6 +251,20 @@ public class dbData {
         Log.d("Insert_id_work", String.valueOf(id));
 
     }
+    public void insertStage(ModelClass realTimeMonitoringSystem) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.WORK_GROUP_ID, realTimeMonitoringSystem.getWork_group_id());
+        values.put(AppConstant.WORK_TYPE_ID, realTimeMonitoringSystem.getWork_type_id());
+        values.put(AppConstant.WORK_STAGE_ORDER, realTimeMonitoringSystem.getWork_stage_order());
+        values.put(AppConstant.WORK_STAGE_CODE, realTimeMonitoringSystem.getWork_stage_code());
+        values.put(AppConstant.WORK_SATGE_NAME, realTimeMonitoringSystem.getWork_stage_name());
+
+        long id = db.insert(DBHelper.WORK_STAGE_TABLE, null, values);
+        Log.d("Inserted_id_Stage", String.valueOf(id));
+
+    }
+
     public ArrayList<ModelClass> getAll_Habitation(String dcode, String bcode) {
 
         ArrayList<ModelClass> cards = new ArrayList<>();
@@ -368,7 +382,7 @@ public class dbData {
         }
         return cards;
     }
-    public ArrayList<ModelClass> getAllWorkList(String onOffType,String type,String dcode,String bcode,String pvcode,String fin_year,String scheme_id) {
+    public ArrayList<ModelClass> getAllWorkList(String onOffType,String type,String dcode,String bcode,String pvcode,String scheme_id) {
 
         ArrayList<ModelClass> cards = new ArrayList<>();
         Cursor cursor = null;
@@ -380,14 +394,14 @@ public class dbData {
                     cursor = db.rawQuery("select * from "+DBHelper.WORK_LIST,null);
 
                 }else {
-                    selection = "dcode = ? and bcode = ? and pvcode = ? and fin_year = ? and scheme_id = ? ";
-                    selectionArgs = new String[]{ dcode, bcode, pvcode, fin_year,scheme_id};
+                    selection = "dcode = ? and bcode = ? and pvcode = ? and scheme_id = ? ";
+                    selectionArgs = new String[]{ dcode, bcode, pvcode, scheme_id};
                     cursor = db.query(DBHelper.WORK_LIST, new String[]{"*"},
                             selection, selectionArgs, null, null, "work_id");
                 }
             }else {
-                selection = "dcode = ? and bcode = ? and pvcode = ? and fin_year = ? and scheme_id = ? ";
-                selectionArgs = new String[]{ dcode, bcode, pvcode, fin_year,scheme_id};
+                selection = "dcode = ? and bcode = ? and pvcode = ? and scheme_id = ? ";
+                selectionArgs = new String[]{ dcode, bcode, pvcode, scheme_id};
                 cursor = db.query(DBHelper.ONLINE_WORK_LIST, new String[]{"*"},
                         selection, selectionArgs, null, null, "work_id");
             }
@@ -472,6 +486,8 @@ public class dbData {
                     card.setWork_description(cursor.getString(cursor.getColumnIndexOrThrow("work_description")));
                     card.setWork_status(cursor.getString(cursor.getColumnIndexOrThrow("work_status")));
                     card.setWork_status_id(cursor.getInt(cursor.getColumnIndexOrThrow("work_status_id")));
+                    card.setWork_stage_name(cursor.getString(cursor.getColumnIndexOrThrow("work_stage")));
+                    card.setWork_stage_code(cursor.getString(cursor.getColumnIndexOrThrow("work_stage_id")));
 
                     cards.add(card);
                 }
@@ -486,7 +502,49 @@ public class dbData {
         }
         return cards;
     }
+    public ArrayList<ModelClass> getAll_Stage(String type,String work_group_id,String work_type_id,String work_stage_code) {
 
+        ArrayList<ModelClass> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            if(type.equals("all")){
+                cursor = db.rawQuery("select * from " + DBHelper.WORK_STAGE_TABLE, null);
+            }
+            else {
+                String Que = "select * from "+DBHelper.WORK_STAGE_TABLE+" where work_stage_order >(select work_stage_order from "+DBHelper.WORK_STAGE_TABLE+" where work_stage_code='"+work_stage_code+"' and work_group_id=" + work_group_id + "  and work_type_id=" + work_type_id + ")  and work_group_id=" + work_group_id + "  and work_type_id=" + work_type_id + " and work_stage_code != 11 order by work_stage_order";
+
+                cursor = db.rawQuery(Que,null);
+            }
+
+            // cursor = db.query(CardsDBHelper.TABLE_CARDS,
+            //       COLUMNS, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ModelClass card = new ModelClass();
+                    card.setWork_group_id(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.WORK_GROUP_ID)));
+                    card.setWork_type_id(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.WORK_TYPE_ID)));
+                    card.setWork_stage_order(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.WORK_STAGE_ORDER)));
+                    card.setWork_stage_code(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.WORK_STAGE_CODE)));
+                    card.setWork_stage_name(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.WORK_SATGE_NAME)));
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e) {
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
 
     public Bitmap bytearrtoBitmap(byte[] photo){
         byte[] imgbytes = Base64.decode(photo, Base64.DEFAULT);
@@ -540,7 +598,9 @@ public class dbData {
 
 
 
-
+    public void deleteWorkStageTable() {
+        db.execSQL("delete from " + DBHelper.WORK_STAGE_TABLE);
+    }
 
     public void deleteAll() {
 
@@ -556,7 +616,7 @@ public class dbData {
         deleteSaveWorkDetailsTable();
         deleteOnlineWorkListTable();
         deleteOTHER_CATEGORY_TABLETable();
-
+        deleteWorkStageTable();
     }
 
 

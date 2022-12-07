@@ -81,9 +81,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:ignore="UselessParent">
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -191,7 +191,55 @@
 
                     </RelativeLayout>
                 </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/stage_layout">
+                    <TextView
+                        android:id="@+id/stage_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginTop="@dimen/padding"
+                        android:layout_marginRight="@dimen/margin_left_20dp"
+                        android:text="Select Stage"
+                        android:textColor="@color/grey_9"
+                        android:textSize="@dimen/_14sdp" />
 
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/header"
+                        android:layout_below="@+id/stage_tv"
+                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginTop="@dimen/padding"
+                        android:layout_marginRight="@dimen/margin_left_20dp"
+                        android:background="@drawable/rectangle_box"
+                        android:orientation="vertical">
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="15dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/_15sdp"
+                            android:visibility="visible"
+                            tools:ignore="RelativeOverlap" />
+
+                        <Spinner
+                            android:id="@+id/stage_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center" />
+
+                    </RelativeLayout>
+                </RelativeLayout>
 
                 <LinearLayout
                     android:id="@+id/description_layout"
@@ -310,7 +358,7 @@
                     android:fadeScrollbars="false"
                     android:scrollbarSize="4dp"
                     android:scrollbars="vertical"
-                    android:visibility="gone"/>
+                    android:visibility="visible"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -319,7 +367,8 @@
                     android:id="@+id/progressBar"
                     android:gravity="center"
                     android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/description_layout">
+                    android:layout_below="@id/recycler"
+                   >
                     <ImageView
                         android:layout_width="@dimen/_50sdp"
                         android:layout_height="@dimen/_50sdp"
@@ -398,7 +447,7 @@
                 </LinearLayout>
 
 
-            </RelativeLayout>
+            </LinearLayout>
             </ScrollView>
 
         </RelativeLayout>

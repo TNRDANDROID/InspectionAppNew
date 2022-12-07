@@ -79,6 +79,9 @@ public class CommonAdapter extends BaseAdapter {
         else if (type.equalsIgnoreCase("DesignationList")) {
             tv_type.setText(inspectionItems.getDesig_name());
         }
+        else if (type.equalsIgnoreCase("stage_list")) {
+            tv_type.setText(inspectionItems.getWork_stage_name());
+        }
         else {
             tv_type.setText("");
         }

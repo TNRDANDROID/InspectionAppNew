@@ -93,6 +93,9 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 getFinYearList();
                 getInspection_statusList();
                 getCategoryList();
+                if(dbData.getAll_Stage("all","","","").size()==0){
+                    getStageList();
+                }
             }
 
         }
@@ -236,6 +239,21 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         return dataSet;
     }
 
+    public void getStageList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("StageList", Api.Method.POST, UrlGenerator.getMainService(), stageListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public JSONObject stageListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.stageListJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("StageList", "" + authKey);
+        return dataSet;
+    }
 
     private void openWorkFilterScreen() {
         Intent intent = new Intent(this, OnlineWorkFilterScreen.class);
@@ -424,6 +442,15 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 }
                 Log.d("PhotoCount", "" + responseObj.toString());
                 Log.d("PhotoCount", "" + responseDecryptedBlockKey);
+            }
+            if ("StageList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new InsertStageTask().execute(jsonObject);
+                }
+                Log.d("StageList", "" + responseDecryptedKey);
             }
 
         } catch (JSONException e) {
@@ -656,6 +683,53 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             return null;
         }
 
+    }
+    public class InsertStageTask extends AsyncTask<JSONObject, Void, Void> {
+        private  ProgressHUD progressHUD;
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            ArrayList<ModelClass> stage_count = dbData.getAll_Stage("all","","","");
+            if (stage_count.size() <= 0) {
+                if (params.length > 0) {
+                    //dbData.deleteWorkStageTable();
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        ModelClass stage = new ModelClass();
+                        try {
+                            stage.setWork_group_id(jsonArray.getJSONObject(i).getString(AppConstant.WORK_GROUP_ID));
+                            stage.setWork_type_id(jsonArray.getJSONObject(i).getString(AppConstant.WORK_TYPE_ID));
+                            stage.setWork_stage_order(jsonArray.getJSONObject(i).getString(AppConstant.WORK_STAGE_ORDER));
+                            stage.setWork_stage_code(jsonArray.getJSONObject(i).getString(AppConstant.WORK_STAGE_CODE));
+                            stage.setWork_stage_name(jsonArray.getJSONObject(i).getString(AppConstant.WORK_SATGE_NAME));
+
+                            dbData.insertStage(stage);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (progressHUD != null) {
+                progressHUD.cancel();
+            }
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(MainHomePage.this, "Downloading", true, false, null);
+        }
     }
 
     public void closeApplication() {

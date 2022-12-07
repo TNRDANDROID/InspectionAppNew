@@ -22,11 +22,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.CommonAdapter;
+import com.nic.InspectionAppNew.adapter.SaveImageAdapter;
 import com.nic.InspectionAppNew.api.Api;
 import com.nic.InspectionAppNew.api.ServerResponse;
 import com.nic.InspectionAppNew.dataBase.DBHelper;
@@ -54,6 +58,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
     private ProgressHUD progressHUD;
     private List<ModelClass> status_list = new ArrayList<>();
+    private List<ModelClass> stage_list = new ArrayList<>();
 
     int work_id=0;
     String dcode;
@@ -67,6 +72,9 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     String current_stage_of_work;
     String is_high_value;
     String work_status;
+
+    String work_stage;
+    String work_stage_id;
 
     String hab_code;
     String scheme_group_id;
@@ -92,6 +100,8 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     private Intent recognizerIntent;
     private String LOG_TAG = "VoiceRecognitionActivity";
     boolean listening = false;
+    SaveImageAdapter adapter;
+    ArrayList<ModelClass> savedImage = new ArrayList<>();
 
 
     @Override
@@ -110,8 +120,17 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
 
         statusFilterSpinner();
+        stageFilterSpinner();
 
         getIntentData();
+        loadImageList();
+
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
+        saveWorkDetailsActivityBinding.recycler.setLayoutManager(mLayoutManager);
+        saveWorkDetailsActivityBinding.recycler.setItemAnimator(new DefaultItemAnimator());
+        saveWorkDetailsActivityBinding.recycler.setHasFixedSize(true);
+        saveWorkDetailsActivityBinding.recycler.setNestedScrollingEnabled(false);
+        saveWorkDetailsActivityBinding.recycler.setFocusable(false);
 
         saveWorkDetailsActivityBinding.statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -125,6 +144,24 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                     prefManager.setWorkStatusId("");
                     work_status = "";
                     work_status_id=0;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        saveWorkDetailsActivityBinding.stageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    work_stage = stage_list.get(position).getWork_stage_name();
+                    work_stage_id = stage_list.get(position).getWork_stage_code();
+
+                }else {
+                    work_stage = "";
+                    work_stage_id="";
                 }
             }
 
@@ -165,6 +202,17 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         saveWorkDetailsActivityBinding.downloadLayout.setVisibility(View.VISIBLE);
         Glide.with(this).asGif().load(R.raw.mic3).into(saveWorkDetailsActivityBinding.progressBarimg);
 
+    }
+
+    private void loadImageList() {
+        savedImage = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            ModelClass value = new ModelClass();
+            value.setImg_id(1);
+            savedImage.add(value);
+        }
+        adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage);
+        saveWorkDetailsActivityBinding.recycler.setAdapter(adapter);
     }
 
     private void getIntentData(){
@@ -257,7 +305,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     {
         if(type.equalsIgnoreCase("rdpr")){
             if(work_status_id != 0){
-                if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
+//                if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
                     Intent intent = new Intent(this, CameraScreen.class);
                     intent.putExtra("dcode", dcode);
                     intent.putExtra("bcode", bcode);
@@ -276,6 +324,8 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                     intent.putExtra("current_stage_of_work", current_stage_of_work);
                     intent.putExtra("work_status_id", work_status_id);
                     intent.putExtra("work_status", work_status);
+                    intent.putExtra("work_stage_id", work_stage_id);
+                    intent.putExtra("work_stage", work_stage);
                     intent.putExtra("onOffType", onOffType);
                     intent.putExtra("work_description", saveWorkDetailsActivityBinding.description.getText().toString());
                     intent.putExtra("other_work_category_id", other_work_category_id);
@@ -288,10 +338,10 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                     }
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                }
+               /* }
                 else {
                     Utils.showAlert(SaveWorkDetailsActivity.this,"Please Enter Description");
-                }
+                }*/
             }
             else {
                 Utils.showAlert(SaveWorkDetailsActivity.this,"Please Select Status");
@@ -356,6 +406,22 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         dbData.open();
         status_list.addAll(dbData.getAll_Work_Status());
         saveWorkDetailsActivityBinding.statusSpinner.setAdapter(new CommonAdapter(this, status_list, "status"));
+    }
+    public void stageFilterSpinner() {
+        String work_group_id=getIntent().getStringExtra("work_group_id");
+        String work_type_id=getIntent().getStringExtra("work_type_id");
+        String current_stage_of_work=getIntent().getStringExtra("current_stage_of_work");
+        stage_list = new ArrayList<>();
+        stage_list.clear();
+        ModelClass list = new ModelClass();
+        list.setWork_group_id("0");
+        list.setWork_type_id("0");
+        list.setWork_stage_code("0");
+        list.setWork_stage_name("Select Stage");
+        stage_list.add(list);
+        dbData.open();
+        stage_list.addAll(dbData.getAll_Stage("",work_group_id,work_type_id,current_stage_of_work));
+        saveWorkDetailsActivityBinding.stageSpinner.setAdapter(new CommonAdapter(this, stage_list, "stage_list"));
     }
 
 

@@ -383,7 +383,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                     binding.recycler.setVisibility(View.VISIBLE);
                     binding.notFoundTv.setVisibility(View.GONE);
                     binding.recycler.setAdapter(savedWorkListAdapter);
-                    binding.inspectionCountListLayout.setVisibility(View.VISIBLE);
+                    binding.inspectionCountListLayout.setVisibility(View.GONE);
                 }
                 else {
                     binding.inspectionCountListLayout.setVisibility(View.GONE);

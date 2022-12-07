@@ -1260,17 +1260,23 @@ public class Utils {
     public static JSONObject schemeListDistrictWiseJsonParams(Activity activity) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_SCHEME_LIST_DISTRICT_FINYEAR_WISE);
-        if(prefManager.getLevels().equalsIgnoreCase("S")){
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_SCHEME_LIST);
+       /* if(prefManager.getLevels().equalsIgnoreCase("S")){
             dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCodeJson());
         }
         else{
             dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
-        }
+            dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+            dataSet.put(AppConstant.PV_CODE, prefManager.getPvCode());
+        }*/
+        dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+        dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+        dataSet.put(AppConstant.PV_CODE, prefManager.getPvCode());
+        dataSet.put(AppConstant.FINANCIAL_YEAR,prefManager.getFinYearJson());
 
-        if(prefManager.getLevels().equalsIgnoreCase("D") || prefManager.getLevels().equalsIgnoreCase("S")){
+        /*if(prefManager.getLevels().equalsIgnoreCase("D") || prefManager.getLevels().equalsIgnoreCase("S")){
             dataSet.put(AppConstant.FINANCIAL_YEAR,prefManager.getFinYearJson());
-        }
+        }*/
         Log.d("schemeListDistrictWise", "" + dataSet);
         return dataSet;
     }
@@ -1751,6 +1757,12 @@ public class Utils {
         return myFormat;
     }
 
+    public static JSONObject stageListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.STAGE_LIST);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
 
     ////Tamil Font
     public static void setLocale(String lang,Context context) {

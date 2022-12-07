@@ -125,6 +125,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     String work_description="";
     String work_status_id="";
     String work_status="";
+    String work_stage="";
+    String work_stage_id="";
     String hab_code="";
     String scheme_group_id="";
     String work_group_id="";
@@ -259,6 +261,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         work_status_id = String.valueOf(getIntent().getIntExtra("work_status_id",0));
         work_description = getIntent().getStringExtra("work_description");
         work_status = getIntent().getStringExtra("work_status");
+        work_stage = getIntent().getStringExtra("work_stage");
+        work_stage_id = getIntent().getStringExtra("work_stage_id");
         hab_code = getIntent().getStringExtra("hab_code");
         scheme_group_id = getIntent().getStringExtra("scheme_group_id");
         work_group_id = getIntent().getStringExtra("work_group_id");
@@ -856,6 +860,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             values.put("is_high_value",is_high_value);
             values.put("work_status_id",work_status_id);
             values.put("work_status",work_status);
+            values.put("work_stage_id",work_stage_id);
+            values.put("work_stage",work_stage);
             values.put("work_description",work_description);
             values.put("hab_code",hab_code);
             values.put("scheme_group_id",scheme_group_id);

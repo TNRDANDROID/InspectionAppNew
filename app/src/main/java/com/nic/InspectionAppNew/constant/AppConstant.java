@@ -49,6 +49,8 @@ public class AppConstant {
     public static String KEY_HABITATION_LIST_DISTRICT_BLOCK_WISE = "habitation_list_district_block_wise";
     public static String KEY_SCHEME_LIST_ALL = "scheme_list_all";
     public static String KEY_SCHEME_LIST_DISTRICT_FINYEAR_WISE = "scheme_list_district_finyear_wise";
+    public static String KEY_SCHEME_LIST = "scheme_list";
+    public static String STAGE_LIST = "work_type_stage_link";
     public static String KEY_SCHEME_FINYEAR_LIST_LAST_NYEARS = "scheme_finyear_list_last_nyears";
     public static String KEY_OBSERVATION = "master_high_value_project_observation";
     public static String N_YEAR = "nyear";
@@ -74,6 +76,12 @@ public class AppConstant {
     public static String FINANCIAL_YEAR = "fin_year";
     public static String STATUS_ID = "status_id";
     public static String STATUS = "status";
+
+    public static String WORK_GROUP_ID = "work_group_id";
+    public static String WORK_TYPE_ID = "work_type_id";
+    public static String WORK_STAGE_CODE = "work_stage_code";
+    public static String WORK_STAGE_ORDER = "work_stage_order";
+    public static String WORK_SATGE_NAME = "work_stage_name";
 
     public static String SQL_QUERY= "select distinct  a.shg_code,a.shg_member_code,a.work_code,a.shg_name,a.member_name,a.work_name,a.fin_year\n" +
             "                       from save_after_tree_image_table as a left join save_before_tree_image_table as b on a.shg_code=b.shg_code and a.shg_member_code=b.shg_member_code and a.work_code=b.work_code";

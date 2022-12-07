@@ -21,6 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String FINANCIAL_YEAR_TABLE_NAME = "FinancialYear";
     public static final String STATUS_TABLE = "status";
     public static final String OTHER_CATEGORY_TABLE = "other_category";
+    public static final String WORK_STAGE_TABLE = "work_type_stage_link";
 
     private Context context;
 
@@ -129,11 +130,18 @@ public class DBHelper extends SQLiteOpenHelper {
                 "as_value TEXT," +
                 "ts_value TEXT," +
                 "work_status TEXT," +
+                "work_stage TEXT," +
+                "work_stage_id TEXT," +
                 "work_description TEXT," +
                 "current_stage_of_work TEXT," +
                 "is_high_value TEXT)");
 
-
+        db.execSQL("CREATE TABLE " + WORK_STAGE_TABLE + " ("
+                + "work_group_id  INTEGER," +
+                "work_type_id  INTEGER," +
+                "work_stage_order  INTEGER," +
+                "work_stage_code  INTEGER," +
+                "work_stage_name TEXT)");
     }
 
     @Override
@@ -148,6 +156,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + WORK_LIST);
             db.execSQL("DROP TABLE IF EXISTS " + ONLINE_WORK_LIST);
             db.execSQL("DROP TABLE IF EXISTS " + SCHEME_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + WORK_STAGE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + STATUS_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + FINANCIAL_YEAR_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_WORK_DETAILS);

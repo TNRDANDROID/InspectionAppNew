@@ -183,7 +183,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    showAlert(this, "Your Data is Synchronized to the server!");
+                    showAlert(this, jsonObject.getString("MESSAGE"));
                     dbData.open();
                     deleteSavedImage(save_work_details_primary_id);
                     pendingScreenAdapter.removeSavedItem(prefManager.getDeleteAdapterPosition());

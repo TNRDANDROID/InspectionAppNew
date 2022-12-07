@@ -128,11 +128,15 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
         } else {
                 workListBinding.filters.setVisibility(View.VISIBLE);
+                workListBinding.villageTv.setVisibility(View.GONE);
+                workListBinding.villageLayout.setVisibility(View.GONE);
+                workListBinding.finYearTv.setVisibility(View.GONE);
+                workListBinding.finYearLayout.setVisibility(View.GONE);
             workListBinding.tabLayout.setVisibility(View.GONE);
 //                workListBinding.workTv.setVisibility(View.GONE);
-                villageFilterSpinner();
+                //villageFilterSpinner();
                 schemeFilterSpinner();
-                finyearFilterSpinner();
+                //finyearFilterSpinner();
             }
 
 
@@ -190,7 +194,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
-                    if(prefManager.getPvCode()!=null && !prefManager.getPvCode().equals("")){
+                    /*if(prefManager.getPvCode()!=null && !prefManager.getPvCode().equals("")){
                         if(prefManager.getFinancialyearName()!=null && !prefManager.getFinancialyearName().equals("")){
                             prefManager.setSchemeSeqId(Scheme.get(position).getSchemeSequentialID());
                             schemeSequentialID=Scheme.get(position).getSchemeSequentialID();
@@ -207,7 +211,17 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                         }
                     }else {
                         Utils.showAlert(WorkList.this,"Please Select Village");
-                    }
+                    }*/
+                    prefManager.setSchemeSeqId(Scheme.get(position).getSchemeSequentialID());
+                    schemeSequentialID=Scheme.get(position).getSchemeSequentialID();
+                    workListBinding.recycler.setVisibility(View.GONE);
+                    workListBinding.notFoundTv.setVisibility(View.GONE);
+                    workListBinding.ongoing.setTextColor(getApplicationContext().getResources().getColor(R.color.white));
+                    workListBinding.ongoing.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button_color));
+                    workListBinding.completed.setTextColor(getApplicationContext().getResources().getColor(R.color.grey_8));
+                    workListBinding.completed.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.right_button));
+                    WorkType="ongoing";
+                    new fetchWorkList().execute();
 
 
                 }else {
@@ -291,7 +305,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
     }
 
     public void getOfflineWorkList() {
-        if(prefManager.getPvCode()!=null && !prefManager.getPvCode().equals("")){
+        /*if(prefManager.getPvCode()!=null && !prefManager.getPvCode().equals("")){
             if(prefManager.getFinancialyearName()!=null && !prefManager.getFinancialyearName().equals("")) {
                 if (schemeSequentialID != null && !schemeSequentialID.equals("")) {
                     if(WorkType.equalsIgnoreCase("ongoing")){
@@ -307,6 +321,15 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             }
         }else {
             Utils.showAlert(WorkList.this,"Please Select Village");
+        }*/
+        if (schemeSequentialID != null && !schemeSequentialID.equals("")) {
+            if(WorkType.equalsIgnoreCase("ongoing")){
+                getOngoingWorkList(ongoing_workList);
+            }else {
+                getCompletedWorkList(completed_workList);
+            }
+        } else {
+            Utils.showAlert(WorkList.this, "Please Select Scheme");
         }
     }
     public void getWorkListOptional() {
@@ -390,7 +413,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         JSONArray filter = prefManager.getSchemeSeqIdJson();
         JSONArray filter2 = prefManager.getFinYearJson();
         sql = "SELECT distinct scheme_seq_id,scheme_name FROM " + SCHEME_TABLE_NAME + " WHERE scheme_seq_id in" + filter.toString().replace("[", "(").replace("]", ")") +
-                " and fin_year in" + filter2.toString().replace("[", "(").replace("]", ")") + " order by scheme_name";
+                 " order by scheme_name";
 
         Log.d("Scheme",""+sql);
 
@@ -506,7 +529,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             workList = new ArrayList<>();
             completed_workList = new ArrayList<>();
             ongoing_workList = new ArrayList<>();
-            workList = dbData.getAllWorkList("offline","",prefManager.getDistrictCodeSelected(),prefManager.getBlockCodeSelected(),prefManager.getPvCode(),prefManager.getFinancialyearName(),prefManager.getSchemeSeqId());
+            workList = dbData.getAllWorkList("offline","",prefManager.getDistrictCodeSelected(),prefManager.getBlockCodeSelected(),prefManager.getPvCode(),prefManager.getSchemeSeqId());
 
             Log.d("Wlist_COUNT", String.valueOf(workList.size()));
             return workList;
