@@ -831,7 +831,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     }
 
     public void onBackPress() {
-        prefManager.setAppBack("back");
+        prefManager.setAppBack("");
         super.onBackPressed();
         setResult(Activity.RESULT_CANCELED);
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);

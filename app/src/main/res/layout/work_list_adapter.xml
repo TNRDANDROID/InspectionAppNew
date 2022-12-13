@@ -344,14 +344,6 @@
                             android:textSize="@dimen/_13sdp"
                             android:text="@string/take_action"
                             tools:ignore="RelativeOverlap,UnusedAttribute" />
-                        <ImageView
-                            android:layout_width="@dimen/_30sdp"
-                            android:layout_height="@dimen/_30sdp"
-                            android:id="@+id/take_action_icon"
-                            android:layout_toRightOf="@+id/take_action_text"
-                            android:src="@drawable/take_action_icon"
-                            android:gravity="center_vertical"
-                            />
                     </RelativeLayout>
 
                 </RelativeLayout>

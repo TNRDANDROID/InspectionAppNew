@@ -76,15 +76,28 @@
             android:layout_below="@+id/toolbar"
             android:background="@color/white"
             android:orientation="vertical">
-            <ScrollView
+            <androidx.core.widget.NestedScrollView
                 android:id="@+id/scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:ignore="UselessParent">
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler"
+                    android:layout_below="@+id/description_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginRight="@dimen/_8sdp"
+                    android:fadeScrollbars="false"
+                    android:scrollbarSize="4dp"
+                    android:scrollbars="vertical"
+                    android:visibility="visible"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -95,6 +108,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:visibility="gone"
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/_5sdp"
                         android:text="@string/other_work_details"
@@ -153,6 +167,7 @@
                         android:layout_marginLeft="@dimen/margin_left_20dp"
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/margin_left_20dp"
+                        android:visibility="gone"
                         android:text="@string/select_status"
                         android:textColor="@color/grey_9"
                         android:textSize="@dimen/_14sdp" />
@@ -197,19 +212,33 @@
                     android:id="@+id/stage_layout">
                     <TextView
                         android:id="@+id/stage_tv"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin_left_20dp"
                         android:layout_marginTop="@dimen/padding"
-                        android:layout_marginRight="@dimen/margin_left_20dp"
-                        android:text="Select Stage"
+                        android:visibility="gone"
+                        android:text="Current stage observed by inspecting officer"
                         android:textColor="@color/grey_9"
-                        android:textSize="@dimen/_14sdp" />
+                        android:textSize="@dimen/_12sdp" />
+                    <TextView
+                        android:id="@+id/stage_not_editable"
+                        android:layout_below="@+id/stage_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginRight="@dimen/margin_left_20dp"
+                        android:text="@string/not_editable"
+                        android:textColor="@color/grey_8"
+                        android:padding="@dimen/_3sdp"
+                        android:textSize="@dimen/_10sdp" />
+
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/header"
-                        android:layout_below="@+id/stage_tv"
+                        android:layout_below="@+id/stage_not_editable"
                         android:layout_marginLeft="@dimen/margin_left_20dp"
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/margin_left_20dp"
@@ -256,6 +285,7 @@
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
                        android:id="@+id/description_layout1">
+<!--
                        <TextView
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"
@@ -264,6 +294,17 @@
                            android:textSize="@dimen/_14sdp"
                            android:visibility="visible"
                            style="@string/font_circular_medium" />
+-->
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="@string/maximum_length_1000"
+                           android:padding="@dimen/_4sdp"
+                           android:layout_gravity="end"
+                           android:textSize="@dimen/_10sdp"
+                           android:layout_marginEnd="@dimen/_15sdp"
+                           android:textColor="@color/subscription_type_red_color"/>
+
                        <TextView
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
@@ -271,9 +312,8 @@
                            android:layout_alignParentEnd="true"
                            android:layout_centerVertical="true"
                            style="@string/font_circular_medium"
-                           android:text="@string/clear"
-                           android:textStyle="bold"
-                           android:textSize="@dimen/_14sdp"
+                           android:text="Clear Text"
+                           android:textSize="@dimen/_12sdp"
                            android:layout_marginEnd="@dimen/_10sdp"
                            android:textColor="@color/darkblue"
                            tools:ignore="RelativeOverlap" />
@@ -283,7 +323,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin_left_20dp"
-                        android:layout_marginTop="@dimen/padding"
+                        android:layout_marginTop="5dp"
                         android:layout_marginRight="@dimen/margin_left_20dp"
                         android:background="@drawable/rectangle_box"
                         android:orientation="vertical"
@@ -305,14 +345,6 @@
                           tools:ignore="Autofill,TextFields" />
 
                     </RelativeLayout>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/maximum_length_1000"
-                        android:padding="@dimen/_4sdp"
-                        android:layout_gravity="end"
-                        android:layout_marginEnd="@dimen/_15sdp"
-                        android:textColor="@color/subscription_type_red_color"/>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -347,23 +379,11 @@
 
 
                 </LinearLayout>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler"
-                    android:layout_below="@+id/description_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:fadeScrollbars="false"
-                    android:scrollbarSize="4dp"
-                    android:scrollbars="vertical"
-                    android:visibility="visible"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_30sdp"
-                    android:layout_marginBottom="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_20sdp"
                     android:id="@+id/progressBar"
                     android:gravity="center"
                     android:layout_alignParentBottom="true"
@@ -399,8 +419,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/recycler"
-                    android:layout_marginTop="40dp"
-                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:visibility="visible"
                     android:orientation="vertical">
 
                     <androidx.cardview.widget.CardView
@@ -424,15 +444,15 @@
                             android:padding="@dimen/_5sdp">
 
                             <com.nic.InspectionAppNew.support.MyCustomTextView
-                                android:id="@+id/take_photo"
+                                android:id="@+id/submit"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:gravity="center"
                                 android:paddingLeft="5dp"
                                 android:paddingRight="5dp"
-                                android:text="@string/take_photo"
-                                android:onClick="@{()-> activity.gotoCameraScreen()}"
+                                android:text="@string/submit"
+                                android:onClick="@{()-> activity.gotoSubmit()}"
                                 android:textColor="#ff3838"
                                 android:textSize="18sp"
                                 android:textStyle="normal"
@@ -448,7 +468,7 @@
 
 
             </LinearLayout>
-            </ScrollView>
+            </androidx.core.widget.NestedScrollView>
 
         </RelativeLayout>
 

@@ -2,18 +2,36 @@ package com.nic.InspectionAppNew.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,29 +42,49 @@ import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
+import com.nic.InspectionAppNew.Interface.AdapterCameraIntent;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.CommonAdapter;
 import com.nic.InspectionAppNew.adapter.SaveImageAdapter;
 import com.nic.InspectionAppNew.api.Api;
+import com.nic.InspectionAppNew.api.ApiService;
 import com.nic.InspectionAppNew.api.ServerResponse;
+import com.nic.InspectionAppNew.constant.AppConstant;
 import com.nic.InspectionAppNew.dataBase.DBHelper;
 import com.nic.InspectionAppNew.dataBase.dbData;
 import com.nic.InspectionAppNew.databinding.SaveWorkDetailsActivityBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.ProgressHUD;
+import com.nic.InspectionAppNew.utils.CameraUtils;
+import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import es.dmoral.toasty.Toasty;
+import id.zelory.compressor.Compressor;
+import id.zelory.compressor.FileUtil;
+import in.mayanknagwanshi.imagepicker.ImageSelectActivity;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
 
 public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, RecognitionListener {
     private SaveWorkDetailsActivityBinding saveWorkDetailsActivityBinding;
@@ -59,6 +97,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     private ProgressHUD progressHUD;
     private List<ModelClass> status_list = new ArrayList<>();
     private List<ModelClass> stage_list = new ArrayList<>();
+    private List<ModelClass> selected_image_list = new ArrayList<>();
 
     int work_id=0;
     String dcode;
@@ -92,6 +131,13 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     String type;
     String  activityImage="";
     private static final int SPEECH_REQUEST_CODE = 103;
+    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 1213;
+    private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
+    private static final int PERMISSION_REQUEST_CODE = 200;
+    private static final int PERMISSION_FINE_LOCATION = 300;
+    private static String imageStoragePath;
+    public static final int BITMAP_SAMPLE_SIZE = 8;
+    AdapterCameraIntent adapterCameraIntent;
 
     private static final int REQUEST_RECORD_PERMISSION = 100;
     private int maxLinesInput = 10;
@@ -103,6 +149,9 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     SaveImageAdapter adapter;
     ArrayList<ModelClass> savedImage = new ArrayList<>();
 
+    boolean true_flag = false;
+    JSONObject maindataset = new JSONObject();
+    AlertDialog add_cpts_search_alert;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -123,10 +172,11 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         stageFilterSpinner();
 
         getIntentData();
-        loadImageList();
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
-        saveWorkDetailsActivityBinding.recycler.setLayoutManager(mLayoutManager);
+       /* RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
+        saveWorkDetailsActivityBinding.recycler.setLayoutManager(mLayoutManager);*/
+
+        saveWorkDetailsActivityBinding.recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         saveWorkDetailsActivityBinding.recycler.setItemAnimator(new DefaultItemAnimator());
         saveWorkDetailsActivityBinding.recycler.setHasFixedSize(true);
         saveWorkDetailsActivityBinding.recycler.setNestedScrollingEnabled(false);
@@ -204,16 +254,95 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
     }
 
-    private void loadImageList() {
+    private void loadImageList(ArrayList<ModelClass> list,String f,String s) {
         savedImage = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            ModelClass value = new ModelClass();
-            value.setImg_id(1);
-            savedImage.add(value);
+        min_img_count=1/*Integer.parseInt(prefManager.getPhotoCount())*/;
+        max_img_count=Integer.parseInt(prefManager.getPhotoCount());
+        if(list.size()>0){
+            for (int j = 0; j < list.size(); j++) {
+                ModelClass value = new ModelClass();
+                value.setWork_id(list.get(j).getWork_id());
+                value.setDistrictCode(list.get(j).getDistrictCode());
+                value.setBlockCode(list.get(j).getBlockCode());
+                value.setPvCode(list.get(j).getPvCode());
+                value.setImage(list.get(j).getImage());
+                value.setImage_path(list.get(j).getImage_path());
+                value.setDescription(list.get(j).getDescription());
+                value.setLatitude(list.get(j).getLatitude());
+                value.setLongtitude(list.get(j).getLongtitude());
+                value.setImage_serial_number(list.get(j).getImage_serial_number());
+                savedImage.add(value);
+            }
+
         }
-        adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage);
+
+        for (int i = savedImage.size(); i < max_img_count; i++) {
+                ModelClass value = new ModelClass();
+                value.setWork_id(work_id);
+                value.setDistrictCode(dcode);
+                value.setBlockCode(bcode);
+                value.setPvCode(pvcode);
+                value.setImage(null);
+                value.setImage_path("");
+                value.setDescription("");
+                value.setLatitude("");
+                value.setLongtitude("");
+                value.setImage_serial_number(0);
+                savedImage.add(value);
+        }
+        adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage,f,s);
+        adapterCameraIntent=adapter;
         saveWorkDetailsActivityBinding.recycler.setAdapter(adapter);
     }
+/*
+    private void loadImageList(ArrayList<ModelClass> list,String f,String s) {
+        boolean flag=false;
+        savedImage = new ArrayList<>();
+        min_img_count=1*/
+/*Integer.parseInt(prefManager.getPhotoCount())*//*
+;
+        max_img_count=Integer.parseInt(prefManager.getPhotoCount());
+        for (int i = 0; i < max_img_count; i++) {
+            flag=false;
+            for (int j = 0; j < list.size(); j++) {
+                if(i==j){
+                    flag=true;
+                    ModelClass value = new ModelClass();
+                    value.setWork_id(list.get(j).getWork_id());
+                    value.setDistrictCode(list.get(j).getDistrictCode());
+                    value.setBlockCode(list.get(j).getBlockCode());
+                    value.setPvCode(list.get(j).getPvCode());
+                    value.setImage(list.get(j).getImage());
+                    value.setImage_path(list.get(j).getImage_path());
+                    value.setDescription(list.get(j).getDescription());
+                    value.setLatitude(list.get(j).getLatitude());
+                    value.setLongtitude(list.get(j).getLongtitude());
+                    value.setImage_serial_number(list.get(j).getImage_serial_number());
+                    savedImage.add(value);
+                }
+
+            }
+            if(!flag){
+                ModelClass value = new ModelClass();
+                value.setWork_id(work_id);
+                value.setDistrictCode(dcode);
+                value.setBlockCode(bcode);
+                value.setPvCode(pvcode);
+                value.setImage(null);
+                value.setImage_path("");
+                value.setDescription("");
+                value.setLatitude("");
+                value.setLongtitude("");
+                value.setImage_serial_number(0);
+                savedImage.add(value);
+            }
+
+        }
+        adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage,f,s);
+        adapterCameraIntent=adapter;
+        saveWorkDetailsActivityBinding.recycler.setAdapter(adapter);
+    }
+*/
 
     private void getIntentData(){
         type= getIntent().getStringExtra("type");
@@ -225,7 +354,6 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         scheme_id = getIntent().getStringExtra("scheme_id");
         fin_year = getIntent().getStringExtra("fin_year");
         work_name = getIntent().getStringExtra("work_name");
-        dcode = getIntent().getStringExtra("dcode");
         as_value = getIntent().getStringExtra("as_value");
         ts_value = getIntent().getStringExtra("ts_value");
         current_stage_of_work = getIntent().getStringExtra("current_stage_of_work");
@@ -237,12 +365,25 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         other_work_category_id = getIntent().getStringExtra("other_work_category_id");
         flag = getIntent().getStringExtra("flag");
         saveWorkDetailsActivityBinding.notEditable.setVisibility(View.GONE);
+        saveWorkDetailsActivityBinding.stageNotEditable.setVisibility(View.GONE);
         if(type.equalsIgnoreCase("rdpr")){
             saveWorkDetailsActivityBinding.otherWorksLayout.setVisibility(View.GONE);
+            saveWorkDetailsActivityBinding.stageLayout.setVisibility(View.VISIBLE);
         }else {
             saveWorkDetailsActivityBinding.otherWorksLayout.setVisibility(View.VISIBLE);
+            saveWorkDetailsActivityBinding.stageLayout.setVisibility(View.GONE);
         }
         dbData.open();
+        savedImage = new ArrayList<>();
+        loadImageList(savedImage,flag,"");
+        if(onOffType.equals("online")){
+            if(flag.equalsIgnoreCase("edit")){
+                saveWorkDetailsActivityBinding.submit.setText("Update");
+            }else {
+                saveWorkDetailsActivityBinding.submit.setText("Submit");
+            }
+
+        }
 
         if(flag.equalsIgnoreCase("edit")){
             if(type.equalsIgnoreCase("rdpr")){
@@ -253,14 +394,24 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                 inspection_id = getIntent().getStringExtra("inspection_id");
                 activityImage = getIntent().getStringExtra("activityImage");
                 saveWorkDetailsActivityBinding.description.setText(description);
-                saveWorkDetailsActivityBinding.takePhoto.setText("View Photo");
+                saveWorkDetailsActivityBinding.stageLayout.setVisibility(View.GONE);
+                saveWorkDetailsActivityBinding.statusLayout.setVisibility(View.GONE);
                 for(int i=0;i<status_list.size();i++){
                     if(status_list.get(i).getWork_status_id() == work_status_id){
                         saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
-                        saveWorkDetailsActivityBinding.statusSpinner.setEnabled(false);
-                        saveWorkDetailsActivityBinding.notEditable.setVisibility(View.VISIBLE);
                     }
                 }
+/*
+                for(int i=0;i<stage_list.size();i++){
+                    if(stage_list.get(i).getWork_stage_code() .equalsIgnoreCase(current_stage_of_work) ){
+                        saveWorkDetailsActivityBinding.stageSpinner.setSelection(i);
+                    }
+                }
+*/
+                saveWorkDetailsActivityBinding.stageSpinner.setEnabled(false);
+                saveWorkDetailsActivityBinding.stageNotEditable.setVisibility(View.VISIBLE);
+                saveWorkDetailsActivityBinding.statusSpinner.setEnabled(false);
+                saveWorkDetailsActivityBinding.notEditable.setVisibility(View.VISIBLE);
             }else {
                 other_work_inspection_id = getIntent().getStringExtra("other_work_inspection_id");
                 String  other_work_category_name = getIntent().getStringExtra("other_work_category_name");
@@ -271,12 +422,44 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                 activityImage = getIntent().getStringExtra("activityImage");
                 saveWorkDetailsActivityBinding.description.setText(description);
                 saveWorkDetailsActivityBinding.otherWorkDetail.setText(other_work_detail);
-                saveWorkDetailsActivityBinding.takePhoto.setText("View Photo");
+                saveWorkDetailsActivityBinding.stageLayout.setVisibility(View.GONE);
+                saveWorkDetailsActivityBinding.statusLayout.setVisibility(View.GONE);
                 for(int i=0;i<status_list.size();i++){
                     if(status_list.get(i).getWork_status_id() == work_status_id){
                         saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
                     }
                 }
+            }
+            try {
+                savedImage=new ArrayList<>();
+                JSONArray imgarray=prefManager.getImageJson();
+                if(imgarray.length() > 0){
+
+                    for(int j = 0; j < imgarray.length(); j++ ) {
+                        try {
+                            ModelClass imageOnline = new ModelClass();
+                            imageOnline.setDescription(imgarray.getJSONObject(j).getString("image_description"));
+                            if (!(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase("null") ||
+                                    imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase(""))) {
+                                byte[] decodedString = Base64.decode(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE), Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                imageOnline.setImage(decodedByte);
+                                savedImage.add(imageOnline);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    loadImageList(savedImage,flag,"");
+                    /*adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage,flag,"");
+                    adapterCameraIntent=adapter;
+                    saveWorkDetailsActivityBinding.recycler.setAdapter(adapter);*/
+                }
+
+
+            } catch (ArrayIndexOutOfBoundsException j) {
+                j.printStackTrace();
             }
 
 
@@ -292,13 +475,646 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                         saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
                     }
                 }
+                for(int i=0;i<stage_list.size();i++){
+                    if(stage_list.get(i).getWork_stage_code() .equalsIgnoreCase(savedCount.get(0).getWork_stage_code()) ){
+                        saveWorkDetailsActivityBinding.stageSpinner.setSelection(i);
+                    }
+                }
+
+                try {
+                    savedImage=new ArrayList<>();
+                    savedImage=dbData.getParticularSavedImagebycode("all",dcode,bcode,pvcode,String.valueOf(work_id),"");
+
+                    if(savedImage.size() > 0){
+                        loadImageList(savedImage,flag,"local");
+                        /*adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage,"","local");
+                        adapterCameraIntent=adapter;
+                        saveWorkDetailsActivityBinding.recycler.setAdapter(adapter);*/
+                    }
+
+
+                } catch (ArrayIndexOutOfBoundsException j) {
+                    j.printStackTrace();
+                }
+                saveWorkDetailsActivityBinding.submit.setText("Update");
 
             }
             else {
                 saveWorkDetailsActivityBinding.description.setText("");
                 saveWorkDetailsActivityBinding.statusSpinner.setSelection(0);
+                saveWorkDetailsActivityBinding.stageSpinner.setSelection(0);
+                savedImage=new ArrayList<>();
+                loadImageList(savedImage,flag,"");
+                saveWorkDetailsActivityBinding.submit.setText("Submit");
             }
         }
+
+
+    }
+    public void gotoSubmit()
+    {
+        if(flag.equals("edit")){
+            gotoUpdate();
+        }
+        else {
+            gotoSave();
+        }
+    }
+    public void gotoSave()
+    {
+        ArrayList<ModelClass> list=adapter.finalImageList();
+        if(type.equalsIgnoreCase("rdpr")){
+            if(checkImageList(list)) {
+                if (!work_stage_id.isEmpty()) {
+//                if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
+                    if(work_status_id != 0){
+                        if(onOffType.equals("online")){
+//                        onLineUploadData();
+                            new uploadTask().execute();
+                        }
+                        else {
+                            saveImageButtonClick();
+                        }
+
+                    } else {
+                        Utils.showAlert(SaveWorkDetailsActivity.this,"Please Select Status");
+
+                    }
+
+               /* }
+                else {
+                    Utils.showAlert(SaveWorkDetailsActivity.this,"Please Enter Description");
+                }*/
+                } else {
+                    Utils.showAlert(SaveWorkDetailsActivity.this, "Please Select Stage");
+                }
+            }else {
+                Utils.showAlert(SaveWorkDetailsActivity.this, "At least Capture one Photo");
+            }
+        }
+        else {
+            if(checkImageList(list)){
+                if(work_status_id != 0){
+                    if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
+
+                        if(!saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString().equals("")){
+                            if(onOffType.equals("online")){
+//                        onLineUploadData();
+                                new uploadTask().execute();
+                            }
+                            else {
+                                saveImageButtonClick();
+                            }
+
+                        } else {
+                            Utils.showAlert(SaveWorkDetailsActivity.this,"Enter Other Inspection Detail");
+                        }
+                    }
+                    else {
+                        Utils.showAlert(SaveWorkDetailsActivity.this,"Please Enter Description");
+                    }
+
+                }
+                else {
+                    Utils.showAlert(SaveWorkDetailsActivity.this,"Please select status");
+                }
+            }
+            else {
+
+                Utils.showAlert(SaveWorkDetailsActivity.this, "At least Capture one Photo");
+            }
+        }
+
+    }
+
+    public void gotoUpdate()
+    {
+        ArrayList<ModelClass> list=adapter.finalImageList();
+        if(type.equalsIgnoreCase("rdpr")){
+            if(checkImageList(list)) {
+                if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
+                        if(onOffType.equals("online")){
+//                        onLineUploadData();
+                            new uploadTask().execute();
+                        }
+                        else {
+                            saveImageButtonClick();
+                        }
+
+
+                }
+                else {
+                    Utils.showAlert(SaveWorkDetailsActivity.this,"Please Enter Description");
+                }
+
+            }else {
+                Utils.showAlert(SaveWorkDetailsActivity.this, "At least Capture one Photo");
+            }
+        }
+        else {
+            if(checkImageList(list)){
+                    if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
+
+                        if(!saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString().equals("")){
+                            if(onOffType.equals("online")){
+//                        onLineUploadData();
+                                new uploadTask().execute();
+                            }
+                            else {
+                                saveImageButtonClick();
+                            }
+
+                        } else {
+                            Utils.showAlert(SaveWorkDetailsActivity.this,"Enter Other Inspection Detail");
+                        }
+                    }
+                    else {
+                        Utils.showAlert(SaveWorkDetailsActivity.this,"Please Enter Description");
+                    }
+
+            }
+            else {
+
+                Utils.showAlert(SaveWorkDetailsActivity.this, "At least Capture one Photo");
+            }
+        }
+
+    }
+    public class uploadTask extends AsyncTask<JSONObject, Void, Boolean> {
+        private  ProgressHUD progressHUD;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            Utils.showProgress(CameraScreen.this,progressHUD);
+            progressHUD = ProgressHUD.show(SaveWorkDetailsActivity.this, "Loading...", true, false, null);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean true_flag) {
+            super.onPostExecute(true_flag);
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if(true_flag){
+                if (Utils.isOnline()) {
+                    uploadDialog(maindataset);
+                    //saveImagesJsonParams(maindataset);
+                    Log.d("saveImages", "" + maindataset);
+                } else {
+
+                    Utils.showAlert(SaveWorkDetailsActivity.this, "Turn On Mobile Data To Upload");
+                }
+            }
+
+        }
+
+        @Override
+        protected Boolean doInBackground(JSONObject... params) {
+            if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
+
+                if(flag.equalsIgnoreCase("edit")){
+                    true_flag=onLineRDPREditUploadData();
+                }else {
+                    true_flag=onLineUploadData();
+                }
+            }else {
+                if(flag.equalsIgnoreCase("edit")){
+                    true_flag=onlineOtherWorkEditUploadData();
+                }else {
+                    true_flag=onlineOtherWorkUploadData();
+                }
+
+            }
+
+            return true_flag;
+        }
+
+    }
+    public boolean onLineUploadData() {
+        maindataset = new JSONObject();
+        JSONObject dataset = new JSONObject();
+        JSONArray inspection_work_details = new JSONArray();
+        true_flag = false;
+        try {
+            maindataset.put(AppConstant.KEY_SERVICE_ID,"work_inspection_details_save");
+            dataset.put("dcode",dcode);
+            dataset.put("bcode", bcode);
+            dataset.put("pvcode",pvcode);
+            dataset.put("hab_code",hab_code);
+            dataset.put("work_id", work_id);
+            dataset.put("status_id", work_status_id);
+            dataset.put("description", saveWorkDetailsActivityBinding.description.getText().toString());
+            dataset.put("work_group_id", work_group_id);
+            dataset.put("work_type_id", work_type_id);
+            dataset.put("work_stage_code", work_stage_id);
+
+            int childCount = selected_image_list.size();
+            int count = 0;
+            JSONArray imageArray = new JSONArray();
+            if (childCount > 0) {
+                for (int i = 0; i < childCount; i++) {
+
+                    if (selected_image_list.get(i).getImage() != null) {
+                        //if(!myEditTextView.getText().toString().equals("")){
+                        count = count + 1;
+                        String image_str = "";
+                        try {
+                            image_str = BitMapToString(selected_image_list.get(i).getImage());
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("latitude",selected_image_list.get(i).getLatitude());
+                            jsonObject.put("longitude",selected_image_list.get(i).getLongtitude());
+                            jsonObject.put("serial_no",count);
+                            jsonObject.put("image_description",selected_image_list.get(i).getDescription());
+                            jsonObject.put("image",image_str);
+                            imageArray.put(jsonObject);
+
+                            if(count==childCount)
+                            { true_flag = true; }
+                            else { true_flag = false; }
+                        } catch (Exception e) {
+                            this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.at_least_capture_one_photo)); }});
+                        }
+                    }
+                    else {
+                        this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.please_capture_image)); }});
+                    }
+                }
+                dataset.put("image_details",imageArray);
+                inspection_work_details.put(dataset);
+                maindataset.put("inspection_work_details",inspection_work_details);
+            }
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true_flag;
+    }
+    public boolean onLineRDPREditUploadData() {
+        maindataset = new JSONObject();
+        JSONObject dataset = new JSONObject();
+        JSONArray inspection_work_details = new JSONArray();
+        true_flag = false;
+        try {
+            maindataset.put(AppConstant.KEY_SERVICE_ID,"work_inspection_details_save");
+            dataset.put("dcode",dcode);
+            dataset.put("bcode", bcode);
+            dataset.put("pvcode",pvcode);
+            dataset.put("hab_code",hab_code);
+            dataset.put("work_id", work_id);
+//            dataset.put("status_id", work_status_id);
+            dataset.put("description", saveWorkDetailsActivityBinding.description.getText().toString());
+            dataset.put("inspection_id", inspection_id);
+            inspection_work_details.put(dataset);
+            maindataset.put("inspection_work_details",inspection_work_details);
+            true_flag = true;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true_flag;
+    }
+    public boolean onlineOtherWorkUploadData() {
+        maindataset = new JSONObject();
+        JSONObject dataset = new JSONObject();
+        JSONArray inspection_work_details = new JSONArray();
+        true_flag = false;
+        try {
+            maindataset.put(AppConstant.KEY_SERVICE_ID,"other_work_inspection_details_save");
+            dataset.put("dcode",dcode);
+            dataset.put("bcode", bcode);
+            dataset.put("pvcode",pvcode);
+            dataset.put("hab_code",hab_code);
+            dataset.put("fin_year", fin_year);
+            dataset.put("status_id", work_status_id);
+            dataset.put("other_work_category_id", other_work_category_id);
+            dataset.put("other_work_detail", saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString());
+            dataset.put("description", saveWorkDetailsActivityBinding.description.getText().toString());
+
+            int childCount = selected_image_list.size();
+            int count = 0;
+            JSONArray imageArray = new JSONArray();
+            if (childCount > 0) {
+                for (int i = 0; i < childCount; i++) {
+
+                    if (selected_image_list.get(i).getImage() != null) {
+                        //if(!myEditTextView.getText().toString().equals("")){
+                        count = count + 1;
+                        String image_str = "";
+                        try {
+                            image_str = BitMapToString(selected_image_list.get(i).getImage());
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("latitude",selected_image_list.get(i).getLatitude());
+                            jsonObject.put("longitude",selected_image_list.get(i).getLongtitude());
+                            jsonObject.put("serial_no",count);
+                            jsonObject.put("image_description",selected_image_list.get(i).getDescription());
+                            jsonObject.put("image",image_str);
+                            imageArray.put(jsonObject);
+
+                            if(count==childCount)
+                            { true_flag = true; }
+                            else { true_flag = false; }
+                        } catch (Exception e) {
+                            this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.at_least_capture_one_photo)); }});
+                        }
+                    }
+                    else {
+                        this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.please_capture_image)); }});
+                    }
+                }
+                dataset.put("image_details",imageArray);
+                inspection_work_details.put(dataset);
+                maindataset.put("other_inspection_work_details",inspection_work_details);
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true_flag;
+    }
+    public boolean onlineOtherWorkEditUploadData() {
+        maindataset = new JSONObject();
+        JSONObject dataset = new JSONObject();
+        JSONArray inspection_work_details = new JSONArray();
+        true_flag = false;
+        try {
+            maindataset.put(AppConstant.KEY_SERVICE_ID,"other_work_inspection_details_update");
+            dataset.put("dcode",dcode);
+            dataset.put("bcode", bcode);
+            dataset.put("pvcode",pvcode);
+            dataset.put("hab_code",hab_code);
+            dataset.put("fin_year", fin_year);
+            dataset.put("status_id", work_status_id);
+            dataset.put("other_work_category_id", other_work_category_id);
+            dataset.put("other_work_detail", saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString());
+            dataset.put("description", saveWorkDetailsActivityBinding.description.getText().toString());
+            dataset.put("other_work_inspection_id", other_work_inspection_id);
+            inspection_work_details.put(dataset);
+            maindataset.put("other_inspection_work_details",inspection_work_details);
+            true_flag = true;
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true_flag;
+    }
+    private void uploadDialog(JSONObject jsonObject){
+        try {
+            final Dialog dialog = new Dialog(SaveWorkDetailsActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.alert_dialog);
+
+            TextView text = (TextView) dialog.findViewById(R.id.tv_message);
+            text.setText("Are you sure to upload data into server?");
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+            Button cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+            cancel.setVisibility(View.VISIBLE);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    saveImagesJsonParams(jsonObject);
+                    new saveTask().execute(jsonObject);
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public class saveTask extends AsyncTask<JSONObject, Void, JSONObject> {
+        private ProgressHUD progressHUD;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(SaveWorkDetailsActivity.this, "Loading...", true, false, null);
+//            Utils.showProgress(CameraScreen.this,progressHUD);
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
+//            Utils.hideProgress(progressHUD);
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            new ApiService(SaveWorkDetailsActivity.this).makeJSONObjectRequest("saveImage", Api.Method.POST, UrlGenerator.getMainService(), jsonObject, "not cache", SaveWorkDetailsActivity.this
+            );
+
+        }
+
+        @Override
+        protected JSONObject doInBackground(JSONObject... params) {
+//            saveImagesJsonParams(params[0]);
+            String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), params[0].toString());
+            JSONObject dataSet = new JSONObject();
+            try {
+                dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+                dataSet.put(AppConstant.DATA_CONTENT, authKey);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d("saveImage", "" +  params[0].toString());
+            Log.d("saveImage", "" + dataSet);
+            return dataSet;
+        }
+
+    }
+    public void saveImageButtonClick() {
+        long work_insert_primary_id = 0;
+        String whereCl = "";String[] whereAr = null;
+        String[] selectionArgs;
+        String selection;
+        long rowInsert = 0;
+        long rowUpdat = 0;
+        try {
+            ContentValues values = new ContentValues();
+
+            values.put("dcode",dcode);
+            values.put("bcode",bcode);
+            values.put("pvcode",pvcode);
+            values.put("scheme_id",scheme_id);
+            values.put("fin_year",fin_year);
+            values.put("work_id",work_id);
+            values.put("work_name",work_name);
+            values.put("as_value",as_value);
+            values.put("ts_value",ts_value);
+            values.put("current_stage_of_work",current_stage_of_work);
+            values.put("is_high_value",is_high_value);
+            values.put("work_status_id",work_status_id);
+            values.put("work_status",work_status);
+            values.put("work_stage_id",work_stage_id);
+            values.put("work_stage",work_stage);
+            values.put("work_description",saveWorkDetailsActivityBinding.description.getText().toString());
+            values.put("hab_code",hab_code);
+            values.put("scheme_group_id",scheme_group_id);
+            values.put("work_group_id",work_group_id);
+            values.put("work_type_id",work_type_id);
+            selection = "work_id = ?";
+            selectionArgs = new String[]{String.valueOf(work_id)};
+            dbData.open();
+            ArrayList<ModelClass> saveCount = new ArrayList<>();
+            saveCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
+            if(saveCount.size()>0){
+                rowInsert = db.update(DBHelper.SAVE_WORK_DETAILS,values,selection,selectionArgs);
+            }
+            else {
+                rowInsert = db.insert(DBHelper.SAVE_WORK_DETAILS,null,values);
+            }
+
+
+        } catch (Exception e) {
+
+        }
+        if (rowInsert>0){
+
+            long id = 0; String whereClause = "";String[] whereArgs = null;
+
+            JSONArray imageJson = new JSONArray();
+            long rowInserted = 0;
+            long rowUpdated = 0;
+            int childCount = selected_image_list.size();
+            int count = 0;
+            if (childCount > 0) {
+                for (int i = 0; i < childCount; i++) {
+                    if (selected_image_list.get(i).getImage()  != null) {
+                        // if(!myEditTextView.getText().toString().equals("")){
+                        count = count + 1;
+                        byte[] imageInByte = new byte[0];
+                        String image_str = "";
+                        String description = "";
+                        String image_path = "";
+                        Bitmap bitmap = null;
+                        try {
+                            bitmap = selected_image_list.get(i).getImage() ;
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                            imageInByte = baos.toByteArray();
+                            image_path = fileDirectory(bitmap,"work_list",String.valueOf(i));
+
+
+
+
+                        } catch (Exception e) {
+                            Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.at_least_capture_one_photo));
+                        }
+
+
+                        ContentValues imageValue = new ContentValues();
+                        imageValue.put("save_work_details_primary_id", rowInsert);
+                        imageValue.put("work_id", selected_image_list.get(i).getWork_id() );
+                        imageValue.put("image_description", selected_image_list.get(i).getDescription() );
+                        imageValue.put("image_path", selected_image_list.get(i).getImage_path() );
+                        imageValue.put("image", BitMapToString(selected_image_list.get(i).getImage()));
+                        imageValue.put("latitude", selected_image_list.get(i).getLatitude());
+                        imageValue.put("longitude", selected_image_list.get(i).getLongtitude());
+                        imageValue.put("dcode", selected_image_list.get(i).getDistrictCode());
+                        imageValue.put("bcode", selected_image_list.get(i).getBlockCode());
+                        imageValue.put("pvcode", selected_image_list.get(i).getPvCode());
+                        imageValue.put("serial_no", count);
+
+                        selection = "dcode = ? and bcode = ? and pvcode = ? and work_id = ? and serial_no = ?";
+                        selectionArgs = new String[]{String.valueOf(selected_image_list.get(i).getDistrictCode()),String.valueOf(selected_image_list.get(i).getBlockCode()),
+                                String.valueOf(selected_image_list.get(i).getPvCode()), String.valueOf(work_id), String.valueOf(count)};
+                        ArrayList<ModelClass> imageCount = new ArrayList<>();
+                        dbData.open();
+                        imageCount = dbData.getParticularSavedImagebycode("",String.valueOf(selected_image_list.get(i).getDistrictCode()),String.valueOf(selected_image_list.get(i).getBlockCode()),
+                                String.valueOf(selected_image_list.get(i).getPvCode()), String.valueOf(work_id),String.valueOf(count));
+
+                        if(imageCount.size()>0){
+                            for(int j=0;  j<imageCount.size() ;j++){
+                                String filepath=imageCount.get(j).getImage_path();
+                                Utils.deleteFileDirectory(filepath);
+                            }
+
+                            rowUpdated =db.update(DBHelper.SAVE_IMAGES,imageValue,selection,selectionArgs);
+                        }
+                        else {
+                            rowInserted =db.insert(DBHelper.SAVE_IMAGES,null,imageValue);
+                        }
+
+                        if (count == childCount) {
+                            if (rowInserted > 0) {
+
+                                showToast(getResources().getString(R.string.success));
+                            }else if(rowUpdated > 0){
+                                showToast(getResources().getString(R.string.success));
+                            }
+
+                        }
+
+
+                   /* }
+                        else {
+                        Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description));
+                    }*/
+                    } else {
+                        Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.please_capture_image));
+                    }
+                }
+            }
+        }
+    }
+    public String fileDirectory(Bitmap bitmap,String type,String count){
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getDir(type, Context.MODE_PRIVATE);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        String child_path = Utils.getCurrentDateTime()+"_"+count+".png";
+        File mypath = new File(directory, child_path);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+        } catch (Exception e) {
+            Log.e("SAVE_IMAGE", e.getMessage(), e);
+        }
+        return mypath.toString();
+    }
+
+    public String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+
+    private boolean checkImageList(ArrayList<ModelClass> list) {
+        boolean flag=false;
+        selected_image_list=new ArrayList<>();
+        for (int i=0;i<list.size();i++){
+            if(list.get(i).getImage()!=null){
+                flag=true;
+                selected_image_list.add(list.get(i));
+            }
+        }
+        return flag;
     }
 
     public void gotoCameraScreen()
@@ -417,7 +1233,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         list.setWork_group_id("0");
         list.setWork_type_id("0");
         list.setWork_stage_code("0");
-        list.setWork_stage_name("Select Stage");
+        list.setWork_stage_name("Current stage observed by inspecting officer");
         stage_list.add(list);
         dbData.open();
         stage_list.addAll(dbData.getAll_Stage("",work_group_id,work_type_id,current_stage_of_work));
@@ -458,13 +1274,84 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         try {
             String urlType = serverResponse.getApi();
             JSONObject responseObj = serverResponse.getJsonResponse();
+            if ("saveImage".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    if(flag.equalsIgnoreCase("edit")){
+                        showAlert(this, "Your Data Updated Successfully!");
+                        JSONArray j=new JSONArray();
+                        prefManager.setImageJson(j);
+                    }else {
+                        showAlert(this, "Your Data is Synchronized to the server!");
+                    }
+/*
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            homePage();
+                        }
+                    }, 500);
+*/
+
+
+                }
+                else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")) {
+                    Utils.showAlert(this, jsonObject.getString("MESSAGE"));
+                }
+                Log.d("savedImage", "" + responseObj.toString());
+                Log.d("savedImage", "" + responseDecryptedBlockKey);
+            }
 
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+    public  void showAlert(Activity activity, String msg){
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.alert_dialog);
 
+            TextView text = (TextView) dialog.findViewById(R.id.tv_message);
+            text.setText(msg);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    if(type.equalsIgnoreCase("rdpr")){
+                        onBackPress();
+                    }else {
+                        if(flag.equalsIgnoreCase("edit")){
+                            onBackPress();
+                        }else {
+                            prefManager.setAppBack("");
+                            homePage();
+                        }
+                    }
+//                    homePage();
+
+
+                }
+            });
+
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onBackPress() {
+        prefManager.setAppBack("");
+        super.onBackPressed();
+        setResult(Activity.RESULT_CANCELED);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
 
     @Override
     public void OnError(VolleyError volleyError) {
@@ -551,34 +1438,209 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-
-            case SPEECH_REQUEST_CODE:
-
-                if (resultCode == RESULT_OK && data != null) {
-                    ArrayList<String> result = data.getStringArrayListExtra(
-                            RecognizerIntent.EXTRA_RESULTS);
-                    if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
-                        saveWorkDetailsActivityBinding.description.setText(saveWorkDetailsActivityBinding.description.getText().toString()+" "+
-                                Objects.requireNonNull(result).get(0));
-                    }else {
-                        saveWorkDetailsActivityBinding.description.setText(Objects.requireNonNull(result).get(0));
+          if(requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        String filePath = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
+                       /* Bitmap rotatedBitmap = BitmapFactory.decodeFile(filePath);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);*/
+                        Bitmap compBitmap = Utils.resizedBitmap(filePath,SaveWorkDetailsActivity.this);
+                        if(adapterCameraIntent!=null){
+                            adapterCameraIntent.OnIntentListener(compBitmap,filePath);
+                        }
 
                     }
+                    else {
+                        // Refreshing the gallery
+                        CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
+
+                        // successfully captured the image
+                        // display it in image view
+                        previewCapturedImage();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
 
-                break;
-            default:
-                break;
+
+
+            }else if (resultCode == RESULT_CANCELED) {
+                // user cancelled Image capture
+                Toast.makeText(this,
+                        this.getResources().getString(R.string.user_cancelled_image_capture), Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                // failed to capture image
+                Toast.makeText(this,
+                        this.getResources().getString(R.string.sorry_failed_to_capture_image), Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+        else if (requestCode == CAMERA_CAPTURE_VIDEO_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Refreshing the gallery
+                CameraUtils.refreshGallery(this, imageStoragePath);
+
+                // video successfully recorded
+                // preview the recorded video
+//                previewVideo();
+            }
+            else if (resultCode == RESULT_CANCELED) {
+                // user cancelled recording
+                Toast.makeText(this,
+                        this.getResources().getString(R.string.user_cancelled_video_recording), Toast.LENGTH_SHORT)
+                        .show();
+            }
+            else {
+                // failed to record video
+                Toast.makeText(this,
+                        this.getResources().getString(R.string.sorry_faild_to_record_video), Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+        else if(requestCode == SPEECH_REQUEST_CODE){
+            if (resultCode == RESULT_OK && data != null) {
+                ArrayList<String> result = data.getStringArrayListExtra(
+                        RecognizerIntent.EXTRA_RESULTS);
+                if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
+                    saveWorkDetailsActivityBinding.description.setText(saveWorkDetailsActivityBinding.description.getText().toString()+" "+
+                            Objects.requireNonNull(result).get(0));
+                }else {
+                    saveWorkDetailsActivityBinding.description.setText(Objects.requireNonNull(result).get(0));
+
+                }
+            }
+
         }
     }
+    public void getpermission(int i) {
+        if(i==1){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{CAMERA, ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+            }
+        }else {
+            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_FINE_LOCATION);
+        }
 
+    }
+    public void showToast(String s){
+        Toasty.success(SaveWorkDetailsActivity.this,s,Toast.LENGTH_SHORT,true).show();
+       /* super.onBackPressed();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);*/
+        if(type.equalsIgnoreCase("rdpr")){
+            onBackPressed();
+        }else {
+            prefManager.setAppBack("");
+            homePage();
+        }
+
+    }
+
+    public void captureImage() {
+        Intent intent = new Intent(this, ImageSelectActivity.class);
+        intent.putExtra(ImageSelectActivity.FLAG_COMPRESS, true);//default is true
+        intent.putExtra(ImageSelectActivity.FLAG_CAMERA, true);//default is true
+        intent.putExtra(ImageSelectActivity.FLAG_GALLERY, false);//default is true
+        intent.putExtra(ImageSelectActivity.FLAG_CROP, false);//default is false
+        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+    }
+
+    public void previewCapturedImage() {
+        try {
+            // hide video preview
+//            Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
+            Bitmap bitmap = Utils.resizedBitmap(imageStoragePath,SaveWorkDetailsActivity.this);
+            ExifInterface ei = null;
+            try {
+                ei = new ExifInterface(imageStoragePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+
+            Bitmap rotatedBitmap = null;
+            switch(orientation) {
+
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotatedBitmap = rotateImage(bitmap, 90);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotatedBitmap = rotateImage(bitmap, 180);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotatedBitmap = rotateImage(bitmap, 270);
+                    break;
+
+                case ExifInterface.ORIENTATION_NORMAL:
+                default:
+                    rotatedBitmap = bitmap;
+            }
+            if(adapterCameraIntent!=null){
+                adapterCameraIntent.OnIntentListener(rotatedBitmap, imageStoragePath);
+            }
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+    public static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
+            case PERMISSION_REQUEST_CODE: {
+
+                // Note: If request is cancelled, the result arrays are empty.
+                // Permissions granted (CALL_PHONE).
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.i( "LOG_TAG","Permission granted");
+                    if(adapterCameraIntent!=null){
+                        adapterCameraIntent.OnIntentListenerPermission(true);
+                    }
+
+                }
+                // Cancelled or denied.
+                else {
+                    Log.i("LOG_TAG","Permission denied");
+                    Toast.makeText(this.getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            break;
+            case PERMISSION_FINE_LOCATION: {
+
+                // Note: If request is cancelled, the result arrays are empty.
+                // Permissions granted (CALL_PHONE).
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.i( "LOG_TAG","Permission granted");
+                    if(adapterCameraIntent!=null){
+                        adapterCameraIntent.OnIntentListenerPermission(true);
+                    }
+
+//
+                }
+                // Cancelled or denied.
+                else {
+                    Log.i("LOG_TAG","Permission denied");
+                    Toast.makeText(this.getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
             case REQUEST_RECORD_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(SaveWorkDetailsActivity.this, "start talk...", Toast
@@ -731,6 +1793,69 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                 break;
         }
         return message;
+    }
+    public void callTextAnswer(final int position) {
+        try {
+            //We need to get the instance of the LayoutInflater, use the context of this activity
+            final LayoutInflater inflater = (LayoutInflater) this
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            //Inflate the view from a predefined XML layout
+            View edit_cpt_list_layout = inflater.inflate(R.layout.pop_up_text_answer, null);
+
+            EditText type_answer = (EditText) edit_cpt_list_layout.findViewById(R.id.type_answer);
+            final TextView pop_msg = (TextView) edit_cpt_list_layout.findViewById(R.id.pop_msg);
+            ImageView close_pop = (ImageView) edit_cpt_list_layout.findViewById(R.id.close_pop_up);
+            TextView submit_text=(TextView)edit_cpt_list_layout.findViewById(R.id.submit_test);
+            close_pop.setVisibility(View.VISIBLE);
+            type_answer.setSelection(0);
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            dialogBuilder.setView(edit_cpt_list_layout);
+            dialogBuilder.setCancelable(true);
+            add_cpts_search_alert = dialogBuilder.create();
+           /* WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(add_cpts_search_alert.getWindow().getAttributes());
+            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            lp.gravity = Gravity.CENTER;
+            lp.windowAnimations = R.style.popUp_animation;
+            add_cpts_search_alert.getWindow().setAttributes(lp);*/
+            add_cpts_search_alert.show();
+            add_cpts_search_alert.setCanceledOnTouchOutside(false);
+            add_cpts_search_alert.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            add_cpts_search_alert.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.WRAP_CONTENT);
+            type_answer.setFocusable(true);
+            if(savedImage.get(position).getDescription() !=null && !savedImage.get(position).getDescription().equals(""))
+            {
+                type_answer.setText(savedImage.get(position).getDescription());
+            }
+            submit_text.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String answer = type_answer.getText().toString().trim();
+
+                    if(answer.isEmpty() || answer.length() == 0 || answer.equals("") || answer == null)
+                    {//EditText is empty
+                        Toast.makeText(SaveWorkDetailsActivity.this, getApplicationContext().getResources().getString(R.string.enter_description), Toast.LENGTH_LONG).show();
+                    } else
+                    {//EditText is not empty
+                        // Toast.makeText(mContext, mContext.getResources().getString(R.string.answer_successfully), Toast.LENGTH_LONG).show();
+                        add_cpts_search_alert.dismiss();
+                        savedImage.get(position).setDescription(type_answer.getText().toString());
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
+            close_pop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    add_cpts_search_alert.dismiss();
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -246,7 +246,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     SelectedDistrict=District.get(position).getDistrictCode();
                     districtCodeJsonArray.put(District.get(position).getDistrictCode());
                     loadBlockList();
-                    getSchemeList();
+//                    getSchemeList();
                 }else {
                     SelectedDistrict="";
                     SelectedBlock="";
@@ -289,7 +289,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     villageCodeJsonArray = new JSONArray();
                     SelectedVillage=Village.get(position).getPvCode();
                     villageCodeJsonArray.put(Village.get(position).getPvCode());
-
+                    getSchemeList();
                 }else {
                     villageCodeJsonArray = new JSONArray();
                     SelectedVillage="";
@@ -329,9 +329,9 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                         SelectedFinYear=FinYear.get(position).getFinancialYear();
                         finyearJsonArray.put(FinYear.get(position).getFinancialYear());
                         workListBinding.districtSpinner.setSelection(0);
-                        if(!prefManager.getLevels().equals("S")){
+                       /* if(!prefManager.getLevels().equals("S")){
                             getSchemeList();
-                        }
+                        }*/
                     }else
                         {
                         finyearJsonArray = new JSONArray();
@@ -498,10 +498,15 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
             @Override
             public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
                 if (isChecked) {
-
                     if (!mFinYearItems.contains(position)) {
-                        mFinYearItems.add(position);
-
+                        if(mFinYearItems.size()<2){
+                            mFinYearItems.add(position);
+                        }
+                        else {
+                            ((AlertDialog) dialogInterface).getListView().setItemChecked(position,false);
+                            FinYearcheckedItems[position]=false;
+                            Utils.showAlert(OnlineWorkFilterScreen.this,"Maximum 2 Years Can be Selected");
+                        }
                     }
                 } else if (mFinYearItems.contains(position)) {
                     mFinYearItems.remove(Integer.valueOf(position));
@@ -535,9 +540,9 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     workListBinding.selectedFinyearTv.setText(item);
                     SelectedFinYear=item;
                     workListBinding.districtSpinner.setSelection(0);
-                    if(!prefManager.getLevels().equals("S")){
+                   /* if(!prefManager.getLevels().equals("S")){
                         getSchemeList();
-                    }
+                    }*/
                 }else {
                     workListBinding.selectedFinyearTv.setText("");
                     SelectedFinYear="";
@@ -619,7 +624,7 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
 
     public void getSchemeList() {
         try {
-            new ApiService(this).makeJSONObjectRequest("SchemeList", Api.Method.POST, UrlGenerator.getServicesListUrl(), schemeListJsonParams(), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("SchemeList", Api.Method.POST, UrlGenerator.getMainService(), schemeListJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -635,7 +640,26 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
     public  JSONObject schemeListDistrictWiseJsonParams(Activity activity) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_SCHEME_LIST_DISTRICT_FINYEAR_WISE);
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_SCHEME_LIST);
+        if(prefManager.getLevels().equalsIgnoreCase("S")){
+            dataSet.put(AppConstant.DISTRICT_CODE, SelectedDistrict);
+            dataSet.put(AppConstant.BLOCK_CODE, SelectedBlock);
+            dataSet.put(AppConstant.PV_CODE, SelectedVillage);
+            dataSet.put(AppConstant.FINANCIAL_YEAR,prefManager.getFinYearJson());
+        }else if(prefManager.getLevels().equalsIgnoreCase("D")){
+            dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+            dataSet.put(AppConstant.BLOCK_CODE, SelectedBlock);
+            dataSet.put(AppConstant.PV_CODE, SelectedVillage);
+            dataSet.put(AppConstant.FINANCIAL_YEAR,prefManager.getFinYearJson());
+        }else if(prefManager.getLevels().equalsIgnoreCase("B")){
+            dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+            dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+            dataSet.put(AppConstant.PV_CODE, SelectedVillage);
+            dataSet.put(AppConstant.FINANCIAL_YEAR,prefManager.getFinYearJson());
+        }
+
+
+       /* dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_SCHEME_LIST_DISTRICT_FINYEAR_WISE);
         if(prefManager.getLevels().equalsIgnoreCase("S")){
             dataSet.put(AppConstant.DISTRICT_CODE, districtCodeJsonArray);
         }
@@ -645,8 +669,8 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
 
         if(prefManager.getLevels().equalsIgnoreCase("D") || prefManager.getLevels().equalsIgnoreCase("S")){
             dataSet.put(AppConstant.FINANCIAL_YEAR,finyearJsonArray);
-        }
-        Log.d("schemeListDistrictWise", "" + dataSet);
+        }*/
+        Log.d("schemeList", "" + dataSet);
         return dataSet;
     }
 
@@ -1326,9 +1350,9 @@ public class OnlineWorkFilterScreen extends AppCompatActivity implements Api.Ser
                     for (int i = 0; i < jsonArray.length(); i++) {
                         ModelClass modelClass = new ModelClass();
                         try {
-                            modelClass.setSchemeSequentialID(jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_SEQUENTIAL_ID));
+                            modelClass.setSchemeSequentialID(jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_ID));
                             modelClass.setSchemeName(jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_NAME));
-                            modelClass.setFinancialYear(jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR));
+//                            modelClass.setFinancialYear(jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR));
 
                             dbData.insertScheme(modelClass);
                         } catch (JSONException e) {

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.android.volley.VolleyError;
+import com.ghanshyam.graphlibs.GraphData;
 import com.nic.InspectionAppNew.ImageZoom.ImageMatrixTouchHandler;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.api.Api;
@@ -29,7 +31,7 @@ import com.nic.InspectionAppNew.api.ServerResponse;
 import com.nic.InspectionAppNew.constant.AppConstant;
 import com.nic.InspectionAppNew.dataBase.DBHelper;
 import com.nic.InspectionAppNew.dataBase.dbData;
-import com.nic.InspectionAppNew.databinding.ActivityMainHomePageBinding;
+import com.nic.InspectionAppNew.databinding.ActivityMainHomePageNewBinding;
 import com.nic.InspectionAppNew.dialog.MyDialog;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
@@ -43,11 +45,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import static com.nic.InspectionAppNew.utils.Utils.showAlert;
 
 public class MainHomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
-    private ActivityMainHomePageBinding homeScreenBinding;
+    private ActivityMainHomePageNewBinding homeScreenBinding;
     private PrefManager prefManager;
     public dbData dbData = new dbData(this);
     public  DBHelper dbHelper;
@@ -57,7 +60,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        homeScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_home_page);
+        homeScreenBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_home_page_new);
         homeScreenBinding.setActivity(this);
         prefManager = new PrefManager(this);
         try {
@@ -75,13 +78,13 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         if (prefManager.getProfileImage() != null && !prefManager.getProfileImage().equals("")) {
             homeScreenBinding.userImg.setImageBitmap(Utils.StringToBitMap(prefManager.getProfileImage()));
         }else {
-            homeScreenBinding.userImg.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_user));
+            homeScreenBinding.userImg.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_user_icon));
         }
         homeScreenBinding.userImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (prefManager.getProfileImage() != null && !prefManager.getProfileImage().equals("")) {
-                ExpandedImage(prefManager.getProfileImage());
+                    Utils.ExpandedImage(prefManager.getProfileImage(),MainHomePage.this);
             }
             }
         });
@@ -89,6 +92,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
         if (Utils.isOnline()) {
             if(!isHome.equals("Home")){
+                getDashboardData();
                 getPhotoCount();
                 getFinYearList();
                 getInspection_statusList();
@@ -98,6 +102,8 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 }
             }
 
+        }else {
+            showAlert(MainHomePage.this,"No Internet Connection!");
         }
         syncButtonVisibility();
         setProfile();
@@ -193,10 +199,35 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         });
     }
 
+    private void getDashboardData() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("DashboardData", Api.Method.POST, UrlGenerator.getMainService(), Params(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public JSONObject Params() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), jsonparam(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("DashboardData", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject jsonparam(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "current_finyear_wise_status_count");
+
+        Log.d("DashboardData", "" + dataSet);
+        return dataSet;
+    }
     private void setProfile() {
 
         homeScreenBinding.userName.setText(prefManager.getName());
         homeScreenBinding.designation.setText(prefManager.getDesignation());
+        homeScreenBinding.navigationLayout.designation.setText(prefManager.getDesignation());
         homeScreenBinding.navigationLayout.name.setText(prefManager.getName());
         if(prefManager.getLevels().equals("S")){
             homeScreenBinding.userLevel.setText("State : "+prefManager.getStateName());
@@ -209,6 +240,19 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             homeScreenBinding.navigationLayout.level.setText("Block : "+prefManager.getBlockName());
 
         }
+        if (prefManager.getProfileImage() != null && !prefManager.getProfileImage().equals("")) {
+            homeScreenBinding.navigationLayout.userImg.setImageBitmap(Utils.StringToBitMap(prefManager.getProfileImage()));
+        }else {
+            homeScreenBinding.navigationLayout.userImg.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_user_icon));
+        }
+        homeScreenBinding.navigationLayout.userImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (prefManager.getProfileImage() != null && !prefManager.getProfileImage().equals("")) {
+                    Utils.ExpandedImage(prefManager.getProfileImage(),MainHomePage.this);
+                }
+            }
+        });
     }
 
     private void getProfileData() {
@@ -359,6 +403,12 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         super.onResume();
         syncButtonVisibility();
         setProfile();
+        if (Utils.isOnline()) {
+            getDashboardData();
+        }else {
+            showAlert(MainHomePage.this,"No Internet Connection!");
+        }
+
 
     }
 
@@ -452,6 +502,15 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 }
                 Log.d("StageList", "" + responseDecryptedKey);
             }
+            if ("DashboardData".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    dashboardData(jsonObject);
+                }
+                Log.d("DashboardData", "" + responseDecryptedKey);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -462,6 +521,64 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     @Override
     public void OnError(VolleyError volleyError) {
 
+    }
+    private void dashboardData(JSONObject jsonObject) {
+        try {
+
+            if (jsonObject.length() > 0) {
+                JSONArray status_wise_count = new JSONArray();
+                status_wise_count = jsonObject.getJSONArray("JSON_DATA");
+                if(status_wise_count.length()>0){
+                    for(int j=0;j<status_wise_count.length();j++){
+                        try {
+                            int satisfied_count = status_wise_count.getJSONObject(j).getInt("satisfied");
+                            int un_satisfied_count = status_wise_count.getJSONObject(j).getInt("unsatisfied");
+                            int need_improvement_count = status_wise_count.getJSONObject(j).getInt("need_improvement");
+                            String fin_year = status_wise_count.getJSONObject(j).getString("fin_year");
+                            int total_inspection_count = satisfied_count+un_satisfied_count+need_improvement_count;
+                            homeScreenBinding.satisfiedCountGraph.setText(String.valueOf(satisfied_count));
+                            homeScreenBinding.unSatisfiedCountGraph.setText(String.valueOf(un_satisfied_count));
+                            homeScreenBinding.needImprovementCountGraph.setText(String.valueOf(need_improvement_count));
+                            homeScreenBinding.totalCountGraph.setText(String.valueOf(total_inspection_count));
+                            homeScreenBinding.totalCount1.setText(String.valueOf(total_inspection_count));
+                            homeScreenBinding.totalTv.setText("Total ("+fin_year+")");
+                            showPieChart(satisfied_count,un_satisfied_count,need_improvement_count,total_inspection_count);
+                        } catch (JSONException e){
+
+                        }
+
+                    }
+                }
+                else {
+
+                }
+            } else {
+                Utils.showAlert(this, "No Record Found for Corresponding Work");
+            }
+
+        } catch (JSONException | ArrayIndexOutOfBoundsException j) {
+            j.printStackTrace();
+        }
+
+    }
+    private void showPieChart(int satisfied,int unsatisfied,int need_improvement,int total_inspection_count){
+        homeScreenBinding.graph.setMinValue(0f);
+        homeScreenBinding.graph.setMaxValue(total_inspection_count);
+        homeScreenBinding.graph.setDevideSize(0.0f);
+        homeScreenBinding.graph.setBackgroundShapeWidthInDp(10);
+        homeScreenBinding.graph.setShapeForegroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        homeScreenBinding.graph.setShapeBackgroundColor(getResources().getColor(R.color.colorAccent));
+        homeScreenBinding.totalCountGraph.setText(String.valueOf(total_inspection_count));
+        homeScreenBinding.satisfiedCountGraph.setText(String.valueOf(satisfied));
+        homeScreenBinding.unSatisfiedCountGraph.setText(String.valueOf(unsatisfied));
+        homeScreenBinding.needImprovementCountGraph.setText(String.valueOf(need_improvement));
+        homeScreenBinding.totalCount1.setText(String.valueOf(total_inspection_count));
+        Resources resources = getResources();
+        Collection<GraphData> data = new ArrayList<>();
+        data.add(new GraphData(Float.valueOf(satisfied), resources.getColor(R.color.account_status_green_color)));
+        data.add(new GraphData(Float.valueOf(unsatisfied), resources.getColor(R.color.red)));
+        data.add(new GraphData(Float.valueOf(need_improvement), resources.getColor(R.color.primary_text_color)));
+        homeScreenBinding.graph.setData(data);
     }
 
     public class Insert_Inspection_status_Task extends AsyncTask<JSONObject ,Void ,Void> {
@@ -808,46 +925,6 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         Intent intent = new Intent(MainHomePage.this, ViewSavedOtherWorkList.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-    }
-    private void ExpandedImage(String ProfileImage) {
-        try {
-
-            String ZoomImageURL = ProfileImage;
-            //We need to get the instance of the LayoutInflater, use the context of this activity
-            LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            //Inflate the view from a predefined XML layout
-            View ImagePopupLayout = inflater.inflate(R.layout.image_custom_layout, null);
-
-            ImageView zoomImage = (ImageView) ImagePopupLayout.findViewById(R.id.imgZoomProfileImage);
-            zoomImage.setImageBitmap(Utils.StringToBitMap(prefManager.getProfileImage()));
-/*
-            Picasso.with(this)
-                    .load(ZoomImageURL)
-                    .placeholder(R.drawable.progress_animation)
-                    .error(R.drawable.grey_user_head_icon_250)
-                    .into(zoomImage);
-*/
-            ImageMatrixTouchHandler imageMatrixTouchHandler = new ImageMatrixTouchHandler(this);
-            zoomImage.setOnTouchListener(imageMatrixTouchHandler);
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-            dialogBuilder.setView(ImagePopupLayout);
-
-            final AlertDialog alert = dialogBuilder.create();
-            alert.getWindow().getAttributes().windowAnimations = R.style.dialog_animation_zoomInOut;
-            alert.show();
-            alert.getWindow().setBackgroundDrawableResource(R.color.full_transparent);
-            alert.setCanceledOnTouchOutside(true);
-
-            zoomImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alert.dismiss();
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

@@ -56,6 +56,7 @@ import androidx.core.content.FileProvider;
 
 
 import com.nic.InspectionAppNew.BuildConfig;
+import com.nic.InspectionAppNew.ImageZoom.ImageMatrixTouchHandler;
 import com.nic.InspectionAppNew.Interface.DateInterface;
 import com.nic.InspectionAppNew.R;
 
@@ -89,6 +90,8 @@ import com.nic.InspectionAppNew.application.NICApplication;
 import com.nic.InspectionAppNew.constant.AppConstant;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.ProgressHUD;
+
+import id.zelory.compressor.Compressor;
 
 
 public class Utils {
@@ -1917,4 +1920,71 @@ public class Utils {
         }
 
     }
+    public static  Bitmap resizedBitmap(final String path,Context context) {
+
+        File file = new File(path);
+        File compressedImage  = new Compressor.Builder(context)
+                .setMaxWidth(640)
+                .setMaxHeight(480)
+                .setQuality(100)
+                .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
+                .build()
+                .compressToFile(file);
+
+        Bitmap compBitmap = BitmapFactory.decodeFile(compressedImage.getAbsolutePath());
+        System.out.println("size1 >>"+ "" +  String.format("Size : %s", getReadableFileSize(file.length())));
+        System.out.println("size2 >>"+ "" +  String.format("Size : %s", getReadableFileSize(compressedImage.length())));
+        return compBitmap;
+    }
+    public static String getReadableFileSize(long size) {
+        if (size <= 0) {
+            return "0";
+        }
+        final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+    }
+    public static void ExpandedImage(String ProfileImage,Context context) {
+        try {
+
+            String ZoomImageURL = ProfileImage;
+            //We need to get the instance of the LayoutInflater, use the context of this activity
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            //Inflate the view from a predefined XML layout
+            View ImagePopupLayout = inflater.inflate(R.layout.image_custom_layout, null);
+
+            ImageView zoomImage = (ImageView) ImagePopupLayout.findViewById(R.id.imgZoomProfileImage);
+            zoomImage.setImageBitmap(Utils.StringToBitMap(ZoomImageURL));
+/*
+            Picasso.with(this)
+                    .load(ZoomImageURL)
+                    .placeholder(R.drawable.progress_animation)
+                    .error(R.drawable.grey_user_head_icon_250)
+                    .into(zoomImage);
+*/
+            ImageMatrixTouchHandler imageMatrixTouchHandler = new ImageMatrixTouchHandler(context);
+            zoomImage.setOnTouchListener(imageMatrixTouchHandler);
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+            dialogBuilder.setView(ImagePopupLayout);
+
+            final AlertDialog alert = dialogBuilder.create();
+            alert.getWindow().getAttributes().windowAnimations = R.style.dialog_animation_zoomInOut;
+            alert.show();
+            alert.getWindow().setBackgroundDrawableResource(R.color.full_transparent);
+            alert.setCanceledOnTouchOutside(true);
+
+            zoomImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alert.dismiss();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -41,7 +41,7 @@ import java.util.ArrayList;
 
 public class FullImageActivity extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
     private FullImageRecyclerBinding fullImageRecyclerBinding;
-    public String OnOffType,save_work_details_primary_id;
+    public String OnOffType,save_work_details_primary_id,dcode="",bcode="",pvcode="";
     String work_id;
     private FullImageAdapter fullImageAdapter;
     private PrefManager prefManager;
@@ -73,6 +73,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             }
         }
         else {
+            dcode = getIntent().getStringExtra("dcode");
+            bcode = getIntent().getStringExtra("bcode");
+            pvcode = getIntent().getStringExtra("pvcode");
             new fetchImagetask().execute();
         }
 
@@ -81,14 +84,10 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             ArrayList<ModelClass>> {
         @Override
         protected ArrayList<ModelClass> doInBackground(Void... params) {
-
-            final String dcode = prefManager.getDistrictCode();
-            final String bcode = prefManager.getBlockCode();
-            final String pvcode = prefManager.getPvCode();
             if(OnOffType.equalsIgnoreCase("Offline")){
                 dbData.open();
                 activityImage = new ArrayList<>();
-                activityImage = dbData.getParticularSavedImage("work_id",save_work_details_primary_id,"","");
+                activityImage = dbData.getParticularSavedImagebycode("all",dcode,bcode,pvcode,work_id,"");
 
             }
 

@@ -20,7 +20,6 @@ public class ModelClass implements Serializable {
     private String Latitude;
     private String Longtitude;
     private String image_path;
-    private String image;
     private int img_id;
     private int image_serial_number;
     private String PvCode;
@@ -217,10 +216,6 @@ public class ModelClass implements Serializable {
 
     public void setWork_status_id(int work_status_id) {
         this.work_status_id = work_status_id;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public int getImg_id() {

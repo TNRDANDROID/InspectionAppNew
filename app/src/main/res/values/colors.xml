@@ -4,7 +4,8 @@
     <color name="colorPrimaryDark">#058177</color>
     <color name="colorAccent">#08cbbb</color>
     <color name="colorAccentlight">#08cbbb</color>
-    <color name="colorAccentverylight">#11f6e3</color>
+    <color name="colorAccentverylight">#1E07B3A5</color>
+    <color name="colorAccentveryverylight">#5907B3A5</color>
 
     <color name="address">#2F7092</color>
     <color name="followers">#0D5D98</color>

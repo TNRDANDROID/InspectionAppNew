@@ -13,6 +13,7 @@ import android.util.Log;
 import com.nic.InspectionAppNew.constant.AppConstant;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
+import com.nic.InspectionAppNew.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -367,7 +368,56 @@ public class dbData {
                     card.setLatitude(cursor.getString(cursor.getColumnIndexOrThrow("latitude")));
                     card.setLongtitude(cursor.getString(cursor.getColumnIndexOrThrow("longitude")));
                     card.setImage_path(cursor.getString(cursor.getColumnIndexOrThrow("image_path")));
+                    card.setImage(Utils.StringToBitMap(cursor.getString(cursor.getColumnIndexOrThrow("image"))));
                     card.setImage_serial_number(cursor.getInt(cursor.getColumnIndexOrThrow("serial_no")));
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+               Log.d("DEBUG_TAG", "Exception raised with a value of " + e);
+            e.printStackTrace();
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+    public ArrayList<ModelClass> getParticularSavedImagebycode(String type,String dcode, String bcode, String pvcode, String work_id, String serial_number) {
+
+        ArrayList<ModelClass> cards = new ArrayList<>();
+        Cursor cursor = null;
+        String selection;
+        String[] selectionArgs;
+        try {
+            if(type.equalsIgnoreCase("all")){
+                selection = "dcode = ? and bcode = ? and pvcode = ? and work_id = ?";
+                selectionArgs = new String[]{dcode,bcode,pvcode,work_id};
+            }else {
+                selection = "dcode = ? and bcode = ? and pvcode = ? and work_id = ? and serial_no = ?";
+                selectionArgs = new String[]{dcode,bcode,pvcode,work_id,serial_number};
+            }
+
+
+            cursor = db.query(DBHelper.SAVE_IMAGES,new String[]{"*"},
+                    selection, selectionArgs, null, null, "work_id");
+            // cursor = db.query(CardsDBHelper.TABLE_CARDS,
+            //       COLUMNS, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ModelClass card = new ModelClass();
+                    card.setSave_work_details_primary_id(cursor.getInt(cursor.getColumnIndexOrThrow("save_work_details_primary_id")));
+                    card.setWork_id(cursor.getInt(cursor.getColumnIndexOrThrow("work_id")));
+                    card.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("image_description")));
+                    card.setLatitude(cursor.getString(cursor.getColumnIndexOrThrow("latitude")));
+                    card.setLongtitude(cursor.getString(cursor.getColumnIndexOrThrow("longitude")));
+                    card.setImage_path(cursor.getString(cursor.getColumnIndexOrThrow("image_path")));
+                    card.setImage(Utils.StringToBitMap(cursor.getString(cursor.getColumnIndexOrThrow("image"))));
+                    card.setImage_serial_number(cursor.getInt(cursor.getColumnIndexOrThrow("serial_no")));
+                    card.setDistrictCode(cursor.getString(cursor.getColumnIndexOrThrow("dcode")));
+                    card.setBlockCode(cursor.getString(cursor.getColumnIndexOrThrow("bcode")));
+                    card.setPvCode(cursor.getString(cursor.getColumnIndexOrThrow("pvcode")));
 
                     cards.add(card);
                 }

@@ -4,16 +4,31 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -25,6 +40,11 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.bumptech.glide.util.Util;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.CommonAdapter;
 import com.nic.InspectionAppNew.api.Api;
@@ -35,6 +55,7 @@ import com.nic.InspectionAppNew.databinding.ActivityRegistrationScreenBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.ProgressHUD;
+import com.nic.InspectionAppNew.utils.CameraUtils;
 import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
 
@@ -42,12 +63,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.jar.JarException;
 
 import es.dmoral.toasty.Toasty;
+import id.zelory.compressor.Compressor;
 
+import static android.Manifest.permission.CAMERA;
+import static android.os.Build.VERSION_CODES.M;
+import static com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage;
 import static com.nic.InspectionAppNew.utils.Utils.showAlert;
 
 public class RegistrationScreen extends AppCompatActivity implements Api.ServerResponseListener{
@@ -66,6 +98,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     String gender_code="";
     String dcode="";
     String dcodeSelected="0";
+    String gender_selected="",level_selected="", designation_selected="";
     String bcode="";
     String bcodeSelected="0";
     String level_id="";
@@ -73,6 +106,12 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     String designation_idSelected="0";
     String key="";
     String profile_data="";
+    public static final int MEDIA_TYPE_IMAGE = 1;
+    private static String imageStoragePath;
+    public static final int BITMAP_SAMPLE_SIZE = 8;
+    String UserProfile ="";
+    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 1;
+    private static final int GALLERY_IMAGE_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +122,20 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         prefManager = new PrefManager(this);
 
         key=getIntent().getStringExtra("key");
+
+        if(key.equalsIgnoreCase("login")){
+            registrationScreenBinding.detailsLayout.setVisibility(View.GONE);
+            registrationScreenBinding.mobileNo.setEnabled(true);
+            registrationScreenBinding.tick1.setVisibility(View.VISIBLE);
+            registrationScreenBinding.btnRegister.setText("Register");
+        }
+        else {
+            registrationScreenBinding.detailsLayout.setVisibility(View.VISIBLE);
+            registrationScreenBinding.mobileNo.setEnabled(false);
+            registrationScreenBinding.tick1.setVisibility(View.GONE);
+            registrationScreenBinding.btnRegister.setText("Update");
+
+        }
         fetchResponce();
         registrationScreenBinding.genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -214,6 +267,15 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 fieldValidation();
             }
         });
+        registrationScreenBinding.profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!UserProfile.isEmpty()){
+                    Utils.ExpandedImage(UserProfile,RegistrationScreen.this);
+                }
+
+            }
+        });
         registrationScreenBinding.tick1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -252,33 +314,246 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
             }
         });
 
+    }
 
-        if(key.equalsIgnoreCase("login")){
-            registrationScreenBinding.detailsLayout.setVisibility(View.GONE);
-            registrationScreenBinding.mobileNo.setEnabled(true);
-            registrationScreenBinding.tick1.setVisibility(View.VISIBLE);
-            registrationScreenBinding.btnRegister.setText("Register");
+
+    public void getPerMissionCapture(){
+        if (Build.VERSION.SDK_INT >= M) {
+            if (CameraUtils.checkPermissions(RegistrationScreen.this)) {
+                selectImage();
+
+            } else {
+                requestCameraPermission(MEDIA_TYPE_IMAGE);
+            }
+//                            checkPermissionForCamera();
+        } else {
+            selectImage();
+
         }
-        else {
-            registrationScreenBinding.detailsLayout.setVisibility(View.VISIBLE);
-            registrationScreenBinding.mobileNo.setEnabled(false);
-            registrationScreenBinding.tick1.setVisibility(View.GONE);
-            registrationScreenBinding.btnRegister.setText("Update");
-            profile_data=getIntent().getStringExtra("profile_data");
-            try
-            {
-                JSONObject jsonObject = new JSONObject(profile_data);
-                System.out.println("JSON Object: "+jsonObject);
-                setProfileData(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+
+    }
+    private void requestCameraPermission(final int type) {
+        Dexter.withActivity(this)
+                .withPermissions(CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+
+                            if (type == MEDIA_TYPE_IMAGE) {
+                                // capture picture
+                                selectImage();
+                            } else {
+//                                captureVideo();
+                            }
+
+                        } else if (report.isAnyPermissionPermanentlyDenied()) {
+                            showPermissionsAlert();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+    }
+    private void showPermissionsAlert() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.permissions_required))
+                .setMessage(getResources().getString(R.string.camera_needs_few_permissions))
+                .setPositiveButton(getResources().getString(R.string.go_to_settings), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        CameraUtils.openSettings(RegistrationScreen.this);
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
+
+    public void selectImage() {
+        final CharSequence[] options = { getResources().getString(R.string.take_photo),getResources().getString(R.string.choose_from_gallery),getResources().getString(R.string.cancel) };
+        AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationScreen.this);
+        builder.setTitle(getResources().getString(R.string.add_photo));
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals(getResources().getString(R.string.take_photo)))
+                {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(cameraIntent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+                    }else {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                        File file = CameraUtils.getOutputMediaFile(MEDIA_TYPE_IMAGE);
+                        if (file != null) {
+                            imageStoragePath = file.getAbsolutePath();
+                        }
+
+                        Uri fileUri = CameraUtils.getOutputMediaFileUri(RegistrationScreen.this, file);
+
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+                        // start the image capture Intent
+                        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+                    }
+                   /* Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+                    startActivityForResult(intent, 1);*/
+                }
+                else if (options[item].equals(getResources().getString(R.string.choose_from_gallery)))
+                {
+                    Intent intent = new   Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, GALLERY_IMAGE_REQUEST_CODE);
+                }
+                else if (options[item].equals(getResources().getString(R.string.cancel))) {
+                    dialog.dismiss();
+                }
             }
-            catch (JSONException e)
-            {
-                System.out.println("Error "+e.toString());
+        });
+        builder.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if(requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    Bitmap i = (Bitmap) data.getExtras().get("data");
+                    imageStoragePath=getRealPathFromURI(getImageUri(getApplicationContext(),i));
+                    previewCapturedImage(i);
+                    uploadProfile();
+
+                }else {
+                    // Refreshing the gallery
+                    CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
+                    // successfully captured the image
+                    // display it in image view
+                    Bitmap i=null;
+                    previewCapturedImage(i);
+                    //
+                }
             }
+            else if (requestCode == GALLERY_IMAGE_REQUEST_CODE) {
+                Uri selectedImage = data.getData();
+                String[] filePath = { MediaStore.Images.Media.DATA };
+                Cursor c = getContentResolver().query(selectedImage,filePath, null, null, null);
+                c.moveToFirst();
+                int columnIndex = c.getColumnIndex(filePath[0]);
+                String picturePath = c.getString(columnIndex);
+                c.close();
+                Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
+
+                Bitmap compBitmap = Utils.resizedBitmap(picturePath,RegistrationScreen.this);
 
 
+                Log.w("path of img gallery", picturePath+"");
+                UserProfile=BitMapToString(compBitmap);
+
+                registrationScreenBinding.profileImage.setImageBitmap(compBitmap);
+                uploadProfile();
+
+            }
         }
     }
+
+    public  Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage,"IMG_" + Calendar.getInstance().getTime(),null);
+        return Uri.parse(path);
+    }
+
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
+    public Bitmap previewCapturedImage(Bitmap i) {
+        Bitmap rotatedBitmap = null;
+        Bitmap bitmap = null;
+        try {
+            // hide video preview
+           /* if(i != null){
+                bitmap=i;
+            }else {
+                bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
+            }*/
+            bitmap = Utils.resizedBitmap(imageStoragePath,RegistrationScreen.this);
+
+            ExifInterface ei = null;
+            try {
+                ei = new ExifInterface(imageStoragePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+
+            switch (orientation) {
+
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotatedBitmap = rotateImage(bitmap, 90);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotatedBitmap = rotateImage(bitmap, 180);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotatedBitmap = rotateImage(bitmap, 270);
+                    break;
+
+                case ExifInterface.ORIENTATION_NORMAL:
+                default:
+                    rotatedBitmap = bitmap;
+            }
+            registrationScreenBinding.profileImage.setImageBitmap(rotatedBitmap);
+
+            UserProfile=BitMapToString(rotatedBitmap);
+            uploadProfile();
+//            cameraScreenBinding.imageView.showImage((getImageUri(rotatedBitmap)));
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return  rotatedBitmap;
+    }
+    public String BitMapToString(Bitmap bitmap){
+        String temp="";
+        try {
+            ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+            byte [] b=baos.toByteArray();
+            temp= Base64.encodeToString(b, Base64.DEFAULT);
+        }
+        catch (Exception e){
+        }
+        return temp;
+    }
+    public void uploadProfile() {
+        if(!UserProfile.equalsIgnoreCase("")){
+/*
+            try {
+                new ApiService(this).makeJSONObjectRequest("uploadProfile", Api.Method.POST, UrlGenerator.getServicesListUrl(), uploadProfileJsonParams(), "not cache", this);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+*/
+
+        }else {
+            Utils.showAlert(this,"Please select profile image");
+        }
+    }
+
 
     private void validate(String mobile) {
         if (Utils.isOnline()) {
@@ -304,10 +579,40 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
 
     private void fetchResponce() {
         if(Utils.isOnline()){
+            if(key.equalsIgnoreCase("home")){
+                profile_data=getIntent().getStringExtra("profile_data");
+                try
+                {
+                    JSONObject jsonObject = new JSONObject(profile_data);
+                    System.out.println("JSON Object: "+jsonObject);
+/*
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            try {
+                                setProfileData(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                            }
+                            catch (JSONException err) {
+
+                            }
+                        }
+                    }, 2000);
+*/
+
+                    setProfileData(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+
+                }
+                catch (JSONException e)
+                {
+                    System.out.println("Error "+e.toString());
+                }
+
+            }
+
+            getGenderList();
             getStageLevelList();
             getDesignationList();
-            getGenderList();
-
         }
         else {
             Utils.showAlert(RegistrationScreen.this,"No Internet");
@@ -579,16 +884,16 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 try {
                     String name=jsonArray.getJSONObject(i).getString("name");
                     String mobile_number=jsonArray.getJSONObject(i).getString("mobile");
-                    String gender=jsonArray.getJSONObject(i).getString("gender");
-                    String level=jsonArray.getJSONObject(i).getString("level");
-                    String designation=jsonArray.getJSONObject(i).getString("desig_code");
+                    gender_selected=jsonArray.getJSONObject(i).getString("gender");
+                    level_selected=jsonArray.getJSONObject(i).getString("level");
+                    designation_selected=jsonArray.getJSONObject(i).getString("desig_code");
                     String dcode=jsonArray.getJSONObject(i).getString("dcode");
                     String bcode=jsonArray.getJSONObject(i).getString("bcode");
                     String office_address=jsonArray.getJSONObject(i).getString("office_address");
                     String email=jsonArray.getJSONObject(i).getString("email");
                     dcodeSelected=dcode;
                     bcodeSelected=bcode;
-                    designation_idSelected=designation;
+                    designation_idSelected=designation_selected;
 
                     registrationScreenBinding.name.setText(name);
                     registrationScreenBinding.mobileNo.setText(mobile_number);
@@ -615,13 +920,13 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     }*/
 
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            registrationScreenBinding.genderSpinner.setSelection(getSpinnerIndex("Gender",genderList,gender));
-                            registrationScreenBinding.level.setSelection(getSpinnerIndex("Level",levelList,level));
-                            }
-                    }, 500);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            registrationScreenBinding.genderSpinner.setSelection(getSpinnerIndex("Gender",genderList,gender));
+//                            registrationScreenBinding.level.setSelection(getSpinnerIndex("Level",levelList,level));
+//                            }
+//                    }, 500);
 /*
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -815,11 +1120,23 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 }
                 registrationScreenBinding.level.setAdapter(new CommonAdapter(this, levelList, "LevelList"));
             }
+            if(levelList.size()>0){
+
+                if(key.equalsIgnoreCase("home")){
+                    if(!level_selected.equalsIgnoreCase("0")&& !level_selected.equalsIgnoreCase("")){
+                        registrationScreenBinding.level.setSelection(getSpinnerIndex("Level",levelList,level_selected));
+                    }
+
+                }
+
+            }
+
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
     private void loadGenderList(JSONArray jsonarray) {
         try {
             //JSONArray jsonarray = new JSONArray(prefManager.getGenderList());
@@ -842,12 +1159,22 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     genderList.add(roadListValue);
                 }
                 registrationScreenBinding.genderSpinner.setAdapter(new CommonAdapter(this, genderList, "GenderList"));
-            }
 
+            }
+            if(genderList.size()>0){
+                if(key.equalsIgnoreCase("home")){
+                    if(!gender_selected.equalsIgnoreCase("0")&& !gender_selected.equalsIgnoreCase("")){
+                        registrationScreenBinding.genderSpinner.setSelection(getSpinnerIndex("Gender",genderList,gender_selected));
+                    }
+
+                }
+
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
     private void loadDesignationList(JSONArray jsonarray) {
         try {
             //JSONArray jsonarray = new JSONArray(prefManager.getGenderList());
@@ -871,18 +1198,23 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 }
                 registrationScreenBinding.designation.setAdapter(new CommonAdapter(this, designationList, "DesignationList"));
 
+            }
+            if(designationList.size()>0){
+
                 if(key.equalsIgnoreCase("home")){
                     if(!designation_idSelected.equalsIgnoreCase("0")&& !designation_idSelected.equalsIgnoreCase("")){
                         registrationScreenBinding.designation.setSelection(getSpinnerIndex("Designation",designationList,designation_idSelected));
                     }
 
                 }
+
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
     private void fieldValidation(){
         if(!registrationScreenBinding.name.getText().toString().isEmpty()){
             if(!registrationScreenBinding.mobileNo.getText().toString().isEmpty()&&Utils.isValidMobile1(registrationScreenBinding.mobileNo.getText().toString())){

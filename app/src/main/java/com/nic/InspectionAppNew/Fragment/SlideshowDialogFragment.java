@@ -33,7 +33,7 @@ public class SlideshowDialogFragment extends DialogFragment {
     private int selectedPosition = 0;
     String onOffType;
 
-   public static SlideshowDialogFragment newInstance() {
+    public static SlideshowDialogFragment newInstance() {
         SlideshowDialogFragment f = new SlideshowDialogFragment();
         return f;
     }
@@ -125,7 +125,7 @@ public class SlideshowDialogFragment extends DialogFragment {
 
             ModelClass image = images.get(position);
 
-            if(onOffType.equals("Online")){
+            /*if(onOffType.equals("Online")){
                 Glide.with(getActivity()).load(image.getImage())
                         .thumbnail(0.5f)
                         .into(imageViewPreview);
@@ -135,12 +135,12 @@ public class SlideshowDialogFragment extends DialogFragment {
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                     imageViewPreview.setImageBitmap(myBitmap);
                 }
-            }
+            }*/
 
 
-           /* Glide.with(getActivity()).load(image.getImage())
+            Glide.with(getActivity()).load(image.getImage())
                     .thumbnail(0.5f)
-                    .into(imageViewPreview);*/
+                    .into(imageViewPreview);
 
             container.addView(view);
 

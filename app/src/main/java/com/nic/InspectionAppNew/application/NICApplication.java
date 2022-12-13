@@ -13,7 +13,8 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.nic.InspectionAppNew.BuildConfig;
 import com.nic.InspectionAppNew.R;
-
+import com.nic.InspectionAppNew.api.LruBitmapCache;
+import com.nic.InspectionAppNew.utils.UrlGenerator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,8 +35,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
-import com.nic.InspectionAppNew.api.LruBitmapCache;
-import com.nic.InspectionAppNew.utils.UrlGenerator;
+
 
 /**
  * Created by AchanthiSundar on 28-12-2018.

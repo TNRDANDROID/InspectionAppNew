@@ -232,6 +232,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         String password = loginScreenBinding.password.getText().toString().trim();
 
 
+
+
         if (username.isEmpty()) {
             valid = false;
             Utils.showAlert(this, getResources().getString(R.string.please_enter_the_user_name));
@@ -251,8 +253,12 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public void checkLoginScreen() {
         if(loginScreenBinding.versionHint.getVisibility() == View.GONE){
         //local
-        loginScreenBinding.userName.setText("9790461958");
-        loginScreenBinding.password.setText("Vel12345#$");//state local
+            // Testing
+           /* loginScreenBinding.userName.setText("7448944000");
+            loginScreenBinding.password.setText("Ccc111#$");*/
+
+        /*loginScreenBinding.userName.setText("9790461958");
+        loginScreenBinding.password.setText("Vel12345#$");//state local*/
         //local
        /*loginScreenBinding.userName.setText("9080873403");
         loginScreenBinding.password.setText("crd45#$");//Block local*/
@@ -272,6 +278,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
         /*loginScreenBinding.userName.setText("9310633090");
         loginScreenBinding.password.setText("test123#$");//Block prod*/
+
 
 
 

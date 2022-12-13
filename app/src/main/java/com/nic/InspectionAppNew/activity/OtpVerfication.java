@@ -57,9 +57,9 @@ public class OtpVerfication extends AppCompatActivity implements Api.ServerRespo
             otpVerficationBinding.otpVerificationLayout.setVisibility(View.GONE);
             otpVerficationBinding.changePasswordLayout.setVisibility(View.GONE);
         }else if(flag.equalsIgnoreCase("forgot_password")){
-            otpVerficationBinding.sendOtpLayout.setVisibility(View.GONE);
+            otpVerficationBinding.sendOtpLayout.setVisibility(View.VISIBLE);
             otpVerficationBinding.otpVerificationLayout.setVisibility(View.GONE);
-            otpVerficationBinding.changePasswordLayout.setVisibility(View.VISIBLE);
+            otpVerficationBinding.changePasswordLayout.setVisibility(View.GONE);
         }else if(flag.equalsIgnoreCase("change_password")){
             otpVerficationBinding.sendOtpLayout.setVisibility(View.VISIBLE);
             otpVerficationBinding.otpVerificationLayout.setVisibility(View.GONE);

@@ -45,15 +45,24 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/level"
+            android:id="@+id/designation"
             android:layout_below="@+id/name"
+            android:gravity="start"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_10sdp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/level"
+            android:layout_below="@+id/designation"
             android:gravity="start"
             android:layout_marginStart="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_5sdp"
             android:layout_marginBottom="@dimen/_8sdp"
             android:textColor="@color/white"
-            android:textSize="@dimen/_12sdp"
-            android:textStyle="bold"/>
+            android:textSize="@dimen/_10sdp"/>
 
         <RelativeLayout
             android:layout_alignParentStart="true"
@@ -68,7 +77,7 @@
                 android:layout_width="@dimen/_60sdp"
                 android:layout_height="@dimen/_60sdp"
                 android:layout_margin="9dp"
-                android:id="@+id/profile_icon"
+                android:id="@+id/user_img"
                 android:padding="8dp"
                 android:background="@drawable/circletransparant"
                 android:src="@drawable/ic_user_icon"

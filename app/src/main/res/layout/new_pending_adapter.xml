@@ -437,14 +437,15 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/view_offline_images"
                             android:gravity="end"
+                            android:drawableStart="@drawable/ic_gallery_icon"
+                            android:drawablePadding="@dimen/_10sdp"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
                             android:textColor="@color/grey_9"
                             android:textSize="@dimen/_14sdp"
-                            android:text="@string/view_image"
                             android:textStyle="bold"
                             android:layout_gravity="end"
-                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_5sdp"
                             android:layout_marginBottom="@dimen/_8sdp"
                             />
 

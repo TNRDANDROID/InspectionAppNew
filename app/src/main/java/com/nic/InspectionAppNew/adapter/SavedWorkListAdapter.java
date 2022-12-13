@@ -388,6 +388,8 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
                     String description = jsonArray.getJSONObject(i).getString("description");
                     String work_name = jsonArray.getJSONObject(i).getString("work_name");
                     String work_id = jsonArray.getJSONObject(i).getString("work_id");
+                    String work_stage_code = jsonArray.getJSONObject(i).getString("work_stage_code");
+                    String work_stage_name = jsonArray.getJSONObject(i).getString("work_stage_name");
 
                     ArrayList<ModelClass> activityImage = new ArrayList<>();
                     JSONArray imgarray=new JSONArray();
@@ -430,7 +432,7 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
                     intent.putExtra("work_name", "");
                     intent.putExtra("as_value", "");
                     intent.putExtra("ts_value", "");
-                    intent.putExtra("current_stage_of_work", "");
+                    intent.putExtra("current_stage_of_work", work_stage_code);
                     intent.putExtra("is_high_value", "");
                     intent.putExtra("onOffType",prefManager.getOnOffType());
                     intent.putExtra("other_work_category_id","");

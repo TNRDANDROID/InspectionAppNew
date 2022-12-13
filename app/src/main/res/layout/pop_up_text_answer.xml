@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="0dp"
+    android:background="#00FF0000">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:background="@drawable/corner_strong_rect_bg_color">
+        <RelativeLayout
+            android:id="@+id/close_pop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/pop_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/remark"
+                android:textColor="@color/dot_dark_screen3"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:padding="0dp"
+                android:id="@+id/close_pop_up"
+                android:layout_alignParentRight="true"
+                android:tint="@color/colorPrimaryDark"
+                app:srcCompat="@drawable/ic_clear_white_24dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:visibility="visible"
+                    android:padding="0dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="8dp">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/white_background_all_corners"
+                        android:id="@+id/ans_type_layout"
+                        android:visibility="visible">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/chat_msg"
+                            >
+                            <EditText
+                            android:inputType="textMultiLine"
+                            android:lines="8"
+                            android:id="@+id/type_answer"
+                            android:minLines="3"
+                            android:gravity="top|left"
+                            android:maxLines="10"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:scrollbars="vertical"
+                            android:textColor="@color/blue_background"
+                            android:longClickable="false"
+                            android:textColorHint="@color/grey_8"
+                            android:backgroundTint="@color/full_transparent"
+                            android:textSize="@dimen/_11sdp"
+                            android:hint="@string/remark"
+                            android:textCursorDrawable="@drawable/color_cursor"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp" />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/_12sdp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingBottom="5dp"
+                android:visibility="visible"
+                android:paddingTop="5dp"
+                android:background="@drawable/button_background"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="0dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/submit_test"
+                android:text="@string/submit"
+                android:fontFamily="sans-serif" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+

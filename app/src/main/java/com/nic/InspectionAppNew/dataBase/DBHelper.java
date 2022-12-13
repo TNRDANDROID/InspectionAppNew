@@ -72,6 +72,10 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + SAVE_IMAGES + " ("
                 + "save_work_details_image_primary_id INTEGER PRIMARY KEY AUTOINCREMENT,"+
                 "save_work_details_primary_id INTEGER," +
+                "dcode INTEGER," +
+                "image TEXT," +
+                "bcode INTEGER," +
+                "pvcode INTEGER," +
                 "work_id INTEGER," +
                 "image_description TEXT," +
                 "image_path TEXT," +

@@ -10,9 +10,8 @@
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_10sdp">
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -30,12 +29,12 @@
                 android:layout_height="wrap_content">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:id="@+id/image_layout">
                 <ImageView
                     android:id="@+id/image"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_150sdp"
+                    android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     android:visibility="gone"
@@ -43,25 +42,27 @@
                 <ImageView
                     android:id="@+id/image_preview"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_150sdp"
+                    android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:padding="@dimen/_50sdp"
-                    android:src="@drawable/ic_camera"
+                    android:padding="@dimen/_12sdp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_camera_outline"
                     tools:ignore="ContentDescription" />
 
             </RelativeLayout>
-                <EditText
-                    android:layout_marginTop="@dimen/_7sdp"
+
+                <TextView
                     android:id="@+id/description"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/_7sdp"
-                    android:textSize="15sp"
-                    android:textColor="@android:color/black"
+                    android:layout_below="@+id/image_layout"
                     android:background="@color/full_transparent"
                     android:hint="@string/remark"
                     android:importantForAutofill="no"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:padding="@dimen/_4sdp"
+                    android:textColor="@android:color/black"
+                    android:textSize="13sp" />
 
             </RelativeLayout>
         </androidx.cardview.widget.CardView>

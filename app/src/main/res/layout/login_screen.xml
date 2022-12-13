@@ -279,7 +279,7 @@
 
 
                                         <RelativeLayout
-                                            android:layout_width="wrap_content"
+                                            android:layout_width="match_parent"
                                             android:layout_height="@dimen/_40sdp"
                                             android:orientation="vertical"
                                             android:background="@drawable/log_in_details_bg_rect_white"

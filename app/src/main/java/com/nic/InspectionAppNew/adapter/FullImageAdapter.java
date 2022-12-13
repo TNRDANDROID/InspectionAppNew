@@ -74,7 +74,7 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.MyVi
                 .into(holder.galleryThumbnailBinding.thumbnail);*/
 
 
-       if(onOffType.equals("Online")){
+      /* if(onOffType.equals("Online")){
            Glide.with(context).load(imagePreviewlistvalues.get(position).getImage())
                    .thumbnail(0.5f)
                    .into(holder.galleryThumbnailBinding.thumbnail);
@@ -84,7 +84,11 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.MyVi
                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                holder.galleryThumbnailBinding.thumbnail.setImageBitmap(myBitmap);
            }
-       }
+       }*/
+        Glide.with(context).load(imagePreviewlistvalues.get(position).getImage())
+                .thumbnail(0.5f)
+                .into(holder.galleryThumbnailBinding.thumbnail);
+
 
     }
 

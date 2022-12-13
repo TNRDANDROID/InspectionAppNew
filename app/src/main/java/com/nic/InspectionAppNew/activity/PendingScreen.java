@@ -60,6 +60,10 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
     private ProgressHUD progressHUD;
     String type="";
     String save_work_details_primary_id="";
+    String dcode="";
+    String bcode="";
+    String pvcode="";
+    String work_id="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -153,8 +157,11 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         return true;
     }
 
-    public void saveImagesJsonParams(JSONObject savePMAYDataSet, String save_work_details_primary_id_) {
-        save_work_details_primary_id = save_work_details_primary_id_;
+    public void saveImagesJsonParams(JSONObject savePMAYDataSet, String Dcode,String Bcode,String Pvcode,String Work_id) {
+        dcode = Dcode;
+        bcode = Bcode;
+        pvcode = Pvcode;
+        work_id = Work_id;
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), savePMAYDataSet.toString());
         JSONObject dataSet = new JSONObject();
         try {
@@ -185,7 +192,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     showAlert(this, jsonObject.getString("MESSAGE"));
                     dbData.open();
-                    deleteSavedImage(save_work_details_primary_id);
+                    deleteSavedImage(dcode,bcode,pvcode,work_id);
                     pendingScreenAdapter.removeSavedItem(prefManager.getDeleteAdapterPosition());
                     pendingScreenAdapter.notifyDataSetChanged();
                 }
@@ -224,9 +231,9 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         }
     }
 
-    private void deleteSavedImage(String save_work_details_primary_id) {
+    private void deleteSavedImage(String dcode,String bcode,String pvcode,String work_id) {
         ArrayList<ModelClass> activityImage = new ArrayList<>();
-        activityImage = dbData.getParticularSavedImage("work_id",save_work_details_primary_id,"","");
+        activityImage = dbData.getParticularSavedImagebycode("all",dcode,bcode, pvcode,work_id,"");
        for (int i=0; i < activityImage.size();i++){
            String file_path= activityImage.get(i).getImage_path();
            deleteFileDirectory(file_path);

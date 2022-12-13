@@ -74,8 +74,8 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
     private PrefManager prefManager;
     private static final int MY_REQUEST_CODE_PERMISSION = 1000;
     ProgressDialog progressBar;
-    String fromDate;
-    String toDate;
+    String fromDate="";
+    String toDate="";
 
     ArrayList<ModelClass> otherSavedWorkList;
     SavedWorkListAdapter savedWorkListAdapter;
@@ -108,7 +108,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
             @Override
             public void onClick(View v) {
                 if (otherSavedWorkList.size()>0){
-                    savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,otherSavedWorkList,"rdpr");
+                    savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,otherSavedWorkList,"other");
                     binding.recycler.setVisibility(View.VISIBLE);
                     binding.notFoundTv.setVisibility(View.GONE);
                     binding.recycler.setAdapter(savedWorkListAdapter);
@@ -132,7 +132,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                         }
                     }
                     if(satisfiedList.size()>0){
-                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,satisfiedList,"rdpr");
+                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,satisfiedList,"other");
                         binding.recycler.setVisibility(View.VISIBLE);
                         binding.notFoundTv.setVisibility(View.GONE);
                         binding.recycler.setAdapter(savedWorkListAdapter);
@@ -163,7 +163,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                         }
                     }
                     if(unsatisfiedList.size()>0){
-                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,unsatisfiedList,"rdpr");
+                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,unsatisfiedList,"other");
                         binding.recycler.setVisibility(View.VISIBLE);
                         binding.notFoundTv.setVisibility(View.GONE);
                         binding.recycler.setAdapter(savedWorkListAdapter);
@@ -193,7 +193,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                         }
                     }
                     if(needImprovementList.size()>0){
-                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,needImprovementList,"rdpr");
+                        savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,needImprovementList,"other");
                         binding.recycler.setVisibility(View.VISIBLE);
                         binding.notFoundTv.setVisibility(View.GONE);
                         binding.recycler.setAdapter(savedWorkListAdapter);
@@ -280,7 +280,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
     public  JSONObject workDetailsParams(Activity activity,String work_id, String inspection_id) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-            dataSet.put(AppConstant.KEY_SERVICE_ID, "other_work_pdf_download");
+            dataSet.put(AppConstant.KEY_SERVICE_ID, "get_other_work_pdf");
             dataSet.put("other_work_inspection_id", inspection_id);
         Log.d("WorkDetails", "" + dataSet);
         return dataSet;
@@ -297,7 +297,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                 String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    workListData(jsonObject);
+                    workListData(jsonObject.getJSONObject(AppConstant.JSON_DATA));
                 }
                 else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
@@ -343,9 +343,9 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
 
             if (jsonObject.length() > 0) {
                 JSONArray jsonArray = new JSONArray();
-                jsonArray=jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                jsonArray=jsonObject.getJSONArray("other_inspection_details");
                 JSONArray status_wise_count = new JSONArray();
-//                status_wise_count = jsonObject.getJSONArray("status_wise_count");
+                status_wise_count = jsonObject.getJSONArray("other_status_wise_count");
                 otherSavedWorkList = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
@@ -383,7 +383,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                     binding.recycler.setVisibility(View.VISIBLE);
                     binding.notFoundTv.setVisibility(View.GONE);
                     binding.recycler.setAdapter(savedWorkListAdapter);
-                    binding.inspectionCountListLayout.setVisibility(View.GONE);
+                    binding.inspectionCountListLayout.setVisibility(View.VISIBLE);
                 }
                 else {
                     binding.inspectionCountListLayout.setVisibility(View.GONE);
@@ -725,4 +725,11 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         setResult(Activity.RESULT_CANCELED);
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+       getOtherWorkReportDetails();
+
+    }
+
 }

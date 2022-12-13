@@ -85,8 +85,8 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
 
 
     String onOffType;
-    String fromDate;
-    String toDate;
+    String fromDate="";
+    String toDate="";
     String work_id="";
     private static final int MY_REQUEST_CODE_PERMISSION = 1000;
     ProgressDialog progressBar;
@@ -275,7 +275,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
     @Override
     protected void onResume() {
         super.onResume();
-
+        getWorkDetails();
     }
     public void getWorkReportDetails(String work_id, String inspection_id) {
         WorkId=work_id;
@@ -298,7 +298,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
     public  JSONObject workDetailsParams(Activity activity,String work_id, String inspection_id) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-            dataSet.put(AppConstant.KEY_SERVICE_ID, "pdf_download");
+            dataSet.put(AppConstant.KEY_SERVICE_ID, "get_pdf");
             dataSet.put("work_id", work_id);
             dataSet.put("inspection_id", inspection_id);
 

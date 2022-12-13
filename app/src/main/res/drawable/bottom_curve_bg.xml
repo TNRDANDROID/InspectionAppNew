@@ -11,8 +11,8 @@
         <shape android:shape="oval">
             <gradient
                 android:angle="180"
-                android:endColor="@color/colorPrimary"
-                android:startColor="@color/colorAccent" />
+                android:endColor="@color/colorAccentveryverylight"
+                android:startColor="@color/colorAccentveryverylight" />
         </shape>
     </item>
 </layer-list>
