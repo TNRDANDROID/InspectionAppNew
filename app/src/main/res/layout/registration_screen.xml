@@ -120,7 +120,7 @@
                         android:id="@+id/edit_image"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:onClick="@{()-> activity.previewCapturedImage()}"
+                        android:onClick="@{()-> activity.getPerMissionCapture()}"
                         android:layout_below="@+id/profile_image"
                         android:layout_toRightOf="@+id/profile_image"
                         android:layout_marginTop="-40dp"

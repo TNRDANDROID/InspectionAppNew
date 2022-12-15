@@ -1,6 +1,5 @@
 package com.nic.InspectionAppNew.activity;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -13,13 +12,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -32,7 +27,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -41,7 +35,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.bumptech.glide.util.Util;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -53,7 +46,7 @@ import com.nic.InspectionAppNew.api.Api;
 import com.nic.InspectionAppNew.api.ApiService;
 import com.nic.InspectionAppNew.api.ServerResponse;
 import com.nic.InspectionAppNew.constant.AppConstant;
-import com.nic.InspectionAppNew.databinding.ActivityRegistrationScreenBinding;
+import com.nic.InspectionAppNew.databinding.RegistrationScreenBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.ProgressHUD;
@@ -71,13 +64,9 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.jar.JarException;
 
 import es.dmoral.toasty.Toasty;
 import id.zelory.compressor.Compressor;
@@ -89,7 +78,7 @@ import static com.nic.InspectionAppNew.utils.Utils.showAlert;
 
 public class RegistrationScreen extends AppCompatActivity implements Api.ServerResponseListener{
     private PrefManager prefManager;
-    ActivityRegistrationScreenBinding registrationScreenBinding;
+    RegistrationScreenBinding registrationScreenBinding;
     ProgressHUD progressHUD;
 
 
@@ -123,7 +112,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        registrationScreenBinding =DataBindingUtil.setContentView(this, R.layout.activity_registration_screen);
+        registrationScreenBinding =DataBindingUtil.setContentView(this, R.layout.registration_screen);
         registrationScreenBinding.setActivity(this);
         prefManager = new PrefManager(this);
 
