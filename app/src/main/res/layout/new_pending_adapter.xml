@@ -361,27 +361,23 @@
 
                             <RelativeLayout
                                 android:layout_gravity="center_vertical"
-                                android:paddingTop="@dimen/_2sdp"
-                                android:paddingBottom="@dimen/_2sdp"
-                                android:paddingRight="@dimen/_8sdp"
-                                android:paddingLeft="@dimen/_8sdp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_toStartOf="@+id/delete"
+                                android:padding="@dimen/_2sdp"
                                 android:background="@drawable/button_bg_white"
                                 android:id="@+id/edit">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/sky_blue"
+                                <ImageView
+                                    android:layout_width="@dimen/_30sdp"
+                                    android:layout_height="@dimen/_30sdp"
+                                    android:padding="@dimen/_5sdp"
+                                    android:textColor="@color/colorPrimaryDark"
                                     android:text="@string/edit"
+                                    android:textStyle="bold"
                                     android:layout_centerHorizontal="true"
                                     android:textSize="@dimen/_13sdp"
-                                    android:textStyle="bold"
-                                    android:paddingTop="@dimen/_3sdp"
-                                    android:paddingBottom="@dimen/_4sdp"
-                                    android:paddingLeft="@dimen/_15sdp"
-                                    android:paddingRight="@dimen/_15sdp"/>
+                                    android:src="@drawable/ic_edit_pencil_icon"
+                                    />
                             </RelativeLayout>
                             <RelativeLayout
                                 android:layout_gravity="center_vertical"
@@ -393,18 +389,17 @@
 
                                 android:background="@drawable/button_bg_white"
                                 android:id="@+id/delete">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/subscription_type_red_color"
+                                <ImageView
+                                    android:layout_width="@dimen/_30sdp"
+                                    android:layout_height="@dimen/_30sdp"
+                                    android:padding="@dimen/_5sdp"
+                                    android:textColor="@color/colorPrimaryDark"
                                     android:text="@string/delete"
+                                    android:textStyle="bold"
                                     android:layout_centerHorizontal="true"
                                     android:textSize="@dimen/_13sdp"
-                                    android:textStyle="bold"
-                                    android:paddingTop="@dimen/_3sdp"
-                                    android:paddingBottom="@dimen/_4sdp"
-                                    android:paddingLeft="@dimen/_15sdp"
-                                    android:paddingRight="@dimen/_15sdp"/>
+                                    android:src="@drawable/ic_trash"
+                                    />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -417,18 +412,17 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/button_bg_white"
                                 android:id="@+id/upload">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                <ImageView
+                                    android:layout_width="@dimen/_30sdp"
+                                    android:layout_height="@dimen/_30sdp"
+                                    android:padding="@dimen/_5sdp"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:text="@string/upload"
                                     android:textStyle="bold"
                                     android:layout_centerHorizontal="true"
                                     android:textSize="@dimen/_13sdp"
-                                    android:paddingTop="@dimen/_3sdp"
-                                    android:paddingBottom="@dimen/_4sdp"
-                                    android:paddingLeft="@dimen/_15sdp"
-                                    android:paddingRight="@dimen/_15sdp"/>
+                                    android:src="@drawable/ic_upload_icon"
+                                    />
                             </RelativeLayout>
 
                         </RelativeLayout>

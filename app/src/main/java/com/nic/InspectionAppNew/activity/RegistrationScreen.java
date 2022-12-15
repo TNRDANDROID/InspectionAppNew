@@ -1,5 +1,6 @@
 package com.nic.InspectionAppNew.activity;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -12,6 +13,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -58,6 +60,9 @@ import com.nic.InspectionAppNew.support.ProgressHUD;
 import com.nic.InspectionAppNew.utils.CameraUtils;
 import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
+import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -112,6 +117,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     String UserProfile ="";
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 1;
     private static final int GALLERY_IMAGE_REQUEST_CODE = 2;
+    private Uri mCropImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -279,14 +285,14 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         registrationScreenBinding.tick1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    if(!registrationScreenBinding.mobileNo.getText().toString().isEmpty()&&Utils.isValidMobile1(registrationScreenBinding.mobileNo.getText().toString())){
-                        validate(registrationScreenBinding.mobileNo.getText().toString());
+                if(!registrationScreenBinding.mobileNo.getText().toString().isEmpty()&&Utils.isValidMobile1(registrationScreenBinding.mobileNo.getText().toString())){
+                    validate(registrationScreenBinding.mobileNo.getText().toString());
                        /* registrationScreenBinding.tick1.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_check_sign_icon));
                         registrationScreenBinding.detailsLayout.setVisibility(View.VISIBLE);*/
-                    }
-                    else {
-                        Utils.showAlert(RegistrationScreen.this,"Enter Valid Mobile Number!");
-                    }
+                }
+                else {
+                    Utils.showAlert(RegistrationScreen.this,"Enter Valid Mobile Number!");
+                }
             }
         });
         registrationScreenBinding.mobileNo.addTextChangedListener(new TextWatcher() {
@@ -374,7 +380,6 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     }
                 }).show();
     }
-
     public void selectImage() {
         final CharSequence[] options = { getResources().getString(R.string.take_photo),getResources().getString(R.string.choose_from_gallery),getResources().getString(R.string.cancel) };
         AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationScreen.this);
@@ -419,31 +424,72 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         });
         builder.show();
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if(requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE){
+        // handle result of CropImageActivity
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri uri = result.getUri();
+                try {
+                    //Uses https://github.com/zetbaitsu/Compressor library to compress selected image
+//                    File file = new Compressor(this).compressToFile(new File(uri.getPath()));
+                    File file = new File(uri.getPath());
+                    File compressedFile  = new Compressor.Builder(this)
+                            .setMaxWidth(640)
+                            .setMaxHeight(480)
+                            .setQuality(100)
+                            .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                            .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+                                    Environment.DIRECTORY_PICTURES).getAbsolutePath())
+                            .build()
+                            .compressToFile(file);
+                    Bitmap compBitmap = BitmapFactory.decodeFile(compressedFile.getAbsolutePath());
+                    UserProfile=Utils.BitMapToString(compBitmap);
+                    Picasso.get().load(compressedFile).into(registrationScreenBinding.profileImage);
+                    Toast.makeText(this, "Compressed", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Failed Compress", Toast.LENGTH_SHORT).show();
+                    Picasso.get().load(uri).into(registrationScreenBinding.profileImage);
+                }
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        uploadProfile();
+                    }
+                }, 1000);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                //TODO handle cropping error
+                Toast.makeText(this, "Cropping failed: " + result.getError(), Toast.LENGTH_LONG).show();
+            }
+        }
+        if(requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE){
+            if (resultCode == RESULT_OK) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     Bitmap i = (Bitmap) data.getExtras().get("data");
-                    imageStoragePath=getRealPathFromURI(getImageUri(getApplicationContext(),i));
-                    previewCapturedImage(i);
-                    uploadProfile();
+                 /*   imageStoragePath=getRealPathFromURI(getImageUri(getApplicationContext(),i));
+                    previewCapturedImage(i);*/
+                    startCropImageActivity(getImageUri(getApplicationContext(),i));
 
                 }else {
                     // Refreshing the gallery
                     CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
                     // successfully captured the image
                     // display it in image view
-                    Bitmap i=null;
-                    previewCapturedImage(i);
+                    /*Bitmap i=null;
+                    previewCapturedImage(i);*/
+                    startCropImageActivity(Uri.fromFile(new File(imageStoragePath)));
                     //
                 }
             }
-            else if (requestCode == GALLERY_IMAGE_REQUEST_CODE) {
+        }
+        if (requestCode == GALLERY_IMAGE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 Uri selectedImage = data.getData();
-                String[] filePath = { MediaStore.Images.Media.DATA };
+               /* String[] filePath = { MediaStore.Images.Media.DATA };
                 Cursor c = getContentResolver().query(selectedImage,filePath, null, null, null);
                 c.moveToFirst();
                 int columnIndex = c.getColumnIndex(filePath[0]);
@@ -458,10 +504,26 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 UserProfile=BitMapToString(compBitmap);
 
                 registrationScreenBinding.profileImage.setImageBitmap(compBitmap);
-                uploadProfile();
+                uploadProfile();*/
+                startCropImageActivity(selectedImage);
 
             }
         }
+    }
+    private void startCropImageActivity(Uri imageUri) {
+        CropImage.activity(imageUri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setAllowFlipping(false)
+                .setActivityTitle("Crop Image")
+                .setCropMenuCropButtonIcon(R.drawable.ic_check)
+                .setAllowRotation(true)
+                .setInitialCropWindowPaddingRatio(0)
+                .setFixAspectRatio(true)
+                .setAspectRatio(1, 1)
+                .setOutputCompressQuality(80)
+                .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                .setMultiTouchEnabled(true)
+                .start(this);
     }
 
     public  Uri getImageUri(Context inContext, Bitmap inImage) {
@@ -470,8 +532,6 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage,"IMG_" + Calendar.getInstance().getTime(),null);
         return Uri.parse(path);
     }
-
-
     public String getRealPathFromURI(Uri uri) {
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
@@ -539,6 +599,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         }
         return temp;
     }
+
     public void uploadProfile() {
         if(!UserProfile.equalsIgnoreCase("")){
 /*
@@ -715,15 +776,15 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
                 response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")){
-                   try {
-                       JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
-                       //prefManager.setGenderList(jsonarray.toString());
-                       loadGenderList(jsonarray);
-                       Log.d("Gender", "" + responseObj.toString());
-                   }
-                   catch (Exception e){
-                       e.printStackTrace();
-                   }
+                    try {
+                        JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
+                        //prefManager.setGenderList(jsonarray.toString());
+                        loadGenderList(jsonarray);
+                        Log.d("Gender", "" + responseObj.toString());
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -805,7 +866,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                           onBackPress();
+                            onBackPress();
                         }
                     }, 1000);
 
@@ -836,6 +897,9 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                             String email=jsonArray.getJSONObject(i).getString("email");
                             prefManager.setDesignation(designation);
                             prefManager.setName(String.valueOf(name));
+                            prefManager.setLevels(String.valueOf(level));
+                            prefManager.setDistrictCode(dcode);
+                            prefManager.setBlockCode(bcode);
                         }
                     }
 
@@ -977,28 +1041,28 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         }
         @Override
         protected Void doInBackground(JSONArray... params) {
-                if (params.length > 0) {
-                    JSONArray jsonArray = new JSONArray();
-                    jsonArray = params[0];
-                    districtList.clear();
+            if (params.length > 0) {
+                JSONArray jsonArray = new JSONArray();
+                jsonArray = params[0];
+                districtList.clear();
 
-                    ModelClass districtListValue1 = new ModelClass();
-                    districtListValue1.setDistrictCode("0");
-                    districtListValue1.setDistrictName("Select District");
-                    districtList.add(districtListValue1);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        ModelClass districtListValue = new ModelClass();
-                        try {
-                            districtListValue.setDistrictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
-                            districtListValue.setDistrictName(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_NAME));
+                ModelClass districtListValue1 = new ModelClass();
+                districtListValue1.setDistrictCode("0");
+                districtListValue1.setDistrictName("Select District");
+                districtList.add(districtListValue1);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    ModelClass districtListValue = new ModelClass();
+                    try {
+                        districtListValue.setDistrictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                        districtListValue.setDistrictName(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_NAME));
 
-                            districtList.add(districtListValue);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
+                        districtList.add(districtListValue);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
                 }
+            }
             return null;
         }
 
@@ -1042,32 +1106,32 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         @Override
         protected Void doInBackground(JSONArray... params) {
 
-                if (params.length > 0) {
-                    JSONArray jsonArray = new JSONArray();
-                    jsonArray = params[0];
+            if (params.length > 0) {
+                JSONArray jsonArray = new JSONArray();
+                jsonArray = params[0];
 
-                    blockList.clear();
-                    ModelClass modelClass = new ModelClass();
-                    modelClass.setDistrictCode("0");
-                    modelClass.setBlockCode("0");
-                    modelClass.setBlockName("Select Block");
-                    blockList.add(modelClass);
+                blockList.clear();
+                ModelClass modelClass = new ModelClass();
+                modelClass.setDistrictCode("0");
+                modelClass.setBlockCode("0");
+                modelClass.setBlockName("Select Block");
+                blockList.add(modelClass);
 
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        ModelClass blocktListValue = new ModelClass();
-                        try {
-                            blocktListValue.setDistrictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
-                            blocktListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
-                            blocktListValue.setBlockName(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_NAME));
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    ModelClass blocktListValue = new ModelClass();
+                    try {
+                        blocktListValue.setDistrictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                        blocktListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
+                        blocktListValue.setBlockName(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_NAME));
 
-                            blockList.add(blocktListValue);
+                        blockList.add(blocktListValue);
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
                 }
+            }
 
             return null;
         }

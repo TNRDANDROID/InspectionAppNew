@@ -68,7 +68,7 @@
     <string name="no_projects_found">திட்டங்கள் எதுவும் கிடைக்கவில்லை!</string>
     <string name="next">அடுத்தது</string>
     <string name="ok">சரி</string>
-    <string name="you_need_to_update_inspection">நீங்கள் சமத்துவபுரம் விண்ணப்பத்தை புதுப்பிக்க வேண்டும்</string>
+    <string name="you_need_to_update_inspection">Click the update button , download the latest version and install the new APK.</string>
     <string name="this_version_of_inspection_is_no_longer_supported_please_go_to_official_site_and_install_new_version">சமத்துவபுரத்தின் இந்தப் பதிப்பு இனி ஆதரிக்கப்படாது. அதிகாரப்பூர்வ தளத்திற்குச் சென்று புதிய பதிப்பை நிறுவவும்</string>
     <string name="update">புதுப்பிக்கவும்</string>
     <string name="you_can_capture_up_to_3_photos">நீங்கள் 2 புகைப்படங்கள் வரை எடுக்கலாம்</string>

@@ -254,8 +254,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         if(loginScreenBinding.versionHint.getVisibility() == View.GONE){
         //local
             // Testing
-           /* loginScreenBinding.userName.setText("7448944000");
-            loginScreenBinding.password.setText("Ccc111#$");*/
+            loginScreenBinding.userName.setText("7448944000");
+            loginScreenBinding.password.setText("Ccc111#$");
 
         /*loginScreenBinding.userName.setText("9790461958");
         loginScreenBinding.password.setText("Vel12345#$");//state local*/
@@ -270,7 +270,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
       //prod
         /*loginScreenBinding.userName.setText("9750895078");
-        loginScreenBinding.password.setText("TESt123#$");//state prod*/
+        loginScreenBinding.password.setText("Test123#$");//block prod*/
        /* loginScreenBinding.userName.setText("7878534575");
         loginScreenBinding.password.setText("test123#$");//state prod*/
         /*loginScreenBinding.userName.setText("9638527415");
@@ -563,6 +563,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                             String email=jsonArray.getJSONObject(i).getString("email");
                             prefManager.setDesignation(designation);
                             prefManager.setName(String.valueOf(name));
+                            prefManager.setLevels(String.valueOf(level));
+                            prefManager.setDistrictCode(dcode);
+                            prefManager.setBlockCode(bcode);
                         }
                     }
 

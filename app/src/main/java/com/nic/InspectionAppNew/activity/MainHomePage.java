@@ -38,7 +38,6 @@ import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.ProgressHUD;
 import com.nic.InspectionAppNew.utils.UrlGenerator;
 import com.nic.InspectionAppNew.utils.Utils;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -230,14 +229,32 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         homeScreenBinding.navigationLayout.designation.setText(prefManager.getDesignation());
         homeScreenBinding.navigationLayout.name.setText(prefManager.getName());
         if(prefManager.getLevels().equals("S")){
-            homeScreenBinding.userLevel.setText("State : "+prefManager.getStateName());
-            homeScreenBinding.navigationLayout.level.setText("State : "+prefManager.getStateName());
+            if(prefManager.getStateName()!=null && !prefManager.getStateName().isEmpty()){
+                homeScreenBinding.userLevel.setText("State : "+prefManager.getStateName());
+                homeScreenBinding.navigationLayout.level.setText("State : "+prefManager.getStateName());
+            }else {
+                homeScreenBinding.userLevel.setText("State");
+                homeScreenBinding.navigationLayout.level.setText("State");
+            }
+
         }else if(prefManager.getLevels().equals("D")){
-            homeScreenBinding.userLevel.setText("District : "+prefManager.getDistrictName());
-            homeScreenBinding.navigationLayout.level.setText("District : "+prefManager.getDistrictName());
+            if(prefManager.getDistrictName()!=null && !prefManager.getDistrictName().isEmpty()){
+                homeScreenBinding.userLevel.setText("District : "+prefManager.getDistrictName());
+                homeScreenBinding.navigationLayout.level.setText("District : "+prefManager.getDistrictName());
+            }else {
+                homeScreenBinding.userLevel.setText("District");
+                homeScreenBinding.navigationLayout.level.setText("District");
+            }
+
         }else if(prefManager.getLevels().equals("B")){
-            homeScreenBinding.userLevel.setText("Block : "+prefManager.getBlockName());
-            homeScreenBinding.navigationLayout.level.setText("Block : "+prefManager.getBlockName());
+            if(prefManager.getBlockName()!=null && !prefManager.getBlockName().isEmpty()){
+                homeScreenBinding.userLevel.setText("Block : "+prefManager.getBlockName());
+                homeScreenBinding.navigationLayout.level.setText("Block : "+prefManager.getBlockName());
+            }else {
+                homeScreenBinding.userLevel.setText("Block");
+                homeScreenBinding.navigationLayout.level.setText("Block");
+            }
+
 
         }
         if (prefManager.getProfileImage() != null && !prefManager.getProfileImage().equals("")) {
@@ -430,6 +447,28 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 status  = jsonObject.getString(AppConstant.KEY_STATUS);
                 response = jsonObject.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")){
+                    if (jsonObject.getJSONArray(AppConstant.JSON_DATA).length() > 0) {
+                        JSONArray jsonArray=jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            String name=jsonArray.getJSONObject(i).getString("name");
+                            String mobile_number=jsonArray.getJSONObject(i).getString("mobile");
+                            String gender=jsonArray.getJSONObject(i).getString("gender");
+                            String level=jsonArray.getJSONObject(i).getString("level");
+                            String designation_code=jsonArray.getJSONObject(i).getString("desig_code");
+                            String designation=jsonArray.getJSONObject(i).getString("desig_name");
+                            String dcode=jsonArray.getJSONObject(i).getString("dcode");
+                            String bcode=jsonArray.getJSONObject(i).getString("bcode");
+                            String office_address=jsonArray.getJSONObject(i).getString("office_address");
+                            String email=jsonArray.getJSONObject(i).getString("email");
+                            prefManager.setDesignation(designation);
+                            prefManager.setName(String.valueOf(name));
+                            prefManager.setLevels(String.valueOf(level));
+                            prefManager.setDistrictCode(dcode);
+                            prefManager.setBlockCode(bcode);
+                        }
+                        setProfile();
+                    }
+
                     Intent gotoRegisterScreen = new Intent(MainHomePage.this,RegistrationScreen.class);
                     gotoRegisterScreen.putExtra("key","home");
                     gotoRegisterScreen.putExtra("profile_data",jsonObject.toString());

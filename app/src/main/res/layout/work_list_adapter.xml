@@ -334,12 +334,13 @@
                         android:id="@+id/take_action"
                         android:padding="@dimen/_5sdp"
                         android:layout_alignParentTop="true">
-                        <TextView
+                        <ImageView
                             android:layout_marginEnd="@dimen/_5sdp"
                             android:id="@+id/take_action_text"
                             android:layout_centerVertical="true"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="@dimen/_30sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:src="@drawable/action"
                             android:textColor="@color/primary_text_color"
                             android:textSize="@dimen/_13sdp"
                             android:text="@string/take_action"

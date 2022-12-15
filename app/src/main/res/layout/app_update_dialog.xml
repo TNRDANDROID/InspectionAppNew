@@ -66,6 +66,7 @@
             android:gravity="center"
             android:lineSpacingExtra="5dp"
             android:padding="@dimen/padding"
+            android:visibility="gone"
             android:text="@string/this_version_of_inspection_is_no_longer_supported_please_go_to_official_site_and_install_new_version"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             style="@string/font_normal" />

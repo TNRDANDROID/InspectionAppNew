@@ -906,9 +906,8 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                             db.delete(SCHEME_TABLE_NAME, null, null);
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }if(mFinYearItems.size() > 0 && !Dcode.equals("")) {
-                            getSchemeList();
                         }
+                        getSchemeList();
                     }
 
                 }else {
