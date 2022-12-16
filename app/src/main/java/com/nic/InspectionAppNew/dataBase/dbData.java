@@ -560,9 +560,9 @@ public class dbData {
         try {
             if(type.equals("all")){
                 cursor = db.rawQuery("select * from " + DBHelper.WORK_STAGE_TABLE, null);
-            }
-            else {
-                String Que = "select * from "+DBHelper.WORK_STAGE_TABLE+" where work_stage_order >(select work_stage_order from "+DBHelper.WORK_STAGE_TABLE+" where work_stage_code='"+work_stage_code+"' and work_group_id=" + work_group_id + "  and work_type_id=" + work_type_id + ")  and work_group_id=" + work_group_id + "  and work_type_id=" + work_type_id + " and work_stage_code != 11 order by work_stage_order";
+            }else {
+//                String Que = "select * from "+DBHelper.WORK_STAGE_TABLE+" where work_stage_order >(select work_stage_order from "+DBHelper.WORK_STAGE_TABLE+" where work_stage_code='"+work_stage_code+"' and work_group_id=" + work_group_id + "  and work_type_id=" + work_type_id + ")  and work_group_id=" + work_group_id + "  and work_type_id=" + work_type_id + " and work_stage_code != 11 order by work_stage_order";
+                String Que = "select * from "+DBHelper.WORK_STAGE_TABLE+" where work_group_id=" + work_group_id + "  and work_type_id=" + work_type_id + " order by work_stage_order";
 
                 cursor = db.rawQuery(Que,null);
             }

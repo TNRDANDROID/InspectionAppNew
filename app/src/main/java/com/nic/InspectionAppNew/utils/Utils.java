@@ -1957,13 +1957,6 @@ public class Utils {
 
             ImageView zoomImage = (ImageView) ImagePopupLayout.findViewById(R.id.imgZoomProfileImage);
             zoomImage.setImageBitmap(Utils.StringToBitMap(ZoomImageURL));
-/*
-            Picasso.with(this)
-                    .load(ZoomImageURL)
-                    .placeholder(R.drawable.progress_animation)
-                    .error(R.drawable.grey_user_head_icon_250)
-                    .into(zoomImage);
-*/
             ImageMatrixTouchHandler imageMatrixTouchHandler = new ImageMatrixTouchHandler(context);
             zoomImage.setOnTouchListener(imageMatrixTouchHandler);
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);

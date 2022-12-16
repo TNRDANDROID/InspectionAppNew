@@ -319,14 +319,11 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:textColor="@color/primary_text_color"
-                        android:drawableEnd="@drawable/ic_double_arrow"
-                        android:drawableTint="@color/primary_text_color"
+                        android:drawableEnd="@drawable/ic_pdf"
                         android:drawablePadding="@dimen/_3sdp"
-                        android:textSize="@dimen/_13sdp"
-                        android:text="@string/view_report"
                         android:layout_gravity="end"
                         android:layout_marginTop="@dimen/_5sdp"
-                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_5sdp"
                         android:layout_marginBottom="@dimen/_8sdp"
                         tools:ignore="RelativeOverlap,UnusedAttribute" />
 <!--

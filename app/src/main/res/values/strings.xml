@@ -68,7 +68,7 @@
     <string name="no_projects_found">No Projects Found!</string>
     <string name="next">Next</string>
     <string name="ok">OK</string>
-    <string name="you_need_to_update_inspection">You need to update Inspection Application</string>
+    <string name="you_need_to_update_inspection">Click the update button , download the latest version and install the new APK.</string>
     <string name="this_version_of_inspection_is_no_longer_supported_please_go_to_official_site_and_install_new_version">This version of Inspection is no longer supported. Please go to Official Site and install new version</string>
     <string name="update">Update</string>
     <string name="you_can_capture_up_to_3_photos">You Can Capture up to 3 photos</string>

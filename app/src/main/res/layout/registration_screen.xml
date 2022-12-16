@@ -89,14 +89,14 @@
                 <ImageView
                     android:visibility="visible"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_20sdp"
+                    android:layout_height="@dimen/_50sdp"
                     android:id="@+id/header_img"
                     android:background="@drawable/register_bottom_curved_bg"
                      />
 
                 //Profile
                 <RelativeLayout
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_gravity="center"
