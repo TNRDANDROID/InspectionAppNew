@@ -13,11 +13,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -39,14 +40,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.nic.InspectionAppNew.Interface.AdapterCameraIntent;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.CommonAdapter;
@@ -60,6 +64,7 @@ import com.nic.InspectionAppNew.dataBase.dbData;
 import com.nic.InspectionAppNew.databinding.SaveWorkDetailsActivityBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
+import com.nic.InspectionAppNew.support.MyLocationListener;
 import com.nic.InspectionAppNew.support.ProgressHUD;
 import com.nic.InspectionAppNew.utils.CameraUtils;
 import com.nic.InspectionAppNew.utils.UrlGenerator;
@@ -73,14 +78,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
-import id.zelory.compressor.Compressor;
-import id.zelory.compressor.FileUtil;
 import in.mayanknagwanshi.imagepicker.ImageSelectActivity;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -152,6 +154,15 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     boolean true_flag = false;
     JSONObject maindataset = new JSONObject();
     AlertDialog add_cpts_search_alert;
+
+    ////Location and Camera
+    Double wayLatitude = 0.0, wayLongitude = 0.0;
+    LocationManager mlocManager = null;
+    LocationListener mlocListener;
+    public static final int MEDIA_TYPE_IMAGE = 1;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -1448,7 +1459,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                         rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);*/
                         Bitmap compBitmap = Utils.resizedBitmap(filePath,SaveWorkDetailsActivity.this);
                         if(adapterCameraIntent!=null){
-                            adapterCameraIntent.OnIntentListener(compBitmap,filePath);
+                            adapterCameraIntent.OnIntentListener(compBitmap,filePath,wayLatitude,wayLongitude);
                         }
 
                     }
@@ -1581,7 +1592,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                     rotatedBitmap = bitmap;
             }
             if(adapterCameraIntent!=null){
-                adapterCameraIntent.OnIntentListener(rotatedBitmap, imageStoragePath);
+                adapterCameraIntent.OnIntentListener(rotatedBitmap, imageStoragePath, wayLatitude, wayLongitude);
             }
 
         } catch (NullPointerException e) {
@@ -1650,6 +1661,57 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                     Toast.makeText(SaveWorkDetailsActivity.this, "Permission Denied!", Toast
                             .LENGTH_SHORT).show();
                 }
+                break;
+            case 1000: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+                    locationRequest = LocationRequest.create();
+                    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                    //locationRequest.setInterval(0);
+
+                    mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    mlocListener = new MyLocationListener();
+
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(SaveWorkDetailsActivity.this,
+                            ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        //Request location updates:
+                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+
+                    }
+
+                    if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                            if (location != null) {
+                                wayLatitude = location.getLatitude();
+                                wayLongitude = location.getLongitude();
+                                Log.d("LocationAccuracy", "" + location.getAccuracy());
+                                Log.d("Locations", "" + wayLatitude + "," + wayLongitude);
+
+                                    captureImage();
+
+                            } else {
+                                Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.satellite_communication_not_available));
+                            }
+                        });
+                    }
+                    else {
+                        Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.gps_is_not_turned_on));
+                    }
+                } else {
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+
+
+                break;
+            }
         }
     }
 
@@ -1857,5 +1919,65 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             e.printStackTrace();
         }
     }
+
+    //////getlOCATION AND Camera
+
+    public void getExactLocation() {
+
+        mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mlocListener = new MyLocationListener();
+
+
+        // permission was granted, yay! Do the
+        // location-related task you need to do.
+        if (ContextCompat.checkSelfPermission(SaveWorkDetailsActivity.this,
+                ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            //Request location updates:
+            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+
+        }
+
+        if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // check permission
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, CAMERA},
+                        1000);
+                // reuqest for permission
+
+            }
+            else {
+                mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+                locationRequest = LocationRequest.create();
+                locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                //locationRequest.setInterval(0);
+
+                mFusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                         wayLatitude= location.getLatitude();
+                        wayLongitude = location.getLongitude();
+                        Log.d("LocationAccuracy", "" + location.getAccuracy());
+                        Log.d("Locations", "" + wayLatitude + "," + wayLongitude);
+
+                            captureImage();
+
+                    } else {
+                        Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.satellite_communication_not_available));
+
+                    }
+                });
+            }
+        }
+        else {
+            Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.gps_is_not_turned_on));
+        }
+
+
+    }
+
 
 }

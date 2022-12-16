@@ -12,7 +12,7 @@ android {
 
         targetSdkVersion 29
         versionCode 9
-        versionName "1.1"
+        versionName "1.2"
     }
     signingConfigs {
         release {
@@ -162,5 +162,8 @@ dependencies {
     ///Pie Chart
     implementation 'com.github.ghanshyam34:RoundedPieGraph:fcd69a2acb'
     compile 'id.zelory:compressor:1.0.4'
+
+    //Exact Location
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 
 }

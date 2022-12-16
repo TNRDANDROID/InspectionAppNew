@@ -8,22 +8,14 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -271,11 +263,12 @@ public class SaveImageAdapter extends RecyclerView.Adapter<SaveImageAdapter.MyVi
         }
         if (MyLocationListener.latitude > 0) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (CameraUtils.checkPermissions(context)) {
+              /*  if (CameraUtils.checkPermissions(context)) {
                     captureImage();
                 } else {
                     requestCameraPermission(MEDIA_TYPE_IMAGE);
-                }
+                }*/
+              captureImage();
 //                            checkPermissionForCamera();
             } else {
                 captureImage();
@@ -335,23 +328,23 @@ public class SaveImageAdapter extends RecyclerView.Adapter<SaveImageAdapter.MyVi
                 }).show();
     }
     private void captureImage() {
-        ((SaveWorkDetailsActivity)context).captureImage();
+        ((SaveWorkDetailsActivity)context).getExactLocation();
 
-        if (MyLocationListener.latitude > 0) {
+     /*   if (MyLocationListener.latitude > 0) {
             offlatTextValue = MyLocationListener.latitude;
             offlongTextValue = MyLocationListener.longitude;
-        }
+        }*/
     }
     @Override
-    public void OnIntentListener(Bitmap bitmap, String filePath) {
+    public void OnIntentListener(Bitmap bitmap, String filePath, Double wayLatitude, Double wayLongitude) {
           /*  myholder.binding.image.setImageBitmap(bitmap);
             myholder.binding.imagePreview.setVisibility(View.GONE);
             myholder.binding.image.setVisibility(View.VISIBLE);*/
             list.get(clicked_position).setImage(bitmap);
             list.get(clicked_position).setImage_path(filePath);
             list.get(clicked_position).setImage_serial_number(clicked_position);
-            list.get(clicked_position).setLatitude(String.valueOf(offlatTextValue));
-            list.get(clicked_position).setLongtitude(String.valueOf(offlongTextValue));
+            list.get(clicked_position).setLatitude(String.valueOf(wayLatitude));
+            list.get(clicked_position).setLongtitude(String.valueOf(wayLongitude));
             notifyItemChanged(clicked_position);
 
     }
