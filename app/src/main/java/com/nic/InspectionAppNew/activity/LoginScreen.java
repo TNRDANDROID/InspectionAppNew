@@ -254,22 +254,24 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         if(loginScreenBinding.versionHint.getVisibility() == View.GONE){
         //local
             // Testing
-            loginScreenBinding.userName.setText("7448944000");
-            loginScreenBinding.password.setText("Ccc111#$");
+           /* loginScreenBinding.userName.setText("7448944000");
+            loginScreenBinding.password.setText("Ccc111#$");*/
 
-        /*loginScreenBinding.userName.setText("9790461958");
-        loginScreenBinding.password.setText("Vel12345#$");//state local*/
+/*
+        loginScreenBinding.userName.setText("9790461958");
+        loginScreenBinding.password.setText("Vel12345#$");//state local
+*/
         //local
        /*loginScreenBinding.userName.setText("9080873403");
         loginScreenBinding.password.setText("crd45#$");//Block local*/
         /*loginScreenBinding.userName.setText("7877979787");
         loginScreenBinding.password.setText("test123#$");//Dist local*/
 
-      /*loginScreenBinding.userName.setText("9751337424");
+     /* loginScreenBinding.userName.setText("9751337424");
         loginScreenBinding.password.setText("Test88#$");//Block local*/
 
       //prod
-        /*loginScreenBinding.userName.setText("9750895078");
+       /* loginScreenBinding.userName.setText("9750895078");
         loginScreenBinding.password.setText("Test123#$");//block prod*/
        /* loginScreenBinding.userName.setText("7878534575");
         loginScreenBinding.password.setText("test123#$");//state prod*/
@@ -561,6 +563,16 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                             String bcode=jsonArray.getJSONObject(i).getString("bcode");
                             String office_address=jsonArray.getJSONObject(i).getString("office_address");
                             String email=jsonArray.getJSONObject(i).getString("email");
+                            String profile_image=jsonArray.getJSONObject(i).getString("profile_image");
+                            if(profile_image != null &&!profile_image.isEmpty()){
+                                byte[] decodedString = Base64.decode(profile_image, Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                prefManager.setProfileImage(Utils.BitMapToString(decodedByte));
+
+
+                            }else {
+                                prefManager.setProfileImage("");
+                            }
                             prefManager.setDesignation(designation);
                             prefManager.setName(String.valueOf(name));
                             prefManager.setLevels(String.valueOf(level));
@@ -577,6 +589,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             if ("DistrictList".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                Log.d("DistrictList", "" + prefManager.getUserPassKey());
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {

@@ -120,6 +120,7 @@
     <string name="gps_not_turned_on">ஜிபிஎஸ் இயக்கப்படவில்லை…</string>
     <string name="permissions_required">அனுமதி தேவை!</string>
     <string name="camera_needs_few_permission">கேமரா சரியாக வேலை செய்ய சில அனுமதிகள் தேவை. அமைப்புகளில் அவற்றை வழங்கவும்.</string>
+    <string name="allow_camera_location_permission">கேமரா, கோப்பு மற்றும் இருப்பிடம் சரியாக வேலை செய்ய சில அனுமதிகள் தேவை. அமைப்புகளில் அவற்றை வழங்கவும்.</string>
     <string name="user_cancelled_image_capture">பயனர் படத்தைப் பிடிப்பதை ரத்து செய்தார்</string>
     <string name="sorry_failed_to_capture_image">மன்னிக்கவும்! படத்தைப் பிடிக்க முடியவில்லை</string>
     <string name="user_cancelled_video_recording">பயனர் வீடியோ பதிவை ரத்து செய்தார்</string>

@@ -70,38 +70,19 @@
             android:id="@+id/imgUser1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
             >
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="@dimen/_60sdp"
-                android:layout_height="@dimen/_60sdp"
-                android:layout_margin="9dp"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:layout_margin="5dp"
                 android:id="@+id/user_img"
-                android:padding="8dp"
+                android:padding="10dp"
                 android:background="@drawable/circletransparant"
                 android:src="@drawable/ic_user_icon"
                 />
-            <ImageView
-                android:visibility="gone"
-                android:padding="@dimen/_3sdp"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/_30sdp"
-                android:layout_toEndOf="@+id/profile_icon"
-                android:id="@+id/time_image"
-                tools:ignore="ContentDescription" />
-            <TextView
-                android:textStyle="bold"
-                android:padding="@dimen/_3sdp"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/_30sdp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/_15sdp"
-                android:layout_toEndOf="@+id/profile_icon"
-                android:id="@+id/time_image_text"/>
 
         </RelativeLayout>
         <LinearLayout
@@ -188,7 +169,7 @@
             <RelativeLayout
                 android:layout_margin="@dimen/_10sdp"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="@dimen/_30sdp"
                 android:visibility="visible"
                 android:id="@+id/edit_profile">
 
@@ -222,7 +203,7 @@
             <RelativeLayout
                 android:layout_margin="@dimen/_10sdp"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="@dimen/_30sdp"
                 android:id="@+id/view_inspection">
 
                 <ImageView
@@ -255,7 +236,7 @@
             <RelativeLayout
                 android:layout_margin="@dimen/_10sdp"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="@dimen/_30sdp"
                 android:visibility="visible"
                 android:id="@+id/view_inspected_other_work">
 
@@ -289,7 +270,7 @@
             <RelativeLayout
                 android:layout_margin="@dimen/_10sdp"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="@dimen/_30sdp"
                 android:visibility="visible"
                 android:id="@+id/change_password">
 
@@ -322,7 +303,40 @@
             <RelativeLayout
                 android:layout_margin="@dimen/_10sdp"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:visibility="visible"
+                android:id="@+id/refresh_stages">
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:src="@drawable/ic_refresh"
+                    android:id="@+id/refresh_stages_icon"
+                    android:padding="@dimen/_5sdp"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/refresh_stages_icon"
+                    android:text="Refresh Stages"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_12sdp"/>
+            </RelativeLayout>
+            <View
+                android:id="@+id/vv6"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_2">
+
+            </View>
+            <RelativeLayout
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
                 android:visibility="visible"
                 android:id="@+id/log_out_layout">
 
@@ -348,7 +362,17 @@
         </LinearLayout>
     </ScrollView>
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:drawableLeft="@drawable/ic_version_icon"
+        android:layout_alignParentBottom="true"
+        android:textSize="@dimen/_12sdp"
+        android:textColor="@color/darkblue"
+        android:padding="@dimen/_5sdp"
+        android:id="@+id/tv_version"
+        />
 
 </RelativeLayout>
 </layout>

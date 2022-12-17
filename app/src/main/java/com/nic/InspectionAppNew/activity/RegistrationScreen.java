@@ -357,7 +357,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     private void showPermissionsAlert() {
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder.setTitle(getResources().getString(R.string.permissions_required))
-                .setMessage(getResources().getString(R.string.camera_needs_few_permissions))
+                .setMessage(getResources().getString(R.string.allow_camera_location_permission))
                 .setPositiveButton(getResources().getString(R.string.go_to_settings), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         CameraUtils.openSettings(RegistrationScreen.this);
@@ -437,19 +437,13 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     Bitmap compBitmap = BitmapFactory.decodeFile(compressedFile.getAbsolutePath());
                     UserProfile=Utils.BitMapToString(compBitmap);
                     Picasso.get().load(compressedFile).into(registrationScreenBinding.profileImage);
-                    Toast.makeText(this, "Compressed", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "Compressed", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(this, "Failed Compress", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "Failed Compress", Toast.LENGTH_SHORT).show();
                     Picasso.get().load(uri).into(registrationScreenBinding.profileImage);
                 }
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        uploadProfile();
-                    }
-                }, 1000);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 //TODO handle cropping error
                 Toast.makeText(this, "Cropping failed: " + result.getError(), Toast.LENGTH_LONG).show();
@@ -569,7 +563,6 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
             registrationScreenBinding.profileImage.setImageBitmap(rotatedBitmap);
 
             UserProfile=BitMapToString(rotatedBitmap);
-            uploadProfile();
 //            cameraScreenBinding.imageView.showImage((getImageUri(rotatedBitmap)));
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -588,22 +581,6 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         }
         return temp;
     }
-
-    public void uploadProfile() {
-        if(!UserProfile.equalsIgnoreCase("")){
-/*
-            try {
-                new ApiService(this).makeJSONObjectRequest("uploadProfile", Api.Method.POST, UrlGenerator.getServicesListUrl(), uploadProfileJsonParams(), "not cache", this);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-*/
-
-        }else {
-            Utils.showAlert(this,"Please select profile image");
-        }
-    }
-
 
     private void validate(String mobile) {
         if (Utils.isOnline()) {
@@ -838,6 +815,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
                 response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")){
+                    UserProfile="";
                     Toasty.success(RegistrationScreen.this,responseObj.getString("MESSAGE"), Toast.LENGTH_SHORT).show();
                     gotoOtpVerification();
                 }else {
@@ -850,15 +828,21 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    showAlert(this, "User data updated successfully!");
-                    getProfileData();
+//                    showAlert(this, "User data updated successfully!");
+                    Toasty.success(this,jsonObject.getString(AppConstant.KEY_MESSAGE),Toast.LENGTH_SHORT,true).show();
+                    UserProfile="";
+                   /* getProfileData();
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             onBackPress();
                         }
-                    }, 1000);
+                    }, 1000);*/
+                   showSignInScreen();
 
+                }
+                else {
+                    Utils.showAlert(RegistrationScreen.this,jsonObject.getString("MESSAGE"));
                 }
                 Log.d("update", "" + responseDecryptedBlockKey);
             }
@@ -884,6 +868,16 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                             String bcode=jsonArray.getJSONObject(i).getString("bcode");
                             String office_address=jsonArray.getJSONObject(i).getString("office_address");
                             String email=jsonArray.getJSONObject(i).getString("email");
+                            String profile_image=jsonArray.getJSONObject(i).getString("profile_image");
+                            if(profile_image != null &&!profile_image.isEmpty()){
+                                byte[] decodedString = Base64.decode(profile_image, Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                prefManager.setProfileImage(Utils.BitMapToString(decodedByte));
+
+
+                            }else {
+                                prefManager.setProfileImage("");
+                            }
                             prefManager.setDesignation(designation);
                             prefManager.setName(String.valueOf(name));
                             prefManager.setLevels(String.valueOf(level));
@@ -893,7 +887,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     }
 
                 }else {
-                    showAlert(this, jsonObject.getString(AppConstant.KEY_MESSAGE));
+                    Toasty.success(this,jsonObject.getString(AppConstant.KEY_MESSAGE),Toast.LENGTH_SHORT,true).show();
                 }
 
             }
@@ -944,6 +938,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     String bcode=jsonArray.getJSONObject(i).getString("bcode");
                     String office_address=jsonArray.getJSONObject(i).getString("office_address");
                     String email=jsonArray.getJSONObject(i).getString("email");
+                    UserProfile=jsonArray.getJSONObject(i).getString("profile_image");
                     dcodeSelected=dcode;
                     bcodeSelected=bcode;
                     designation_idSelected=designation_selected;
@@ -956,6 +951,11 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     registrationScreenBinding.detailsLayout.setVisibility(View.VISIBLE);
                     registrationScreenBinding.officeAddress.setText(office_address);
                     registrationScreenBinding.emailId.setText(email);
+                    if (UserProfile != null && !UserProfile.equals("")) {
+                        registrationScreenBinding.profileImage.setImageBitmap(Utils.StringToBitMap(UserProfile));
+                    }else {
+                        registrationScreenBinding.profileImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_user_icon));
+                    }
                    /* for(int j=0;j<genderList.size();j++){
                         if(genderList.get(j).getGender_code() .equalsIgnoreCase(gender) ){
                             registrationScreenBinding.genderSpinner.setSelection(j);
@@ -1277,7 +1277,12 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                             if(level_id.equalsIgnoreCase("S")){
                                 if(!registrationScreenBinding.officeAddress.getText().toString().isEmpty()){
                                     if(!registrationScreenBinding.emailId.getText().toString().isEmpty()&&Utils.isEmailValid1(registrationScreenBinding.emailId.getText().toString())){
-                                        saveDataAlert();
+                                        if(!UserProfile.equalsIgnoreCase("")){
+                                            saveDataAlert();
+                                        }else {
+                                            Utils.showAlert(this,"Please select profile image");
+                                        }
+
                                     }
                                     else {
                                         registrationScreenBinding.emailId.setError("Enter Valid Email");
@@ -1293,7 +1298,11 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                                 if(!dcode.isEmpty()){
                                     if(!registrationScreenBinding.officeAddress.getText().toString().isEmpty()){
                                         if(!registrationScreenBinding.emailId.getText().toString().isEmpty()&&Utils.isEmailValid(registrationScreenBinding.emailId.getText().toString())){
-                                            saveDataAlert();
+                                            if(!UserProfile.equalsIgnoreCase("")){
+                                                saveDataAlert();
+                                            }else {
+                                                Utils.showAlert(this,"Please select profile image");
+                                            }
                                         }
                                         else {
                                             registrationScreenBinding.emailId.setError("Enter Valid Email");
@@ -1314,7 +1323,11 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                                     if(!bcode.isEmpty()){
                                         if(!registrationScreenBinding.officeAddress.getText().toString().isEmpty()){
                                             if(!registrationScreenBinding.emailId.getText().toString().isEmpty()&&Utils.isEmailValid(registrationScreenBinding.emailId.getText().toString())){
-                                                saveDataAlert();
+                                                if(!UserProfile.equalsIgnoreCase("")){
+                                                    saveDataAlert();
+                                                }else {
+                                                    Utils.showAlert(this,"Please select profile image");
+                                                }
                                             }
                                             else {
                                                 registrationScreenBinding.emailId.setError("Enter Email");
@@ -1413,6 +1426,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 }
                 data_set.put("office_address",registrationScreenBinding.officeAddress.getText().toString());
                 data_set.put("email",registrationScreenBinding.emailId.getText().toString());
+                data_set.put("profile_image",UserProfile);
                 Log.d("register_json",data_set.toString());
 
                 if(Utils.isOnline()){
@@ -1441,7 +1455,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 }
                 data_set.put("office_address",registrationScreenBinding.officeAddress.getText().toString());
                 data_set.put("email",registrationScreenBinding.emailId.getText().toString());
-
+                data_set.put("profile_image",UserProfile);
                 String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), data_set.toString());
                 JSONObject dataSet = new JSONObject();
                 dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
@@ -1530,4 +1544,11 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         setResult(Activity.RESULT_CANCELED);
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
+    private void showSignInScreen() {
+        Intent i = new Intent(RegistrationScreen.this, LoginScreen.class);
+        startActivity(i);
+        finish();
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);    }
+
+
 }

@@ -120,6 +120,7 @@
     <string name="gps_not_turned_on">GPS is not turned on…</string>
     <string name="permissions_required">Permissions required!</string>
     <string name="camera_needs_few_permission">Camera needs few permissions to work properly. Grant them in settings.</string>
+    <string name="allow_camera_location_permission">Need Camera, File and Location permissions to work properly. Grant them in settings.</string>
     <string name="user_cancelled_image_capture">User cancelled image capture</string>
     <string name="sorry_failed_to_capture_image">Sorry! Failed to capture image</string>
     <string name="user_cancelled_video_recording">User cancelled video recording</string>

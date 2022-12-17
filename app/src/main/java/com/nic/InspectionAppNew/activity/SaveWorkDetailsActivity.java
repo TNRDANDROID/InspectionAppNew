@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -135,8 +136,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     private static final int SPEECH_REQUEST_CODE = 103;
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 1213;
     private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
-    private static final int PERMISSION_REQUEST_CODE = 200;
-    private static final int PERMISSION_FINE_LOCATION = 300;
+    private static final int PERMISSION_CAMERA = 400;
     private static String imageStoragePath;
     public static final int BITMAP_SAMPLE_SIZE = 8;
     AdapterCameraIntent adapterCameraIntent;
@@ -1526,16 +1526,6 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
         }
     }
-    public void getpermission(int i) {
-        if(i==1){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{CAMERA, ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-            }
-        }else {
-            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_FINE_LOCATION);
-        }
-
-    }
     public void showToast(String s){
         Toasty.success(SaveWorkDetailsActivity.this,s,Toast.LENGTH_SHORT,true).show();
        /* super.onBackPressed();
@@ -1606,114 +1596,6 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                 matrix, true);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE: {
-
-                // Note: If request is cancelled, the result arrays are empty.
-                // Permissions granted (CALL_PHONE).
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Log.i( "LOG_TAG","Permission granted");
-                    if(adapterCameraIntent!=null){
-                        adapterCameraIntent.OnIntentListenerPermission(true);
-                    }
-
-                }
-                // Cancelled or denied.
-                else {
-                    Log.i("LOG_TAG","Permission denied");
-                    Toast.makeText(this.getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-            break;
-            case PERMISSION_FINE_LOCATION: {
-
-                // Note: If request is cancelled, the result arrays are empty.
-                // Permissions granted (CALL_PHONE).
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Log.i( "LOG_TAG","Permission granted");
-                    if(adapterCameraIntent!=null){
-                        adapterCameraIntent.OnIntentListenerPermission(true);
-                    }
-
-//
-                }
-                // Cancelled or denied.
-                else {
-                    Log.i("LOG_TAG","Permission denied");
-                    Toast.makeText(this.getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            }
-            case REQUEST_RECORD_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(SaveWorkDetailsActivity.this, "start talk...", Toast
-                            .LENGTH_SHORT).show();
-                    speech.startListening(recognizerIntent);
-                } else {
-                    Toast.makeText(SaveWorkDetailsActivity.this, "Permission Denied!", Toast
-                            .LENGTH_SHORT).show();
-                }
-                break;
-            case 1000: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-                    locationRequest = LocationRequest.create();
-                    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                    //locationRequest.setInterval(0);
-
-                    mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    mlocListener = new MyLocationListener();
-
-
-                    // permission was granted, yay! Do the
-                    // location-related task you need to do.
-                    if (ContextCompat.checkSelfPermission(SaveWorkDetailsActivity.this,
-                            ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-
-                        //Request location updates:
-                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
-
-                    }
-
-                    if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-                            if (location != null) {
-                                wayLatitude = location.getLatitude();
-                                wayLongitude = location.getLongitude();
-                                Log.d("LocationAccuracy", "" + location.getAccuracy());
-                                Log.d("Locations", "" + wayLatitude + "," + wayLongitude);
-
-                                    captureImage();
-
-                            } else {
-                                Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.satellite_communication_not_available));
-                            }
-                        });
-                    }
-                    else {
-                        Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.gps_is_not_turned_on));
-                    }
-                } else {
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-                }
-
-
-                break;
-            }
-        }
-    }
 
     @Override
     public void onResume() {
@@ -1942,9 +1824,8 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             // check permission
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, CAMERA},
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                         1000);
                 // reuqest for permission
 
@@ -1963,7 +1844,16 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                         Log.d("LocationAccuracy", "" + location.getAccuracy());
                         Log.d("Locations", "" + wayLatitude + "," + wayLongitude);
 
+                        if (ContextCompat.checkSelfPermission(SaveWorkDetailsActivity.this,
+                                CAMERA)
+                                == PackageManager.PERMISSION_GRANTED) {
                             captureImage();
+
+                        }else {
+                            ActivityCompat.requestPermissions(this, new String[]{CAMERA},
+                                    PERMISSION_CAMERA);
+
+                        }
 
                     } else {
                         Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.satellite_communication_not_available));
@@ -1978,6 +1868,121 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
 
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_CAMERA: {
 
+                // Note: If request is cancelled, the result arrays are empty.
+                // Permissions granted (CALL_PHONE).
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    captureImage();
+                    Log.i( "LOG_TAG","Permission granted");
+
+                }
+                // Cancelled or denied.
+                else {
+                    Log.i("LOG_TAG","Permission denied");
+//                    Toast.makeText(this.getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                    ActivityCompat.requestPermissions(this, new String[]{CAMERA},
+                            PERMISSION_CAMERA);
+
+                }
+
+            }
+            break;
+            case REQUEST_RECORD_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(SaveWorkDetailsActivity.this, "start talk...", Toast
+                            .LENGTH_SHORT).show();
+                    speech.startListening(recognizerIntent);
+                } else {
+                    Toast.makeText(SaveWorkDetailsActivity.this, "Permission Denied!", Toast
+                            .LENGTH_SHORT).show();
+                }
+                break;
+            case 1000: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+                    locationRequest = LocationRequest.create();
+                    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                    //locationRequest.setInterval(0);
+
+                    mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    mlocListener = new MyLocationListener();
+
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(SaveWorkDetailsActivity.this,
+                            ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        //Request location updates:
+                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+
+                    }
+
+                    if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                            if (location != null) {
+                                wayLatitude = location.getLatitude();
+                                wayLongitude = location.getLongitude();
+                                Log.d("LocationAccuracy", "" + location.getAccuracy());
+                                Log.d("Locations", "" + wayLatitude + "," + wayLongitude);
+                                if (ContextCompat.checkSelfPermission(SaveWorkDetailsActivity.this,
+                                        CAMERA)
+                                        == PackageManager.PERMISSION_GRANTED) {
+                                    captureImage();
+
+                                }else {
+                                    ActivityCompat.requestPermissions(this, new String[]{CAMERA},
+                                            PERMISSION_CAMERA);
+
+                                }
+
+
+
+                            } else {
+                                Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.satellite_communication_not_available));
+                            }
+                        });
+                    }
+                    else {
+                        Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.gps_is_not_turned_on));
+                    }
+                } else {
+//                    Toast.makeText(this, "Permission got", Toast.LENGTH_SHORT).show();
+                    showPermissionsAlert();
+                }
+
+
+                break;
+            }
+        }
+    }
+
+    private void showPermissionsAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.permissions_required))
+                .setMessage(getResources().getString(R.string.allow_camera_location_permission))
+                .setPositiveButton(getResources().getString(R.string.goto_settings), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        CameraUtils.openSettings(SaveWorkDetailsActivity.this);
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+
+    }
 
 }

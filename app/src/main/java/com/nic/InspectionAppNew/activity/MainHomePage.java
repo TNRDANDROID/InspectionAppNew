@@ -5,10 +5,14 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -87,6 +91,29 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             }
             }
         });
+        homeScreenBinding.navigationLayout.userImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (prefManager.getProfileImage() != null && !prefManager.getProfileImage().equals("")) {
+                    Utils.ExpandedImage(prefManager.getProfileImage(),MainHomePage.this);
+                }
+            }
+        });
+        homeScreenBinding.navigationLayout.refreshStages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
+                getStageList();
+            }
+        });
+
+        try {
+            String versionName = getPackageManager()
+                    .getPackageInfo(getPackageName(), 0).versionName;
+            homeScreenBinding.navigationLayout.tvVersion.setText(getResources().getString(R.string.version) + " " + versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
         if (Utils.isOnline()) {
@@ -262,14 +289,6 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         }else {
             homeScreenBinding.navigationLayout.userImg.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_user_icon));
         }
-        homeScreenBinding.navigationLayout.userImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (prefManager.getProfileImage() != null && !prefManager.getProfileImage().equals("")) {
-                    Utils.ExpandedImage(prefManager.getProfileImage(),MainHomePage.this);
-                }
-            }
-        });
     }
 
     private void getProfileData() {
@@ -460,11 +479,22 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                             String bcode=jsonArray.getJSONObject(i).getString("bcode");
                             String office_address=jsonArray.getJSONObject(i).getString("office_address");
                             String email=jsonArray.getJSONObject(i).getString("email");
+                            String profile_image=jsonArray.getJSONObject(i).getString("profile_image");
+                            if(profile_image != null &&!profile_image.isEmpty()){
+                                byte[] decodedString = Base64.decode(profile_image, Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                prefManager.setProfileImage(Utils.BitMapToString(decodedByte));
+
+
+                            }else {
+                                prefManager.setProfileImage("");
+                            }
                             prefManager.setDesignation(designation);
                             prefManager.setName(String.valueOf(name));
                             prefManager.setLevels(String.valueOf(level));
                             prefManager.setDistrictCode(dcode);
                             prefManager.setBlockCode(bcode);
+
                         }
                         setProfile();
                     }
@@ -570,18 +600,25 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 if(status_wise_count.length()>0){
                     for(int j=0;j<status_wise_count.length();j++){
                         try {
-                            int satisfied_count = status_wise_count.getJSONObject(j).getInt("satisfied");
-                            int un_satisfied_count = status_wise_count.getJSONObject(j).getInt("unsatisfied");
-                            int need_improvement_count = status_wise_count.getJSONObject(j).getInt("need_improvement");
+                            String satisfied_count = status_wise_count.getJSONObject(j).getString("satisfied");
+                            String un_satisfied_count = status_wise_count.getJSONObject(j).getString("unsatisfied");
+                            String need_improvement_count = status_wise_count.getJSONObject(j).getString("need_improvement");
                             String fin_year = status_wise_count.getJSONObject(j).getString("fin_year");
-                            int total_inspection_count = satisfied_count+un_satisfied_count+need_improvement_count;
+                            if(satisfied_count.equals("")){
+                                satisfied_count="0";
+                            } if(un_satisfied_count.equals("")){
+                                un_satisfied_count="0";
+                            } if(need_improvement_count.equals("")){
+                                need_improvement_count="0";
+                            }
+                            int total_inspection_count = Integer.parseInt(satisfied_count)+Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
                             homeScreenBinding.satisfiedCountGraph.setText(String.valueOf(satisfied_count));
                             homeScreenBinding.unSatisfiedCountGraph.setText(String.valueOf(un_satisfied_count));
                             homeScreenBinding.needImprovementCountGraph.setText(String.valueOf(need_improvement_count));
                             homeScreenBinding.totalCountGraph.setText(String.valueOf(total_inspection_count));
                             homeScreenBinding.totalCount1.setText(String.valueOf(total_inspection_count));
                             homeScreenBinding.totalTv.setText("Total ("+fin_year+")");
-                            showPieChart(satisfied_count,un_satisfied_count,need_improvement_count,total_inspection_count);
+                            showPieChart(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count),Integer.parseInt(need_improvement_count),total_inspection_count);
                         } catch (JSONException e){
 
                         }
@@ -844,8 +881,8 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         private  ProgressHUD progressHUD;
         @Override
         protected Void doInBackground(JSONObject... params) {
-            ArrayList<ModelClass> stage_count = dbData.getAll_Stage("all","","","");
-            if (stage_count.size() <= 0) {
+            dbData.open();
+            dbData.deleteWorkStageTable();
                 if (params.length > 0) {
                     //dbData.deleteWorkStageTable();
                     JSONArray jsonArray = new JSONArray();
@@ -869,7 +906,6 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                         }
                     }
                 }
-            }
             return null;
         }
         @Override

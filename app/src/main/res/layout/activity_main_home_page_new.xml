@@ -106,103 +106,6 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/header">
                         <RelativeLayout
-                            android:id="@+id/rellay2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="visible"
-                            >
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/user_name"
-                                android:layout_toRightOf="@+id/imgUser1"
-                                android:gravity="start"
-                                android:visibility="gone"
-                                android:layout_marginStart="@dimen/_8sdp"
-                                android:layout_marginTop="@dimen/_8sdp"
-                                android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
-                                android:textStyle="bold"/>
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_toRightOf="@+id/img_layout"
-                                android:id="@+id/designation"
-                                android:visibility="gone"
-                                android:layout_below="@+id/user_name"
-                                android:gravity="start"
-                                android:layout_marginStart="@dimen/_8sdp"
-                                android:layout_marginTop="@dimen/_5sdp"
-                                android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
-                                android:textStyle="bold"/>
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/user_level"
-                                android:layout_toRightOf="@+id/img_layout"
-                                android:layout_below="@+id/designation"
-                                android:gravity="start"
-                                android:visibility="gone"
-                                android:layout_marginStart="@dimen/_8sdp"
-                                android:layout_marginTop="@dimen/_5sdp"
-                                android:layout_marginBottom="@dimen/_8sdp"
-                                android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
-                                android:textStyle="bold"/>
-
-                            <RelativeLayout
-                                android:layout_alignParentEnd="true"
-                                android:id="@+id/imgUser1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:layout_marginRight="5dp"
-                                >
-
-                                <de.hdodenhof.circleimageview.CircleImageView
-                                    android:layout_width="@dimen/_50sdp"
-                                    android:layout_height="@dimen/_50sdp"
-                                    android:id="@+id/user_img"
-                                    android:padding="8dp"
-                                    android:src="@drawable/ic_user_icon"
-                                    />
-                                <ImageView
-                                    android:visibility="gone"
-                                    android:padding="@dimen/_3sdp"
-                                    android:layout_centerVertical="true"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="@dimen/_30sdp"
-                                    android:layout_toEndOf="@+id/profile_icon"
-                                    android:id="@+id/time_image"
-                                    tools:ignore="ContentDescription" />
-                                <TextView
-                                    android:textStyle="bold"
-                                    android:padding="@dimen/_3sdp"
-                                    android:layout_centerVertical="true"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="@dimen/_30sdp"
-                                    android:textColor="@color/colorPrimaryDark"
-                                    android:textSize="@dimen/_15sdp"
-                                    android:layout_toEndOf="@+id/profile_icon"
-                                    android:id="@+id/time_image_text"/>
-
-                            </RelativeLayout>
-                            <TextView
-                                android:layout_below="@+id/ll1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:id="@+id/timer"
-                                android:textColor="@color/white"
-                                android:textStyle="bold"
-                                android:textSize="@dimen/_12sdp"
-                                android:layout_marginEnd="@dimen/_10sdp"
-                                android:padding="@dimen/_10sdp"/>
-
-                        </RelativeLayout>
-                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/inspection_count_list_layout"
@@ -463,6 +366,73 @@
 
                         </RelativeLayout>
 
+                        <RelativeLayout
+                            android:id="@+id/rellay2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            >
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/user_name"
+                                android:layout_toRightOf="@+id/imgUser1"
+                                android:gravity="start"
+                                android:visibility="gone"
+                                android:layout_marginStart="@dimen/_8sdp"
+                                android:layout_marginTop="@dimen/_8sdp"
+                                android:textColor="@color/grey_10"
+                                android:textSize="@dimen/_12sdp"
+                                android:textStyle="bold"/>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@+id/img_layout"
+                                android:id="@+id/designation"
+                                android:visibility="gone"
+                                android:layout_below="@+id/user_name"
+                                android:gravity="start"
+                                android:layout_marginStart="@dimen/_8sdp"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:textColor="@color/grey_10"
+                                android:textSize="@dimen/_12sdp"
+                                android:textStyle="bold"/>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/user_level"
+                                android:layout_toRightOf="@+id/img_layout"
+                                android:layout_below="@+id/designation"
+                                android:gravity="start"
+                                android:visibility="gone"
+                                android:layout_marginStart="@dimen/_8sdp"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_8sdp"
+                                android:textColor="@color/grey_10"
+                                android:textSize="@dimen/_12sdp"
+                                android:textStyle="bold"/>
+
+                            <RelativeLayout
+                                android:layout_alignParentEnd="true"
+                                android:id="@+id/imgUser1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginRight="5dp"
+                                >
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="@dimen/_50sdp"
+                                    android:layout_height="@dimen/_50sdp"
+                                    android:id="@+id/user_img"
+                                    android:padding="6dp"
+                                    android:src="@drawable/ic_user_icon"
+                                    />
+
+                            </RelativeLayout>
+
+                        </RelativeLayout>
 
 
                     </RelativeLayout>
