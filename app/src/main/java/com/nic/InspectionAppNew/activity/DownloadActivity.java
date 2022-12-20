@@ -208,7 +208,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
         }
     }
     public JSONObject villageListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.villageListDistrictWiseJsonParams(this).toString());
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.villageListDistrictBlockWiseJsonParams(this).toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
@@ -412,7 +412,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             public void onClick(DialogInterface dialogInterface, int position) {
                 if (Dcode != null && !Dcode.equals("")) {
                     JSONArray districtCodeJsonArray = new JSONArray();
-                    prefManager.setDistrictCode(Dcode);
+//                    prefManager.setDistrictCode(Dcode);
                     prefManager.setDistrictCodeSelected(Dcode);
                     districtCodeJsonArray.put(Dcode);
                     prefManager.setDistrictCodeJson(districtCodeJsonArray);
@@ -516,7 +516,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     JSONArray districtCodeJsonArray = new JSONArray();
 
                     for (int i = 0; i < mDistrictItems.size(); i++) {
-                        prefManager.setDistrictCode(districtCodeStrings[mDistrictItems.get(i)]);
+//                        prefManager.setDistrictCode(districtCodeStrings[mDistrictItems.get(i)]);
                         prefManager.setDistrictCodeSelected(districtCodeStrings[mDistrictItems.get(i)]);
                         districtCodeJsonArray.put(districtCodeStrings[mDistrictItems.get(i)]);
                     }
@@ -582,7 +582,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     select_village_layout.setVisibility(View.GONE);
                     JSONArray districtCodeJsonArray = new JSONArray();
                     prefManager.setDistrictCodeJson(districtCodeJsonArray);
-                    prefManager.setDistrictCode("");
+//                    prefManager.setDistrictCode("");
                     prefManager.setDistrictCodeSelected("");
                 }
             }
@@ -664,7 +664,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
             public void onClick(DialogInterface dialogInterface, int position) {
                 if (Bcode != null && !Bcode.equals("")) {
                     JSONArray blockCodeJsonArray = new JSONArray();
-                    prefManager.setBlockCode(Bcode);
+//                    prefManager.setBlockCode(Bcode);
                     prefManager.setBlockCodeSelected(Bcode);
                     blockCodeJsonArray.put(Bcode);
                     prefManager.setBlockCodeJson(blockCodeJsonArray);
@@ -765,7 +765,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     JSONArray blockCodeJsonArray = new JSONArray();
 
                     for (int i = 0; i < mBlockItems.size(); i++) {
-                        prefManager.setBlockCode(blockCodeStrings[mBlockItems.get(i)]);
+//                        prefManager.setBlockCode(blockCodeStrings[mBlockItems.get(i)]);
                         prefManager.setBlockCodeSelected(blockCodeStrings[mBlockItems.get(i)]);
                         if(prefManager.getLevels().equalsIgnoreCase("S")) {
                             blockCodeJsonArray.put(myBlockCodelist.get(mBlockItems.get(i)));
@@ -811,7 +811,7 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                     select_village_layout.setVisibility(View.GONE);
                     mVillageItems.clear();
                     JSONArray blockCodeJsonArray = new JSONArray();
-                    prefManager.setBlockCode("");
+//                    prefManager.setBlockCode("");
                     prefManager.setBlockCodeSelected("");
                     prefManager.setBlockCodeJson(blockCodeJsonArray);
                 }
@@ -837,7 +837,17 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
     public void loadOfflineVillgeListDBValues() {
 
         String villageSql = null;
-        villageSql = "SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " WHERE bcode ="+prefManager.getBlockCode()+" and dcode ="+prefManager.getDistrictCode()+ " order by pvname asc";
+        if(prefManager.getLevels().equalsIgnoreCase("S")){
+            villageSql = "SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " WHERE bcode ="+prefManager.getBlockCodeSelected()+" and dcode ="+prefManager.getDistrictCodeSelected()+ " order by pvname asc";
+
+        }
+        else if(prefManager.getLevels().equalsIgnoreCase("D")){
+            villageSql = "SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " WHERE bcode ="+prefManager.getBlockCodeSelected()+" and dcode ="+prefManager.getDistrictCode()+ " order by pvname asc";
+
+        }else {
+            villageSql = "SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " WHERE bcode ="+prefManager.getBlockCode()+" and dcode ="+prefManager.getDistrictCode()+ " order by pvname asc";
+
+        }
         Log.d("villageSql", "" + villageSql);
         Cursor VillageList = getRawEvents(villageSql, null);
         Village.clear();

@@ -54,6 +54,7 @@
                         android:layout_centerInParent="true"
                         android:layout_marginTop="@dimen/margin"
                         android:text="Registration"
+                        android:id="@+id/title_tv"
                         android:textColor="@android:color/white"
                         android:textSize="18sp"
                         customfontdemo:fontName="@string/font_circular_medium" />

@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
@@ -46,6 +47,8 @@ import com.nic.InspectionAppNew.api.Api;
 import com.nic.InspectionAppNew.api.ApiService;
 import com.nic.InspectionAppNew.api.ServerResponse;
 import com.nic.InspectionAppNew.constant.AppConstant;
+import com.nic.InspectionAppNew.dataBase.DBHelper;
+import com.nic.InspectionAppNew.dataBase.dbData;
 import com.nic.InspectionAppNew.databinding.RegistrationScreenBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
@@ -107,6 +110,9 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 1;
     private static final int GALLERY_IMAGE_REQUEST_CODE = 2;
     private Uri mCropImageUri;
+    public com.nic.InspectionAppNew.dataBase.dbData dbData = new dbData(this);
+    public DBHelper dbHelper;
+    public SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +121,13 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         registrationScreenBinding =DataBindingUtil.setContentView(this, R.layout.registration_screen);
         registrationScreenBinding.setActivity(this);
         prefManager = new PrefManager(this);
+        try {
+            dbHelper = new DBHelper(this);
+            db = dbHelper.getWritableDatabase();
+            dbData.open();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         key=getIntent().getStringExtra("key");
 
@@ -123,12 +136,14 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
             registrationScreenBinding.mobileNo.setEnabled(true);
             registrationScreenBinding.tick1.setVisibility(View.VISIBLE);
             registrationScreenBinding.btnRegister.setText("Register");
+            registrationScreenBinding.titleTv.setText("Registration");
         }
         else {
             registrationScreenBinding.detailsLayout.setVisibility(View.VISIBLE);
             registrationScreenBinding.mobileNo.setEnabled(false);
             registrationScreenBinding.tick1.setVisibility(View.GONE);
             registrationScreenBinding.btnRegister.setText("Update");
+            registrationScreenBinding.titleTv.setText("Edit Profile");
 
         }
         fetchResponce();
@@ -153,32 +168,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 if(position>0){
-                    dcode = "";
-                    bcode = "";
-                    designation_id ="";
-                    registrationScreenBinding.block.setAdapter(null);
-
-                    level_id = levelList.get(position).getLocalbody_code();
-                    if(level_id.equalsIgnoreCase("S")){
-                        registrationScreenBinding.districtLayout.setVisibility(View.GONE);
-                        registrationScreenBinding.designationLayout.setVisibility(View.VISIBLE);
-                        registrationScreenBinding.blockLayout.setVisibility(View.GONE);
-
-                    }
-                    else if(level_id.equalsIgnoreCase("D")){
-                        getDistrictList();
-                        registrationScreenBinding.districtLayout.setVisibility(View.VISIBLE);
-                        registrationScreenBinding.designationLayout.setVisibility(View.VISIBLE);
-                        registrationScreenBinding.blockLayout.setVisibility(View.GONE);
-                    }
-                    else {
-                        getDistrictList();
-                        registrationScreenBinding.districtLayout.setVisibility(View.VISIBLE);
-                        registrationScreenBinding.designationLayout.setVisibility(View.VISIBLE);
-                        registrationScreenBinding.blockLayout.setVisibility(View.VISIBLE);
-                    }
-
-                    getDesignationList();
+                    getLevelSelection(position);
                 }
                 else {
                     level_id ="";
@@ -310,7 +300,36 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         });
 
     }
+    public void getLevelSelection(int position){
 
+        dcode = "";
+        bcode = "";
+        designation_id ="";
+        registrationScreenBinding.block.setAdapter(null);
+
+        level_id = levelList.get(position).getLocalbody_code();
+        if(level_id.equalsIgnoreCase("S")){
+            registrationScreenBinding.districtLayout.setVisibility(View.GONE);
+            registrationScreenBinding.designationLayout.setVisibility(View.VISIBLE);
+            registrationScreenBinding.blockLayout.setVisibility(View.GONE);
+
+        }
+        else if(level_id.equalsIgnoreCase("D")){
+            getDistrictList();
+            registrationScreenBinding.districtLayout.setVisibility(View.VISIBLE);
+            registrationScreenBinding.designationLayout.setVisibility(View.VISIBLE);
+            registrationScreenBinding.blockLayout.setVisibility(View.GONE);
+        }
+        else {
+            getDistrictList();
+            registrationScreenBinding.districtLayout.setVisibility(View.VISIBLE);
+            registrationScreenBinding.designationLayout.setVisibility(View.VISIBLE);
+            registrationScreenBinding.blockLayout.setVisibility(View.VISIBLE);
+        }
+
+        getDesignationList();
+
+    }
 
     public void getPerMissionCapture(){
         if (Build.VERSION.SDK_INT >= M) {
@@ -1545,10 +1564,16 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
     private void showSignInScreen() {
-        Intent i = new Intent(RegistrationScreen.this, LoginScreen.class);
-        startActivity(i);
+        dbData.open();
+        dbData.deleteAll();
+        prefManager.clearSession();
+        Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("EXIT", false);
+        startActivity(intent);
         finish();
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);    }
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
 
 
 }

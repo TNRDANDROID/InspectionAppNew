@@ -194,6 +194,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
+                    System.out.println("position >>"+position);
                     /*if(prefManager.getPvCode()!=null && !prefManager.getPvCode().equals("")){
                         if(prefManager.getFinancialyearName()!=null && !prefManager.getFinancialyearName().equals("")){
                             prefManager.setSchemeSeqId(Scheme.get(position).getSchemeSequentialID());
@@ -422,6 +423,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         Scheme.clear();
         ModelClass list = new ModelClass();
         list.setSchemeName("Select Scheme");
+        list.setSchemeSequentialID("0");
         Scheme.add(list);
         if (cursor.getCount() > 0) {
             if (cursor.moveToFirst()) {
@@ -529,7 +531,15 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             workList = new ArrayList<>();
             completed_workList = new ArrayList<>();
             ongoing_workList = new ArrayList<>();
-            workList = dbData.getAllWorkList("offline","",prefManager.getDistrictCodeSelected(),prefManager.getBlockCodeSelected(),prefManager.getPvCode(),prefManager.getSchemeSeqId());
+            if(prefManager.getLevels().equalsIgnoreCase("S")){
+                workList = dbData.getAllWorkList("offline","",prefManager.getDistrictCodeSelected(),prefManager.getBlockCodeSelected(),prefManager.getPvCode(),prefManager.getSchemeSeqId());
+            }else if (prefManager.getLevels().equalsIgnoreCase("D")) {
+                workList = dbData.getAllWorkList("offline","",prefManager.getDistrictCode(),prefManager.getBlockCodeSelected(),prefManager.getPvCode(),prefManager.getSchemeSeqId());
+
+            }else if (prefManager.getLevels().equalsIgnoreCase("B")) {
+                workList = dbData.getAllWorkList("offline","",prefManager.getDistrictCode(),prefManager.getBlockCode(),prefManager.getPvCode(),prefManager.getSchemeSeqId());
+
+            }
 
             Log.d("Wlist_COUNT", String.valueOf(workList.size()));
             return workList;

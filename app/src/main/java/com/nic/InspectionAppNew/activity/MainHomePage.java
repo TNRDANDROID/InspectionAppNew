@@ -168,7 +168,12 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             @Override
             public void onClick(View view) {
                 homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
-                getProfileData();
+                ArrayList<ModelClass> ImageCount = dbData.getSavedImage();
+                if ((ImageCount.size() > 0)) {
+                    Utils.showAlert(MainHomePage.this, "Sync all the data before edit your profile!");
+                } else {
+                    getProfileData();
+                }
 
             }
         });
