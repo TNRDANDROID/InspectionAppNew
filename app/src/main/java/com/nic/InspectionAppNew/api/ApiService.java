@@ -17,7 +17,7 @@ import com.nic.InspectionAppNew.application.NICApplication;
 import com.nic.InspectionAppNew.support.ProgressHUD;
 
 /**
- * Created by AchanthiSundar on 28-12-2018.
+ * Created by Kavitha M on oct 2022.
  */
 public class ApiService {
     private Context context;

@@ -322,7 +322,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@+id/refresh_stages_icon"
-                    android:text="Refresh Stages"
+                    android:text="@string/refresh_work_stages_up_to_date"
                     android:textColor="@color/darkblue"
                     android:textSize="@dimen/_12sdp"/>
             </RelativeLayout>

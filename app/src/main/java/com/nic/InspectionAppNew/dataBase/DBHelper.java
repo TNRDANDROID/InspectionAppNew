@@ -99,6 +99,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 "ts_value TEXT," +
                 "current_stage_of_work TEXT," +
                 "stage_name TEXT," +
+                "as_date TEXT," +
+                "ts_date TEXT," +
+                "work_order_date TEXT," +
+                "work_type_name TEXT," +
                 "is_high_value TEXT)");
         db.execSQL("CREATE TABLE " + ONLINE_WORK_LIST + " ("
                 + "dcode INTEGER," +
@@ -116,6 +120,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 "ts_value TEXT," +
                 "current_stage_of_work TEXT," +
                 "stage_name TEXT," +
+                "as_date TEXT," +
+                "ts_date TEXT," +
+                "work_order_date TEXT," +
+                "work_type_name TEXT," +
                 "is_high_value TEXT)");
         db.execSQL("CREATE TABLE " + SAVE_WORK_DETAILS + " ("
                 + "save_work_details_primary_id INTEGER PRIMARY KEY AUTOINCREMENT," +

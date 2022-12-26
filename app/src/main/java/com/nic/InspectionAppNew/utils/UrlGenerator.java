@@ -5,7 +5,7 @@ import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.application.NICApplication;
 
 /**
- * Created by Achanthi Sundar  on 21/03/16.
+ * Created by Kavitha M on Oct 2022.
  */
 public class UrlGenerator {
 

@@ -9,12 +9,14 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ParseException;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -23,10 +25,12 @@ import android.os.Environment;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,8 +71,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, DateInterface {
@@ -96,6 +104,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
     String inspectionID="";
     String pdf_string_actual ="";
     ArrayList<ModelClass> savedWorkList;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,6 +112,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         workListBinding = DataBindingUtil.setContentView(this, R.layout.view_saved_work_list);
         workListBinding.setActivity(this);
+        setSupportActionBar(workListBinding.toolbar);
         prefManager = new PrefManager(this);
         try {
             dbHelper = new DBHelper(this);
@@ -257,6 +267,36 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+// Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+// listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+// filter recycler view when query submitted
+                savedWorkListAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+// filter recycler view when text is changed
+                savedWorkListAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        return true;
+    }
 
     @Override
     public void onBackPressed() {
@@ -713,6 +753,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                     savedWorkList.add(modelClass);
 
                 }
+                Collections.sort(savedWorkList, byDate);
 
                 if (savedWorkList.size()>0){
                     workListBinding.inspectionCountListLayout.setVisibility(View.VISIBLE);
@@ -764,7 +805,25 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         }
 
     }
+    static final Comparator<ModelClass> byDate = new Comparator<ModelClass>() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");//23-12-2022
 
+        public int compare(ModelClass ord1, ModelClass ord2) {
+            Date d1 = null;
+            Date d2 = null;
+            try {
+                d1 = sdf.parse(ord1.getInspectedDate());
+                d2 = sdf.parse(ord2.getInspectedDate());
+            } catch (ParseException | java.text.ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+
+            return (d1.getTime() > d2.getTime() ? -1 : 1);     //descending
+//            return (d1.getTime() > d2.getTime() ? 1 : -1);     //ascending
+        }
+    };
     private void showPieChart(int satisfied,int unsatisfied,int need_improvement,int total_inspection_count){
         workListBinding.graph.setMinValue(0f);
         workListBinding.graph.setMaxValue(total_inspection_count);

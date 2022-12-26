@@ -1401,6 +1401,10 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                                 String current_stage_of_work = jsonArray.getJSONObject(i).getString("current_stage_of_work");
                                 String stage_name = jsonArray.getJSONObject(i).getString("stage_name");
                                 String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
+                                String as_date = jsonArray.getJSONObject(i).getString("as_date");
+                                String ts_date = jsonArray.getJSONObject(i).getString("ts_date");
+                                String work_order_date = jsonArray.getJSONObject(i).getString("work_order_date");
+                                String work_type_name = jsonArray.getJSONObject(i).getString("work_type_name");
 
                                 ModelClass modelClass = new ModelClass();
                                 modelClass.setDistrictCode(dcode);
@@ -1419,6 +1423,10 @@ public class DownloadActivity extends AppCompatActivity implements Api.ServerRes
                                 modelClass.setCurrent_stage_of_work(current_stage_of_work);
                                 modelClass.setStage_name(stage_name);
                                 modelClass.setIs_high_value(is_high_value);
+                                modelClass.setAs_date(as_date);
+                                modelClass.setTs_date(ts_date);
+                                modelClass.setWork_order_date(work_order_date);
+                                modelClass.setWork_type_name(work_type_name);
 
                                 dbData.Insert_workList("offline",modelClass);
 

@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 /**
- * Created by kavitha on 10-11-2022.
+ * Created by Kavitha on 10-11-2022.
  */
 
 public class ImageViewUtils {

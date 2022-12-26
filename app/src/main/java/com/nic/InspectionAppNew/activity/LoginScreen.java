@@ -60,7 +60,7 @@ import static com.nic.InspectionAppNew.utils.Utils.showAlert;
 
 
 /**
- * Created by Dileep on 2022.
+ * Created by Kavitha M on Oct 2022.
  */
 
 public class LoginScreen extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
@@ -260,7 +260,10 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 /*
         loginScreenBinding.userName.setText("9790461958");
         loginScreenBinding.password.setText("Vel12345#$");//state local
+
 */
+           /* loginScreenBinding.userName.setText("9940869759");
+            loginScreenBinding.password.setText("Crd390#$");*/
         //local
        /*loginScreenBinding.userName.setText("9080873403");
         loginScreenBinding.password.setText("crd45#$");//Block local*/
@@ -273,7 +276,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
       //prod
        /* loginScreenBinding.userName.setText("9750895078");
         loginScreenBinding.password.setText("Test123#$");//block prod*/
-       /* loginScreenBinding.userName.setText("7878534575");
+       /* loginScreenBinding.userName.setText("3");
         loginScreenBinding.password.setText("test123#$");//state prod*/
         /*loginScreenBinding.userName.setText("9638527415");
         loginScreenBinding.password.setText("test123#$");//Dist prod*/

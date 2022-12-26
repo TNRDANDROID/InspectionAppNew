@@ -577,4 +577,41 @@ public class ModelClass implements Serializable {
     public void setWork_stage_name(String work_stage_name) {
         this.work_stage_name = work_stage_name;
     }
+
+    private String as_date;
+    private String ts_date;
+    private String work_order_date;
+    private String work_type_name;
+
+    public String getAs_date() {
+        return as_date;
+    }
+
+    public void setAs_date(String as_date) {
+        this.as_date = as_date;
+    }
+
+    public String getTs_date() {
+        return ts_date;
+    }
+
+    public void setTs_date(String ts_date) {
+        this.ts_date = ts_date;
+    }
+
+    public String getWork_order_date() {
+        return work_order_date;
+    }
+
+    public void setWork_order_date(String work_order_date) {
+        this.work_order_date = work_order_date;
+    }
+
+    public String getWork_type_name() {
+        return work_type_name;
+    }
+
+    public void setWork_type_name(String work_type_name) {
+        this.work_type_name = work_type_name;
+    }
 }

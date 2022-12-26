@@ -263,4 +263,9 @@
     <string name="go_to_settings">GOTO SETTINGS</string>
     <string name="CANCEL">CANCEL</string>
     <string name="verify_mobile"><u>Verify mobile number</u>, if you are not done otp verification</string>
+    <string name="as_date">AS Date</string>
+    <string name="ts_date">TS Date</string>
+    <string name="agreement_work_orderdate">Agreement/Work Order Date</string>
+    <string name="work_type_name">Work Type Name</string>
+    <string name="refresh_work_stages_up_to_date">Refresh Work Stages Up to Date</string>
 </resources>

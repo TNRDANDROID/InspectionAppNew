@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -38,10 +40,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdapter.MyViewHolder> implements Api.ServerResponseListener{
+public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdapter.MyViewHolder> implements Api.ServerResponseListener , Filterable {
 
     private  Activity context;
     private PrefManager prefManager;
+    private ArrayList<ModelClass> listFilteredValue;
     private ArrayList<ModelClass> list;
     private LayoutInflater layoutInflater;
     String type;
@@ -51,6 +54,7 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
 
         this.context = context;
         prefManager = new PrefManager(context);
+        this.listFilteredValue = listValues;
         this.list = listValues;
         this.type = type;
     }
@@ -131,11 +135,11 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
             holder.binding.otherWorkCategoryNameLayout.setVisibility(View.GONE);
             holder.binding.workNameLayout.setVisibility(View.VISIBLE);
             holder.binding.workH.setText(context.getResources().getString(R.string.work_id));
-            holder.binding.workId.setText(String.valueOf(list.get(position).getWork_id()));
-            holder.binding.workName.setText(String.valueOf(list.get(position).getWork_name()));
-            holder.binding.inspectedDate.setText(String.valueOf(list.get(position).getInspectedDate()));
-            holder.binding.status.setText(String.valueOf(list.get(position).getWork_status()));
-            if(Utils.compareDate(String.valueOf(list.get(position).getInspectedDate()))){
+            holder.binding.workId.setText(String.valueOf(listFilteredValue.get(position).getWork_id()));
+            holder.binding.workName.setText(String.valueOf(listFilteredValue.get(position).getWork_name()));
+            holder.binding.inspectedDate.setText(String.valueOf(listFilteredValue.get(position).getInspectedDate()));
+            holder.binding.status.setText(String.valueOf(listFilteredValue.get(position).getWork_status()));
+            if(Utils.compareDate(String.valueOf(listFilteredValue.get(position).getInspectedDate()))){
                 holder.binding.edit.setVisibility(View.VISIBLE);
             }else {
                 holder.binding.edit.setVisibility(View.GONE);
@@ -143,7 +147,7 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
 
         }
         else {
-            if(Utils.compareDate(String.valueOf(list.get(position).getInspectedDate()))){
+            if(Utils.compareDate(String.valueOf(listFilteredValue.get(position).getInspectedDate()))){
                 holder.binding.edit.setVisibility(View.VISIBLE);
             }else {
                 holder.binding.edit.setVisibility(View.GONE);
@@ -152,16 +156,16 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
             holder.binding.otherWorkCategoryNameLayout.setVisibility(View.VISIBLE);
             holder.binding.workNameLayout.setVisibility(View.GONE);
             holder.binding.workH.setText(context.getResources().getString(R.string.other_work_id));
-            holder.binding.workId.setText(String.valueOf(list.get(position).getOther_work_inspection_id()));
-            holder.binding.otherWorkName.setText(String.valueOf(list.get(position).getOther_work_detail()));
-            holder.binding.otherWorkCategoryName.setText(String.valueOf(list.get(position).getOther_work_category_name()));
-            holder.binding.inspectedDate.setText(String.valueOf(list.get(position).getInspectedDate()));
-            holder.binding.status.setText(String.valueOf(list.get(position).getWork_status()));
+            holder.binding.workId.setText(String.valueOf(listFilteredValue.get(position).getOther_work_inspection_id()));
+            holder.binding.otherWorkName.setText(String.valueOf(listFilteredValue.get(position).getOther_work_detail()));
+            holder.binding.otherWorkCategoryName.setText(String.valueOf(listFilteredValue.get(position).getOther_work_category_name()));
+            holder.binding.inspectedDate.setText(String.valueOf(listFilteredValue.get(position).getInspectedDate()));
+            holder.binding.status.setText(String.valueOf(listFilteredValue.get(position).getWork_status()));
         }
 
 
-        if(String.valueOf(list.get(position).getWork_name()).length() > 5) {
-            Utils.addReadMore(context, "Activity : "+String.valueOf(list.get(position).getWork_name()), holder.binding.workName, 2);
+        if(String.valueOf(listFilteredValue.get(position).getWork_name()).length() > 5) {
+            Utils.addReadMore(context, "Activity : "+String.valueOf(listFilteredValue.get(position).getWork_name()), holder.binding.workName, 2);
         }
 
         holder.binding.viewReport.setOnClickListener(new View.OnClickListener() {
@@ -170,10 +174,10 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
 
                 if(Utils.isOnline()){
                     if(type.equalsIgnoreCase("rdpr")){
-                        ((ViewSavedWorkList)context).getWorkReportDetails(String.valueOf( list.get(position).getWork_id()),list.get(position).getInspection_id());
+                        ((ViewSavedWorkList)context).getWorkReportDetails(String.valueOf( listFilteredValue.get(position).getWork_id()),listFilteredValue.get(position).getInspection_id());
 
                     }else {
-                        ((ViewSavedOtherWorkList)context).getWorkReportDetails(String.valueOf( ""),list.get(position).getOther_work_inspection_id());
+                        ((ViewSavedOtherWorkList)context).getWorkReportDetails(String.valueOf( ""),listFilteredValue.get(position).getOther_work_inspection_id());
 
                     }
 
@@ -191,15 +195,15 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
                 if(Utils.isOnline()){
                     if(type.equalsIgnoreCase("rdpr")){
                         Intent intent = new Intent(context, ViewActionScreen.class);
-                        intent.putExtra("work_id", list.get(position).getWork_id());
-                        intent.putExtra("inspection_id", list.get(position).getInspection_id());
+                        intent.putExtra("work_id", listFilteredValue.get(position).getWork_id());
+                        intent.putExtra("inspection_id", listFilteredValue.get(position).getInspection_id());
                         intent.putExtra("type", "rdpr");
                         context.startActivity(intent);
 
                     }else {
                         Intent intent = new Intent(context, ViewActionScreen.class);
                         intent.putExtra("type", "other_work");
-                        intent.putExtra("other_work_inspection_id", list.get(position).getOther_work_inspection_id());
+                        intent.putExtra("other_work_inspection_id", listFilteredValue.get(position).getOther_work_inspection_id());
                         context.startActivity(intent);
 
                     }
@@ -216,9 +220,9 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
             public void onClick(View view) {
                 if(Utils.isOnline()){
                     if(type.equalsIgnoreCase("rdpr")){
-                        getRdprWorkDetails(list.get(position).getWork_id(),list.get(position).getInspection_id());
+                        getRdprWorkDetails(listFilteredValue.get(position).getWork_id(),listFilteredValue.get(position).getInspection_id());
                     }else {
-                        getOtherWorkDetails(list.get(position).getOther_work_inspection_id());
+                        getOtherWorkDetails(listFilteredValue.get(position).getOther_work_inspection_id());
                     }
                 }else {
                     Utils.showAlert(context,context.getResources().getString(R.string.internet_connection_not_available_please_turn_on_or_offline));
@@ -463,10 +467,60 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
 
     }
 
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    listFilteredValue = list;
+                } else {
+                    ArrayList<ModelClass> filteredList = new ArrayList<>();
+                    for (ModelClass row : list) {
+
+                        // name match condition. this might differ depending on your requirement
+                        // here we are looking for name or phone number match
+                        if(type.equalsIgnoreCase("rdpr")){
+                            if (
+                                    row.getWork_name().toLowerCase().contains(charString.toLowerCase()) ||
+                                            row.getWork_name().toLowerCase().contains(charString.toUpperCase())||
+                                            String.valueOf(row.getWork_id()).toLowerCase().contains(charString.toUpperCase())
+                            ) {
+                                filteredList.add(row);
+                            }
+
+                        }else {
+                            if (
+                                    row.getOther_work_detail().toLowerCase().contains(charString.toLowerCase()) ||
+                                            row.getOther_work_detail().toLowerCase().contains(charString.toUpperCase())||
+                                            String.valueOf(row.getOther_work_inspection_id()).toLowerCase().contains(charString.toUpperCase())
+                            ) {
+                                filteredList.add(row);
+                            }
+
+                        }
+                    }
+
+                    listFilteredValue = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = listFilteredValue;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                listFilteredValue = (ArrayList<ModelClass>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return listFilteredValue.size();
     }
 
 }

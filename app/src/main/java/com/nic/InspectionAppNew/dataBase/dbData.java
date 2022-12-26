@@ -243,6 +243,10 @@ public class dbData {
         values.put("current_stage_of_work", modelClass.getCurrent_stage_of_work());
         values.put("stage_name", modelClass.getStage_name());
         values.put("is_high_value", modelClass.getIs_high_value());
+        values.put("as_date", modelClass.getAs_date());
+        values.put("ts_date", modelClass.getTs_date());
+        values.put("work_order_date", modelClass.getWork_order_date());
+        values.put("work_type_name", modelClass.getWork_type_name());
         if(type.equals("offline")){
              id = db.insert(DBHelper.WORK_LIST,null,values);
         }else {
@@ -479,6 +483,10 @@ public class dbData {
                     card.setCurrent_stage_of_work(cursor.getString(cursor.getColumnIndexOrThrow("current_stage_of_work")));
                     card.setStage_name(cursor.getString(cursor.getColumnIndexOrThrow("stage_name")));
                     card.setIs_high_value(cursor.getString(cursor.getColumnIndexOrThrow("is_high_value")));
+                    card.setAs_date(cursor.getString(cursor.getColumnIndexOrThrow("as_date")));
+                    card.setTs_date(cursor.getString(cursor.getColumnIndexOrThrow("ts_date")));
+                    card.setWork_order_date(cursor.getString(cursor.getColumnIndexOrThrow("work_order_date")));
+                    card.setWork_type_name(cursor.getString(cursor.getColumnIndexOrThrow("work_type_name")));
 
                     cards.add(card);
                 }

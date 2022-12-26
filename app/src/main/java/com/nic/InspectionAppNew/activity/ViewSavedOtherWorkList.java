@@ -18,11 +18,13 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.net.ParseException;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -30,10 +32,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,8 +66,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.ServerResponseListener, DateInterface {
@@ -82,6 +90,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
     String WorkId="";
     String inspectionID="";
     String pdf_string_actual ="";
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +99,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_view_saved_other_work);
         binding.setActivity(this);
+        setSupportActionBar(binding.toolbar);
         prefManager = new PrefManager(this);
 
         binding.recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
@@ -218,6 +228,38 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         Utils.showDatePickerDialog(this);
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+// Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+// listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+// filter recycler view when query submitted
+                savedWorkListAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+// filter recycler view when text is changed
+                savedWorkListAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        return true;
+    }
+
     @Override
     public void getDate(String date) {
         String[] separated = date.split(":");
@@ -377,7 +419,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                     otherSavedWorkList.add(modelClass);
 
                 }
-
+                Collections.sort(otherSavedWorkList, byDate);
                 if (otherSavedWorkList.size()>0){
                     savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,otherSavedWorkList,"other_work");
                     binding.recycler.setVisibility(View.VISIBLE);
@@ -426,6 +468,27 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         }
 
     }
+
+    static final Comparator<ModelClass> byDate = new Comparator<ModelClass>() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");//23-12-2022
+
+        public int compare(ModelClass ord1, ModelClass ord2) {
+            Date d1 = null;
+            Date d2 = null;
+            try {
+                d1 = sdf.parse(ord1.getInspectedDate());
+                d2 = sdf.parse(ord2.getInspectedDate());
+            } catch (ParseException | java.text.ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+
+            return (d1.getTime() > d2.getTime() ? -1 : 1);     //descending
+//            return (d1.getTime() > d2.getTime() ? 1 : -1);     //ascending
+        }
+    };
+
     private void showPieChart(int satisfied,int unsatisfied,int need_improvement,int total_inspection_count){
         binding.graph.setMinValue(0f);
         binding.graph.setMaxValue(total_inspection_count);
