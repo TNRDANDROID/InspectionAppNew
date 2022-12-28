@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
@@ -40,7 +38,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdapter.MyViewHolder> implements Api.ServerResponseListener , Filterable {
+public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdapter.MyViewHolder> implements Api.ServerResponseListener, Filterable {
 
     private  Activity context;
     private PrefManager prefManager;
@@ -174,10 +172,10 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
 
                 if(Utils.isOnline()){
                     if(type.equalsIgnoreCase("rdpr")){
-                        ((ViewSavedWorkList)context).getWorkReportDetails(String.valueOf( listFilteredValue.get(position).getWork_id()),listFilteredValue.get(position).getInspection_id());
+                        ((ViewSavedWorkList)context).getWorkReportDetails(String.valueOf( listFilteredValue.get(position).getWork_id()), listFilteredValue.get(position).getInspection_id());
 
                     }else {
-                        ((ViewSavedOtherWorkList)context).getWorkReportDetails(String.valueOf( ""),listFilteredValue.get(position).getOther_work_inspection_id());
+                        ((ViewSavedOtherWorkList)context).getWorkReportDetails(String.valueOf( ""), listFilteredValue.get(position).getOther_work_inspection_id());
 
                     }
 
@@ -220,7 +218,7 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
             public void onClick(View view) {
                 if(Utils.isOnline()){
                     if(type.equalsIgnoreCase("rdpr")){
-                        getRdprWorkDetails(listFilteredValue.get(position).getWork_id(),listFilteredValue.get(position).getInspection_id());
+                        getRdprWorkDetails(listFilteredValue.get(position).getWork_id(), listFilteredValue.get(position).getInspection_id());
                     }else {
                         getOtherWorkDetails(listFilteredValue.get(position).getOther_work_inspection_id());
                     }
@@ -466,7 +464,6 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
         }
 
     }
-
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -517,6 +514,7 @@ public class SavedWorkListAdapter extends RecyclerView.Adapter<SavedWorkListAdap
             }
         };
     }
+
 
     @Override
     public int getItemCount() {

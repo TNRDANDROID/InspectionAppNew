@@ -67,6 +67,7 @@ public class AppVersionHelper implements Api.ServerResponseListener {
 
             if ("versionCheck".equals(urlType) && responseObj != null) {
                 String version = responseObj.getString("version");
+                String versionapp = Utils.getVersionName(mContext);
 
                 if (responseObj.getString(AppConstant.KEY_APP_CODE).equalsIgnoreCase("WI") && (!version.equalsIgnoreCase(Utils.getVersionName(mContext)))) {
                    prefManager.setAppUrl(responseObj.getString(AppConstant.APK_PATH));

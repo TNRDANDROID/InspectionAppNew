@@ -635,7 +635,6 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                             String work_order_date = jsonArray.getJSONObject(i).getString("work_order_date");
                             String work_type_name = jsonArray.getJSONObject(i).getString("work_type_name");
 
-
                             ModelClass modelClass = new ModelClass();
                             modelClass.setDistrictCode(dcode);
                             modelClass.setBlockCode(SelectedBlockCode);
@@ -657,7 +656,6 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                             modelClass.setTs_date(ts_date);
                             modelClass.setWork_order_date(work_order_date);
                             modelClass.setWork_type_name(work_type_name);
-
                             workList.add(modelClass);
 
                         }

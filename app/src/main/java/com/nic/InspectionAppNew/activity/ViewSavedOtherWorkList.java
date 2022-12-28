@@ -228,38 +228,6 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         Utils.showDatePickerDialog(this);
 
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-// Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-// listening to search query text change
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-// filter recycler view when query submitted
-                savedWorkListAdapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-// filter recycler view when text is changed
-                savedWorkListAdapter.getFilter().filter(query);
-                return false;
-            }
-        });
-        return true;
-    }
-
     @Override
     public void getDate(String date) {
         String[] separated = date.split(":");
@@ -468,7 +436,6 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         }
 
     }
-
     static final Comparator<ModelClass> byDate = new Comparator<ModelClass>() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");//23-12-2022
 
@@ -793,6 +760,36 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         super.onResume();
        getOtherWorkReportDetails();
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+// Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+// listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+// filter recycler view when query submitted
+                savedWorkListAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+// filter recycler view when text is changed
+                savedWorkListAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        return true;
     }
 
 }

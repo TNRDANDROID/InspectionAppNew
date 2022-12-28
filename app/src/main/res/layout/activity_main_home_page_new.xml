@@ -62,6 +62,32 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/atrLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_above="@+id/relativeLayout"
+                android:background="@drawable/top_curve_background_dark"
+
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                >
+
+                <TextView
+                    android:id="@+id/atr_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:padding="@dimen/_13sdp"
+                    android:text="@string/sync"
+                    android:drawableEnd="@drawable/ic_upload_icon"
+                    android:drawableTint="@color/white"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="bold"
+                    tools:ignore="UnusedAttribute" />
+            </RelativeLayout>
+            <RelativeLayout
                 android:id="@+id/relativeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_45sdp"

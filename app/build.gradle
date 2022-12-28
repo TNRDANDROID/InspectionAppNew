@@ -11,8 +11,8 @@ android {
         multiDexEnabled true
 
         targetSdkVersion 33
-        versionCode 13
-        versionName "1.2"
+        versionCode 14
+        versionName "1.3"
     }
     signingConfigs {
         release {
@@ -29,7 +29,7 @@ android {
             def version = variant.versionName
             def date = new Date()
             def formattedDate = date.format('ddMMyy')
-            outputFileName = "Inspection${variant.buildType.name}_v${version}_${formattedDate}.apk"
+            outputFileName = "InspectionAppNew${variant.buildType.name}_v${version}_${formattedDate}.apk"
         }
     }
     buildTypes {
@@ -78,7 +78,7 @@ android {
             resValue "string", "LOGIN_URL", "https://tnrd.tn.gov.in/project/webservices_forms/login_service/login_services.php"
             resValue "string", "BASE_SERVICES_URL", "https://tnrd.tn.gov.in/project/webservices_forms/master_services/master_services.php"
             resValue "string", "APP_MAIN_SERVICES_URL", "https://tnrd.tn.gov.in/project/webservices_forms/work_inspection/inspection_services.php"
-//            resValue "string", "APP_MAIN_SERVICES_URL", "https://tnrd.tn.gov.in/project/webservices_forms/work_inspection/inspection_services_test.php"
+//            resValue "string", "APP_MAIN_SERVICES_URL", "https://tnrd.tn.gov.in/project/webservices_forms/work_inspection/inspection_services_new.php"
             resValue "string", "OPEN_SERVICES_URL", "https://tnrd.tn.gov.in/project/webservices_forms/open_services/open_services.php"
 //            resValue "string", "OPEN_SERVICES_URL", "https://tnrd.tn.gov.in/project/webservices_forms/open_services/open_services_test.php"
             resValue "string", "TNRD_HOST_NAME", "tnrd.tn.gov.in"

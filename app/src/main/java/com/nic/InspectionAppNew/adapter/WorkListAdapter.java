@@ -99,6 +99,7 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.MyView
         holder.binding.workOrderDate.setText(String.valueOf(listFilteredValue.get(position).getWork_order_date()));
         holder.binding.workTypeName.setText(String.valueOf(listFilteredValue.get(position).getWork_type_name()));
 
+
         if(String.valueOf(listFilteredValue.get(position).getWork_name()).length() > 5) {
             Utils.addReadMore(context, "Activity : "+String.valueOf(listFilteredValue.get(position).getWork_name()), holder.binding.workName, 0);
         }

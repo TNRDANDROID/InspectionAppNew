@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 
 /**
- * Created by Kavitha M on oct 2022.
+ * Created by AchanthiSundar on 28-12-2018.
  */
 public class MyEditText extends EditText {
 

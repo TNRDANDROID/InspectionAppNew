@@ -267,36 +267,6 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-// Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-// listening to search query text change
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-// filter recycler view when query submitted
-                savedWorkListAdapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-// filter recycler view when text is changed
-                savedWorkListAdapter.getFilter().filter(query);
-                return false;
-            }
-        });
-        return true;
-    }
 
     @Override
     public void onBackPressed() {
@@ -754,7 +724,6 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
 
                 }
                 Collections.sort(savedWorkList, byDate);
-
                 if (savedWorkList.size()>0){
                     workListBinding.inspectionCountListLayout.setVisibility(View.VISIBLE);
                     savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedWorkList.this,savedWorkList,"rdpr");
@@ -805,6 +774,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         }
 
     }
+
     static final Comparator<ModelClass> byDate = new Comparator<ModelClass>() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");//23-12-2022
 
@@ -824,6 +794,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
 //            return (d1.getTime() > d2.getTime() ? 1 : -1);     //ascending
         }
     };
+
     private void showPieChart(int satisfied,int unsatisfied,int need_improvement,int total_inspection_count){
         workListBinding.graph.setMinValue(0f);
         workListBinding.graph.setMaxValue(total_inspection_count);
@@ -843,4 +814,35 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         data.add(new GraphData(Float.valueOf(need_improvement), resources.getColor(R.color.pink)));
         workListBinding.graph.setData(data);
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+// Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+// listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+// filter recycler view when query submitted
+                savedWorkListAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+// filter recycler view when text is changed
+                savedWorkListAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        return true;
+    }
+
 }
