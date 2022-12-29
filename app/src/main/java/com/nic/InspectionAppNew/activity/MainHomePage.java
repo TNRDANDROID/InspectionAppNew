@@ -172,7 +172,11 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 if ((ImageCount.size() > 0)) {
                     Utils.showAlert(MainHomePage.this, "Sync all the data before edit your profile!");
                 } else {
-                    getProfileData();
+//                    getProfileData();
+                    Intent gotoRegisterScreen = new Intent(MainHomePage.this,RegistrationScreen.class);
+                    gotoRegisterScreen.putExtra("key","home");
+                    startActivity(gotoRegisterScreen);
+                    overridePendingTransition(R.anim.slide_in,R.anim.slide_out);
                 }
 
             }

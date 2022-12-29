@@ -670,12 +670,14 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
 
     private void fetchResponce() {
         if(Utils.isOnline()){
+/*
             if(key.equalsIgnoreCase("home")){
                 profile_data=getIntent().getStringExtra("profile_data");
                 try
                 {
                     JSONObject jsonObject = new JSONObject(profile_data);
                     System.out.println("JSON Object: "+jsonObject);
+*/
 /*
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -689,7 +691,8 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                             }
                         }
                     }, 2000);
-*/
+*//*
+
 
                     setProfileData(jsonObject.getJSONArray(AppConstant.JSON_DATA));
 
@@ -700,10 +703,15 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                 }
 
             }
+*/
+            if(key.equalsIgnoreCase("home")){
+                getProfileData();
+            }else {
+                getGenderList();
+                getStageLevelList();
+                getDesignationList();
+            }
 
-            getGenderList();
-            getStageLevelList();
-            getDesignationList();
         }
         else {
             Utils.showAlert(RegistrationScreen.this,"No Internet");
@@ -947,11 +955,13 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                             prefManager.setLevels(String.valueOf(level));
                             prefManager.setDistrictCode(dcode);
                             prefManager.setBlockCode(bcode);
+
                         }
+                        setProfileData(jsonObject.getJSONArray(AppConstant.JSON_DATA));
                     }
 
                 }else {
-                    Toasty.success(this,jsonObject.getString(AppConstant.KEY_MESSAGE),Toast.LENGTH_SHORT,true).show();
+                    showAlert(this, jsonObject.getString(AppConstant.KEY_MESSAGE));
                 }
 
             }
@@ -1020,6 +1030,10 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     }else {
                         registrationScreenBinding.profileImage.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_user_icon));
                     }
+                    getGenderList();
+                    getStageLevelList();
+                    getDesignationList();
+
                    /* for(int j=0;j<genderList.size();j++){
                         if(genderList.get(j).getGender_code() .equalsIgnoreCase(gender) ){
                             registrationScreenBinding.genderSpinner.setSelection(j);
