@@ -1475,15 +1475,6 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);*/
                         Bitmap i = (Bitmap) data.getExtras().get("data");
-                      /*  // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-                        Uri tempUri = getImageUri(getApplicationContext(), i);
-
-                        // CALL THIS METHOD TO GET THE ACTUAL PATH
-                        String filePath="";
-                        if (tempUri != null) {
-                            filePath = fileDirectory(i,"work_list",String.valueOf(i));
-                        }
-                        Bitmap compBitmap = Utils.resizedBitmap(filePath,SaveWorkDetailsActivity.this);*/
                         String filePath = fileDirectory(i,"work_list",String.valueOf(i));
                         if(adapterCameraIntent!=null){
                             adapterCameraIntent.OnIntentListener(i,filePath,wayLatitude,wayLongitude);

@@ -673,7 +673,10 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressHUD = ProgressHUD.show(LoginScreen.this, "Loading...", true, false, null);
+            if(!((Activity) LoginScreen.this).isFinishing())
+            {
+                progressHUD = ProgressHUD.show(LoginScreen.this, "Loading...", true, false, null);
+            }
 //            Utils.showProgress(MainHomePage.this,progressHUD);
         }
 
@@ -729,7 +732,10 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressHUD = ProgressHUD.show(LoginScreen.this, "Loading...", true, false, null);
+            if(!((Activity) LoginScreen.this).isFinishing())
+            {
+                progressHUD = ProgressHUD.show(LoginScreen.this, "Loading...", true, false, null);
+            }
 //            Utils.showProgress(MainHomePage.this,progressHUD);
         }
 
@@ -751,8 +757,10 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressHUD = ProgressHUD.show(LoginScreen.this, "Loading...", true, false, null);
-//            Utils.showProgress(MainHomePage.this,progressHUD);
+            if(!((Activity) LoginScreen.this).isFinishing())
+            {
+                progressHUD = ProgressHUD.show(LoginScreen.this, "Loading...", true, false, null);
+            }//            Utils.showProgress(MainHomePage.this,progressHUD);
         }
 
         @Override
@@ -856,7 +864,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         Intent intent = new Intent(LoginScreen.this, MainHomePage.class);
         intent.putExtra("Home", "Login");
         startActivity(intent);
-//        finish();
+        finish();
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 

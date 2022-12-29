@@ -23,6 +23,10 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.api.Api;
 import com.nic.InspectionAppNew.api.ApiService;
@@ -56,6 +60,12 @@ public class GetWorkListActivity extends AppCompatActivity implements Api.Server
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static final int PERMISSION_FINE_LOCATION = 100;
     int i=0;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    Double wayLatitude = 0.0, wayLongitude = 0.0;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +84,7 @@ public class GetWorkListActivity extends AppCompatActivity implements Api.Server
        binding.getVillage.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               getLatLong();
+               getExactLocation();
            }
        });
        binding.getWork.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +171,59 @@ public class GetWorkListActivity extends AppCompatActivity implements Api.Server
         }else {
             Utils.showAlert(GetWorkListActivity.this, "Please enter distance in km");
         }
+    }
+    public void getExactLocation() {
+
+        mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mlocListener = new MyLocationListener();
+
+
+        // permission was granted, yay! Do the
+        // location-related task you need to do.
+        if (ContextCompat.checkSelfPermission(GetWorkListActivity.this,
+                ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            //Request location updates:
+            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+
+        }
+
+        if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // check permission
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        1000);
+                // reuqest for permission
+
+            }
+            else {
+                mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+                locationRequest = LocationRequest.create();
+                locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                //locationRequest.setInterval(0);
+
+                mFusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        wayLatitude= location.getLatitude();
+                        wayLongitude = location.getLongitude();
+                        Log.d("LocationAccuracy", "" + location.getAccuracy());
+                        Log.d("Locations", "" + wayLatitude + "," + wayLongitude);
+                        getVillageListOfLocation();
+                    } else {
+                        Utils.showAlert(GetWorkListActivity.this, getResources().getString(R.string.satellite_communication_not_available));
+
+                    }
+                });
+            }
+        }
+        else {
+            Utils.showAlert(GetWorkListActivity.this, getResources().getString(R.string.gps_is_not_turned_on));
+        }
+
+
     }
 
     public void getLocation() {
@@ -280,8 +343,8 @@ public class GetWorkListActivity extends AppCompatActivity implements Api.Server
 
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VILLAGE_LIST_LOCATION_WISE);
-        dataSet.put(AppConstant.KEY_LATITUDE, /*10.6704070583*/offlatTextValue);
-        dataSet.put(AppConstant.KEY_LONGITUDE, /*79.6427229964*/offlongTextValue);
+        dataSet.put(AppConstant.KEY_LATITUDE, /*10.6704070583*/wayLatitude);
+        dataSet.put(AppConstant.KEY_LONGITUDE, /*79.6427229964*/wayLongitude);
         dataSet.put("distance", binding.distance.getText().toString());
         Log.d("villageListDistrictWise", "" + dataSet);
         return dataSet;

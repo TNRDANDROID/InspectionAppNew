@@ -489,7 +489,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                     //Uses https://github.com/zetbaitsu/Compressor library to compress selected image
 //                    File file = new Compressor(this).compressToFile(new File(uri.getPath()));
                     File file = new File(uri.getPath());
-                    File compressedFile  = new Compressor.Builder(this)
+                   /* File compressedFile  = new Compressor.Builder(this)
                             .setMaxWidth(640)
                             .setMaxHeight(480)
                             .setQuality(100)
@@ -497,10 +497,10 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                             .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
                                     Environment.DIRECTORY_PICTURES).getAbsolutePath())
                             .build()
-                            .compressToFile(file);
-                    Bitmap compBitmap = BitmapFactory.decodeFile(compressedFile.getAbsolutePath());
+                            .compressToFile(file);*/
+                    Bitmap compBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                     UserProfile=Utils.BitMapToString(compBitmap);
-                    Picasso.get().load(compressedFile).into(registrationScreenBinding.profileImage);
+                    Picasso.get().load(file).into(registrationScreenBinding.profileImage);
 //                    Toast.makeText(this, "Compressed", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
