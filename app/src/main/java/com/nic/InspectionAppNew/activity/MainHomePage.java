@@ -228,6 +228,22 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 openOnlineWorkListScreen();
             }
         });
+        homeScreenBinding.goOnlineAtr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prefManager.setWorkType("atr");
+                prefManager.setOnOffType("online");
+                openATRWorkListScreen();
+            }
+        });
+        homeScreenBinding.goOfflineAtr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prefManager.setWorkType("atr");
+                prefManager.setOnOffType("offline");
+                openATRWorkListScreen();
+            }
+        });
     }
 
     private void getDashboardData() {
@@ -979,6 +995,11 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     }
     public void openOnlineWorkListScreen() {
         Intent intent = new Intent(this, GetWorkListActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+    public void openATRWorkListScreen() {
+        Intent intent = new Intent(this, ATRWorkList.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

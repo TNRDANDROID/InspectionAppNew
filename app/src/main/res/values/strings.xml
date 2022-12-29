@@ -19,6 +19,7 @@
     <string name="go">Go</string>
     <string name="pending_works_for_upload">Pending Works for Upload</string>
     <string name="sync">Sync Data To Server</string>
+    <string name="atr">Action Taken Report</string>
     <string name="pending_uploads">Pending Uploads</string>
     <string name="upload_icon">upload_icon</string>
     <string name="software_designed_amp_developed_by_nic"><![CDATA[Software Designed & Developed by NIC]]></string>
@@ -78,6 +79,7 @@
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="submit">Submit</string>
+    <string name="rectified">Rectified</string>
     <string name="edit">Edit</string>
     <string name="species_name">Species Name</string>
     <string name="quantity">Quantity</string>
@@ -215,6 +217,8 @@
     <string name="clear">Clear</string>
     <string name="ongoing">Ongoing</string>
     <string name="completed">Completed</string>
+    <string name="unsatisfied">UnSatisfied</string>
+    <string name="need_improvement">Need Improvement</string>
     <string name="not_editable">(Not Editable)</string>
     <string name="english_speech">English Speech</string>
     <string name="tamil_speech">Tamil Speech</string>

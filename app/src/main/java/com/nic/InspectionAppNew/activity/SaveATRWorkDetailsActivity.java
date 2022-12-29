@@ -10,7 +10,6 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,12 +17,10 @@ import android.graphics.Matrix;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ExifInterface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -65,7 +62,7 @@ import com.nic.InspectionAppNew.api.ServerResponse;
 import com.nic.InspectionAppNew.constant.AppConstant;
 import com.nic.InspectionAppNew.dataBase.DBHelper;
 import com.nic.InspectionAppNew.dataBase.dbData;
-import com.nic.InspectionAppNew.databinding.SaveWorkDetailsActivityBinding;
+import com.nic.InspectionAppNew.databinding.SaveAtrWorkDetailsActivityBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
 import com.nic.InspectionAppNew.support.MyLocationListener;
@@ -92,8 +89,8 @@ import in.mayanknagwanshi.imagepicker.ImageSelectActivity;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
 
-public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, RecognitionListener {
-    private SaveWorkDetailsActivityBinding saveWorkDetailsActivityBinding;
+public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, RecognitionListener {
+    private SaveAtrWorkDetailsActivityBinding binding;
     private PrefManager prefManager;
     public dbData dbData = new dbData(this);
     public  DBHelper dbHelper;
@@ -171,8 +168,8 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        saveWorkDetailsActivityBinding = DataBindingUtil.setContentView(this, R.layout.save_work_details_activity);
-        saveWorkDetailsActivityBinding.setActivity(this);
+        binding = DataBindingUtil.setContentView(this, R.layout.save_atr_work_details_activity);
+        binding.setActivity(this);
         prefManager = new PrefManager(this);
         try {
             dbHelper = new DBHelper(this);
@@ -181,90 +178,47 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             e.printStackTrace();
         }
 
-
-        statusFilterSpinner();
-        stageFilterSpinner();
-
         getIntentData();
 
        /* RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
         saveWorkDetailsActivityBinding.recycler.setLayoutManager(mLayoutManager);*/
 
-        saveWorkDetailsActivityBinding.recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        saveWorkDetailsActivityBinding.recycler.setItemAnimator(new DefaultItemAnimator());
-        saveWorkDetailsActivityBinding.recycler.setHasFixedSize(true);
-        saveWorkDetailsActivityBinding.recycler.setNestedScrollingEnabled(false);
-        saveWorkDetailsActivityBinding.recycler.setFocusable(false);
+        binding.recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        binding.recycler.setItemAnimator(new DefaultItemAnimator());
+        binding.recycler.setHasFixedSize(true);
+        binding.recycler.setNestedScrollingEnabled(false);
+        binding.recycler.setFocusable(false);
 
-        saveWorkDetailsActivityBinding.statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0) {
-                    prefManager.setWorkStatusId(String.valueOf(status_list.get(position).getWork_status_id()));
-                    work_status = status_list.get(position).getWork_status();
-                    work_status_id = status_list.get(position).getWork_status_id();
-
-                }else {
-                    prefManager.setWorkStatusId("");
-                    work_status = "";
-                    work_status_id=0;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        saveWorkDetailsActivityBinding.stageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0) {
-                    work_stage = stage_list.get(position).getWork_stage_name();
-                    work_stage_id = stage_list.get(position).getWork_stage_code();
-
-                }else {
-                    work_stage = "";
-                    work_stage_id="";
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        saveWorkDetailsActivityBinding.clearText.setOnClickListener(new View.OnClickListener() {
+        binding.clearText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveWorkDetailsActivityBinding.description.setText("");
+                binding.description.setText("");
             }
         });
-        saveWorkDetailsActivityBinding.tamilMic.setOnClickListener(new View.OnClickListener() {
+        binding.tamilMic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 speechToText("ta");
             }
         });
-        saveWorkDetailsActivityBinding.englishMic.setOnClickListener(new View.OnClickListener() {
+        binding.englishMic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 speechToText("en");
             }
         });
-        saveWorkDetailsActivityBinding.stop.setOnClickListener(new View.OnClickListener() {
+        binding.stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 turnOf();
             }
         });
-        saveWorkDetailsActivityBinding.englishMic.setEnabled(true);
-        saveWorkDetailsActivityBinding.tamilMic.setEnabled(true);
-        saveWorkDetailsActivityBinding.clearText.setEnabled(true);
-        saveWorkDetailsActivityBinding.progressBar.setVisibility(View.GONE);
-        saveWorkDetailsActivityBinding.downloadLayout.setVisibility(View.VISIBLE);
-        Glide.with(this).asGif().load(R.raw.mic3).into(saveWorkDetailsActivityBinding.progressBarimg);
+        binding.englishMic.setEnabled(true);
+        binding.tamilMic.setEnabled(true);
+        binding.clearText.setEnabled(true);
+        binding.progressBar.setVisibility(View.GONE);
+        binding.downloadLayout.setVisibility(View.VISIBLE);
+        Glide.with(this).asGif().load(R.raw.mic3).into(binding.progressBarimg);
 
     }
 
@@ -304,62 +258,12 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                 value.setImage_serial_number(0);
                 savedImage.add(value);
         }
-        adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage,f,s);
+        adapter = new SaveImageAdapter(SaveATRWorkDetailsActivity.this, savedImage,f,s);
         adapterCameraIntent=adapter;
-        saveWorkDetailsActivityBinding.recycler.setAdapter(adapter);
+        binding.recycler.setAdapter(adapter);
     }
-/*
-    private void loadImageList(ArrayList<ModelClass> list,String f,String s) {
-        boolean flag=false;
-        savedImage = new ArrayList<>();
-        min_img_count=1*/
-/*Integer.parseInt(prefManager.getPhotoCount())*//*
-;
-        max_img_count=Integer.parseInt(prefManager.getPhotoCount());
-        for (int i = 0; i < max_img_count; i++) {
-            flag=false;
-            for (int j = 0; j < list.size(); j++) {
-                if(i==j){
-                    flag=true;
-                    ModelClass value = new ModelClass();
-                    value.setWork_id(list.get(j).getWork_id());
-                    value.setDistrictCode(list.get(j).getDistrictCode());
-                    value.setBlockCode(list.get(j).getBlockCode());
-                    value.setPvCode(list.get(j).getPvCode());
-                    value.setImage(list.get(j).getImage());
-                    value.setImage_path(list.get(j).getImage_path());
-                    value.setDescription(list.get(j).getDescription());
-                    value.setLatitude(list.get(j).getLatitude());
-                    value.setLongtitude(list.get(j).getLongtitude());
-                    value.setImage_serial_number(list.get(j).getImage_serial_number());
-                    savedImage.add(value);
-                }
-
-            }
-            if(!flag){
-                ModelClass value = new ModelClass();
-                value.setWork_id(work_id);
-                value.setDistrictCode(dcode);
-                value.setBlockCode(bcode);
-                value.setPvCode(pvcode);
-                value.setImage(null);
-                value.setImage_path("");
-                value.setDescription("");
-                value.setLatitude("");
-                value.setLongtitude("");
-                value.setImage_serial_number(0);
-                savedImage.add(value);
-            }
-
-        }
-        adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage,f,s);
-        adapterCameraIntent=adapter;
-        saveWorkDetailsActivityBinding.recycler.setAdapter(adapter);
-    }
-*/
 
     private void getIntentData(){
-        type= getIntent().getStringExtra("type");
         onOffType= getIntent().getStringExtra("onOffType");
         work_id= getIntent().getIntExtra("work_id",0);
         dcode = getIntent().getStringExtra("dcode");
@@ -376,153 +280,10 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         scheme_group_id = getIntent().getStringExtra("scheme_group_id");
         work_group_id = getIntent().getStringExtra("work_group_id");
         work_type_id = getIntent().getStringExtra("work_type_id");
-        other_work_category_id = getIntent().getStringExtra("other_work_category_id");
-        flag = getIntent().getStringExtra("flag");
-        saveWorkDetailsActivityBinding.notEditable.setVisibility(View.GONE);
-        saveWorkDetailsActivityBinding.stageNotEditable.setVisibility(View.GONE);
-        if(type.equalsIgnoreCase("rdpr")){
-            saveWorkDetailsActivityBinding.otherWorksLayout.setVisibility(View.GONE);
-            saveWorkDetailsActivityBinding.stageLayout.setVisibility(View.VISIBLE);
-        }else {
-            saveWorkDetailsActivityBinding.otherWorksLayout.setVisibility(View.VISIBLE);
-            saveWorkDetailsActivityBinding.stageLayout.setVisibility(View.GONE);
-        }
+
         dbData.open();
         savedImage = new ArrayList<>();
         loadImageList(savedImage,flag,"");
-        if(onOffType.equals("online")){
-            if(flag.equalsIgnoreCase("edit")){
-                saveWorkDetailsActivityBinding.submit.setText("Update");
-            }else {
-                saveWorkDetailsActivityBinding.submit.setText("Submit");
-            }
-
-        }
-
-        if(flag.equalsIgnoreCase("edit")){
-            if(type.equalsIgnoreCase("rdpr")){
-                work_status_id = getIntent().getIntExtra("status_id",0);
-                String  status = getIntent().getStringExtra("status");
-                String  work_name = getIntent().getStringExtra("work_name");
-                String  description = getIntent().getStringExtra("description");
-                inspection_id = getIntent().getStringExtra("inspection_id");
-                activityImage = getIntent().getStringExtra("activityImage");
-                saveWorkDetailsActivityBinding.description.setText(description);
-                saveWorkDetailsActivityBinding.stageLayout.setVisibility(View.GONE);
-                saveWorkDetailsActivityBinding.statusLayout.setVisibility(View.GONE);
-                for(int i=0;i<status_list.size();i++){
-                    if(status_list.get(i).getWork_status_id() == work_status_id){
-                        saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
-                    }
-                }
-/*
-                for(int i=0;i<stage_list.size();i++){
-                    if(stage_list.get(i).getWork_stage_code() .equalsIgnoreCase(current_stage_of_work) ){
-                        saveWorkDetailsActivityBinding.stageSpinner.setSelection(i);
-                    }
-                }
-*/
-                saveWorkDetailsActivityBinding.stageSpinner.setEnabled(false);
-                saveWorkDetailsActivityBinding.stageNotEditable.setVisibility(View.VISIBLE);
-                saveWorkDetailsActivityBinding.statusSpinner.setEnabled(false);
-                saveWorkDetailsActivityBinding.notEditable.setVisibility(View.VISIBLE);
-            }else {
-                other_work_inspection_id = getIntent().getStringExtra("other_work_inspection_id");
-                String  other_work_category_name = getIntent().getStringExtra("other_work_category_name");
-                work_status_id = getIntent().getIntExtra("status_id",0);
-                String  status = getIntent().getStringExtra("status");
-                String  other_work_detail = getIntent().getStringExtra("other_work_detail");
-                String  description = getIntent().getStringExtra("description");
-                activityImage = getIntent().getStringExtra("activityImage");
-                saveWorkDetailsActivityBinding.description.setText(description);
-                saveWorkDetailsActivityBinding.otherWorkDetail.setText(other_work_detail);
-                saveWorkDetailsActivityBinding.stageLayout.setVisibility(View.GONE);
-                saveWorkDetailsActivityBinding.statusLayout.setVisibility(View.GONE);
-                for(int i=0;i<status_list.size();i++){
-                    if(status_list.get(i).getWork_status_id() == work_status_id){
-                        saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
-                    }
-                }
-            }
-            try {
-                savedImage=new ArrayList<>();
-                JSONArray imgarray=prefManager.getImageJson();
-                if(imgarray.length() > 0){
-
-                    for(int j = 0; j < imgarray.length(); j++ ) {
-                        try {
-                            ModelClass imageOnline = new ModelClass();
-                            imageOnline.setDescription(imgarray.getJSONObject(j).getString("image_description"));
-                            if (!(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase("null") ||
-                                    imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase(""))) {
-                                byte[] decodedString = Base64.decode(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE), Base64.DEFAULT);
-                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                                imageOnline.setImage(decodedByte);
-                                savedImage.add(imageOnline);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                    loadImageList(savedImage,flag,"");
-                    /*adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage,flag,"");
-                    adapterCameraIntent=adapter;
-                    saveWorkDetailsActivityBinding.recycler.setAdapter(adapter);*/
-                }
-
-
-            } catch (ArrayIndexOutOfBoundsException j) {
-                j.printStackTrace();
-            }
-
-
-        }else {
-            dbData.open();
-            ArrayList<ModelClass> savedCount = new ArrayList<>();
-            savedCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
-
-            if(savedCount.size()>0){
-                saveWorkDetailsActivityBinding.description.setText(savedCount.get(0).getWork_description());
-                for(int i=0;i<status_list.size();i++){
-                    if(status_list.get(i).getWork_status_id() == savedCount.get(0).getWork_status_id()){
-                        saveWorkDetailsActivityBinding.statusSpinner.setSelection(i);
-                    }
-                }
-                for(int i=0;i<stage_list.size();i++){
-                    if(stage_list.get(i).getWork_stage_code() .equalsIgnoreCase(savedCount.get(0).getWork_stage_code()) ){
-                        saveWorkDetailsActivityBinding.stageSpinner.setSelection(i);
-                    }
-                }
-
-                try {
-                    savedImage=new ArrayList<>();
-                    savedImage=dbData.getParticularSavedImagebycode("all",dcode,bcode,pvcode,String.valueOf(work_id),"");
-
-                    if(savedImage.size() > 0){
-                        loadImageList(savedImage,flag,"local");
-                        /*adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage,"","local");
-                        adapterCameraIntent=adapter;
-                        saveWorkDetailsActivityBinding.recycler.setAdapter(adapter);*/
-                    }
-
-
-                } catch (ArrayIndexOutOfBoundsException j) {
-                    j.printStackTrace();
-                }
-                saveWorkDetailsActivityBinding.submit.setText("Update");
-
-            }
-            else {
-                saveWorkDetailsActivityBinding.description.setText("");
-                saveWorkDetailsActivityBinding.statusSpinner.setSelection(0);
-                saveWorkDetailsActivityBinding.stageSpinner.setSelection(0);
-                savedImage=new ArrayList<>();
-                loadImageList(savedImage,flag,"");
-                saveWorkDetailsActivityBinding.submit.setText("Submit");
-            }
-        }
-
 
     }
     public void gotoSubmit()
@@ -537,11 +298,8 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     public void gotoSave()
     {
         ArrayList<ModelClass> list=adapter.finalImageList();
-        if(type.equalsIgnoreCase("rdpr")){
             if(checkImageList(list)) {
-                if (!work_stage_id.isEmpty()) {
-//                if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
-                    if(work_status_id != 0){
+                if(!binding.description.getText().toString().equals("")){
                         if(onOffType.equals("online")){
 //                        onLineUploadData();
                             new uploadTask().execute();
@@ -549,64 +307,22 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                         else {
                             saveImageButtonClick();
                         }
-
-                    } else {
-                        Utils.showAlert(SaveWorkDetailsActivity.this,"Please Select Status");
-
-                    }
-
-               /* }
-                else {
-                    Utils.showAlert(SaveWorkDetailsActivity.this,"Please Enter Description");
-                }*/
-                } else {
-                    Utils.showAlert(SaveWorkDetailsActivity.this, "Please Select Stage");
                 }
+                else {
+                    Utils.showAlert(SaveATRWorkDetailsActivity.this,"Please Enter Description");
+                }
+
             }else {
-                Utils.showAlert(SaveWorkDetailsActivity.this, "At least Capture one Photo");
+                Utils.showAlert(SaveATRWorkDetailsActivity.this, "At least Capture one Photo");
             }
-        }
-        else {
-            if(checkImageList(list)){
-                if(work_status_id != 0){
-                    if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
-
-                        if(!saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString().equals("")){
-                            if(onOffType.equals("online")){
-//                        onLineUploadData();
-                                new uploadTask().execute();
-                            }
-                            else {
-                                saveImageButtonClick();
-                            }
-
-                        } else {
-                            Utils.showAlert(SaveWorkDetailsActivity.this,"Enter Other Inspection Detail");
-                        }
-                    }
-                    else {
-                        Utils.showAlert(SaveWorkDetailsActivity.this,"Please Enter Description");
-                    }
-
-                }
-                else {
-                    Utils.showAlert(SaveWorkDetailsActivity.this,"Please select status");
-                }
-            }
-            else {
-
-                Utils.showAlert(SaveWorkDetailsActivity.this, "At least Capture one Photo");
-            }
-        }
 
     }
 
     public void gotoUpdate()
     {
         ArrayList<ModelClass> list=adapter.finalImageList();
-        if(type.equalsIgnoreCase("rdpr")){
             if(checkImageList(list)) {
-                if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
+                if(!binding.description.getText().toString().equals("")){
                         if(onOffType.equals("online")){
 //                        onLineUploadData();
                             new uploadTask().execute();
@@ -618,40 +334,12 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
                 }
                 else {
-                    Utils.showAlert(SaveWorkDetailsActivity.this,"Please Enter Description");
+                    Utils.showAlert(SaveATRWorkDetailsActivity.this,"Please Enter Description");
                 }
 
             }else {
-                Utils.showAlert(SaveWorkDetailsActivity.this, "At least Capture one Photo");
+                Utils.showAlert(SaveATRWorkDetailsActivity.this, "At least Capture one Photo");
             }
-        }
-        else {
-            if(checkImageList(list)){
-                    if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
-
-                        if(!saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString().equals("")){
-                            if(onOffType.equals("online")){
-//                        onLineUploadData();
-                                new uploadTask().execute();
-                            }
-                            else {
-                                saveImageButtonClick();
-                            }
-
-                        } else {
-                            Utils.showAlert(SaveWorkDetailsActivity.this,"Enter Other Inspection Detail");
-                        }
-                    }
-                    else {
-                        Utils.showAlert(SaveWorkDetailsActivity.this,"Please Enter Description");
-                    }
-
-            }
-            else {
-
-                Utils.showAlert(SaveWorkDetailsActivity.this, "At least Capture one Photo");
-            }
-        }
 
     }
     public class uploadTask extends AsyncTask<JSONObject, Void, Boolean> {
@@ -660,7 +348,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         protected void onPreExecute() {
             super.onPreExecute();
 //            Utils.showProgress(CameraScreen.this,progressHUD);
-            progressHUD = ProgressHUD.show(SaveWorkDetailsActivity.this, "Loading...", true, false, null);
+            progressHUD = ProgressHUD.show(SaveATRWorkDetailsActivity.this, "Loading...", true, false, null);
         }
 
         @Override
@@ -681,7 +369,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                     Log.d("saveImages", "" + maindataset);
                 } else {
 
-                    Utils.showAlert(SaveWorkDetailsActivity.this, "Turn On Mobile Data To Upload");
+                    Utils.showAlert(SaveATRWorkDetailsActivity.this, "Turn On Mobile Data To Upload");
                 }
             }
 
@@ -689,22 +377,11 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
         @Override
         protected Boolean doInBackground(JSONObject... params) {
-            if(prefManager.getWorkType().equalsIgnoreCase("rdpr")){
-
-                if(flag.equalsIgnoreCase("edit")){
-                    true_flag=onLineRDPREditUploadData();
-                }else {
-                    true_flag=onLineUploadData();
-                }
+            if(flag.equalsIgnoreCase("edit")){
+                true_flag=onLineRDPREditUploadData();
             }else {
-                if(flag.equalsIgnoreCase("edit")){
-                    true_flag=onlineOtherWorkEditUploadData();
-                }else {
-                    true_flag=onlineOtherWorkUploadData();
-                }
-
+                true_flag=onLineUploadData();
             }
-
             return true_flag;
         }
 
@@ -722,7 +399,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             dataset.put("hab_code",hab_code);
             dataset.put("work_id", work_id);
             dataset.put("status_id", work_status_id);
-            dataset.put("description", saveWorkDetailsActivityBinding.description.getText().toString());
+            dataset.put("description", binding.description.getText().toString());
             dataset.put("work_group_id", work_group_id);
             dataset.put("work_type_id", work_type_id);
             dataset.put("work_stage_code", work_stage_id);
@@ -751,11 +428,11 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                             { true_flag = true; }
                             else { true_flag = false; }
                         } catch (Exception e) {
-                            this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.at_least_capture_one_photo)); }});
+                            this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(SaveATRWorkDetailsActivity.this, getResources().getString(R.string.at_least_capture_one_photo)); }});
                         }
                     }
                     else {
-                        this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.please_capture_image)); }});
+                        this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(SaveATRWorkDetailsActivity.this, getResources().getString(R.string.please_capture_image)); }});
                     }
                 }
                 dataset.put("image_details",imageArray);
@@ -782,7 +459,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             dataset.put("hab_code",hab_code);
             dataset.put("work_id", work_id);
 //            dataset.put("status_id", work_status_id);
-            dataset.put("description", saveWorkDetailsActivityBinding.description.getText().toString());
+            dataset.put("description", binding.description.getText().toString());
             dataset.put("inspection_id", inspection_id);
             inspection_work_details.put(dataset);
             maindataset.put("inspection_work_details",inspection_work_details);
@@ -793,94 +470,10 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         }
         return true_flag;
     }
-    public boolean onlineOtherWorkUploadData() {
-        maindataset = new JSONObject();
-        JSONObject dataset = new JSONObject();
-        JSONArray inspection_work_details = new JSONArray();
-        true_flag = false;
-        try {
-            maindataset.put(AppConstant.KEY_SERVICE_ID,"other_work_inspection_details_save");
-            dataset.put("dcode",dcode);
-            dataset.put("bcode", bcode);
-            dataset.put("pvcode",pvcode);
-            dataset.put("hab_code",hab_code);
-            dataset.put("fin_year", fin_year);
-            dataset.put("status_id", work_status_id);
-            dataset.put("other_work_category_id", other_work_category_id);
-            dataset.put("other_work_detail", saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString());
-            dataset.put("description", saveWorkDetailsActivityBinding.description.getText().toString());
 
-            int childCount = selected_image_list.size();
-            int count = 0;
-            JSONArray imageArray = new JSONArray();
-            if (childCount > 0) {
-                for (int i = 0; i < childCount; i++) {
-
-                    if (selected_image_list.get(i).getImage() != null) {
-                        //if(!myEditTextView.getText().toString().equals("")){
-                        count = count + 1;
-                        String image_str = "";
-                        try {
-                            image_str = BitMapToString(selected_image_list.get(i).getImage());
-                            JSONObject jsonObject = new JSONObject();
-                            jsonObject.put("latitude",selected_image_list.get(i).getLatitude());
-                            jsonObject.put("longitude",selected_image_list.get(i).getLongtitude());
-                            jsonObject.put("serial_no",count);
-                            jsonObject.put("image_description",selected_image_list.get(i).getDescription());
-                            jsonObject.put("image",image_str);
-                            imageArray.put(jsonObject);
-
-                            if(count==childCount)
-                            { true_flag = true; }
-                            else { true_flag = false; }
-                        } catch (Exception e) {
-                            this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.at_least_capture_one_photo)); }});
-                        }
-                    }
-                    else {
-                        this.runOnUiThread(new Runnable() {public void run() { Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.please_capture_image)); }});
-                    }
-                }
-                dataset.put("image_details",imageArray);
-                inspection_work_details.put(dataset);
-                maindataset.put("other_inspection_work_details",inspection_work_details);
-            }
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return true_flag;
-    }
-    public boolean onlineOtherWorkEditUploadData() {
-        maindataset = new JSONObject();
-        JSONObject dataset = new JSONObject();
-        JSONArray inspection_work_details = new JSONArray();
-        true_flag = false;
-        try {
-            maindataset.put(AppConstant.KEY_SERVICE_ID,"other_work_inspection_details_update");
-            dataset.put("dcode",dcode);
-            dataset.put("bcode", bcode);
-            dataset.put("pvcode",pvcode);
-            dataset.put("hab_code",hab_code);
-            dataset.put("fin_year", fin_year);
-            dataset.put("status_id", work_status_id);
-            dataset.put("other_work_category_id", other_work_category_id);
-            dataset.put("other_work_detail", saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString());
-            dataset.put("description", saveWorkDetailsActivityBinding.description.getText().toString());
-            dataset.put("other_work_inspection_id", other_work_inspection_id);
-            inspection_work_details.put(dataset);
-            maindataset.put("other_inspection_work_details",inspection_work_details);
-            true_flag = true;
-
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return true_flag;
-    }
     private void uploadDialog(JSONObject jsonObject){
         try {
-            final Dialog dialog = new Dialog(SaveWorkDetailsActivity.this);
+            final Dialog dialog = new Dialog(SaveATRWorkDetailsActivity.this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setCancelable(false);
             dialog.setContentView(R.layout.alert_dialog);
@@ -917,7 +510,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressHUD = ProgressHUD.show(SaveWorkDetailsActivity.this, "Loading...", true, false, null);
+            progressHUD = ProgressHUD.show(SaveATRWorkDetailsActivity.this, "Loading...", true, false, null);
 //            Utils.showProgress(CameraScreen.this,progressHUD);
         }
 
@@ -933,7 +526,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             }
 
 
-            new ApiService(SaveWorkDetailsActivity.this).makeJSONObjectRequest("saveImage", Api.Method.POST, UrlGenerator.getMainService(), jsonObject, "not cache", SaveWorkDetailsActivity.this
+            new ApiService(SaveATRWorkDetailsActivity.this).makeJSONObjectRequest("saveImage", Api.Method.POST, UrlGenerator.getMainService(), jsonObject, "not cache", SaveATRWorkDetailsActivity.this
             );
 
         }
@@ -981,7 +574,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             values.put("work_status",work_status);
             values.put("work_stage_id",work_stage_id);
             values.put("work_stage",work_stage);
-            values.put("work_description",saveWorkDetailsActivityBinding.description.getText().toString());
+            values.put("work_description", binding.description.getText().toString());
             values.put("hab_code",hab_code);
             values.put("scheme_group_id",scheme_group_id);
             values.put("work_group_id",work_group_id);
@@ -992,10 +585,10 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             ArrayList<ModelClass> saveCount = new ArrayList<>();
             saveCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
             if(saveCount.size()>0){
-                rowInsert = db.update(DBHelper.SAVE_WORK_DETAILS,values,selection,selectionArgs);
+                rowInsert = db.update(DBHelper.SAVE_ATR_WORK_DETAILS,values,selection,selectionArgs);
             }
             else {
-                rowInsert = db.insert(DBHelper.SAVE_WORK_DETAILS,null,values);
+                rowInsert = db.insert(DBHelper.SAVE_ATR_WORK_DETAILS,null,values);
             }
 
 
@@ -1032,7 +625,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
 
                         } catch (Exception e) {
-                            Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.at_least_capture_one_photo));
+                            Utils.showAlert(SaveATRWorkDetailsActivity.this, getResources().getString(R.string.at_least_capture_one_photo));
                         }
 
 
@@ -1063,10 +656,10 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                                 Utils.deleteFileDirectory(filepath);
                             }
 
-                            rowUpdated =db.update(DBHelper.SAVE_IMAGES,imageValue,selection,selectionArgs);
+                            rowUpdated =db.update(DBHelper.SAVE_ATR_IMAGES,imageValue,selection,selectionArgs);
                         }
                         else {
-                            rowInserted =db.insert(DBHelper.SAVE_IMAGES,null,imageValue);
+                            rowInserted =db.insert(DBHelper.SAVE_ATR_IMAGES,null,imageValue);
                         }
 
                         if (count == childCount) {
@@ -1085,7 +678,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                         Utils.showAlert(CameraScreen.this, getResources().getString(R.string.enter_description));
                     }*/
                     } else {
-                        Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.please_capture_image));
+                        Utils.showAlert(SaveATRWorkDetailsActivity.this, getResources().getString(R.string.please_capture_image));
                     }
                 }
             }
@@ -1131,131 +724,6 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         return flag;
     }
 
-    public void gotoCameraScreen()
-    {
-        if(type.equalsIgnoreCase("rdpr")){
-            if(work_status_id != 0){
-//                if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
-                    Intent intent = new Intent(this, CameraScreen.class);
-                    intent.putExtra("dcode", dcode);
-                    intent.putExtra("bcode", bcode);
-                    intent.putExtra("pvcode",pvcode);
-                    intent.putExtra("hab_code",hab_code);
-                    intent.putExtra("scheme_group_id",scheme_group_id);
-                    intent.putExtra("work_group_id",work_group_id);
-                    intent.putExtra("work_type_id",work_type_id);
-                    intent.putExtra("is_high_value",is_high_value);
-                    intent.putExtra("scheme_id",scheme_id);
-                    intent.putExtra("fin_year", fin_year);
-                    intent.putExtra("work_id", work_id);
-                    intent.putExtra("work_name", work_name);
-                    intent.putExtra("as_value", as_value);
-                    intent.putExtra("ts_value", ts_value);
-                    intent.putExtra("current_stage_of_work", current_stage_of_work);
-                    intent.putExtra("work_status_id", work_status_id);
-                    intent.putExtra("work_status", work_status);
-                    intent.putExtra("work_stage_id", work_stage_id);
-                    intent.putExtra("work_stage", work_stage);
-                    intent.putExtra("onOffType", onOffType);
-                    intent.putExtra("work_description", saveWorkDetailsActivityBinding.description.getText().toString());
-                    intent.putExtra("other_work_category_id", other_work_category_id);
-                    intent.putExtra("other_work_detail", other_work_detail);
-                    intent.putExtra("activityImage",activityImage);
-                    intent.putExtra("type","rdpr");
-                    intent.putExtra("flag",flag);
-                    if(flag.equalsIgnoreCase("edit")){
-                        intent.putExtra("inspection_id",inspection_id);
-                    }
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-               /* }
-                else {
-                    Utils.showAlert(SaveWorkDetailsActivity.this,"Please Enter Description");
-                }*/
-            }
-            else {
-                Utils.showAlert(SaveWorkDetailsActivity.this,"Please Select Status");
-            }
-        }
-        else {
-            if(!saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString().equals("")){
-            if(work_status_id != 0){
-                if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
-                    Intent intent = new Intent(this, CameraScreen.class);
-                    intent.putExtra("dcode", dcode);
-                    intent.putExtra("bcode", bcode);
-                    intent.putExtra("pvcode",pvcode);
-                    intent.putExtra("hab_code",hab_code);
-                    intent.putExtra("scheme_group_id",scheme_group_id);
-                    intent.putExtra("work_group_id",work_group_id);
-                    intent.putExtra("work_type_id",work_type_id);
-                    intent.putExtra("is_high_value",is_high_value);
-                    intent.putExtra("scheme_id",scheme_id);
-                    intent.putExtra("fin_year", fin_year);
-                    intent.putExtra("work_id", work_id);
-                    intent.putExtra("work_name", work_name);
-                    intent.putExtra("as_value", as_value);
-                    intent.putExtra("ts_value", ts_value);
-                    intent.putExtra("current_stage_of_work", current_stage_of_work);
-                    intent.putExtra("work_status_id", work_status_id);
-                    intent.putExtra("work_status", work_status);
-                    intent.putExtra("onOffType", onOffType);
-                    intent.putExtra("work_description", saveWorkDetailsActivityBinding.description.getText().toString());
-                    intent.putExtra("other_work_category_id", other_work_category_id);
-                    intent.putExtra("other_work_detail", saveWorkDetailsActivityBinding.otherWorkDetail.getText().toString());
-                    intent.putExtra("activityImage",activityImage);
-                    intent.putExtra("type","other");
-                    intent.putExtra("flag",flag);
-                    if(flag.equalsIgnoreCase("edit")){
-                        intent.putExtra("other_work_inspection_id",other_work_inspection_id);
-                    }
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                }
-                else {
-                    Utils.showAlert(SaveWorkDetailsActivity.this,"Please enter description");
-                }
-            }
-            else {
-                Utils.showAlert(SaveWorkDetailsActivity.this,"Please select status");
-            }
-            }
-            else {
-                Utils.showAlert(SaveWorkDetailsActivity.this,"Enter Other Inspection Detail");
-            }
-        }
-
-    }
-    public void statusFilterSpinner() {
-        status_list = new ArrayList<>();
-        status_list.clear();
-        ModelClass list = new ModelClass();
-        list.setWork_status_id(0);
-        list.setWork_status("Select Status");
-        status_list.add(list);
-        dbData.open();
-        status_list.addAll(dbData.getAll_Work_Status());
-        saveWorkDetailsActivityBinding.statusSpinner.setAdapter(new CommonAdapter(this, status_list, "status"));
-    }
-    public void stageFilterSpinner() {
-        String work_group_id=getIntent().getStringExtra("work_group_id");
-        String work_type_id=getIntent().getStringExtra("work_type_id");
-        String current_stage_of_work=getIntent().getStringExtra("current_stage_of_work");
-        stage_list = new ArrayList<>();
-        stage_list.clear();
-        ModelClass list = new ModelClass();
-        list.setWork_group_id("0");
-        list.setWork_type_id("0");
-        list.setWork_stage_code("0");
-        list.setWork_stage_name("Current stage observed by inspecting officer");
-        stage_list.add(list);
-        dbData.open();
-        stage_list.addAll(dbData.getAll_Stage("",work_group_id,work_type_id,current_stage_of_work));
-        saveWorkDetailsActivityBinding.stageSpinner.setAdapter(new CommonAdapter(this, stage_list, "stage_list"));
-    }
-
-
-
 
     @Override
     public void onBackPressed() {
@@ -1300,15 +768,6 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                     }else {
                         showAlert(this, "Your Data is Synchronized to the server!");
                     }
-/*
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            homePage();
-                        }
-                    }, 500);
-*/
-
 
                 }
                 else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")) {
@@ -1377,17 +836,17 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         start(language);
 
         ActivityCompat.requestPermissions
-                (SaveWorkDetailsActivity.this,
+                (SaveATRWorkDetailsActivity.this,
                         new String[]{Manifest.permission.RECORD_AUDIO},
                         REQUEST_RECORD_PERMISSION);
     }
 
     public void start(String language){
-        saveWorkDetailsActivityBinding.englishMic.setEnabled(false);
-        saveWorkDetailsActivityBinding.tamilMic.setEnabled(false);
-        saveWorkDetailsActivityBinding.progressBar.setVisibility(View.VISIBLE);
-        saveWorkDetailsActivityBinding.downloadLayout.setVisibility(View.GONE);
-        saveWorkDetailsActivityBinding.clearText.setEnabled(false);
+        binding.englishMic.setEnabled(false);
+        binding.tamilMic.setEnabled(false);
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.downloadLayout.setVisibility(View.GONE);
+        binding.clearText.setEnabled(false);
         speech = SpeechRecognizer.createSpeechRecognizer(this);
         Log.i(LOG_TAG, "isRecognitionAvailable: " + SpeechRecognizer.isRecognitionAvailable(this));
         speech.setRecognitionListener(this);
@@ -1411,11 +870,11 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     }
 
     public void turnOf(){
-        saveWorkDetailsActivityBinding.progressBar.setVisibility(View.GONE);
-        saveWorkDetailsActivityBinding.downloadLayout.setVisibility(View.VISIBLE);
-        saveWorkDetailsActivityBinding.englishMic.setEnabled(true);
-        saveWorkDetailsActivityBinding.tamilMic.setEnabled(true);
-        saveWorkDetailsActivityBinding.clearText.setEnabled(true);
+        binding.progressBar.setVisibility(View.GONE);
+        binding.downloadLayout.setVisibility(View.VISIBLE);
+        binding.englishMic.setEnabled(true);
+        binding.tamilMic.setEnabled(true);
+        binding.clearText.setEnabled(true);
 
         speech.stopListening();
         speech.destroy();
@@ -1424,51 +883,6 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
 
 
-/*
-    public void speechToText(String language) {
-        Intent intent
-                = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        if(language.equalsIgnoreCase("en")){
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
-                    "en-IND");
-        }
-        else {
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
-                    "ta-IND");
-        }
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text");
-
-        try {
-            startActivityForResult(intent, SPEECH_REQUEST_CODE);
-
-        } catch (Exception e) {
-            Toast.makeText(SaveWorkDetailsActivity.this, " " + e.getMessage(),Toast.LENGTH_SHORT).show();
-        }
-    }
-*/
-public Uri getImageUri(Context inContext, Bitmap inImage) {
-    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-    String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-    return Uri.parse(path);
-}
-
-    public String getRealPathFromURI(Uri uri) {
-        String path = "";
-        if (getContentResolver() != null) {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                path = cursor.getString(idx);
-                cursor.close();
-            }
-        }
-        return path;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1476,21 +890,11 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
             if (resultCode == RESULT_OK) {
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                        String filePath = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
+                        String filePath = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
                        /* Bitmap rotatedBitmap = BitmapFactory.decodeFile(filePath);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);*/
-                        Bitmap i = (Bitmap) data.getExtras().get("data");
-                        // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-                        Uri tempUri = getImageUri(getApplicationContext(), i);
-
-                        // CALL THIS METHOD TO GET THE ACTUAL PATH
-                        File file = new File(getRealPathFromURI(tempUri));
-                        String filePath="";
-                        if (file != null) {
-                            filePath = file.getAbsolutePath();
-                        }
-                        Bitmap compBitmap = Utils.resizedBitmap(filePath,SaveWorkDetailsActivity.this);
+                        Bitmap compBitmap = Utils.resizedBitmap(filePath, SaveATRWorkDetailsActivity.this);
                         if(adapterCameraIntent!=null){
                             adapterCameraIntent.OnIntentListener(compBitmap,filePath,wayLatitude,wayLongitude);
                         }
@@ -1548,11 +952,11 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
             if (resultCode == RESULT_OK && data != null) {
                 ArrayList<String> result = data.getStringArrayListExtra(
                         RecognizerIntent.EXTRA_RESULTS);
-                if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
-                    saveWorkDetailsActivityBinding.description.setText(saveWorkDetailsActivityBinding.description.getText().toString()+" "+
+                if(!binding.description.getText().toString().equals("")){
+                    binding.description.setText(binding.description.getText().toString()+" "+
                             Objects.requireNonNull(result).get(0));
                 }else {
-                    saveWorkDetailsActivityBinding.description.setText(Objects.requireNonNull(result).get(0));
+                    binding.description.setText(Objects.requireNonNull(result).get(0));
 
                 }
             }
@@ -1560,50 +964,27 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
         }
     }
     public void showToast(String s){
-        Toasty.success(SaveWorkDetailsActivity.this,s,Toast.LENGTH_SHORT,true).show();
+        Toasty.success(SaveATRWorkDetailsActivity.this,s,Toast.LENGTH_SHORT,true).show();
        /* super.onBackPressed();
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);*/
-        if(type.equalsIgnoreCase("rdpr")){
-            onBackPressed();
-        }else {
-            prefManager.setAppBack("");
-            homePage();
-        }
+        onBackPressed();
 
     }
 
     public void captureImage() {
-       /* Intent intent = new Intent(this, ImageSelectActivity.class);
+        Intent intent = new Intent(this, ImageSelectActivity.class);
         intent.putExtra(ImageSelectActivity.FLAG_COMPRESS, true);//default is true
         intent.putExtra(ImageSelectActivity.FLAG_CAMERA, true);//default is true
         intent.putExtra(ImageSelectActivity.FLAG_GALLERY, false);//default is true
         intent.putExtra(ImageSelectActivity.FLAG_CROP, false);//default is false
-        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);*/
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
-        }else {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            File file = CameraUtils.getOutputMediaFile(MEDIA_TYPE_IMAGE);
-            if (file != null) {
-                imageStoragePath = file.getAbsolutePath();
-            }
-
-            Uri fileUri = CameraUtils.getOutputMediaFileUri(SaveWorkDetailsActivity.this, file);
-
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-
-            // start the image capture Intent
-            startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
-        }
+        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
     }
 
     public void previewCapturedImage() {
         try {
             // hide video preview
 //            Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
-            Bitmap bitmap = Utils.resizedBitmap(imageStoragePath,SaveWorkDetailsActivity.this);
+            Bitmap bitmap = Utils.resizedBitmap(imageStoragePath, SaveATRWorkDetailsActivity.this);
             ExifInterface ei = null;
             try {
                 ei = new ExifInterface(imageStoragePath);
@@ -1722,11 +1103,11 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
             text += result + "\n";
         Log.i(LOG_TAG, "onResults="+text);
 
-        if(!saveWorkDetailsActivityBinding.description.getText().toString().equals("")){
-            saveWorkDetailsActivityBinding.description.setText(saveWorkDetailsActivityBinding.description.getText().toString()+" "+
+        if(!binding.description.getText().toString().equals("")){
+            binding.description.setText(binding.description.getText().toString()+" "+
                     matches.get(0));
         }else {
-            saveWorkDetailsActivityBinding.description.setText(matches.get(0));
+            binding.description.setText(matches.get(0));
 
         }
 
@@ -1830,7 +1211,7 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
 
                     if(answer.isEmpty() || answer.length() == 0 || answer.equals("") || answer == null)
                     {//EditText is empty
-                        Toast.makeText(SaveWorkDetailsActivity.this, getApplicationContext().getResources().getString(R.string.enter_description), Toast.LENGTH_LONG).show();
+                        Toast.makeText(SaveATRWorkDetailsActivity.this, getApplicationContext().getResources().getString(R.string.enter_description), Toast.LENGTH_LONG).show();
                     } else
                     {//EditText is not empty
                         // Toast.makeText(mContext, mContext.getResources().getString(R.string.answer_successfully), Toast.LENGTH_LONG).show();
@@ -1863,7 +1244,7 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
 
         // permission was granted, yay! Do the
         // location-related task you need to do.
-        if (ContextCompat.checkSelfPermission(SaveWorkDetailsActivity.this,
+        if (ContextCompat.checkSelfPermission(SaveATRWorkDetailsActivity.this,
                 ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
 
@@ -1895,7 +1276,7 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
                         Log.d("LocationAccuracy", "" + location.getAccuracy());
                         Log.d("Locations", "" + wayLatitude + "," + wayLongitude);
 
-                        if (ContextCompat.checkSelfPermission(SaveWorkDetailsActivity.this,
+                        if (ContextCompat.checkSelfPermission(SaveATRWorkDetailsActivity.this,
                                 CAMERA)
                                 == PackageManager.PERMISSION_GRANTED) {
                             captureImage();
@@ -1907,14 +1288,14 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
                         }
 
                     } else {
-                        Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.satellite_communication_not_available));
+                        Utils.showAlert(SaveATRWorkDetailsActivity.this, getResources().getString(R.string.satellite_communication_not_available));
 
                     }
                 });
             }
         }
         else {
-            Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.gps_is_not_turned_on));
+            Utils.showAlert(SaveATRWorkDetailsActivity.this, getResources().getString(R.string.gps_is_not_turned_on));
         }
 
 
@@ -1947,11 +1328,11 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
             break;
             case REQUEST_RECORD_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(SaveWorkDetailsActivity.this, "start talk...", Toast
+                    Toast.makeText(SaveATRWorkDetailsActivity.this, "start talk...", Toast
                             .LENGTH_SHORT).show();
                     speech.startListening(recognizerIntent);
                 } else {
-                    Toast.makeText(SaveWorkDetailsActivity.this, "Permission Denied!", Toast
+                    Toast.makeText(SaveATRWorkDetailsActivity.this, "Permission Denied!", Toast
                             .LENGTH_SHORT).show();
                 }
                 break;
@@ -1971,7 +1352,7 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
 
                     // permission was granted, yay! Do the
                     // location-related task you need to do.
-                    if (ContextCompat.checkSelfPermission(SaveWorkDetailsActivity.this,
+                    if (ContextCompat.checkSelfPermission(SaveATRWorkDetailsActivity.this,
                             ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
 
@@ -1987,7 +1368,7 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
                                 wayLongitude = location.getLongitude();
                                 Log.d("LocationAccuracy", "" + location.getAccuracy());
                                 Log.d("Locations", "" + wayLatitude + "," + wayLongitude);
-                                if (ContextCompat.checkSelfPermission(SaveWorkDetailsActivity.this,
+                                if (ContextCompat.checkSelfPermission(SaveATRWorkDetailsActivity.this,
                                         CAMERA)
                                         == PackageManager.PERMISSION_GRANTED) {
                                     captureImage();
@@ -2001,12 +1382,12 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
 
 
                             } else {
-                                Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.satellite_communication_not_available));
+                                Utils.showAlert(SaveATRWorkDetailsActivity.this, getResources().getString(R.string.satellite_communication_not_available));
                             }
                         });
                     }
                     else {
-                        Utils.showAlert(SaveWorkDetailsActivity.this, getResources().getString(R.string.gps_is_not_turned_on));
+                        Utils.showAlert(SaveATRWorkDetailsActivity.this, getResources().getString(R.string.gps_is_not_turned_on));
                     }
                 } else {
 //                    Toast.makeText(this, "Permission got", Toast.LENGTH_SHORT).show();
@@ -2025,7 +1406,7 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
                 .setMessage(getResources().getString(R.string.allow_camera_location_permission))
                 .setPositiveButton(getResources().getString(R.string.goto_settings), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        CameraUtils.openSettings(SaveWorkDetailsActivity.this);
+                        CameraUtils.openSettings(SaveATRWorkDetailsActivity.this);
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {

@@ -62,32 +62,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/atrLayout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_45sdp"
-                android:layout_above="@+id/relativeLayout"
-                android:background="@drawable/top_curve_background_dark"
-
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-                >
-
-                <TextView
-                    android:id="@+id/atr_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:padding="@dimen/_13sdp"
-                    android:text="@string/sync"
-                    android:drawableEnd="@drawable/ic_upload_icon"
-                    android:drawableTint="@color/white"
-                    android:drawablePadding="@dimen/_5sdp"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold"
-                    tools:ignore="UnusedAttribute" />
-            </RelativeLayout>
-            <RelativeLayout
                 android:id="@+id/relativeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_45sdp"
@@ -470,6 +444,7 @@
                         android:layout_marginTop="-10dp"
                         android:layout_centerHorizontal="true"
                         android:gravity="center_horizontal"
+                        android:id="@+id/linear"
                         android:layout_below="@+id/header">
                         <RelativeLayout
                             android:layout_width="wrap_content"
@@ -684,6 +659,111 @@
 
 
                     </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/linear"
+                        android:id="@+id/atr"
+                        >
+                        <RelativeLayout
+                            android:id="@+id/atr_works"
+                            android:layout_width="@dimen/_200sdp"
+                            android:layout_height="@dimen/_80sdp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:background="@drawable/button_background_light"
+                            android:orientation="vertical">
+
+                            <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_marginRight="@dimen/_10sdp"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_centerHorizontal="true"
+                                android:background="@color/full_transparent"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:id="@+id/atr_works_btn"
+                                android:text="@string/atr"
+                                android:textAlignment="center"
+                                android:textAllCaps="false"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_13sdp" />
+
+
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:id="@+id/atr_layout"
+                            android:layout_marginTop="-45dp"
+                            android:layout_below="@+id/atr_works"
+                            android:layout_width="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_height="wrap_content"
+                            tools:ignore="ExtraText">
+                            ///Type User
+                            <androidx.cardview.widget.CardView
+                                android:layout_centerHorizontal="true"
+                                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/_70sdp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginBottom="15dp"
+                                card_view:cardCornerRadius="15dp"
+                                card_view:cardElevation="@dimen/_5sdp">
+
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/_30sdp"
+                                    android:layout_marginRight="@dimen/_30sdp"
+                                    android:layout_gravity="center">
+
+
+
+                                    <com.nic.InspectionAppNew.support.MyCustomTextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_horizontal"
+                                        android:padding="@dimen/_5sdp"
+                                        android:id="@+id/go_online_atr"
+                                        android:text="@string/go_online"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/darkblue"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold"
+                                        tools:ignore="TooDeepLayout" />
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0.7dp"
+                                        android:background="@color/grey_6" />
+
+                                    <com.nic.InspectionAppNew.support.MyCustomTextView
+                                        android:id="@+id/go_offline_atr"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:padding="@dimen/_5sdp"
+                                        android:text="@string/go_offline"
+                                        android:textColor="@color/darkblue"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold"
+                                        />
+
+
+
+
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+
+                        </RelativeLayout>
+                    </RelativeLayout>
 
                 </RelativeLayout>
 

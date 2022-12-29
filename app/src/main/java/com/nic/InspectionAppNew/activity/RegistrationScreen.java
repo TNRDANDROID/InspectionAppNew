@@ -1,7 +1,10 @@
 package com.nic.InspectionAppNew.activity;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import android.Manifest;
@@ -12,6 +15,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -113,6 +117,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     public com.nic.InspectionAppNew.dataBase.dbData dbData = new dbData(this);
     public DBHelper dbHelper;
     public SQLiteDatabase db;
+    private static final int PERMISSION_CAMERA = 400;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -332,7 +337,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
     }
 
     public void getPerMissionCapture(){
-        if (Build.VERSION.SDK_INT >= M) {
+       /* if (Build.VERSION.SDK_INT >= M) {
             if (CameraUtils.checkPermissions(RegistrationScreen.this)) {
                 selectImage();
 
@@ -344,8 +349,48 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
             selectImage();
 
         }
+*/
 
+        if (ContextCompat.checkSelfPermission(RegistrationScreen.this,
+                CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            selectImage();
+
+        }else {
+            ActivityCompat.requestPermissions(this, new String[]{CAMERA},
+                    PERMISSION_CAMERA);
+
+        }
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_CAMERA: {
+
+                // Note: If request is cancelled, the result arrays are empty.
+                // Permissions granted (CALL_PHONE).
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    selectImage();
+                    Log.i( "LOG_TAG","Permission granted");
+
+                }
+                // Cancelled or denied.
+                else {
+                    Log.i("LOG_TAG","Permission denied");
+//                    Toast.makeText(this.getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                    ActivityCompat.requestPermissions(this, new String[]{CAMERA},
+                            PERMISSION_CAMERA);
+
+                }
+
+            }
+            break;
+        }
+    }
+
     private void requestCameraPermission(final int type) {
         Dexter.withActivity(this)
                 .withPermissions(CAMERA,

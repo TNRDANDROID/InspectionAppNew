@@ -257,7 +257,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
            /* loginScreenBinding.userName.setText("7448944000");
             loginScreenBinding.password.setText("Ccc111#$");*/
 
-       /* loginScreenBinding.userName.setText("9790461958");
+      /*  loginScreenBinding.userName.setText("9790461958");
         loginScreenBinding.password.setText("Vel12345#$");//state local*/
         //local
        /*loginScreenBinding.userName.setText("9080873403");
@@ -269,8 +269,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         loginScreenBinding.password.setText("Test88#$");//Block local*/
 
       //prod
-       /* loginScreenBinding.userName.setText("9750895078");
-        loginScreenBinding.password.setText("Test123#$");//block prod*/
+        loginScreenBinding.userName.setText("9750895078");
+        loginScreenBinding.password.setText("Test123#$");//block prod
        /* loginScreenBinding.userName.setText("7878534575");
         loginScreenBinding.password.setText("test123#$");//state prod*/
         /*loginScreenBinding.userName.setText("9638527415");
@@ -856,7 +856,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         Intent intent = new Intent(LoginScreen.this, MainHomePage.class);
         intent.putExtra("Home", "Login");
         startActivity(intent);
-        finish();
+//        finish();
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 

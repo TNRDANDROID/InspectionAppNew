@@ -92,6 +92,18 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
         <activity
+            android:name=".activity.ATRWorkList"
+            android:exported="true"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" />
+        <activity
+            android:name=".activity.SaveATRWorkDetailsActivity"
+            android:exported="true"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" />
+        <activity
             android:name=".activity.AppUpdateDialog"
             android:exported="true"
             android:configChanges="orientation|keyboardHidden"

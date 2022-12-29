@@ -7,14 +7,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "InspectionNew";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     public static final String VILLAGE_TABLE_NAME = " villageTable";
     public static final String HABITATION_TABLE_NAME = " habitaionTable";
     public static final String SAVE_IMAGES = " save_images";
+    public static final String SAVE_ATR_IMAGES = " save_atr_images";
     public static  final String WORK_LIST ="work_list";
     public static  final String ONLINE_WORK_LIST ="online_work_list";
+    public static  final String ATR_WORK_LIST ="atr_work_list";
     public static  final String SAVE_WORK_DETAILS ="save_work_details";
+    public static  final String SAVE_ATR_WORK_DETAILS ="save_atr_work_details";
     public static final String DISTRICT_TABLE_NAME = "DistrictList";
     public static final String BLOCK_TABLE_NAME = "BlockList";
     public static final String SCHEME_TABLE_NAME = "SchemeList";
@@ -82,8 +85,42 @@ public class DBHelper extends SQLiteOpenHelper {
                 "latitude TEXT," +
                 "longitude TEXT," +
                 "serial_no INTEGER)");
+        db.execSQL("CREATE TABLE " + SAVE_ATR_IMAGES + " ("
+                + "save_work_details_image_primary_id INTEGER PRIMARY KEY AUTOINCREMENT,"+
+                "save_work_details_primary_id INTEGER," +
+                "dcode INTEGER," +
+                "image TEXT," +
+                "bcode INTEGER," +
+                "pvcode INTEGER," +
+                "work_id INTEGER," +
+                "image_description TEXT," +
+                "image_path TEXT," +
+                "latitude TEXT," +
+                "longitude TEXT," +
+                "serial_no INTEGER)");
 
         db.execSQL("CREATE TABLE " + WORK_LIST + " ("
+                + "dcode INTEGER," +
+                "bcode INTEGER," +
+                "pvcode INTEGER," +
+                "hab_code TEXT," +
+                "scheme_group_id TEXT," +
+                "scheme_id TEXT," +
+                "work_group_id TEXT," +
+                "work_type_id TEXT," +
+                "fin_year TEXT," +
+                "work_id INTEGER," +
+                "work_name TEXT," +
+                "as_value TEXT," +
+                "ts_value TEXT," +
+                "current_stage_of_work TEXT," +
+                "stage_name TEXT," +
+                "as_date TEXT," +
+                "ts_date TEXT," +
+                "work_order_date TEXT," +
+                "work_type_name TEXT," +
+                "is_high_value TEXT)");
+        db.execSQL("CREATE TABLE " + ATR_WORK_LIST + " ("
                 + "dcode INTEGER," +
                 "bcode INTEGER," +
                 "pvcode INTEGER," +
@@ -147,6 +184,28 @@ public class DBHelper extends SQLiteOpenHelper {
                 "work_description TEXT," +
                 "current_stage_of_work TEXT," +
                 "is_high_value TEXT)");
+        db.execSQL("CREATE TABLE " + SAVE_ATR_WORK_DETAILS + " ("
+                + "save_work_details_primary_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                 "dcode INTEGER," +
+                "bcode INTEGER," +
+                "pvcode INTEGER," +
+                "hab_code TEXT," +
+                "scheme_group_id TEXT," +
+                "work_group_id TEXT," +
+                "work_type_id TEXT," +
+                "scheme_id TEXT," +
+                "fin_year TEXT," +
+                "work_id INTEGER," +
+                "work_status_id INTEGER," +
+                "work_name TEXT," +
+                "as_value TEXT," +
+                "ts_value TEXT," +
+                "work_status TEXT," +
+                "work_stage TEXT," +
+                "work_stage_id TEXT," +
+                "work_description TEXT," +
+                "current_stage_of_work TEXT," +
+                "is_high_value TEXT)");
 
         db.execSQL("CREATE TABLE " + WORK_STAGE_TABLE + " ("
                 + "work_group_id  INTEGER," +
@@ -158,7 +217,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion >= newVersion) {
+        if (oldVersion < newVersion) {
             //drop table if already exists
             db.execSQL("DROP TABLE IF EXISTS " + DISTRICT_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + BLOCK_TABLE_NAME);
@@ -166,12 +225,15 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + HABITATION_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_IMAGES);
             db.execSQL("DROP TABLE IF EXISTS " + WORK_LIST);
+            db.execSQL("DROP TABLE IF EXISTS " + ATR_WORK_LIST);
             db.execSQL("DROP TABLE IF EXISTS " + ONLINE_WORK_LIST);
             db.execSQL("DROP TABLE IF EXISTS " + SCHEME_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + WORK_STAGE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + STATUS_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + FINANCIAL_YEAR_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_WORK_DETAILS);
+            db.execSQL("DROP TABLE IF EXISTS " + SAVE_ATR_IMAGES);
+            db.execSQL("DROP TABLE IF EXISTS " + SAVE_ATR_WORK_DETAILS);
             db.execSQL("DROP TABLE IF EXISTS " + OTHER_CATEGORY_TABLE);
             onCreate(db);
         }

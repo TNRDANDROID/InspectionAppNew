@@ -20,6 +20,7 @@
     <string name="go">உள்நுழை</string>
     <string name="pending_works_for_upload">பதிவேற்றம் செய்ய நிலுவையில் உள்ள பணிகள்</string>
     <string name="sync">ஒத்திசை</string>
+    <string name="atr">எடுக்கப்பட்ட நடவடிக்கை அறிக்கை</string>
     <string name="pending_uploads">நிலுவையில் உள்ள பதிவேற்றங்கள்</string>
     <string name="upload_icon">upload_icon</string>
     <string name="software_designed_amp_developed_by_nic"><![CDATA[Software Designed & Developed by NIC]]></string>
@@ -78,6 +79,7 @@
     <string name="from">இருந்து</string>
     <string name="to">வரை</string>
     <string name="submit">சமர்ப்பிக்கவும்</string>
+    <string name="rectified">திருத்தப்பட்டது</string>
     <string name="edit">திருத்து</string>
     <string name="species_name">இனத்தின் பெயர்</string>
     <string name="quantity">அளவு</string>
@@ -215,6 +217,8 @@
     <string name="clear">Clear</string>
     <string name="ongoing">Ongoing</string>
     <string name="completed">Completed</string>
+    <string name="unsatisfied">UnSatisfied</string>
+    <string name="need_improvement">Need Improvement</string>
     <string name="not_editable">(Not Editable)</string>
     <string name="english_speech">English Speech</string>
     <string name="tamil_speech">Tamil Speech</string>
