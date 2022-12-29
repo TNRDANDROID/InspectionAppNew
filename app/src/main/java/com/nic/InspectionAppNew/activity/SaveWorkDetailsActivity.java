@@ -83,6 +83,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -1448,25 +1449,18 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         }
     }
 */
-public Uri getImageUri(Context inContext, Bitmap inImage) {
-    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-    String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-    return Uri.parse(path);
-}
 
+    public  Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage,"IMG_" + Calendar.getInstance().getTime(),null);
+        return Uri.parse(path);
+    }
     public String getRealPathFromURI(Uri uri) {
-        String path = "";
-        if (getContentResolver() != null) {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                path = cursor.getString(idx);
-                cursor.close();
-            }
-        }
-        return path;
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
     }
 
     @Override
@@ -1481,18 +1475,18 @@ public Uri getImageUri(Context inContext, Bitmap inImage) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);*/
                         Bitmap i = (Bitmap) data.getExtras().get("data");
-                        // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
+                      /*  // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
                         Uri tempUri = getImageUri(getApplicationContext(), i);
 
                         // CALL THIS METHOD TO GET THE ACTUAL PATH
-                        File file = new File(getRealPathFromURI(tempUri));
                         String filePath="";
-                        if (file != null) {
-                            filePath = file.getAbsolutePath();
+                        if (tempUri != null) {
+                            filePath = fileDirectory(i,"work_list",String.valueOf(i));
                         }
-                        Bitmap compBitmap = Utils.resizedBitmap(filePath,SaveWorkDetailsActivity.this);
+                        Bitmap compBitmap = Utils.resizedBitmap(filePath,SaveWorkDetailsActivity.this);*/
+                        String filePath = fileDirectory(i,"work_list",String.valueOf(i));
                         if(adapterCameraIntent!=null){
-                            adapterCameraIntent.OnIntentListener(compBitmap,filePath,wayLatitude,wayLongitude);
+                            adapterCameraIntent.OnIntentListener(i,filePath,wayLatitude,wayLongitude);
                         }
 
                     }
