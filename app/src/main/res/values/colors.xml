@@ -6,6 +6,11 @@
     <color name="colorAccentlight">#08cbbb</color>
     <color name="colorAccentverylight">#1E07B3A5</color>
     <color name="colorAccentveryverylight">#5907B3A5</color>
+    <color name="ca">#f5fbfb</color>
+    <color name="ca1">#ebf8f7</color>
+    <color name="ca2">#e1f5f4</color>
+    <color name="ca3">#cdefed</color>
+    <color name="ca4">#b9e9e5</color>
 
     <color name="address">#2F7092</color>
     <color name="followers">#0D5D98</color>
