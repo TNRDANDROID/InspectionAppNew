@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.ParseException;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -45,6 +46,14 @@ import com.android.volley.VolleyError;
 import com.ghanshyam.graphlibs.GraphData;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.nic.InspectionAppNew.Interface.DateInterface;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.SavedWorkListAdapter;
@@ -91,6 +100,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
     String inspectionID="";
     String pdf_string_actual ="";
     private SearchView searchView;
+    String pos="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +124,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
 
 
 
-        binding.totalInspectionLayout.setOnClickListener(new View.OnClickListener() {
+/*        binding.totalInspectionLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (otherSavedWorkList.size()>0){
@@ -221,7 +231,156 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                     binding.recycler.setAdapter(null);
                 }
             }
+        });*/
+
+        // PieChart Onclick Listiner
+
+        binding.graph.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                pos=String.valueOf(h.getX());
+                if(pos.equals("0.0")) {
+                    if (otherSavedWorkList.size() > 0) {
+                        ArrayList<ModelClass> satisfiedList = new ArrayList<>();
+                        for (int i = 0; i < otherSavedWorkList.size(); i++) {
+                            if (otherSavedWorkList.get(i).getWork_status_id() == 1) {
+                                satisfiedList.add(otherSavedWorkList.get(i));
+                            }
+                        }
+                        if (satisfiedList.size() > 0) {
+                            savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this, satisfiedList, "other");
+                            binding.recycler.setVisibility(View.VISIBLE);
+                            binding.notFoundTv.setVisibility(View.GONE);
+                            binding.recycler.setAdapter(savedWorkListAdapter);
+                            binding.recycler.showShimmerAdapter();
+                            binding.recycler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadCards();
+                                }
+                            }, 500);
+                        } else {
+                            binding.recycler.setVisibility(View.GONE);
+                            binding.notFoundTv.setVisibility(View.VISIBLE);
+                            binding.recycler.setAdapter(null);
+                        }
+
+                    } else {
+                        binding.recycler.setVisibility(View.GONE);
+                        binding.inspectionCountListLayout.setVisibility(View.GONE);
+                        binding.notFoundTv.setVisibility(View.VISIBLE);
+                        binding.recycler.setAdapter(null);
+                    }
+
+                    }else if(pos.equals("1.0")){
+                        if (otherSavedWorkList.size()>0){
+                        ArrayList<ModelClass> unsatisfiedList = new ArrayList<>();
+                        for(int i=0;i<otherSavedWorkList.size();i++){
+                            if(otherSavedWorkList.get(i).getWork_status_id()==2){
+                                unsatisfiedList.add(otherSavedWorkList.get(i));
+                            }
+                        }
+                        if(unsatisfiedList.size()>0){
+                            savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,unsatisfiedList,"other");
+                            binding.recycler.setVisibility(View.VISIBLE);
+                            binding.notFoundTv.setVisibility(View.GONE);
+                            binding.recycler.setAdapter(savedWorkListAdapter);
+                            binding.recycler.showShimmerAdapter();
+                            binding.recycler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadCards();
+                                }
+                            }, 500);
+                        }
+                        else {
+                            binding.recycler.setVisibility(View.GONE);
+                            binding.notFoundTv.setVisibility(View.VISIBLE);
+                            binding.recycler.setAdapter(null);
+                        }
+
+                    }
+                        else {
+                        binding.recycler.setVisibility(View.GONE);
+                        binding.notFoundTv.setVisibility(View.VISIBLE);
+                        binding.recycler.setAdapter(null);
+                    }
+                }else if(pos.equals("2.0")){
+
+                    if (otherSavedWorkList.size()>0){
+                        ArrayList<ModelClass> needImprovementList = new ArrayList<>();
+                        for(int i=0;i<otherSavedWorkList.size();i++){
+                            if(otherSavedWorkList.get(i).getWork_status_id()==3){
+                                needImprovementList.add(otherSavedWorkList.get(i));
+                            }
+                        }
+                        if(needImprovementList.size()>0){
+                            savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,needImprovementList,"other");
+                            binding.recycler.setVisibility(View.VISIBLE);
+                            binding.notFoundTv.setVisibility(View.GONE);
+                            binding.recycler.setAdapter(savedWorkListAdapter);
+                            binding.recycler.showShimmerAdapter();
+                            binding.recycler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadCards();
+                                }
+                            }, 500);
+                        }
+                        else {
+                            binding.recycler.setVisibility(View.GONE);
+                            binding.notFoundTv.setVisibility(View.VISIBLE);
+                            binding.recycler.setAdapter(null);
+                        }
+
+                    }
+                    else {
+                        binding.recycler.setVisibility(View.GONE);
+                        binding.notFoundTv.setVisibility(View.VISIBLE);
+                        binding.recycler.setAdapter(null);
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected() {
+            }
         });
+
+        // Total Count Onclick Listiner
+
+        binding.totalTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (otherSavedWorkList.size()>0){
+                    savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedOtherWorkList.this,otherSavedWorkList,"other");
+                    binding.recycler.setVisibility(View.VISIBLE);
+                    binding.notFoundTv.setVisibility(View.GONE);
+                    binding.graph.highlightValue(null);
+                    binding.recycler.setAdapter(savedWorkListAdapter);
+                    binding.recycler.showShimmerAdapter();
+                    binding.recycler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadCards();
+                        }
+                    }, 500);
+                }
+                else {
+                    binding.recycler.setVisibility(View.GONE);
+                    binding.notFoundTv.setVisibility(View.VISIBLE);
+                    binding.recycler.setAdapter(null);
+                }
+            }
+        });
+
+    }
+
+    // For Shimmer Recycler
+    private void loadCards() {
+        binding.recycler.hideShimmerAdapter();
     }
 
     public void showDatePickerDialog(){
@@ -393,6 +552,13 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
                     binding.recycler.setVisibility(View.VISIBLE);
                     binding.notFoundTv.setVisibility(View.GONE);
                     binding.recycler.setAdapter(savedWorkListAdapter);
+                    binding.recycler.showShimmerAdapter();
+                    binding.recycler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadCards();
+                        }
+                    }, 500);
                     binding.inspectionCountListLayout.setVisibility(View.VISIBLE);
                 }
                 else {
@@ -457,7 +623,9 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
     };
 
     private void showPieChart(int satisfied,int unsatisfied,int need_improvement,int total_inspection_count){
-        binding.graph.setMinValue(0f);
+
+
+        /*binding.graph.setMinValue(0f);
         binding.graph.setMaxValue(total_inspection_count);
         binding.graph.setDevideSize(0.0f);
         binding.graph.setBackgroundShapeWidthInDp(10);
@@ -473,7 +641,61 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         data.add(new GraphData(Float.valueOf(satisfied), resources.getColor(R.color.satisfied)));
         data.add(new GraphData(Float.valueOf(unsatisfied), resources.getColor(R.color.unsatisfied)));
         data.add(new GraphData(Float.valueOf(need_improvement), resources.getColor(R.color.need_improvement)));
-        binding.graph.setData(data);
+        binding.graph.setData(data);*/
+
+        // Pie Chart Event
+
+        ArrayList<PieEntry> Count = new ArrayList<>();
+        //Add the Values in the Array list
+        Count.add(new PieEntry(satisfied,"Satisfied"));
+        Count.add(new PieEntry(unsatisfied,"UnSatisfied"));
+        Count.add(new PieEntry(need_improvement,"Need Improvement"));
+
+        PieDataSet pieDataSet = new PieDataSet( Count, "");
+
+        //Set Diffrent Colorss For the Values
+        int c = 0xFF1E90FF;
+        int b = 0xFFFFA500;
+        int a = 0xFF00FA9A;
+        pieDataSet.setColors(a,b,c);
+        pieDataSet.setValueTextColor(Color.BLACK);
+        pieDataSet.setValueTextSize(15f);
+        pieDataSet.setDrawIcons(false);
+
+        //value format here, here is the overridden method
+        ValueFormatter vf = new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return ""+(int)value;
+            }
+        };
+        pieDataSet.setValueFormatter(vf);
+
+        // LEGEND SETTINGS
+        Legend l = binding.graph.getLegend();
+        l.setForm(Legend.LegendForm.CIRCLE); // set what type of form/shape should be used
+        l.setTextSize(13f);
+        l.setTextColor(Color.BLACK);
+        l.setFormToTextSpace(5f); // LegForm to LegText
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+//        l.setEnabled(false);
+
+        //Setup pisDataset into binding.pieChart
+        PieData pieData = new PieData(pieDataSet);
+        binding.graph.setData(pieData);
+        binding.graph.getDescription().setEnabled(false);
+        //To hide Labels
+        binding.graph.setDrawSliceText(false);
+        // Postioning CENTER TExt
+//        binding.pieChart.setCenterTextOffset(0, -20);
+//        binding.pieChart.setCenterText(String.valueOf(total_inspection_count));
+        binding.totalTv.setText("Total Count Of Inspection ("+String.valueOf(total_inspection_count)+")");
+        binding.graph.setCenterTextSize(15f);
+        binding.graph.setCenterTextSizePixels(35);
+        binding.graph.animate();
+        binding.graph.setTouchEnabled(true);
+        binding.graph.invalidate();
+
     }
 
     private boolean checkPermissions() {

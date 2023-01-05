@@ -282,6 +282,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                     savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedWorkList.this,savedWorkList,"rdpr");
                     recyclerView.setVisibility(View.VISIBLE);
                     binding.notFoundTv.setVisibility(View.GONE);
+                    binding.pieChart.highlightValue(null);
                     recyclerView.setAdapter(savedWorkListAdapter);
                     recyclerView.showShimmerAdapter();
                     recyclerView.postDelayed(new Runnable() {
@@ -946,6 +947,7 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
     };
 
     private void showPieChart(int satisfied,int unsatisfied,int need_improvement,int total_inspection_count){
+
         ArrayList<PieEntry> Count = new ArrayList<>();
         //Add the Values in the Array list
         Count.add(new PieEntry(satisfied,"Satisfied"));

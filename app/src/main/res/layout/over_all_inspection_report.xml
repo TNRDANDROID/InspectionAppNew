@@ -94,7 +94,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_15sdp"
                         android:layout_marginRight="@dimen/_15sdp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="30dp"
                         android:layout_marginBottom="15dp"
                         android:background="@drawable/corner_lite_rect_bg_color"
                         android:id="@+id/graph_details"
@@ -114,7 +114,8 @@
                                 android:layout_gravity="center_horizontal"
                                 android:gravity="center_horizontal"
                                 android:orientation="horizontal">
-                                <TextView
+
+                                <!--<TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:padding="@dimen/_3sdp"
@@ -135,8 +136,10 @@
                                     android:layout_gravity="end"
                                     android:padding="@dimen/_3sdp"
                                     android:layout_centerVertical="true"
-                                    android:id="@+id/fin_year"/>
+                                    android:id="@+id/fin_year"/>-->
+
                             </RelativeLayout>
+
                             <RelativeLayout
                                 android:padding="@dimen/_3sdp"
                                 android:id="@+id/total_inspection_layout"
@@ -166,6 +169,7 @@
                                     android:padding="@dimen/_3sdp"
                                     android:id="@+id/total_count_graph"/>
                             </RelativeLayout>
+
                             <com.github.mikephil.charting.charts.PieChart
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/_200sdp"
@@ -174,6 +178,28 @@
 
                         </LinearLayout>
                     </RelativeLayout>
+
+                    <!--                            Finyear Card Design-->
+
+                    <RelativeLayout
+                        android:layout_width="150dp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/fin_year_bg">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="2017-2018"
+                            android:textColor="@color/primary_text_color"
+                            android:layout_toRightOf="@+id/fin_year_tv"
+                            android:gravity="center"
+                            android:padding="@dimen/_5sdp"
+                            android:id="@+id/fin_year"/>
+
+                    </RelativeLayout>
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
