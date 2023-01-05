@@ -233,6 +233,7 @@
     <string name="selected_village">Selected Village</string>
     <string name="selected_scheme">Selected Scheme</string>
     <string name="download">Download</string>
+    <string name="download_txt">Download your work list here… </string>
     <string name="skip">Skip and View Already Downloaded Works</string>
     <string name="work_id">Work id</string>
     <string name="other_work_id">Other Work id</string>
@@ -257,6 +258,7 @@
     <string name="colan_symbol">:</string>
     <string name="other_works">Other Works</string>
     <string name="view_inspected_work">View Inspected RDPR Work</string>
+    <string name="over_all_inspection_report">Over All Inspection Report</string>
     <string name="view_inspected_other_work">View Inspected Other Work</string>
     <string name="view_inspected_report">View Inspected Report</string>
     <string name="no_inspection_history_found">No Inspection History Found</string>

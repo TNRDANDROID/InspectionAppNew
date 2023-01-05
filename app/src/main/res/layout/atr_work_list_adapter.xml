@@ -14,12 +14,42 @@
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:background="@drawable/corner_strong_rect_bg_color"
+
         >
+        ///back ground drawable
+        <RelativeLayout
+
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:id="@+id/circle1"
+                    android:layout_width="@dimen/_45sdp"
+                    android:layout_height="@dimen/_45sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:padding="@dimen/_55sdp"
+                    android:background="@drawable/quater_circle_shape_color"
+                    />
+
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@drawable/button_background_gradient"
             >
 
             <RelativeLayout
@@ -453,6 +483,21 @@
                     </LinearLayout>
 
                 </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/linear"
+                    android:id="@+id/view_report"
+                    android:gravity="center_vertical"
+                    android:layout_alignParentEnd="true"
+                    android:textColor="@color/primary_text_color"
+                    android:drawableEnd="@drawable/ic_pdf"
+                    android:drawablePadding="@dimen/_3sdp"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="-40dp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_8sdp"
+                    tools:ignore="RelativeOverlap,UnusedAttribute" />
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -462,12 +507,13 @@
                     android:padding="@dimen/_8sdp"
                     android:layout_alignParentTop="true">
                     <ImageView
-                        android:layout_marginEnd="@dimen/_8sdp"
                         android:id="@+id/take_action_text"
                         android:layout_centerVertical="true"
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
-                        android:src="@drawable/action"
+                        android:layout_width="@dimen/_23sdp"
+                        android:layout_height="@dimen/_23sdp"
+                        android:src="@drawable/ic_go_arrow"
+                        android:tint="@color/ca3"
+                        android:scaleX="-1"
                         android:textColor="@color/primary_text_color"
                         android:textSize="@dimen/_13sdp"
                         android:text="@string/take_action"
@@ -476,40 +522,7 @@
 
             </RelativeLayout>
 
-
         </RelativeLayout>
-
-        ///back ground drawable
-        <RelativeLayout
-
-            android:visibility="visible"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RelativeLayout
-                android:visibility="visible"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-
-                <ImageView
-                    android:id="@+id/circle1"
-                    android:layout_width="@dimen/_150sdp"
-                    android:layout_height="@dimen/_150sdp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="-15dp"
-                    android:layout_marginRight="-15dp"
-                    android:padding="@dimen/_55sdp"
-                    android:background="@drawable/quater_circle_shape_color"
-                    android:src="@drawable/ic_time"/>
-
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-
 
     </RelativeLayout>
 

@@ -627,6 +627,7 @@ public class dbData {
                     card.setWork_status_id(cursor.getInt(cursor.getColumnIndexOrThrow("work_status_id")));
                     card.setWork_stage_name(cursor.getString(cursor.getColumnIndexOrThrow("work_stage")));
                     card.setWork_stage_code(cursor.getString(cursor.getColumnIndexOrThrow("work_stage_id")));
+                    card.setFlag(cursor.getString(cursor.getColumnIndexOrThrow("flag")));
 
                     cards.add(card);
                 }

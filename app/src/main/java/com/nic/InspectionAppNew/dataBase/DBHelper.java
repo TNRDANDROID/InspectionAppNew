@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "InspectionNew";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     public static final String VILLAGE_TABLE_NAME = " villageTable";
     public static final String HABITATION_TABLE_NAME = " habitaionTable";
@@ -84,6 +84,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "image_path TEXT," +
                 "latitude TEXT," +
                 "longitude TEXT," +
+                "flag TEXT," +
                 "serial_no INTEGER)");
         db.execSQL("CREATE TABLE " + SAVE_ATR_IMAGES + " ("
                 + "save_work_details_image_primary_id INTEGER PRIMARY KEY AUTOINCREMENT,"+
@@ -183,6 +184,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "work_stage_id TEXT," +
                 "work_description TEXT," +
                 "current_stage_of_work TEXT," +
+                "flag TEXT," +
                 "is_high_value TEXT)");
         db.execSQL("CREATE TABLE " + SAVE_ATR_WORK_DETAILS + " ("
                 + "save_work_details_primary_id INTEGER PRIMARY KEY AUTOINCREMENT," +

@@ -470,9 +470,9 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         binding.totalCount1.setText(String.valueOf(total_inspection_count));
         Resources resources = getResources();
         Collection<GraphData> data = new ArrayList<>();
-        data.add(new GraphData(Float.valueOf(satisfied), resources.getColor(R.color.account_status_green_color)));
-        data.add(new GraphData(Float.valueOf(unsatisfied), resources.getColor(R.color.red)));
-        data.add(new GraphData(Float.valueOf(need_improvement), resources.getColor(R.color.pink)));
+        data.add(new GraphData(Float.valueOf(satisfied), resources.getColor(R.color.satisfied)));
+        data.add(new GraphData(Float.valueOf(unsatisfied), resources.getColor(R.color.unsatisfied)));
+        data.add(new GraphData(Float.valueOf(need_improvement), resources.getColor(R.color.need_improvement)));
         binding.graph.setData(data);
     }
 

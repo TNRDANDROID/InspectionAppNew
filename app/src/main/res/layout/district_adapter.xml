@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="adapter"
+            type="com.nic.InspectionAppNew.adapter.DistrictBlockAdapter" />
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/item"
+        android:background="@color/ca">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/header"
+            android:weightSum="5"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1.5"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_3sdp"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/headertxt"
+                    android:textSize="@dimen/_8sdp"
+                    android:textColor="@color/grey_10"
+                    android:layout_gravity="center_horizontal"
+                    android:text="District" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:textSize="@dimen/_9sdp"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_3sdp"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/total_count"
+                    android:textColor="@color/primary_text_color2"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Total" />
+
+            </LinearLayout>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_3sdp"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/_8sdp"
+                android:id="@+id/satisfied_count"
+                android:textColor="@color/grey_10"
+                android:layout_gravity="center_horizontal"
+                android:text="Satisfied" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_3sdp"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/_8sdp"
+                android:id="@+id/un_satisfied_count"
+                android:textColor="@color/grey_10"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/unsatisfied" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_3sdp"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/_8sdp"
+                android:id="@+id/need_improvement_count"
+                android:textColor="@color/grey_10"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/need_improvement" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_3sdp"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/_8sdp"
+                android:drawableRight="@drawable/ic_double_arrow"
+                android:drawableTint="@color/primary_text_color2"
+                android:id="@+id/go"
+                android:textColor="@color/grey_10"
+                android:layout_gravity="center_horizontal"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>
+
+
+
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>
+    <layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <data>
+
+            <variable
+                name="adapter"
+                type="com.nic.InspectionAppNew.adapter.DistrictBlockAdapter" />
+        </data>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_margin="@dimen/_10sdp">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/graph_details"
+                android:layout_center_horizontalVertical="true"
+                android:background="@drawable/background_new"
+                android:layout_toRightOf="@+id/graph_layout"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginEnd="@dimen/_8sdp"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/district"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_gravity="start"
+                            android:text="district"
+                            android:textColor="@color/primary_text_color2"
+                            android:textSize="@dimen/_11sdp" />
+
+                        <TextView
+                            android:id="@+id/total_count_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_gravity="end"
+                            android:text="district"
+                            android:textColor="@color/primary_text_color2"
+                            android:textSize="@dimen/_11sdp" />
+                    </RelativeLayout>
+
+
+                    <RelativeLayout
+                        android:id="@+id/satisfied_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_3sdp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_center_horizontalVertical="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_center_horizontalVertical="true"
+                                android:layout_gravity="center_horizontal_horizontal"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:text="Satisfied" />
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/satisfied_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_center_horizontalVertical="true"
+                            android:layout_gravity="center_horizontal_horizontal"
+                            android:padding="@dimen/_3sdp"
+                            android:text="0" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/un_satisfied_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_3sdp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_center_horizontalVertical="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_center_horizontalVertical="true"
+                                android:layout_gravity="center_horizontal_horizontal"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:text="Un Satisfied" />
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/un_satisfied_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_center_horizontalVertical="true"
+                            android:layout_gravity="center_horizontal_horizontal"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:padding="@dimen/_3sdp"
+                            android:text="0" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/need_improvement_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_3sdp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_center_horizontalVertical="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_center_horizontalVertical="true"
+                                android:layout_gravity="center_horizontal_horizontal"
+                                android:layout_marginStart="@dimen/_5sdp"
+                                android:text="Need Improvement" />
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/need_improvement_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_center_horizontalVertical="true"
+                            android:layout_gravity="center_horizontal_horizontal"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:padding="@dimen/_3sdp"
+                            android:text="0" />
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+                &lt;!&ndash;
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical">
+
+                                        <RelativeLayout
+                                            android:padding="@dimen/_3sdp"
+                                            android:id="@+id/total_inspection_layout"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:orientation="horizontal">
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:padding="@dimen/_3sdp"
+                                                android:gravity="start"
+                                                android:id="@+id/total_tv"
+                                                android:textColor="@color/grey_10"
+                                                android:layout_marginLeft="@dimen/_10sdp"
+                                                android:layout_alignParentStart="true"
+                                                android:layout_gravity="start"
+                                                android:text="Total Inspection" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="0"
+                                                android:textColor="@color/grey_10"
+                                                android:layout_alignParentEnd="true"
+                                                android:gravity="end"
+                                                android:layout_gravity="end"
+                                                android:padding="@dimen/_3sdp"
+                                                android:layout_center_horizontalVertical="true"
+                                                android:id="@+id/total_count_graph"/>
+                                        </RelativeLayout>
+
+                                        <RelativeLayout
+                                            android:padding="@dimen/_3sdp"
+                                            android:id="@+id/satisfied_layout"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_horizontal"
+                                            android:orientation="horizontal">
+                                            <RelativeLayout
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_center_horizontalVertical="true"
+                                                android:layout_marginLeft="@dimen/_10sdp">
+
+                                                <ImageView
+                                                    android:id="@+id/icon3"
+                                                    android:layout_width="@dimen/_10sdp"
+                                                    android:layout_height="@dimen/_10sdp"
+                                                    android:layout_center_horizontalVertical="true"
+                                                    android:src="@drawable/rect_fill_box"
+                                                    android:tint="@color/account_status_green_color" />
+                                                <TextView
+                                                    android:layout_center_horizontalVertical="true"
+                                                    android:layout_toEndOf="@id/icon3"
+                                                    android:layout_marginLeft="@dimen/_5sdp"
+                                                    android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_gravity="center_horizontal_horizontal"
+                                                    android:text="Satisfied"
+                                                    />
+                                            </RelativeLayout>
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_alignParentEnd="true"
+                                                android:padding="@dimen/_3sdp"
+                                                android:layout_center_horizontalVertical="true"
+                                                android:text="0"
+                                                android:layout_gravity="center_horizontal_horizontal"
+                                                android:id="@+id/satisfied_count_graph"/>
+                                        </RelativeLayout>
+                                        <RelativeLayout
+                                            android:padding="@dimen/_3sdp"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_horizontal"
+                                            android:id="@+id/un_satisfied_layout"
+                                            android:orientation="horizontal">
+                                            <RelativeLayout
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_center_horizontalVertical="true"
+                                                android:layout_marginLeft="@dimen/_10sdp">
+                                                <ImageView
+                                                    android:layout_center_horizontalVertical="true"
+                                                    android:layout_width="@dimen/_10sdp"
+                                                    android:layout_height="@dimen/_10sdp"
+                                                    android:src="@drawable/rect_fill_box"
+                                                    android:tint="@color/red"
+                                                    android:id="@+id/icon2"/>
+                                                <TextView
+                                                    android:layout_center_horizontalVertical="true"
+                                                    android:layout_toEndOf="@id/icon2"
+                                                    android:layout_marginLeft="@dimen/_5sdp"
+                                                    android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_gravity="center_horizontal_horizontal"
+                                                    android:text="Un Satisfied"
+                                                    />
+                                            </RelativeLayout>
+
+                                            <TextView
+                                                android:layout_marginLeft="@dimen/_5sdp"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_alignParentEnd="true"
+                                                android:padding="@dimen/_3sdp"
+                                                android:layout_center_horizontalVertical="true"                                            android:text="0"
+                                                android:layout_gravity="center_horizontal_horizontal"
+                                                android:id="@+id/un_satisfied_count_graph"/>
+                                        </RelativeLayout>
+                                        <RelativeLayout
+                                            android:padding="@dimen/_3sdp"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_horizontal"
+                                            android:id="@+id/need_improvement_layout"
+                                            android:orientation="horizontal">
+
+                                            <RelativeLayout
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginLeft="@dimen/_10sdp"
+                                                android:layout_center_horizontalVertical="true">
+                                                <ImageView
+                                                    android:layout_center_horizontalVertical="true"
+                                                    android:layout_width="@dimen/_10sdp"
+                                                    android:layout_height="@dimen/_10sdp"
+                                                    android:src="@drawable/rect_fill_box"
+                                                    android:tint="#2A4AFB"
+                                                    android:id="@+id/icon1"/>
+                                                <TextView
+                                                    android:layout_toEndOf="@+id/icon1"
+                                                    android:layout_center_horizontalVertical="true"
+                                                    android:layout_marginStart="@dimen/_5sdp"
+                                                    android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_gravity="center_horizontal_horizontal"
+                                                    android:text="Need Improvement"
+                                                    />
+                                            </RelativeLayout>
+
+                                            <TextView
+                                                android:layout_marginLeft="@dimen/_5sdp"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_alignParentEnd="true"
+                                                android:padding="@dimen/_3sdp"
+                                                android:layout_center_horizontalVertical="true"                                            android:text="0"
+                                                android:layout_gravity="center_horizontal_horizontal"
+                                                android:id="@+id/need_improvement_count_graph"/>
+                                        </RelativeLayout>
+
+
+                                    </LinearLayout>
+                &ndash;&gt;
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:visibility="gone"
+                android:id="@+id/graph_layout"
+                android:background="@drawable/circle_shadow_all_side"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_center_horizontalVertical="true"
+                android:layout_marginBottom="@dimen/_10sdp"
+                >
+                <TextView
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_center_horizontalInParent="true"
+                    android:padding="@dimen/_5sdp"
+                    android:textColor="@color/white"
+                    android:text="54464556"
+                    android:id="@+id/total_count"
+                    />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </layout>-->
+
+
+
+
+

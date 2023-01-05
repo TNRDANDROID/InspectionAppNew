@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -44,7 +45,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
@@ -55,6 +58,7 @@ import com.google.android.gms.location.LocationServices;
 import com.nic.InspectionAppNew.Interface.AdapterCameraIntent;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.CommonAdapter;
+import com.nic.InspectionAppNew.adapter.SaveATRImageAdapter;
 import com.nic.InspectionAppNew.adapter.SaveImageAdapter;
 import com.nic.InspectionAppNew.api.Api;
 import com.nic.InspectionAppNew.api.ApiService;
@@ -85,6 +89,7 @@ import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import in.mayanknagwanshi.imagepicker.ImageSelectActivity;
+import ng.max.slideview.SlideView;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
@@ -148,7 +153,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
     private Intent recognizerIntent;
     private String LOG_TAG = "VoiceRecognitionActivity";
     boolean listening = false;
-    SaveImageAdapter adapter;
+    SaveATRImageAdapter adapter;
     ArrayList<ModelClass> savedImage = new ArrayList<>();
 
     boolean true_flag = false;
@@ -180,10 +185,10 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
 
         getIntentData();
 
-       /* RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
-        saveWorkDetailsActivityBinding.recycler.setLayoutManager(mLayoutManager);*/
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
+        binding.recycler.setLayoutManager(mLayoutManager);
 
-        binding.recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+//        binding.recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.recycler.setItemAnimator(new DefaultItemAnimator());
         binding.recycler.setHasFixedSize(true);
         binding.recycler.setNestedScrollingEnabled(false);
@@ -211,6 +216,26 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
             @Override
             public void onClick(View v) {
                 turnOf();
+            }
+        });
+        binding.submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoSubmit();
+//                Toast.makeText(SaveATRWorkDetailsActivity.this, "Success click",  Toast.LENGTH_SHORT).show();
+            }
+        });
+        binding.submit.setOnSlideCompleteListener(new SlideView.OnSlideCompleteListener() {
+            @Override
+            public void onSlideComplete(SlideView slideView) {
+                // vibrate the device
+                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(100);
+
+                gotoSubmit();
+                // go to a new activity
+//                Toast.makeText(SaveATRWorkDetailsActivity.this, "Success",  Toast.LENGTH_SHORT).show();
+
             }
         });
         binding.englishMic.setEnabled(true);
@@ -258,7 +283,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
                 value.setImage_serial_number(0);
                 savedImage.add(value);
         }
-        adapter = new SaveImageAdapter(SaveATRWorkDetailsActivity.this, savedImage,f,s);
+        adapter = new SaveATRImageAdapter(SaveATRWorkDetailsActivity.this, savedImage,f,s);
         adapterCameraIntent=adapter;
         binding.recycler.setAdapter(adapter);
     }
@@ -284,6 +309,36 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
         dbData.open();
         savedImage = new ArrayList<>();
         loadImageList(savedImage,flag,"");
+
+            dbData.open();
+            ArrayList<ModelClass> savedCount = new ArrayList<>();
+            savedCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
+
+            if(savedCount.size()>0){
+                binding.description.setText(savedCount.get(0).getWork_description());
+                try {
+                    savedImage=new ArrayList<>();
+                    savedImage=dbData.getParticularSavedImagebycode("all",dcode,bcode,pvcode,String.valueOf(work_id),"");
+
+                    if(savedImage.size() > 0){
+                        loadImageList(savedImage,flag,"local");
+                        /*adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage,"","local");
+                        adapterCameraIntent=adapter;
+                        saveWorkDetailsActivityBinding.recycler.setAdapter(adapter);*/
+                    }
+
+
+                } catch (ArrayIndexOutOfBoundsException j) {
+                    j.printStackTrace();
+                }
+            }
+            else {
+                binding.description.setText("");
+                savedImage=new ArrayList<>();
+                loadImageList(savedImage,flag,"");
+            }
+
+
 
     }
     public void gotoSubmit()
@@ -579,16 +634,17 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
             values.put("scheme_group_id",scheme_group_id);
             values.put("work_group_id",work_group_id);
             values.put("work_type_id",work_type_id);
+            values.put("flag","2");
             selection = "work_id = ?";
             selectionArgs = new String[]{String.valueOf(work_id)};
             dbData.open();
             ArrayList<ModelClass> saveCount = new ArrayList<>();
             saveCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
             if(saveCount.size()>0){
-                rowInsert = db.update(DBHelper.SAVE_ATR_WORK_DETAILS,values,selection,selectionArgs);
+                rowInsert = db.update(DBHelper.SAVE_WORK_DETAILS,values,selection,selectionArgs);
             }
             else {
-                rowInsert = db.insert(DBHelper.SAVE_ATR_WORK_DETAILS,null,values);
+                rowInsert = db.insert(DBHelper.SAVE_WORK_DETAILS,null,values);
             }
 
 
@@ -641,6 +697,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
                         imageValue.put("bcode", selected_image_list.get(i).getBlockCode());
                         imageValue.put("pvcode", selected_image_list.get(i).getPvCode());
                         imageValue.put("serial_no", count);
+                        imageValue.put("flag","2");
 
                         selection = "dcode = ? and bcode = ? and pvcode = ? and work_id = ? and serial_no = ?";
                         selectionArgs = new String[]{String.valueOf(selected_image_list.get(i).getDistrictCode()),String.valueOf(selected_image_list.get(i).getBlockCode()),
@@ -656,10 +713,10 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
                                 Utils.deleteFileDirectory(filepath);
                             }
 
-                            rowUpdated =db.update(DBHelper.SAVE_ATR_IMAGES,imageValue,selection,selectionArgs);
+                            rowUpdated =db.update(DBHelper.SAVE_IMAGES,imageValue,selection,selectionArgs);
                         }
                         else {
-                            rowInserted =db.insert(DBHelper.SAVE_ATR_IMAGES,null,imageValue);
+                            rowInserted =db.insert(DBHelper.SAVE_IMAGES,null,imageValue);
                         }
 
                         if (count == childCount) {

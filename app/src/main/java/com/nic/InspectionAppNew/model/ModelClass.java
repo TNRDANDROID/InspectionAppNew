@@ -67,6 +67,58 @@ public class ModelClass implements Serializable {
     private String ts_date;
     private String work_order_date;
     private String work_type_name;
+    private String other_work_inspection_id;
+    private String gender_code;
+    private String gender_name_en;
+    private String gender_name_ta;
+
+    private String localbody_name;
+    private String localbody_code;
+
+    private String desig_code;
+    private String desig_name;
+
+    String work_stage_code;
+    String work_stage_order;
+    String work_stage_name;
+    String flag;
+    int total_cout;
+    int satisfied_cout;
+    int unsatisfied_cout;
+    int needimprovement_cout;
+
+
+    public int getTotal_cout() {
+        return total_cout;
+    }
+
+    public void setTotal_cout(int total_cout) {
+        this.total_cout = total_cout;
+    }
+
+    public int getSatisfied_cout() {
+        return satisfied_cout;
+    }
+
+    public void setSatisfied_cout(int satisfied_cout) {
+        this.satisfied_cout = satisfied_cout;
+    }
+
+    public int getUnsatisfied_cout() {
+        return unsatisfied_cout;
+    }
+
+    public void setUnsatisfied_cout(int unsatisfied_cout) {
+        this.unsatisfied_cout = unsatisfied_cout;
+    }
+
+    public int getNeedimprovement_cout() {
+        return needimprovement_cout;
+    }
+
+    public void setNeedimprovement_cout(int needimprovement_cout) {
+        this.needimprovement_cout = needimprovement_cout;
+    }
 
     public String getAs_date() {
         return as_date;
@@ -511,7 +563,6 @@ public class ModelClass implements Serializable {
         this.max_no_of_photos = max_no_of_photos;
     }
 
-    private String other_work_inspection_id;
 
     public String getOther_work_inspection_id() {
         return other_work_inspection_id;
@@ -520,16 +571,6 @@ public class ModelClass implements Serializable {
     public void setOther_work_inspection_id(String other_work_inspection_id) {
         this.other_work_inspection_id = other_work_inspection_id;
     }
-
-    private String gender_code;
-    private String gender_name_en;
-    private String gender_name_ta;
-
-    private String localbody_name;
-    private String localbody_code;
-
-    private String desig_code;
-    private String desig_name;
 
     public String getDesig_code() {
         return desig_code;
@@ -587,9 +628,14 @@ public class ModelClass implements Serializable {
         this.gender_name_ta = gender_name_ta;
     }
 
-    String work_stage_code;
-    String work_stage_order;
-    String work_stage_name;
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
 
     public String getWork_stage_code() {
         return work_stage_code;

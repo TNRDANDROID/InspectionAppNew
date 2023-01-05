@@ -987,6 +987,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             values.put("scheme_group_id",scheme_group_id);
             values.put("work_group_id",work_group_id);
             values.put("work_type_id",work_type_id);
+            values.put("flag","1");
             selection = "work_id = ?";
             selectionArgs = new String[]{String.valueOf(work_id)};
             dbData.open();
@@ -1049,6 +1050,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                         imageValue.put("bcode", selected_image_list.get(i).getBlockCode());
                         imageValue.put("pvcode", selected_image_list.get(i).getPvCode());
                         imageValue.put("serial_no", count);
+                        imageValue.put("flag","1");
 
                         selection = "dcode = ? and bcode = ? and pvcode = ? and work_id = ? and serial_no = ?";
                         selectionArgs = new String[]{String.valueOf(selected_image_list.get(i).getDistrictCode()),String.valueOf(selected_image_list.get(i).getBlockCode()),
@@ -1300,6 +1302,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                         prefManager.setImageJson(j);
                     }else {
                         showAlert(this, "Your Data is Synchronized to the server!");
+                        removeSavedItem(work_id,dcode,bcode,pvcode);
                     }
 /*
                     new Handler().postDelayed(new Runnable() {
@@ -1323,6 +1326,29 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    public void removeSavedItem(int work_id, String dcode, String bcode, String pvcode) {
+        dbData.open();
+        db.delete(DBHelper.SAVE_WORK_DETAILS, "work_id = ?", new String[]{String.valueOf(work_id)});
+        db.delete(DBHelper.SAVE_IMAGES, "dcode = ? and bcode = ? and pvcode = ? and work_id = ?",
+                new String[]{String.valueOf(dcode),String.valueOf(bcode),String.valueOf(pvcode),String.valueOf(work_id)});
+        deleteSavedImage(String.valueOf(dcode),String.valueOf(bcode),String.valueOf(pvcode),String.valueOf(work_id));
+    }
+    private void deleteSavedImage(String dcode,String bcode,String pvcode,String work_id) {
+        ArrayList<ModelClass> activityImage = new ArrayList<>();
+        activityImage = dbData.getParticularSavedImagebycode("all",dcode,bcode, pvcode,work_id,"");
+        for (int i=0; i < activityImage.size();i++){
+            String file_path= activityImage.get(i).getImage_path();
+            deleteFileDirectory(file_path);
+        }
+
+    }
+    private void deleteFileDirectory(String file_path){
+        File file = new File(file_path);
+        // call deleteDirectory method to delete directory
+        // recursively
+        file.delete();
+
     }
     public  void showAlert(Activity activity, String msg){
         try {
@@ -1373,6 +1399,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
     }
 
+/*
     public void speechToText(String language) {
         listening = true;
         start(language);
@@ -1382,6 +1409,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                         new String[]{Manifest.permission.RECORD_AUDIO},
                         REQUEST_RECORD_PERMISSION);
     }
+*/
 
     public void start(String language){
         saveWorkDetailsActivityBinding.englishMic.setEnabled(false);
@@ -1425,7 +1453,6 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
 
 
-/*
     public void speechToText(String language) {
         Intent intent
                 = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -1440,6 +1467,10 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                     "ta-IND");
         }
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text");
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, Long.valueOf(10000));//5sec
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, Long.valueOf(20000));//5sec
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, Long.valueOf(5000));//5sec
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, Long.valueOf(5000));//5sec
 
         try {
             startActivityForResult(intent, SPEECH_REQUEST_CODE);
@@ -1448,7 +1479,6 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             Toast.makeText(SaveWorkDetailsActivity.this, " " + e.getMessage(),Toast.LENGTH_SHORT).show();
         }
     }
-*/
 
     public  Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

@@ -199,28 +199,29 @@
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/_5sdp"
+                                    android:layout_marginTop="@dimen/_8sdp"
+                                    android:layout_marginBottom="@dimen/_8sdp"
                                     android:layout_marginLeft="@dimen/_10sdp"
                                     android:layout_marginRight="@dimen/_20sdp"
                                     android:orientation="vertical">
 
                                     <RelativeLayout
-                                        android:padding="@dimen/_5sdp"
-                                        android:id="@+id/total_inspection_layout"
+                                        android:padding="@dimen/_3sdp"
+                                        android:id="@+id/fin_year_layout"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:orientation="horizontal">
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:padding="@dimen/_5sdp"
+                                            android:padding="@dimen/_3sdp"
                                             android:gravity="start"
-                                            android:id="@+id/total_tv"
+                                            android:id="@+id/fin_year_tv"
                                             android:textColor="@color/grey_10"
                                             android:layout_marginLeft="@dimen/_10sdp"
                                             android:layout_alignParentStart="true"
                                             android:layout_gravity="start"
-                                            android:text="Total" />
+                                            android:text="@string/financial_year" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -230,13 +231,43 @@
                                             android:layout_alignParentEnd="true"
                                             android:gravity="end"
                                             android:layout_gravity="end"
-                                            android:padding="@dimen/_5sdp"
+                                            android:padding="@dimen/_3sdp"
+                                            android:layout_centerVertical="true"
+                                            android:id="@+id/fin_year"/>
+                                    </RelativeLayout>
+                                    <RelativeLayout
+                                        android:padding="@dimen/_3sdp"
+                                        android:id="@+id/total_inspection_layout"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:padding="@dimen/_3sdp"
+                                            android:gravity="start"
+                                            android:id="@+id/total_tv"
+                                            android:textColor="@color/grey_10"
+                                            android:layout_marginLeft="@dimen/_10sdp"
+                                            android:layout_alignParentStart="true"
+                                            android:layout_gravity="start"
+                                            android:text="Total Inspection Count" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="0"
+                                            android:textColor="@color/grey_10"
+                                            android:layout_alignParentEnd="true"
+                                            android:gravity="end"
+                                            android:layout_gravity="end"
+                                            android:padding="@dimen/_3sdp"
                                             android:layout_centerVertical="true"
                                             android:id="@+id/total_count_graph"/>
                                     </RelativeLayout>
 
                                     <RelativeLayout
-                                        android:padding="@dimen/_5sdp"
+                                        android:padding="@dimen/_3sdp"
                                         android:id="@+id/satisfied_layout"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
@@ -254,7 +285,7 @@
                                                 android:layout_height="@dimen/_10sdp"
                                                 android:layout_centerVertical="true"
                                                 android:src="@drawable/rect_fill_box"
-                                                android:tint="@color/account_status_green_color" />
+                                                android:tint="@color/satisfied" />
                                             <TextView
                                                 android:layout_centerVertical="true"
                                                 android:layout_toEndOf="@id/icon3"
@@ -270,14 +301,14 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_alignParentEnd="true"
-                                            android:padding="@dimen/_5sdp"
+                                            android:padding="@dimen/_3sdp"
                                             android:layout_centerVertical="true"
                                             android:text="0"
                                             android:layout_gravity="center_horizontal"
                                             android:id="@+id/satisfied_count_graph"/>
                                     </RelativeLayout>
                                     <RelativeLayout
-                                        android:padding="@dimen/_5sdp"
+                                        android:padding="@dimen/_3sdp"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
@@ -293,7 +324,7 @@
                                                 android:layout_width="@dimen/_10sdp"
                                                 android:layout_height="@dimen/_10sdp"
                                                 android:src="@drawable/rect_fill_box"
-                                                android:tint="@color/red"
+                                                android:tint="@color/unsatisfied"
                                                 android:id="@+id/icon2"/>
                                             <TextView
                                                 android:layout_centerVertical="true"
@@ -311,13 +342,13 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_alignParentEnd="true"
-                                            android:padding="@dimen/_5sdp"
+                                            android:padding="@dimen/_3sdp"
                                             android:layout_centerVertical="true"                                            android:text="0"
                                             android:layout_gravity="center_horizontal"
                                             android:id="@+id/un_satisfied_count_graph"/>
                                     </RelativeLayout>
                                     <RelativeLayout
-                                        android:padding="@dimen/_5sdp"
+                                        android:padding="@dimen/_3sdp"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
@@ -334,7 +365,7 @@
                                                 android:layout_width="@dimen/_10sdp"
                                                 android:layout_height="@dimen/_10sdp"
                                                 android:src="@drawable/rect_fill_box"
-                                                android:tint="#2A4AFB"
+                                                android:tint="@color/need_improvement"
                                                 android:id="@+id/icon1"/>
                                             <TextView
                                                 android:layout_toEndOf="@+id/icon1"
@@ -352,7 +383,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_alignParentEnd="true"
-                                            android:padding="@dimen/_5sdp"
+                                            android:padding="@dimen/_3sdp"
                                             android:layout_centerVertical="true"                                            android:text="0"
                                             android:layout_gravity="center_horizontal"
                                             android:id="@+id/need_improvement_count_graph"/>
@@ -517,7 +548,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="center_horizontal"
-                                            android:padding="@dimen/_5sdp"
+                                            android:padding="@dimen/_3sdp"
                                             android:id="@+id/go_online"
                                             android:text="@string/go_online"
                                             android:textAlignment="center"
@@ -534,7 +565,7 @@
                                             android:id="@+id/go_offline"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:padding="@dimen/_5sdp"
+                                            android:padding="@dimen/_3sdp"
                                             android:text="@string/go_offline"
                                             android:textColor="@color/darkblue"
                                             android:textSize="16sp"
@@ -621,7 +652,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="center_horizontal"
-                                            android:padding="@dimen/_5sdp"
+                                            android:padding="@dimen/_3sdp"
                                             android:id="@+id/go_online_other"
                                             android:text="@string/go_online"
                                             android:visibility="visible"
@@ -640,7 +671,7 @@
                                             android:id="@+id/go_offline_other"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:padding="@dimen/_5sdp"
+                                            android:padding="@dimen/_3sdp"
                                             android:text="@string/go_offline"
                                             android:visibility="gone"
                                             android:textColor="@color/darkblue"
@@ -664,7 +695,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/linear"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:id="@+id/atr"
                         >
                         <RelativeLayout
@@ -733,7 +764,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_horizontal"
-                                        android:padding="@dimen/_5sdp"
+                                        android:padding="@dimen/_3sdp"
                                         android:id="@+id/go_online_atr"
                                         android:text="@string/go_online"
                                         android:textAlignment="center"
@@ -750,7 +781,7 @@
                                         android:id="@+id/go_offline_atr"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:padding="@dimen/_5sdp"
+                                        android:padding="@dimen/_3sdp"
                                         android:text="@string/go_offline"
                                         android:textColor="@color/darkblue"
                                         android:textSize="16sp"
@@ -976,7 +1007,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:gravity="center"
-                                    android:padding="@dimen/_5sdp"
+                                    android:padding="@dimen/_3sdp"
                                     android:text="@string/go_online"
                                     android:textColor="@color/white"
                                     android:textSize="16sp"
@@ -985,7 +1016,7 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_weight="1"
-                                    android:padding="@dimen/_5sdp"
+                                    android:padding="@dimen/_3sdp"
                                     android:layout_height="wrap_content"
                                     android:text="@string/go_offline"
                                     android:id="@+id/go_offline"
@@ -1052,7 +1083,7 @@
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:visibility="gone"
-                                    android:padding="@dimen/_5sdp"
+                                    android:padding="@dimen/_3sdp"
                                     android:text="@string/go_online"
                                     android:textColor="@color/white"
                                     android:textSize="16sp"
@@ -1061,7 +1092,7 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_weight="2"
-                                    android:padding="@dimen/_5sdp"
+                                    android:padding="@dimen/_3sdp"
                                     android:layout_height="wrap_content"
                                     android:text="@string/go_offline"
                                     android:id="@+id/go_offline_other"
@@ -1104,7 +1135,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_below="@+id/user_img"
                                     android:layout_centerHorizontal="true"
-                                    android:padding="@dimen/_5sdp"
+                                    android:padding="@dimen/_3sdp"
                                     android:text="@string/user_name" />
                             </RelativeLayout>
 

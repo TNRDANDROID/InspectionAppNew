@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nic.InspectionAppNew.R;
+import com.nic.InspectionAppNew.activity.ATRWorkList;
 import com.nic.InspectionAppNew.activity.SaveATRWorkDetailsActivity;
 import com.nic.InspectionAppNew.activity.SaveWorkDetailsActivity;
 import com.nic.InspectionAppNew.dataBase.dbData;
@@ -154,6 +155,21 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
             }
         });
 
+        holder.binding.viewReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(Utils.isOnline()){
+                    ((ATRWorkList)context).getWorkReportDetails(String.valueOf( listFilteredValue.get(position).getWork_id()), "89"/*listFilteredValue.get(position).getInspection_id()*/);
+
+
+                }else {
+                    Utils.showAlert(context,context.getResources().getString(R.string.internet_connection_not_available_please_turn_on_or_offline));
+                }
+
+
+            }
+        });
 
 
     }

@@ -27,6 +27,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.activity.FullImageActivity;
 import com.nic.InspectionAppNew.activity.PendingScreen;
+import com.nic.InspectionAppNew.activity.SaveATRWorkDetailsActivity;
 import com.nic.InspectionAppNew.activity.SaveWorkDetailsActivity;
 import com.nic.InspectionAppNew.constant.AppConstant;
 import com.nic.InspectionAppNew.dataBase.DBHelper;
@@ -111,6 +112,19 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
+
+        if(pendingListFiltered.get(position).getFlag().equals("1")){
+            holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.infrastructure));
+            /*if(pendingListFiltered.get(position).getWork_status_id() == 1){
+                holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.satisfied));
+            }else if(pendingListFiltered.get(position).getWork_status_id() == 2){
+                holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.unsatisfied));
+            }else if(pendingListFiltered.get(position).getWork_status_id() == 3){
+                holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.need_improvement));
+            }*/
+        }else {
+            holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.graph_ic));
+        }
         holder.pendingScreenAdapterBinding.workId.setText(String.valueOf(pendingListFiltered.get(position).getWork_id()));
         holder.pendingScreenAdapterBinding.workName.setText(pendingListFiltered.get(position).getWork_name());
         holder.pendingScreenAdapterBinding.workStatus.setText(pendingListFiltered.get(position).getWork_status());
@@ -185,7 +199,30 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
         holder.pendingScreenAdapterBinding.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, SaveWorkDetailsActivity.class);
+                if(pendingListFiltered.get(position).getFlag().equals("1")){
+                    Intent intent = new Intent(context, SaveWorkDetailsActivity.class);
+                    intent.putExtra("dcode", pendingListFiltered.get(position).getDistrictCode());
+                    intent.putExtra("bcode", pendingListFiltered.get(position).getBlockCode());
+                    intent.putExtra("pvcode", pendingListFiltered.get(position).getPvCode());
+                    intent.putExtra("hab_code", pendingListFiltered.get(position).getHabCode());
+                    intent.putExtra("scheme_group_id", pendingListFiltered.get(position).getScheme_group_id());
+                    intent.putExtra("work_group_id", pendingListFiltered.get(position).getWork_group_id());
+                    intent.putExtra("work_type_id", pendingListFiltered.get(position).getWork_type_id());
+                    intent.putExtra("scheme_id", pendingListFiltered.get(position).getSchemeSequentialID());
+                    intent.putExtra("fin_year", pendingListFiltered.get(position).getFinancialYear());
+                    intent.putExtra("work_id", pendingListFiltered.get(position).getWork_id());
+                    intent.putExtra("work_name", pendingListFiltered.get(position).getWork_name());
+                    intent.putExtra("as_value", pendingListFiltered.get(position).getAs_value());
+                    intent.putExtra("ts_value", pendingListFiltered.get(position).getTs_value());
+                    intent.putExtra("current_stage_of_work", pendingListFiltered.get(position).getCurrent_stage_of_work());
+                    intent.putExtra("is_high_value", pendingListFiltered.get(position).getIs_high_value());
+                    intent.putExtra("onOffType","offline");
+                    intent.putExtra("other_work_detail",pendingListFiltered.get(position).getOther_work_detail());
+                    intent.putExtra("flag","");
+                    intent.putExtra("type","rdpr");
+                    context.startActivity(intent);
+                }else {
+                Intent intent = new Intent(context, SaveATRWorkDetailsActivity.class);
                 intent.putExtra("dcode", pendingListFiltered.get(position).getDistrictCode());
                 intent.putExtra("bcode", pendingListFiltered.get(position).getBlockCode());
                 intent.putExtra("pvcode", pendingListFiltered.get(position).getPvCode());
@@ -206,6 +243,7 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
                 intent.putExtra("flag","");
                 intent.putExtra("type","rdpr");
                 context.startActivity(intent);
+            }
             }
         });
         holder.pendingScreenAdapterBinding.delete.setOnClickListener(new View.OnClickListener() {

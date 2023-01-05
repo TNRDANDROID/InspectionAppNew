@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:elevation="0dp"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp"
                 app:cardBackgroundColor="@color/light_green"
@@ -373,6 +373,7 @@
                                     android:padding="@dimen/_5sdp"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:text="@string/edit"
+                                    android:tint="@color/sky_blue"
                                     android:textStyle="bold"
                                     android:layout_centerHorizontal="true"
                                     android:textSize="@dimen/_13sdp"
@@ -392,10 +393,11 @@
                                 <ImageView
                                     android:layout_width="@dimen/_30sdp"
                                     android:layout_height="@dimen/_30sdp"
-                                    android:padding="@dimen/_5sdp"
+                                    android:padding="@dimen/_7sdp"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:text="@string/delete"
                                     android:textStyle="bold"
+                                    android:tint="@color/sky_blue"
                                     android:layout_centerHorizontal="true"
                                     android:textSize="@dimen/_13sdp"
                                     android:src="@drawable/ic_trash"
@@ -415,9 +417,10 @@
                                 <ImageView
                                     android:layout_width="@dimen/_30sdp"
                                     android:layout_height="@dimen/_30sdp"
-                                    android:padding="@dimen/_5sdp"
+                                    android:padding="@dimen/_6sdp"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:text="@string/upload"
+                                    android:tint="@color/sky_blue"
                                     android:textStyle="bold"
                                     android:layout_centerHorizontal="true"
                                     android:textSize="@dimen/_13sdp"
@@ -450,8 +453,8 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_view"
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_alignParentTop="true"
                 android:padding="@dimen/_5sdp"
                 android:layout_marginStart="@dimen/_10sdp"
@@ -466,7 +469,7 @@
                     android:layout_alignParentTop="true"
                     android:id="@+id/img"
                     android:padding="@dimen/_8sdp"
-                    android:src="@drawable/logo"
+                    android:src="@drawable/need_improvement"
                     tools:ignore="ContentDescription" />
             </androidx.cardview.widget.CardView>
         </RelativeLayout>

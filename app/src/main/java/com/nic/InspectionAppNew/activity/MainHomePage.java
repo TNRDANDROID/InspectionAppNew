@@ -3,7 +3,6 @@ package com.nic.InspectionAppNew.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -16,10 +15,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +24,6 @@ import androidx.databinding.DataBindingUtil;
 
 import com.android.volley.VolleyError;
 import com.ghanshyam.graphlibs.GraphData;
-import com.nic.InspectionAppNew.ImageZoom.ImageMatrixTouchHandler;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.api.Api;
 import com.nic.InspectionAppNew.api.ApiService;
@@ -104,6 +100,13 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             public void onClick(View view) {
                 homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
                 getStageList();
+            }
+        });
+        homeScreenBinding.navigationLayout.overAllInspectionReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
+                getOverAllReport();
             }
         });
 
@@ -642,7 +645,8 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                             homeScreenBinding.needImprovementCountGraph.setText(String.valueOf(need_improvement_count));
                             homeScreenBinding.totalCountGraph.setText(String.valueOf(total_inspection_count));
                             homeScreenBinding.totalCount1.setText(String.valueOf(total_inspection_count));
-                            homeScreenBinding.totalTv.setText("Total ("+fin_year+")");
+//                            homeScreenBinding.totalTv.setText("Total ("+fin_year+")");
+                            homeScreenBinding.finYear.setText(fin_year);
                             showPieChart(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count),Integer.parseInt(need_improvement_count),total_inspection_count);
                         } catch (JSONException e){
 
@@ -676,9 +680,9 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         homeScreenBinding.totalCount1.setText(String.valueOf(total_inspection_count));
         Resources resources = getResources();
         Collection<GraphData> data = new ArrayList<>();
-        data.add(new GraphData(Float.valueOf(satisfied), resources.getColor(R.color.account_status_green_color)));
-        data.add(new GraphData(Float.valueOf(unsatisfied), resources.getColor(R.color.red)));
-        data.add(new GraphData(Float.valueOf(need_improvement), resources.getColor(R.color.primary_text_color)));
+        data.add(new GraphData(Float.valueOf(satisfied), resources.getColor(R.color.satisfied)));
+        data.add(new GraphData(Float.valueOf(unsatisfied), resources.getColor(R.color.unsatisfied)));
+        data.add(new GraphData(Float.valueOf(need_improvement), resources.getColor(R.color.need_improvement)));
         homeScreenBinding.graph.setData(data);
     }
 
@@ -1011,6 +1015,22 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         Intent intent = new Intent(this, DownloadActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+    private void getOverAllReport() {
+        if(prefManager.getLevels().equals("S")){
+            Intent intent = new Intent(this, OverAllInspectionReport.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        }else if(prefManager.getLevels().equals("D")){
+            Intent intent = new Intent(this, VillageListReportActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        }else if(prefManager.getLevels().equals("B")){
+            Intent intent = new Intent(this, VillageListReportActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        }
+
     }
 
     public void openMenuDrawer(){

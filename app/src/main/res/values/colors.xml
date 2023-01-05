@@ -6,11 +6,14 @@
     <color name="colorAccentlight">#08cbbb</color>
     <color name="colorAccentverylight">#1E07B3A5</color>
     <color name="colorAccentveryverylight">#5907B3A5</color>
+    <color name="colorAccentveryverylight2">#83d9d2</color>
     <color name="ca">#f5fbfb</color>
     <color name="ca1">#ebf8f7</color>
     <color name="ca2">#e1f5f4</color>
     <color name="ca3">#cdefed</color>
     <color name="ca4">#b9e9e5</color>
+    <color name="colorAccent2">#eafcff</color>
+    <color name="colorAccent3">#9ef1ff</color>
 
     <color name="address">#2F7092</color>
     <color name="followers">#0D5D98</color>
@@ -83,6 +86,7 @@
     <color name="dot_light_screen2">#8cf9eb</color>
     <color name="dot_light_screen3">#93c6fd</color>
     <color name="dot_light_screen4">#e4b5fc</color>
+    <color name="dot_light_screen5">#DEEDFE</color>
     <array name="array_dot_active">
         <item>@color/dot_light_screen1</item>
         <item>@color/dot_light_screen2</item>
@@ -118,8 +122,11 @@
     <item name="darkblue" type="color">#A90099CC</item>
     <item name="darkpurple" type="color">#A99933CC</item>
     <item name="darkgreen" type="color">#DA4CAF50</item>
-
-
+    <color name="text_color">#1E4175</color>
+    <color name="background_color">#ecf0f3</color>
+    <color name="satisfied">#FF00FA9A</color>
+    <color name="unsatisfied">#FFFFA500</color>
+    <color name="need_improvement">#FF1E90FF</color>
 
     <integer-array name="androidcolors">
         <item>@color/purple</item>

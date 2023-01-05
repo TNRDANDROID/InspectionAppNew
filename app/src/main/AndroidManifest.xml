@@ -30,6 +30,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.FLAG_GRANT_READ_URI_PERMISSION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".application.NICApplication"
@@ -127,6 +128,14 @@
             android:exported="true"/>
         <activity android:name=".activity.GetWorkListActivity"
             android:exported="true"/>
+        <activity android:name=".activity.OverAllInspectionReport"
+            android:exported="true"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"/>
+        <activity android:name=".activity.VillageListReportActivity"
+            android:exported="true"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"/>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

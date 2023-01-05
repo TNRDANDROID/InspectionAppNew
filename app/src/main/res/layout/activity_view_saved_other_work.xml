@@ -232,7 +232,7 @@
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_10sdp"
                                         android:src="@drawable/rect_fill_box"
-                                        android:tint="@color/account_status_green_color" />
+                                        android:tint="@color/satisfied" />
                                     <TextView
                                         android:layout_centerVertical="true"
                                         android:layout_toEndOf="@id/icon3"
@@ -266,7 +266,7 @@
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_10sdp"
                                         android:src="@drawable/rect_fill_box"
-                                        android:tint="@color/red"
+                                        android:tint="@color/unsatisfied"
                                         android:id="@+id/icon2"/>
                                     <TextView
                                         android:layout_centerVertical="true"
@@ -302,7 +302,7 @@
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_10sdp"
                                         android:src="@drawable/rect_fill_box"
-                                        android:tint="#2A4AFB"
+                                        android:tint="@color/need_improvement"
                                         android:id="@+id/icon1"/>
                                     <TextView
                                         android:layout_toEndOf="@+id/icon1"

@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <layout xmlns:tools="http://schemas.android.com/tools">
+
+        <data>
+
+            <variable
+                name="activity"
+                type="com.nic.InspectionAppNew.activity.OverAllInspectionReport" />
+        </data>
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#1E07B3A5"
+            android:orientation="vertical">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_scrollFlags="scroll|enterAlways|snap"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/back_img"
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:padding="@dimen/_4sdp"
+                            android:layout_marginLeft="-10dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="start"
+                            android:onClick="@{()-> activity.onBackPressed()}"
+                            android:src="@drawable/back"
+                            android:tint="@color/white"
+                            tools:ignore="ContentDescription" />
+
+                        <TextView
+                            android:id="@+id/title_tv"
+                            style="@style/font_circular_bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="@string/over_all_inspection_report"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_15sdp" />
+
+
+                        <ImageView
+                            android:id="@+id/home_img"
+                            android:layout_width="@dimen/_30sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_alignParentEnd="true"
+                            android:visibility="gone"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="start"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:layout_marginBottom="0dp"
+                            android:src="@mipmap/home_img"
+                            tools:ignore="ContentDescription" />
+
+                    </RelativeLayout>
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <RelativeLayout
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:layout_marginRight="@dimen/_15sdp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/corner_lite_rect_bg_color"
+                        android:id="@+id/graph_details"
+                       >
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:orientation="vertical">
+
+                            <RelativeLayout
+                                android:padding="@dimen/_3sdp"
+                                android:id="@+id/fin_year_layout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="@dimen/_3sdp"
+                                    android:gravity="start"
+                                    android:id="@+id/fin_year_tv"
+                                    android:textColor="@color/grey_10"
+                                    android:layout_marginLeft="@dimen/_10sdp"
+                                    android:layout_gravity="start"
+                                    android:text="Financial Year - " />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textColor="@color/primary_text_color2"
+                                    android:layout_toRightOf="@+id/fin_year_tv"
+                                    android:gravity="end"
+                                    android:layout_gravity="end"
+                                    android:padding="@dimen/_3sdp"
+                                    android:layout_centerVertical="true"
+                                    android:id="@+id/fin_year"/>
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:padding="@dimen/_3sdp"
+                                android:id="@+id/total_inspection_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="@dimen/_3sdp"
+                                    android:gravity="start"
+                                    android:id="@+id/total_tv"
+                                    android:textColor="@color/grey_10"
+                                    android:layout_marginLeft="@dimen/_10sdp"
+                                    android:layout_gravity="start"
+                                    android:text="Total Inspection Count - " />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:layout_toRightOf="@+id/total_tv"
+                                    android:textColor="@color/primary_text_color2"
+                                    android:gravity="end"
+                                    android:layout_gravity="end"
+                                    android:padding="@dimen/_3sdp"
+                                    android:id="@+id/total_count_graph"/>
+                            </RelativeLayout>
+                            <com.github.mikephil.charting.charts.PieChart
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_200sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:id="@+id/pieChart"/>
+
+                        </LinearLayout>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/graph_details"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:id="@+id/district_layout"
+                        android:background="@drawable/corner_lite_rect_bg_color"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                      >
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/header"
+                            android:weightSum="5"
+                            android:background="@drawable/corner_lite_rect_bg_top_color"
+                            android:padding="@dimen/_5sdp"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.5"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:gravity="center"
+                                android:id="@+id/headtext"
+                                android:textSize="@dimen/_10sdp"
+                                android:textColor="@color/white"
+                                android:layout_gravity="center"
+                                android:text="District" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:gravity="center"
+                                android:textSize="@dimen/_10sdp"
+                                android:id="@+id/satisfied_count"
+                                android:textColor="@color/white"
+                                android:layout_gravity="center"
+                                android:text="Satisfied" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.1"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:gravity="center"
+                                android:textSize="@dimen/_10sdp"
+                                android:id="@+id/un_satisfied_count"
+                                android:textColor="@color/white"
+                                android:layout_gravity="center"
+                                android:text="@string/unsatisfied" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.3"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:gravity="center"
+                                android:textSize="@dimen/_10sdp"
+                                android:id="@+id/need_improvement_count"
+                                android:textColor="@color/white"
+                                android:layout_gravity="center"
+                                android:text="@string/need_improvement" />
+
+                        </LinearLayout>
+                        <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                            android:id="@+id/recycler"
+                            android:layout_width="match_parent"
+                            android:layout_below="@+id/header"
+                            android:layout_height="wrap_content"
+                            android:fadeScrollbars="false"
+                            android:scrollbarSize="4dp"
+                            android:scrollbars="vertical"
+                            app:shimmer_demo_shimmer_color="#8FFFFFFF">
+
+                        </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/district_layout"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:id="@+id/block_layout"
+                        android:background="@drawable/corner_lite_rect_bg_color"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                      >
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/block_header"
+                            android:weightSum="5"
+                            android:background="@drawable/corner_lite_rect_bg_top_color"
+                            android:padding="@dimen/_5sdp"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.3"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:id="@+id/back"
+                                android:src="@drawable/ic_back_arrow"
+                                android:textSize="@dimen/_10sdp"
+                                android:textColor="@color/white"
+                                android:layout_gravity="center"
+                                android:text="Block" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.2"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:gravity="center"
+                                android:id="@+id/block_headtext"
+                                android:textSize="@dimen/_10sdp"
+                                android:textColor="@color/white"
+                                android:layout_gravity="center"
+                                android:text="Block" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:gravity="center"
+                                android:textSize="@dimen/_10sdp"
+                                android:textColor="@color/white"
+                                android:layout_gravity="center"
+                                android:text="Satisfied" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.1"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:gravity="center"
+                                android:textSize="@dimen/_10sdp"
+                                android:textColor="@color/white"
+                                android:layout_gravity="center"
+                                android:text="@string/unsatisfied" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.3"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:gravity="center"
+                                android:textSize="@dimen/_10sdp"
+                                android:textColor="@color/white"
+                                android:layout_gravity="center"
+                                android:text="@string/need_improvement" />
+
+                        </LinearLayout>
+                        <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                            android:id="@+id/block_recycler"
+                            android:layout_width="match_parent"
+                            android:layout_below="@+id/block_header"
+                            android:layout_height="wrap_content"
+                            android:fadeScrollbars="false"
+                            android:scrollbarSize="4dp"
+                            android:scrollbars="vertical"
+                            app:shimmer_demo_shimmer_color="#8FFFFFFF">
+
+                        </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+
+                    </RelativeLayout>
+                </RelativeLayout>
+            </androidx.core.widget.NestedScrollView>
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </layout>
+
+    <!--
+    <?xml version="1.0" encoding="utf-8"?>
+    <layout xmlns:tools="http://schemas.android.com/tools">
+
+        <data>
+
+            <variable
+                name="activity"
+                type="com.nic.InspectionAppNew.activity.OverAllInspectionReport" />
+        </data>
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#1E07B3A5"
+            android:orientation="vertical">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_scrollFlags="scroll|enterAlways|snap"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/back_img"
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:padding="@dimen/_4sdp"
+                            android:layout_marginLeft="-10dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="start"
+                            android:onClick="@{()-> activity.onBackPressed()}"
+                            android:src="@drawable/back"
+                            android:tint="@color/white"
+                            tools:ignore="ContentDescription" />
+
+                        <TextView
+                            android:id="@+id/title_tv"
+                            style="@style/font_circular_bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="@string/over_all_inspection_report"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_15sdp" />
+
+
+                        <ImageView
+                            android:id="@+id/home_img"
+                            android:layout_width="@dimen/_30sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_alignParentEnd="true"
+                            android:visibility="gone"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="start"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:layout_marginBottom="0dp"
+                            android:src="@mipmap/home_img"
+                            tools:ignore="ContentDescription" />
+
+                    </RelativeLayout>
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <RelativeLayout
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_20sdp"
+                        android:layout_marginRight="@dimen/_20sdp"
+                        android:layout_marginTop="-50dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/corner_lite_rect_bg_color"
+                        android:id="@+id/graph_details"
+                        android:layout_below="@+id/graph_layout"
+                        >
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:layout_marginBottom="@dimen/_8sdp"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_20sdp"
+                            android:orientation="vertical">
+
+                            <RelativeLayout
+                                android:padding="@dimen/_3sdp"
+                                android:id="@+id/fin_year_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="@dimen/_3sdp"
+                                    android:gravity="start"
+                                    android:id="@+id/fin_year_tv"
+                                    android:textColor="@color/grey_10"
+                                    android:layout_marginLeft="@dimen/_10sdp"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_gravity="start"
+                                    android:text="@string/financial_year" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textColor="@color/grey_10"
+                                    android:layout_alignParentEnd="true"
+                                    android:gravity="end"
+                                    android:layout_gravity="end"
+                                    android:padding="@dimen/_3sdp"
+                                    android:layout_centerVertical="true"
+                                    android:id="@+id/fin_year"/>
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:padding="@dimen/_3sdp"
+                                android:id="@+id/total_inspection_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="@dimen/_3sdp"
+                                    android:gravity="start"
+                                    android:id="@+id/total_tv"
+                                    android:textColor="@color/grey_10"
+                                    android:layout_marginLeft="@dimen/_10sdp"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_gravity="start"
+                                    android:text="Total Inspection Count" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textColor="@color/grey_10"
+                                    android:layout_alignParentEnd="true"
+                                    android:gravity="end"
+                                    android:layout_gravity="end"
+                                    android:padding="@dimen/_3sdp"
+                                    android:layout_centerVertical="true"
+                                    android:id="@+id/total_count_graph"/>
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:padding="@dimen/_3sdp"
+                                android:id="@+id/satisfied_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:orientation="horizontal">
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="@dimen/_10sdp">
+
+                                    <ImageView
+                                        android:id="@+id/icon3"
+                                        android:layout_width="@dimen/_10sdp"
+                                        android:layout_height="@dimen/_10sdp"
+                                        android:layout_centerVertical="true"
+                                        android:src="@drawable/rect_fill_box"
+                                        android:tint="@color/account_status_green_color" />
+                                    <TextView
+                                        android:layout_centerVertical="true"
+                                        android:layout_toEndOf="@id/icon3"
+                                        android:layout_marginLeft="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_horizontal"
+                                        android:text="Satisfied"
+                                        />
+                                </RelativeLayout>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:padding="@dimen/_3sdp"
+                                    android:layout_centerVertical="true"
+                                    android:text="0"
+                                    android:layout_gravity="center_horizontal"
+                                    android:id="@+id/satisfied_count_graph"/>
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:padding="@dimen/_3sdp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:id="@+id/un_satisfied_layout"
+                                android:orientation="horizontal">
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="@dimen/_10sdp">
+                                    <ImageView
+                                        android:layout_centerVertical="true"
+                                        android:layout_width="@dimen/_10sdp"
+                                        android:layout_height="@dimen/_10sdp"
+                                        android:src="@drawable/rect_fill_box"
+                                        android:tint="@color/red"
+                                        android:id="@+id/icon2"/>
+                                    <TextView
+                                        android:layout_centerVertical="true"
+                                        android:layout_toEndOf="@id/icon2"
+                                        android:layout_marginLeft="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_horizontal"
+                                        android:text="Un Satisfied"
+                                        />
+                                </RelativeLayout>
+
+                                <TextView
+                                    android:layout_marginLeft="@dimen/_5sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:padding="@dimen/_3sdp"
+                                    android:layout_centerVertical="true"                                            android:text="0"
+                                    android:layout_gravity="center_horizontal"
+                                    android:id="@+id/un_satisfied_count_graph"/>
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:padding="@dimen/_3sdp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:id="@+id/need_improvement_layout"
+                                android:orientation="horizontal">
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/_10sdp"
+                                    android:layout_centerVertical="true">
+                                    <ImageView
+                                        android:layout_centerVertical="true"
+                                        android:layout_width="@dimen/_10sdp"
+                                        android:layout_height="@dimen/_10sdp"
+                                        android:src="@drawable/rect_fill_box"
+                                        android:tint="#2A4AFB"
+                                        android:id="@+id/icon1"/>
+                                    <TextView
+                                        android:layout_toEndOf="@+id/icon1"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_horizontal"
+                                        android:text="Need Improvement"
+                                        />
+                                </RelativeLayout>
+
+                                <TextView
+                                    android:layout_marginLeft="@dimen/_5sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:padding="@dimen/_3sdp"
+                                    android:layout_centerVertical="true"                                            android:text="0"
+                                    android:layout_gravity="center_horizontal"
+                                    android:id="@+id/need_improvement_count_graph"/>
+                            </RelativeLayout>
+
+
+                        </LinearLayout>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="@dimen/_130sdp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:id="@+id/graph_layout"
+                        android:background="@drawable/circle_white"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        >
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:visibility="visible"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/total_count_title_1"
+                                android:text="Total Count" />
+                            <TextView
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/total_count_1"
+                                />
+                        </LinearLayout>
+
+                        <com.ghanshyam.graphlibs.Graph
+                            android:layout_width="match_parent"
+                            android:layout_centerHorizontal="true"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/_10sdp"
+                            android:visibility="visible"
+                            android:id="@+id/graph" />
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/_20sdp"
+                        android:layout_marginRight="@dimen/_20sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:layout_below="@+id/graph_details"
+                        android:background="@drawable/rectangle_box_color"
+                        android:id="@+id/search_layout">
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:id="@+id/search_tv"
+                            android:layout_centerVertical="true"
+                            android:hint="Search"
+                            android:layout_toLeftOf="@+id/search"
+                            android:textColorHint="@color/white"
+                            android:background="@color/full_transparent"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:gravity="center_vertical"
+                            android:textColor="@color/d_grey3"
+                            android:textSize="@dimen/_12sdp"
+                            tools:ignore="Autofill,TextFields" />
+
+                        <ImageView
+                            android:id="@+id/search"
+                            android:layout_alignParentEnd="true"
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:padding="@dimen/_4sdp"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="start"
+                            android:src="@mipmap/ic_search_white_24dp"
+                            android:tint="@color/white"
+                            tools:ignore="ContentDescription" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/search_layout"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        >
+                        &lt;!&ndash;
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:id="@+id/header"
+                                                android:weightSum="5"
+                                                android:background="@drawable/corner_lite_rect_bg_top_color"
+                                                android:padding="@dimen/_5sdp"
+                                                android:orientation="horizontal">
+                                                <TextView
+                                                    android:layout_width="0dp"
+                                                    android:layout_weight="1"
+                                                    android:layout_height="wrap_content"
+                                                    android:padding="@dimen/_3sdp"
+                                                    android:gravity="start"
+                                                    android:id="@+id/district"
+                                                    android:textSize="@dimen/_8sdp"
+                                                    android:textColor="@color/grey_10"
+                                                    android:layout_gravity="start"
+                                                    android:text="District" />
+                                                <TextView
+                                                    android:layout_width="0dp"
+                                                    android:layout_weight="1"
+                                                    android:layout_height="wrap_content"
+                                                    android:padding="@dimen/_3sdp"
+                                                    android:gravity="start"
+                                                    android:textSize="@dimen/_8sdp"
+                                                    android:id="@+id/satisfied_count"
+                                                    android:textColor="@color/grey_10"
+                                                    android:layout_gravity="start"
+                                                    android:text="Satisfied" />
+                                                <TextView
+                                                    android:layout_width="0dp"
+                                                    android:layout_weight="1"
+                                                    android:layout_height="wrap_content"
+                                                    android:padding="@dimen/_3sdp"
+                                                    android:gravity="start"
+                                                    android:textSize="@dimen/_8sdp"
+                                                    android:id="@+id/un_satisfied_count"
+                                                    android:textColor="@color/grey_10"
+                                                    android:layout_gravity="start"
+                                                    android:text="@string/unsatisfied" />
+                                                <TextView
+                                                    android:layout_width="0dp"
+                                                    android:layout_weight="1"
+                                                    android:layout_height="wrap_content"
+                                                    android:padding="@dimen/_3sdp"
+                                                    android:gravity="start"
+                                                    android:textSize="@dimen/_8sdp"
+                                                    android:id="@+id/need_improvement_count"
+                                                    android:textColor="@color/grey_10"
+                                                    android:layout_gravity="start"
+                                                    android:text="@string/need_improvement" />
+                                                <TextView
+                                                    android:layout_width="0dp"
+                                                    android:layout_weight="1"
+                                                    android:textSize="@dimen/_8sdp"
+                                                    android:layout_height="wrap_content"
+                                                    android:padding="@dimen/_3sdp"
+                                                    android:gravity="start"
+                                                    android:id="@+id/total_count"
+                                                    android:textColor="@color/grey_10"
+                                                    android:layout_gravity="start"
+                                                    android:text="Total" />
+
+                                            </LinearLayout>
+                        &ndash;&gt;
+                        <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                            android:id="@+id/recycler"
+                            android:layout_width="match_parent"
+                            android:layout_below="@+id/header"
+                            android:layout_height="wrap_content"
+                            android:fadeScrollbars="false"
+                            android:scrollbarSize="4dp"
+                            android:scrollbars="vertical"
+                            app:shimmer_demo_shimmer_color="#8FFFFFFF">
+
+                        </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+
+                    </RelativeLayout>
+                </RelativeLayout>
+            </androidx.core.widget.NestedScrollView>
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </layout>
+    -->
