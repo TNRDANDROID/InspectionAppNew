@@ -262,23 +262,14 @@ public class dbData {
         values.put("dcode", modelClass.getDistrictCode());
         values.put("bcode", modelClass.getBlockCode());
         values.put("pvcode", modelClass.getPvCode());
-        values.put("hab_code", modelClass.getHabCode());
-        values.put("scheme_group_id", modelClass.getScheme_group_id());
-        values.put("scheme_id", modelClass.getSchemeSequentialID());
-        values.put("work_group_id", modelClass.getWork_group_id());
-        values.put("work_type_id", modelClass.getWork_type_id());
-        values.put("fin_year", modelClass.getFinancialYear());
         values.put("work_id", modelClass.getWork_id());
         values.put("work_name", modelClass.getWork_name());
-        values.put("as_value", modelClass.getAs_value());
-        values.put("ts_value", modelClass.getTs_value());
-        values.put("current_stage_of_work", modelClass.getCurrent_stage_of_work());
-        values.put("stage_name", modelClass.getStage_name());
-        values.put("is_high_value", modelClass.getIs_high_value());
-        values.put("as_date", modelClass.getAs_date());
-        values.put("ts_date", modelClass.getTs_date());
-        values.put("work_order_date", modelClass.getWork_order_date());
-        values.put("work_type_name", modelClass.getWork_type_name());
+        values.put("inspection_id", modelClass.getInspection_id());
+        values.put("inspection_date", modelClass.getInspectedDate());
+        values.put("status_id", modelClass.getWork_status_id());
+        values.put("status", modelClass.getWork_status());
+        values.put("description", modelClass.getDescription());
+        values.put("inspection_by_officer", modelClass.getInspection_by_officer());
         id = db.insert(DBHelper.ATR_WORK_LIST,null,values);
 
         Log.d("Insert_id_atr_work", String.valueOf(id));
@@ -551,22 +542,14 @@ public class dbData {
                     card.setDistrictCode(cursor.getString(cursor.getColumnIndexOrThrow("dcode")));
                     card.setBlockCode(cursor.getString(cursor.getColumnIndexOrThrow("bcode")));
                     card.setPvCode(cursor.getString(cursor.getColumnIndexOrThrow("pvcode")));
-                    card.setHabCode(cursor.getString(cursor.getColumnIndexOrThrow("hab_code")));
-                    card.setScheme_group_id(cursor.getString(cursor.getColumnIndexOrThrow("scheme_group_id")));
-                    card.setSchemeSequentialID(cursor.getString(cursor.getColumnIndexOrThrow("scheme_id")));
-                    card.setWork_group_id(cursor.getString(cursor.getColumnIndexOrThrow("work_group_id")));
-                    card.setWork_type_id(cursor.getString(cursor.getColumnIndexOrThrow("work_type_id")));
-                    card.setFinancialYear(cursor.getString(cursor.getColumnIndexOrThrow("fin_year")));
                     card.setWork_id(cursor.getInt(cursor.getColumnIndexOrThrow("work_id")));
                     card.setWork_name(cursor.getString(cursor.getColumnIndexOrThrow("work_name")));
-                    card.setAs_value(cursor.getString(cursor.getColumnIndexOrThrow("as_value")));
-                    card.setTs_value(cursor.getString(cursor.getColumnIndexOrThrow("ts_value")));
-                    card.setCurrent_stage_of_work(cursor.getString(cursor.getColumnIndexOrThrow("current_stage_of_work")));
-                    card.setStage_name(cursor.getString(cursor.getColumnIndexOrThrow("stage_name")));
-                    card.setIs_high_value(cursor.getString(cursor.getColumnIndexOrThrow("is_high_value")));
-                    card.setAs_date(cursor.getString(cursor.getColumnIndexOrThrow("as_date")));
-                    card.setTs_date(cursor.getString(cursor.getColumnIndexOrThrow("ts_date")));
-                    card.setWork_order_date(cursor.getString(cursor.getColumnIndexOrThrow("work_order_date")));
+                    card.setInspection_id(cursor.getString(cursor.getColumnIndexOrThrow("inspection_id")));
+                    card.setInspectedDate(cursor.getString(cursor.getColumnIndexOrThrow("inspection_date")));
+                    card.setWork_status_id(Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow("status_id"))));
+                    card.setWork_status(cursor.getString(cursor.getColumnIndexOrThrow("status")));
+                    card.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+                    card.setInspection_by_officer(cursor.getString(cursor.getColumnIndexOrThrow("inspection_by_officer")));
                     card.setWork_type_name(cursor.getString(cursor.getColumnIndexOrThrow("work_type_name")));
 
                     cards.add(card);
@@ -628,6 +611,7 @@ public class dbData {
                     card.setWork_stage_name(cursor.getString(cursor.getColumnIndexOrThrow("work_stage")));
                     card.setWork_stage_code(cursor.getString(cursor.getColumnIndexOrThrow("work_stage_id")));
                     card.setFlag(cursor.getString(cursor.getColumnIndexOrThrow("flag")));
+                    card.setInspection_id(cursor.getString(cursor.getColumnIndexOrThrow("inspection_id")));
 
                     cards.add(card);
                 }

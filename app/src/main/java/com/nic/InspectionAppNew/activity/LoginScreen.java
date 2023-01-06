@@ -491,6 +491,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                             prefManager.setProfileImage("");
                         }
                         prefManager.setDesignation(jsonObject.get(AppConstant.DESIG_NAME));
+                        String designation_code=jsonObject.getString("desig_code");
+                        prefManager.setDesignationCode(designation_code);
                         prefManager.setName(String.valueOf(jsonObject.get(AppConstant.KEY_NAME)));
                         prefManager.setLevels(jsonObject.get(AppConstant.LEVELS));
                         Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName() + prefManager.getName());
@@ -574,6 +576,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                                 prefManager.setProfileImage("");
                             }
                             prefManager.setDesignation(designation);
+                            prefManager.setDesignationCode(designation_code);
                             prefManager.setName(String.valueOf(name));
                             prefManager.setLevels(String.valueOf(level));
                             prefManager.setDistrictCode(dcode);

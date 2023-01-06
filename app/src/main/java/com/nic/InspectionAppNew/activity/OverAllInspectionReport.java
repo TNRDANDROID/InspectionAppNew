@@ -76,7 +76,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
             e.printStackTrace();
         }
         prefManager = new PrefManager(this);
-        level=prefManager.getLevels();
+        level="S";
         districtList = new ArrayList<>();
         districtAdapter = new DistrictBlockAdapter(OverAllInspectionReport.this, districtList,"D");
         blockList = new ArrayList<>();
@@ -98,6 +98,31 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
             public void onClick(View view) {
                 binding.districtLayout.setVisibility(View.VISIBLE);
                 binding.blockLayout.setVisibility(View.GONE);
+                recyclerView.showShimmerAdapter();
+                recyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadCards();
+                    }
+                }, 1000);
+
+            }
+        });
+        binding.blockHeadtext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(binding.back.getVisibility() == View.VISIBLE){
+                binding.districtLayout.setVisibility(View.VISIBLE);
+                binding.blockLayout.setVisibility(View.GONE);
+                recyclerView.showShimmerAdapter();
+                recyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadCards();
+                    }
+                }, 1000);
+
+            }
             }
         });
     }
@@ -155,10 +180,19 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
         }
     }
     public JSONObject districtListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.districtListJsonParams(this).toString());
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), districtListJsonParams(this).toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("districtList", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject districtListJsonParams(Activity activity) throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        prefManager = new PrefManager(activity);
+        dataSet.put(AppConstant.STATE_CODE, prefManager.getStateCode());
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_DISTRICT_LIST_ALL);
+
         Log.d("districtList", "" + dataSet);
         return dataSet;
     }
@@ -481,7 +515,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
         // LEGEND SETTINGS
         Legend l = binding.pieChart.getLegend();
         l.setForm(Legend.LegendForm.CIRCLE); // set what type of form/shape should be used
-        l.setTextSize(12f);
+        l.setTextSize(13f);
         l.setTextColor(Color.BLACK);
         l.setFormToTextSpace(5f); // LegForm to LegText
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
@@ -542,17 +576,28 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
     @Override
     public void onResume() {
         super.onResume();
-        level=prefManager.getLevels();
-       fetData();
+       /* level=prefManager.getLevels();
+       fetData();*/
     }
     public void getVillageListReport(String districtCode, String blockCode) {
         Intent intent = new Intent(this, VillageListReportActivity.class);
         intent.putExtra("dcode",districtCode);
         intent.putExtra("bcode",blockCode);
-        startActivity(intent);
+        startActivityForResult(intent,1);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
-
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                String flag = data.getStringExtra("flag");
+                if(flag.equals("B")){
+                    binding.blockLayout.setVisibility(View.VISIBLE);
+                    binding.districtLayout.setVisibility(View.GONE);
+                }
+            }
+        }
+    }
     Comparator<ModelClass> comparatordistrict = new Comparator<ModelClass>() {
         @Override
         public int compare(ModelClass movie, ModelClass t1) {

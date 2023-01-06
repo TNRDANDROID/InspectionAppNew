@@ -28,18 +28,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="@dimen/_10sdp"
                 android:orientation="vertical">
 
                 <TextView
                     android:gravity="center"
-                    android:padding="14dp"
-                    android:paddingEnd="10dp"
-                    android:textSize="@dimen/_15sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:textSize="@dimen/_13sdp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/village_name"
                     android:text="Village Name"
-                    android:fontFamily="@font/poppins_semibold"
                     android:textColor="@color/text_color"
                     android:textColorHint="@color/text_color"
                     tools:ignore="RtlSymmetry" />
@@ -50,8 +49,47 @@
                     android:text="Total Count Of Inspection"
                     android:id="@+id/total_tv"
                     android:textSize="15sp"
-                    android:fontFamily="@font/poppins_semibold"
                     android:gravity="center"/>
+                <LinearLayout
+                    android:weightSum="3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <TextView
+                        android:id="@+id/satisfied_tv"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/satisfied"
+                        android:textColor="@color/grey_6"
+                        android:textSize="13sp"
+                        android:singleLine="true"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/unsatisfied_tv"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:singleLine="true"
+                        android:layout_height="wrap_content"
+                        android:text="@string/unsatisfied"
+                        android:textColor="@color/grey_6"
+                        android:textSize="13sp"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/need_improvement_tv"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:singleLine="true"
+                        android:layout_height="wrap_content"
+                        android:text="@string/need_improvement"
+                        android:textColor="@color/grey_6"
+                        android:textSize="13sp"
+                        android:gravity="center"/>
+
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:weightSum="3"
@@ -67,9 +105,11 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_margin="@dimen/_2sdp"
-                        android:layout_height="80dp"
+                        android:layout_height="60dp"
                         app:cardCornerRadius="@dimen/_20sdp"
-                        app:cardBackgroundColor="#3792cb">
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/black"
+                        app:cardBackgroundColor="@color/satisfied1">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -83,12 +123,11 @@
                                 android:id="@+id/satisfied_count"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="63656456fgf6466"
+                                android:text="63656456466"
                                 android:padding="@dimen/_10sdp"
-                                android:textStyle="bold"
-                                android:textColor="@color/yellow"
-                                android:textSize="20sp"
-                                android:fontFamily="@font/poppins_light"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+
                                 android:gravity="center"/>
                         </LinearLayout>
 
@@ -99,9 +138,9 @@
                         android:layout_margin="@dimen/_2sdp"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="90dp"
+                        android:layout_height="60dp"
                         app:cardCornerRadius="@dimen/_20sdp"
-                        app:cardBackgroundColor="#3792cb">
+                        app:cardBackgroundColor="@color/unsatisfied1">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -115,10 +154,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="1"
-                                android:textStyle="bold"
-                                android:textColor="@color/yellow"
-                                android:textSize="20sp"
-                                android:fontFamily="@font/poppins_light"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
                                 android:gravity="center"/>
                         </LinearLayout>
 
@@ -129,9 +166,9 @@
                         android:layout_margin="@dimen/_2sdp"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="90dp"
+                        android:layout_height="60dp"
                         app:cardCornerRadius="@dimen/_20sdp"
-                        app:cardBackgroundColor="#3792cb">
+                        app:cardBackgroundColor="@color/need_improvement1">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -145,10 +182,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="3"
-                                android:textStyle="bold"
-                                android:textColor="@color/yellow"
-                                android:textSize="20sp"
-                                android:fontFamily="@font/poppins_light"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
                                 android:gravity="center"/>
                         </LinearLayout>
 

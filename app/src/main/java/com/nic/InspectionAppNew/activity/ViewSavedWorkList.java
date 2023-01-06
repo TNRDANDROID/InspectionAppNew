@@ -81,10 +81,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, DateInterface {
     private ViewSavedWorkListBinding binding;
@@ -139,6 +141,27 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
         recyclerView.setVisibility(View.GONE);
         binding.notFoundTv.setVisibility(View.VISIBLE);
         binding.inspectionCountListLayout.setVisibility(View.GONE);
+
+        Date startDate = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        toDate = df.format(startDate);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(startDate);
+        c.add(Calendar.DATE, -30);
+        Date expDate = c.getTime();
+        fromDate= df.format(expDate);
+        binding.date.setText(fromDate+" to "+toDate);
+
+        if(Utils.isOnline()){
+            work_id = "";
+            binding.workId.setText("");
+            recyclerView.setAdapter(null);
+            getWorkDetails();
+        }
+        else {
+            Utils.showAlert(ViewSavedWorkList.this,"No Internet");
+        }
 
         binding.searchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -468,6 +491,9 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                     workListData(jsonObject.getJSONObject(AppConstant.JSON_DATA));
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
+                    binding.inspectionCountListLayout.setVisibility(View.GONE);
+                    binding.recycler.setVisibility(View.GONE);
+                    binding.notFoundTv.setVisibility(View.VISIBLE);
                 }
                 Log.d("responseWorkList", "" + responseObj.toString());
                 Log.d("responseWorkList", "" + responseDecryptedKey);
@@ -862,7 +888,6 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                 }
                 Collections.sort(savedWorkList, byDate);
                 if (savedWorkList.size()>0){
-                    binding.inspectionCountListLayout.setVisibility(View.VISIBLE);
                     savedWorkListAdapter = new SavedWorkListAdapter(ViewSavedWorkList.this,savedWorkList,"rdpr");
                     recyclerView.setVisibility(View.VISIBLE);
                     binding.notFoundTv.setVisibility(View.GONE);
@@ -885,17 +910,26 @@ public class ViewSavedWorkList extends AppCompatActivity implements Api.ServerRe
                 if(status_wise_count.length()>0){
                     for(int j=0;j<status_wise_count.length();j++){
                         try {
-                            int satisfied_count = status_wise_count.getJSONObject(j).getInt("satisfied");
-                            int un_satisfied_count = status_wise_count.getJSONObject(j).getInt("unsatisfied");
-                            int need_improvement_count = status_wise_count.getJSONObject(j).getInt("need_improvement");
-                            int total_inspection_count = satisfied_count+un_satisfied_count+need_improvement_count;
+                            String satisfied_count = status_wise_count.getJSONObject(j).getString("satisfied");
+                            String un_satisfied_count = status_wise_count.getJSONObject(j).getString("unsatisfied");
+                            String need_improvement_count = status_wise_count.getJSONObject(j).getString("need_improvement");
+
+                            if(satisfied_count.equals("")){
+                                satisfied_count="0";
+                            } if(un_satisfied_count.equals("")){
+                                un_satisfied_count="0";
+                            } if(need_improvement_count.equals("")){
+                                need_improvement_count="0";
+                            }
+                            int total_inspection_count = Integer.parseInt(satisfied_count)+Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
+
 
                             binding.satisfiedCount.setText(String.valueOf(satisfied_count));
                             binding.unSatisfiedCount.setText(String.valueOf(un_satisfied_count));
                             binding.needImprovementCount.setText(String.valueOf(need_improvement_count));
                             binding.totalCount.setText(String.valueOf(total_inspection_count));
                             if(work_id.isEmpty()){
-                                showPieChart(satisfied_count,un_satisfied_count,need_improvement_count,total_inspection_count);
+                                showPieChart(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count),Integer.parseInt(need_improvement_count),total_inspection_count);
                                 binding.inspectionCountListLayout.setVisibility(View.VISIBLE);
                             }else {
                                 binding.inspectionCountListLayout.setVisibility(View.GONE);

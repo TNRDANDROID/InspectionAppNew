@@ -192,6 +192,7 @@
     <string name="go_online">Go Online</string>
     <string name="username">Username</string>
     <string name="inspection">Inspection</string>
+    <string name="inspected_by">Inspected By</string>
     <string name="click_to_download_your_inspecting_block">Click to Download your Inspecting Block</string>
     <string name="click_to_download_your_inspecting_financial_year">Click to Download your Inspecting Financial Year</string>
     <string name="click_to_download_your_inspecting_scheme">Click to Download your Inspecting Scheme</string>
@@ -217,6 +218,7 @@
     <string name="clear">Clear</string>
     <string name="ongoing">Ongoing</string>
     <string name="completed">Completed</string>
+    <string name="satisfied">Satisfied</string>
     <string name="unsatisfied">UnSatisfied</string>
     <string name="need_improvement">Need Improvement</string>
     <string name="not_editable">(Not Editable)</string>
@@ -258,7 +260,7 @@
     <string name="colan_symbol">:</string>
     <string name="other_works">Other Works</string>
     <string name="view_inspected_work">View Inspected RDPR Work</string>
-    <string name="over_all_inspection_report">Over All Inspection Report</string>
+    <string name="over_all_inspection_report">OverAll Reports of State Level Inspection</string>
     <string name="view_inspected_other_work">View Inspected Other Work</string>
     <string name="view_inspected_report">View Inspected Report</string>
     <string name="no_inspection_history_found">No Inspection History Found</string>

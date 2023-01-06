@@ -951,6 +951,7 @@ public class RegistrationScreen extends AppCompatActivity implements Api.ServerR
                                 prefManager.setProfileImage("");
                             }
                             prefManager.setDesignation(designation);
+                            prefManager.setDesignationCode(designation_code);
                             prefManager.setName(String.valueOf(name));
                             prefManager.setLevels(String.valueOf(level));
                             prefManager.setDistrictCode(dcode);

@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -45,9 +46,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.android.volley.VolleyError;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.nic.InspectionAppNew.Interface.DateInterface;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.ATRWorkListAdapter;
-import com.nic.InspectionAppNew.adapter.WorkListAdapter;
 import com.nic.InspectionAppNew.api.Api;
 import com.nic.InspectionAppNew.api.ApiService;
 import com.nic.InspectionAppNew.api.ServerResponse;
@@ -70,12 +82,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.nic.InspectionAppNew.utils.Utils.showAlert;
 
-public class ATRWorkList extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener {
+public class ATRWorkList extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener , DateInterface {
     private AtrWorkListBinding binding;
     private PrefManager prefManager;
     public dbData dbData = new dbData(this);
@@ -95,7 +111,11 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
     private static final int MY_REQUEST_CODE_PERMISSION = 1000;
     ProgressDialog progressBar;
     Dialog dialog;
-
+    String fromDate="";
+    String toDate="";
+    HorizontalBarChart chart;
+    BarDataSet set1;
+    YAxis yLeft;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,7 +132,8 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
             e.printStackTrace();
         }
         Bundle bundle = this.getIntent().getExtras();
-       
+        chart=binding.barChart;
+        setSkillGraph();
         dbData.open();
         onOffType=prefManager.getOnOffType();
         binding.recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
@@ -130,11 +151,22 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         unsatisfied_workList = new ArrayList<>();
         if(onOffType.equals("online")) {
             binding.download.setVisibility(View.GONE);
-            if (Utils.isOnline()) {
-                getWorkListOptional();
+            Date startDate = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            toDate = df.format(startDate);
 
-            } else {
-                showAlert(ATRWorkList.this, "No Internet Connection!");
+            Calendar c = Calendar.getInstance();
+            c.setTime(startDate);
+            c.add(Calendar.DATE, -30);
+            Date expDate = c.getTime();
+            fromDate= df.format(expDate);
+            binding.date.setText(fromDate+" to "+toDate);
+
+            if(Utils.isOnline()){
+                getWorkDetails();
+            }
+            else {
+                Utils.showAlert(ATRWorkList.this,"No Internet");
             }
         }else {
             binding.download.setVisibility(View.VISIBLE);
@@ -144,7 +176,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
             @Override
             public void onClick(View view) {
                 if (Utils.isOnline()) {
-                    getWorkListOptional();
+                    showDatePickerDialog();
 
                 } else {
                     showAlert(ATRWorkList.this, "No Internet Connection!");
@@ -206,53 +238,29 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                 getUnSatisfiedWorkList(unsatisfied_workList);
             }
     }
-    public void getWorkListOptional() {
+    public void getWorkDetails() {
         try {
-            new ApiService(this).makeJSONObjectRequest("WorkListOptional", Api.Method.POST, UrlGenerator.getMainService(), workListOptionalJsonParams(), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("WorkDetails", Api.Method.POST, UrlGenerator.getMainService(), workDetailsJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
-    private JSONObject workListOptionalJsonParams() throws JSONException {
-
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), workListOptional(this).toString());
+    public JSONObject workDetailsJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), workDetailsParams(this).toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("WorkListOptional", "" + dataSet);
+        Log.d("WorkDetails", "" + dataSet);
         return dataSet;
     }
-
-    public  JSONObject workListOptional(Activity activity) throws JSONException {
-
+    public  JSONObject workDetailsParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        JSONObject dataSet1 = new JSONObject();
-
-        JSONArray villageCodeJsonArray=new JSONArray();
-        JSONArray schemeJsonArray=new JSONArray();
-        JSONArray finyearJsonArray=new JSONArray();
-
-        villageCodeJsonArray.put("3");
-        schemeJsonArray.put("395");
-        finyearJsonArray.put("2018-2019");
-        try {
-
-            dataSet1.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_INSPECTION_WORK_DETAILS);
-            dataSet.put(AppConstant.STATE_CODE, "29");
-            dataSet.put(AppConstant.DISTRICT_CODE, "31");
-            dataSet.put(AppConstant.BLOCK_CODE,"8");
-            dataSet.put(AppConstant.PV_CODE, villageCodeJsonArray);
-            dataSet.put(AppConstant.SCHEME_ID, schemeJsonArray);
-            dataSet.put(AppConstant.FINANCIAL_YEAR, finyearJsonArray);
-            dataSet1.put("inspection_work_details", dataSet);
-        }
-        catch (JSONException e){
-            e.printStackTrace();
-        }
-
-        Log.d("workListOptionals", "" + dataSet1);
-        return dataSet1;
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "get_inspection_details_for_atr");
+        dataSet.put("from_date", fromDate);
+        dataSet.put("to_date", toDate);
+        Log.d("WorkDetails", "" + dataSet);
+        return dataSet;
     }
 
     public class fetchWorkList extends AsyncTask<Void, Void,ArrayList<ModelClass>> {
@@ -291,9 +299,9 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                 binding.recycler.setVisibility(View.VISIBLE);
                 binding.notFoundTv.setVisibility(View.GONE);
                 for(int i=0;i<worklist.size();i++){
-                    if(worklist.get(i).getCurrent_stage_of_work().equalsIgnoreCase("11")){
+                    if(worklist.get(i).getWork_status_id()==3){
                         need_improvement_workList.add(worklist.get(i));
-                    }else {
+                    }else if(worklist.get(i).getWork_status_id()==2){
                         unsatisfied_workList.add(worklist.get(i));
                     }
                 }
@@ -342,55 +350,45 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
             dbData.deleteWorkListTable();
 
             if (params.length > 0) {
+                JSONObject jsonObject=new JSONObject();
                 JSONArray jsonArray = new JSONArray();
+                JSONArray status_wise_count = new JSONArray();
                 try {
-                    jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    jsonObject=params[0].getJSONObject(AppConstant.JSON_DATA);
+                    jsonArray = jsonObject.getJSONArray("inspection_details");
+                    status_wise_count = jsonObject.getJSONArray("status_wise_count");
+
                     if(jsonArray.length() >0){
 
                         for (int i = 0; i < jsonArray.length(); i++) {
                             String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
-                            String SelectedBlockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
-                            String hab_code = jsonArray.getJSONObject(i).getString("hab_code");
+                            String bcode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
                             String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
-                            String schemeID = jsonArray.getJSONObject(i).getString(AppConstant.SCHEME_ID);
-                            String scheme_group_id = jsonArray.getJSONObject(i).getString("scheme_group_id");
-                            String work_group_id = jsonArray.getJSONObject(i).getString("work_group_id");
-                            String work_type_id = jsonArray.getJSONObject(i).getString("work_type_id");
-                            String finYear = jsonArray.getJSONObject(i).getString(AppConstant.FINANCIAL_YEAR);
-                            int workID = jsonArray.getJSONObject(i).getInt(AppConstant.WORK_ID);
-                            String workName = jsonArray.getJSONObject(i).getString(AppConstant.WORK_NAME);
-                            String as_value = jsonArray.getJSONObject(i).getString("as_value");
-                            String ts_value = jsonArray.getJSONObject(i).getString("ts_value");
-                            String current_stage_of_work = jsonArray.getJSONObject(i).getString("current_stage_of_work");
-                            String stage_name = jsonArray.getJSONObject(i).getString("stage_name");
-                            String is_high_value = jsonArray.getJSONObject(i).getString("is_high_value");
-                            String as_date = jsonArray.getJSONObject(i).getString("as_date");
-                            String ts_date = jsonArray.getJSONObject(i).getString("ts_date");
-                            String work_order_date = jsonArray.getJSONObject(i).getString("work_order_date");
-                            String work_type_name = jsonArray.getJSONObject(i).getString("work_type_name");
+                            String inspection_id = jsonArray.getJSONObject(i).getString("inspection_id");
+                            String inspection_date = jsonArray.getJSONObject(i).getString("inspection_date");
+                            String status_id = jsonArray.getJSONObject(i).getString("status_id");
+                            String status = jsonArray.getJSONObject(i).getString("status");
+                            String description = jsonArray.getJSONObject(i).getString("description");
+                            String work_name = jsonArray.getJSONObject(i).getString("work_name");
+                            String work_id = jsonArray.getJSONObject(i).getString("work_id");
+                            String inspection_by_officer = jsonArray.getJSONObject(i).getString("name");
+                            String work_type_name = "work_type_name"/*jsonArray.getJSONObject(i).getString("work_type_name")*/;
+
 
                             ModelClass modelClass = new ModelClass();
                             modelClass.setDistrictCode(dcode);
-                            modelClass.setBlockCode(SelectedBlockCode);
-                            modelClass.setHabCode(hab_code);
+                            modelClass.setBlockCode(bcode);
                             modelClass.setPvCode(pvcode);
-                            modelClass.setSchemeSequentialID(schemeID);
-                            modelClass.setScheme_group_id(scheme_group_id);
-                            modelClass.setWork_group_id(work_group_id);
-                            modelClass.setWork_type_id(work_type_id);
-                            modelClass.setFinancialYear(finYear);
-                            modelClass.setWork_id(workID);
-                            modelClass.setWork_name(workName);
-                            modelClass.setAs_value(as_value);
-                            modelClass.setTs_value(ts_value);
-                            modelClass.setCurrent_stage_of_work(current_stage_of_work);
-                            modelClass.setStage_name(stage_name);
-                            modelClass.setIs_high_value(is_high_value);
-                            modelClass.setAs_date(as_date);
-                            modelClass.setTs_date(ts_date);
-                            modelClass.setWork_order_date(work_order_date);
+                            modelClass.setInspection_id(inspection_id);
+                            modelClass.setInspectedDate(inspection_date);
+                            modelClass.setWork_status_id(Integer.parseInt(status_id));
+                            modelClass.setWork_status(status);
+                            modelClass.setDescription(description);
+                            modelClass.setWork_name(work_name);
+                            modelClass.setWork_id(Integer.parseInt(work_id));
+                            modelClass.setInspection_by_officer(inspection_by_officer);
                             modelClass.setWork_type_name(work_type_name);
-                            
+
                             if(onOffType.equals("offline")){
                                 dbData.Insert_atr_workList("offline",modelClass);
                             }else {
@@ -402,6 +400,35 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
 
                     } else {
                         Utils.showAlert(ATRWorkList.this, "No Record Found for Corresponding Financial Year");
+                    }
+
+                    if(status_wise_count.length()>0){
+
+                        for(int j=0;j<status_wise_count.length();j++){
+                            try {
+                                String satisfied_count = status_wise_count.getJSONObject(j).getString("satisfied");
+                                String un_satisfied_count = status_wise_count.getJSONObject(j).getString("unsatisfied");
+                                String need_improvement_count = status_wise_count.getJSONObject(j).getString("need_improvement");
+
+                                if(satisfied_count.equals("")){
+                                    satisfied_count="0";
+                                } if(un_satisfied_count.equals("")){
+                                    un_satisfied_count="0";
+                                } if(need_improvement_count.equals("")){
+                                    need_improvement_count="0";
+                                }
+                                int total_inspection_count = /*Integer.parseInt(satisfied_count)+*/Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
+
+                                setGraphData(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count), Integer.parseInt(need_improvement_count),total_inspection_count);
+
+                            } catch (JSONException e){
+
+                            }
+
+                        }
+                    }
+                    else {
+
                     }
 
                 } catch (JSONException e) {
@@ -424,9 +451,9 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                     binding.recycler.setVisibility(View.VISIBLE);
                     binding.notFoundTv.setVisibility(View.GONE);
                     for(int i=0;i<worklist.size();i++){
-                        if(worklist.get(i).getCurrent_stage_of_work().equalsIgnoreCase("11")){
+                        if(worklist.get(i).getWork_status_id()==3){
                             need_improvement_workList.add(worklist.get(i));
-                        }else {
+                        }else if(worklist.get(i).getWork_status_id()==2){
                             unsatisfied_workList.add(worklist.get(i));
                         }
                     }
@@ -539,19 +566,20 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         try {
             String urlType = serverResponse.getApi();
             JSONObject responseObj = serverResponse.getJsonResponse();
-            if ("WorkListOptional".equals(urlType) && responseObj != null) {
+            if ("WorkDetails".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new GetWorkListTask().execute(jsonObject);
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
-                    Utils.showAlert(this, "No Projects Found! for your selected items");
+                    Utils.showAlert(this, jsonObject.getString("RESPONSE"));
                 }
                 Log.d("responseWorkList", "" + responseObj.toString());
                 Log.d("responseWorkList", "" + responseDecryptedKey);
 
             }
+
             if ("WorkReport".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
@@ -909,6 +937,89 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
     }
     void hideProgress(){
         progressBar.hide();
+    }
+
+    private void setSkillGraph() {
+        chart.setDrawBarShadow(false);
+        chart.setDrawValueAboveBar(false);
+        chart.setDrawBarShadow(false);
+        chart.setPinchZoom(false);
+        chart.setDrawGridBackground(false);
+        chart.getLegend().setEnabled(false);
+        chart.getDescription().setEnabled(false);
+        chart.setFitBars(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setMinimumHeight(300);
+
+        //Display the axis on the left (contains the labels 1*, 2* and so on)
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setEnabled(true);
+        xAxis.setDrawGridLines(false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelCount(2);
+
+        String[] vf = {"UnSatisfied", "Need Improvement"};
+
+        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(vf));
+
+        YAxis yRight = chart.getAxisRight();
+        yRight.setDrawAxisLine(true);
+        yRight.setDrawGridLines(false);
+        yRight.setEnabled(true);
+        String[] total_count = {""};
+
+        yRight.setValueFormatter(new IndexAxisValueFormatter(total_count));
+
+        yLeft = chart.getAxisLeft();
+        yLeft.setEnabled(false);
+    }
+    private void setGraphData(int satisfied_count, int un_satisfied_count, int need_improvement_count, int total_inspection_count) {
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0f, un_satisfied_count));
+        entries.add(new BarEntry(1f, need_improvement_count));
+
+
+        set1 = new BarDataSet(entries, "DataSet 1");
+
+        set1.setColors(0xFFFFA500,0xFF1E90FF);
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set1);
+
+        BarData data = new BarData(dataSets);
+        data.setValueTextColor(0xFFFFFFFF);
+        data.setValueTextSize(15f);
+        data.setValueTextSize(total_inspection_count);
+        data.setBarWidth(0.5f);
+        data.getGroupWidth(0f, 0.5f);
+        chart.setData(data);
+        //Add animation to the graph
+//        chart.animateY(1000);
+        chart.setTouchEnabled(false);
+        yLeft.setAxisMaximum(total_inspection_count);
+        yLeft.setAxisMinimum(0);
+        chart.invalidate();
+        binding.totalCount.setText("Total Inspected Works ("+String.valueOf(total_inspection_count)+")");
+    }
+
+    public void showDatePickerDialog(){
+        Utils.showDatePickerDialog(this);
+
+    }
+    @Override
+    public void getDate(String date) {
+        String[] separated = date.split(":");
+        fromDate = separated[0]; // this will contain "Fruit"
+        toDate = separated[1];
+        binding.date.setText(fromDate+" to "+toDate);
+
+        if(Utils.isOnline()){
+            getWorkDetails();
+        }
+        else {
+            Utils.showAlert(ATRWorkList.this,"No Internet");
+        }
+
     }
 
 }

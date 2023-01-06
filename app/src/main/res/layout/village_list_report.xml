@@ -37,7 +37,7 @@
                         android:id="@+id/back_img"
                         android:layout_width="@dimen/_25sdp"
                         android:layout_height="@dimen/_25sdp"
-                        android:padding="@dimen/_4sdp"
+                        android:padding="@dimen/_6sdp"
                         android:layout_marginLeft="-10dp"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
@@ -55,7 +55,7 @@
                         android:layout_centerInParent="true"
                         android:text="@string/over_all_inspection_report"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/_15sdp" />
+                        android:textSize="@dimen/_13sdp" />
 
 
                     <ImageView
@@ -85,8 +85,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/_20sdp"
-                    android:layout_marginRight="@dimen/_20sdp"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:layout_marginRight="@dimen/_15sdp"
                     android:layout_marginBottom="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:background="@drawable/rectangle_box_color"
@@ -120,11 +120,55 @@
                         tools:ignore="ContentDescription" />
 
                 </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/header_layout"
+                    android:layout_below="@+id/search_layout"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:layout_marginRight="@dimen/_15sdp"
+                    android:layout_marginBottom="@dimen/_8sdp"
+                    android:background="@drawable/corner_lite_rect_bg_white"
+                    android:weightSum="4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:elevation="10dp">
 
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/_10sdp"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/custom_circle_green"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:text="Satisfied"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1.2"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/_10sdp"
+                        android:drawableLeft="@drawable/custom_circle_red"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:text="Un Satisfied"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1.8"
+                        android:textSize="@dimen/_10sdp"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/custom_circle_yellow"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:layout_gravity="center"
+                        android:text="Need Improvement"/>
+
+                </LinearLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/search_layout"
+                    android:layout_below="@+id/header_layout"
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     >

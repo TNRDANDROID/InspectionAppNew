@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "InspectionNew";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 10;
 
     public static final String VILLAGE_TABLE_NAME = " villageTable";
     public static final String HABITATION_TABLE_NAME = " habitaionTable";
@@ -125,23 +125,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "dcode INTEGER," +
                 "bcode INTEGER," +
                 "pvcode INTEGER," +
-                "hab_code TEXT," +
-                "scheme_group_id TEXT," +
-                "scheme_id TEXT," +
-                "work_group_id TEXT," +
-                "work_type_id TEXT," +
-                "fin_year TEXT," +
                 "work_id INTEGER," +
                 "work_name TEXT," +
-                "as_value TEXT," +
-                "ts_value TEXT," +
-                "current_stage_of_work TEXT," +
-                "stage_name TEXT," +
-                "as_date TEXT," +
-                "ts_date TEXT," +
-                "work_order_date TEXT," +
                 "work_type_name TEXT," +
-                "is_high_value TEXT)");
+                "inspection_id TEXT," +
+                "inspection_date TEXT," +
+                "status_id TEXT," +
+                "status TEXT," +
+                "description TEXT," +
+                "inspection_by_officer TEXT)");
         db.execSQL("CREATE TABLE " + ONLINE_WORK_LIST + " ("
                 + "dcode INTEGER," +
                 "bcode INTEGER," +
@@ -185,6 +177,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "work_description TEXT," +
                 "current_stage_of_work TEXT," +
                 "flag TEXT," +
+                "inspection_id TEXT," +
                 "is_high_value TEXT)");
         db.execSQL("CREATE TABLE " + SAVE_ATR_WORK_DETAILS + " ("
                 + "save_work_details_primary_id INTEGER PRIMARY KEY AUTOINCREMENT," +

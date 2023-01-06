@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -43,6 +46,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class VillageListReportActivity extends AppCompatActivity implements Api.ServerResponseListener {
     private VillageListReportBinding binding;
@@ -79,6 +84,32 @@ public class VillageListReportActivity extends AppCompatActivity implements Api.
         dcode=getIntent().getStringExtra("dcode");
         bcode=getIntent().getStringExtra("bcode");
         fetData();
+        binding.search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!binding.searchTv.getText().toString().isEmpty()){
+                    adapter.getFilter().filter(binding.searchTv.getText().toString());
+                }
+            }
+        });
+        binding.searchTv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(!binding.searchTv.getText().toString().isEmpty()){
+                    adapter.getFilter().filter(binding.searchTv.getText().toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
     }
 
@@ -108,7 +139,7 @@ public class VillageListReportActivity extends AppCompatActivity implements Api.
     public  JSONObject villageListDistrictBlockWiseJsonParams(Activity activity) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VILLAGE_LIST_DISTRICT_WISE);
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VILLAGE_LIST_DISTRICT_BLOCK_WISE);
         dataSet.put(AppConstant.DISTRICT_CODE, dcode);
         dataSet.put(AppConstant.BLOCK_CODE, bcode);
         Log.d("villageListDistrictWise", "" + dataSet);
@@ -191,6 +222,7 @@ public class VillageListReportActivity extends AppCompatActivity implements Api.
                         }
 
                     }
+                    Collections.sort(villageList, comparatorvillage);
                 }
 
 
@@ -222,6 +254,12 @@ public class VillageListReportActivity extends AppCompatActivity implements Api.
         }
     }
 
+    Comparator<ModelClass> comparatorvillage = new Comparator<ModelClass>() {
+        @Override
+        public int compare(ModelClass movie, ModelClass t1) {
+            return movie.getPvName().compareTo(t1.getPvName());
+        }
+    };
 
     public  void showAlert(Activity activity, String msg){
         try {
@@ -251,8 +289,13 @@ public class VillageListReportActivity extends AppCompatActivity implements Api.
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        setResult(Activity.RESULT_CANCELED);
+//        setResult(Activity.RESULT_CANCELED);
+        Intent intent = new Intent();
+        intent.putExtra("flag", "B");
+        setResult(RESULT_OK, intent);
+        finish();
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+
     }
     @Override
     public void OnError(VolleyError volleyError) {

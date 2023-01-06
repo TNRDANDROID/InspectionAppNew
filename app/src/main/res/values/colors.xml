@@ -128,6 +128,10 @@
     <color name="unsatisfied">#FFFFA500</color>
     <color name="need_improvement">#FF1E90FF</color>
 
+    <color name="satisfied1">#CCFEEB</color>
+    <color name="unsatisfied1">#ffe4b2</color>
+    <color name="need_improvement1">#D2E9FF</color>
+
     <integer-array name="androidcolors">
         <item>@color/purple</item>
         <item>@color/darkblue</item>

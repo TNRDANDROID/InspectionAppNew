@@ -77,6 +77,7 @@ public class ModelClass implements Serializable {
 
     private String desig_code;
     private String desig_name;
+    private String inspection_by_officer;
 
     String work_stage_code;
     String work_stage_order;
@@ -87,6 +88,14 @@ public class ModelClass implements Serializable {
     int unsatisfied_cout;
     int needimprovement_cout;
 
+
+    public String getInspection_by_officer() {
+        return inspection_by_officer;
+    }
+
+    public void setInspection_by_officer(String inspection_by_officer) {
+        this.inspection_by_officer = inspection_by_officer;
+    }
 
     public int getTotal_cout() {
         return total_cout;

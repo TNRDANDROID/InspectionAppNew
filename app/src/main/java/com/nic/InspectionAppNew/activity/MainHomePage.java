@@ -283,6 +283,11 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         homeScreenBinding.designation.setText(prefManager.getDesignation());
         homeScreenBinding.navigationLayout.designation.setText(prefManager.getDesignation());
         homeScreenBinding.navigationLayout.name.setText(prefManager.getName());
+        if(prefManager.getDesignationCode().equals("153")){
+            homeScreenBinding.atrLayoutView.setVisibility(View.VISIBLE);
+        }else {
+            homeScreenBinding.atrLayoutView.setVisibility(View.GONE);
+        }
         if(prefManager.getLevels().equals("S")){
             if(prefManager.getStateName()!=null && !prefManager.getStateName().isEmpty()){
                 homeScreenBinding.userLevel.setText("State : "+prefManager.getStateName());
@@ -518,6 +523,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                                 prefManager.setProfileImage("");
                             }
                             prefManager.setDesignation(designation);
+                            prefManager.setDesignationCode(designation_code);
                             prefManager.setName(String.valueOf(name));
                             prefManager.setLevels(String.valueOf(level));
                             prefManager.setDistrictCode(dcode);
@@ -680,7 +686,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         homeScreenBinding.totalCount1.setText(String.valueOf(total_inspection_count));
         Resources resources = getResources();
         Collection<GraphData> data = new ArrayList<>();
-        data.add(new GraphData(Float.valueOf(satisfied), resources.getColor(R.color.satisfied)));
+        data.add(new GraphData(Float.valueOf(satisfied), resources.getColor(R.color.account_status_green_color)));
         data.add(new GraphData(Float.valueOf(unsatisfied), resources.getColor(R.color.unsatisfied)));
         data.add(new GraphData(Float.valueOf(need_improvement), resources.getColor(R.color.need_improvement)));
         homeScreenBinding.graph.setData(data);
@@ -1017,20 +1023,33 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
     private void getOverAllReport() {
-        if(prefManager.getLevels().equals("S")){
+        Intent intent = new Intent(this, OverAllInspectionReport.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+     /*   if(prefManager.getLevels().equals("S")){
             Intent intent = new Intent(this, OverAllInspectionReport.class);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }else if(prefManager.getLevels().equals("D")){
-            Intent intent = new Intent(this, VillageListReportActivity.class);
+            Intent intent = new Intent(this, OverAllInspectionReport.class);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }else if(prefManager.getLevels().equals("B")){
             Intent intent = new Intent(this, VillageListReportActivity.class);
-            startActivity(intent);
+            intent.putExtra("dcode",prefManager.getDistrictCode());
+            intent.putExtra("bcode",prefManager.getBlockCode());
+            startActivityForResult(intent,0);
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-        }
+        }*/
 
+    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                String flag = data.getStringExtra("flag");
+            }
+        }
     }
 
     public void openMenuDrawer(){

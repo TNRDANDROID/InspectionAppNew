@@ -136,7 +136,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/inspection_count_list_layout"
-                    android:layout_marginTop="@dimen/padding">
+                   >
 
 <!--                    <LinearLayout
                         android:layout_width="match_parent"
@@ -496,13 +496,11 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/padding"
                     >
                     <com.cooltechworks.views.shimmer.ShimmerRecyclerView
                         android:id="@+id/recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/_10sdp"
                         android:fadeScrollbars="false"
                         android:scrollbarSize="4dp"
                         android:scrollbars="vertical"

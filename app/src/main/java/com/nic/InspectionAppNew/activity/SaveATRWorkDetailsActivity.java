@@ -291,6 +291,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
     private void getIntentData(){
         onOffType= getIntent().getStringExtra("onOffType");
         work_id= getIntent().getIntExtra("work_id",0);
+        inspection_id = getIntent().getStringExtra("inspection_id");
         dcode = getIntent().getStringExtra("dcode");
         bcode = getIntent().getStringExtra("bcode");
         pvcode = getIntent().getStringExtra("pvcode");
@@ -447,17 +448,14 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
         JSONArray inspection_work_details = new JSONArray();
         true_flag = false;
         try {
-            maindataset.put(AppConstant.KEY_SERVICE_ID,"work_inspection_details_save");
+            maindataset.put(AppConstant.KEY_SERVICE_ID,"action_taken_details_save");
             dataset.put("dcode",dcode);
             dataset.put("bcode", bcode);
             dataset.put("pvcode",pvcode);
             dataset.put("hab_code",hab_code);
             dataset.put("work_id", work_id);
-            dataset.put("status_id", work_status_id);
+            dataset.put("inspection_id", inspection_id);
             dataset.put("description", binding.description.getText().toString());
-            dataset.put("work_group_id", work_group_id);
-            dataset.put("work_type_id", work_type_id);
-            dataset.put("work_stage_code", work_stage_id);
 
             int childCount = selected_image_list.size();
             int count = 0;
@@ -617,7 +615,8 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
             values.put("dcode",dcode);
             values.put("bcode",bcode);
             values.put("pvcode",pvcode);
-            values.put("scheme_id",scheme_id);
+            values.put("hab_code",hab_code);
+            values.put("inspection_id",inspection_id);
             values.put("fin_year",fin_year);
             values.put("work_id",work_id);
             values.put("work_name",work_name);

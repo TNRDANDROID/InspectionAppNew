@@ -90,14 +90,9 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
 
         holder.binding.workId.setText(String.valueOf(listFilteredValue.get(position).getWork_id()));
         holder.binding.workName.setText(String.valueOf(listFilteredValue.get(position).getWork_name()));
-//        holder.binding.workStatus.setText(String.valueOf(list.get(position).getWork_status()));
-        holder.binding.finYear.setText(String.valueOf(listFilteredValue.get(position).getFinancialYear()));
-        holder.binding.asValue.setText(String.valueOf(listFilteredValue.get(position).getAs_value()));
-        holder.binding.tsValue.setText(String.valueOf(listFilteredValue.get(position).getTs_value()));
-        holder.binding.stageName.setText(String.valueOf(listFilteredValue.get(position).getStage_name()));
-        holder.binding.asDate.setText(String.valueOf(listFilteredValue.get(position).getAs_date()));
-        holder.binding.tsDate.setText(String.valueOf(listFilteredValue.get(position).getTs_date()));
-        holder.binding.workOrderDate.setText(String.valueOf(listFilteredValue.get(position).getWork_order_date()));
+        holder.binding.inspectedDate.setText(String.valueOf(listFilteredValue.get(position).getInspectedDate()));
+        holder.binding.status.setText(String.valueOf(listFilteredValue.get(position).getWork_status()));
+        holder.binding.inspectionByOfficer.setText(String.valueOf(listFilteredValue.get(position).getInspection_by_officer()));
         holder.binding.workTypeName.setText(String.valueOf(listFilteredValue.get(position).getWork_type_name()));
 
 
@@ -119,6 +114,7 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
                 intent.putExtra("scheme_id", listFilteredValue.get(position).getSchemeSequentialID());
                 intent.putExtra("fin_year", listFilteredValue.get(position).getFinancialYear());
                 intent.putExtra("work_id", listFilteredValue.get(position).getWork_id());
+                intent.putExtra("inspection_id", listFilteredValue.get(position).getInspection_id());
                 intent.putExtra("work_name", listFilteredValue.get(position).getWork_name());
                 intent.putExtra("as_value", listFilteredValue.get(position).getAs_value());
                 intent.putExtra("ts_value", listFilteredValue.get(position).getTs_value());
@@ -144,6 +140,7 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
                 intent.putExtra("scheme_id", listFilteredValue.get(position).getSchemeSequentialID());
                 intent.putExtra("fin_year", listFilteredValue.get(position).getFinancialYear());
                 intent.putExtra("work_id", listFilteredValue.get(position).getWork_id());
+                intent.putExtra("inspection_id", listFilteredValue.get(position).getInspection_id());
                 intent.putExtra("work_name", listFilteredValue.get(position).getWork_name());
                 intent.putExtra("as_value", listFilteredValue.get(position).getAs_value());
                 intent.putExtra("ts_value", listFilteredValue.get(position).getTs_value());
