@@ -85,6 +85,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "latitude TEXT," +
                 "longitude TEXT," +
                 "flag TEXT," +
+                "inspection_id TEXT," +
                 "serial_no INTEGER)");
         db.execSQL("CREATE TABLE " + SAVE_ATR_IMAGES + " ("
                 + "save_work_details_image_primary_id INTEGER PRIMARY KEY AUTOINCREMENT,"+
@@ -133,6 +134,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 "status_id TEXT," +
                 "status TEXT," +
                 "description TEXT," +
+                "total_count TEXT," +
+                "satisfied_count TEXT," +
+                "unsatisfied_count TEXT," +
+                "need_improvement_count TEXT," +
+                "inspection_by_officer_designation TEXT," +
                 "inspection_by_officer TEXT)");
         db.execSQL("CREATE TABLE " + ONLINE_WORK_LIST + " ("
                 + "dcode INTEGER," +

@@ -255,7 +255,7 @@
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginBottom="@dimen/_10sdp"
-                            android:id="@+id/as_value_layout"
+                            android:id="@+id/status_value_layout"
                             android:layout_height="wrap_content">
                             <TextView
                                 android:layout_width="0dp"

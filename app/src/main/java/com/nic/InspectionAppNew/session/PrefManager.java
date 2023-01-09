@@ -63,6 +63,7 @@ public class PrefManager {
     private static final String KEY_SCHEME_SEQUENTIAL_ID = "SchemeSeqId";
     private static final String IMEI = "imei";
     private static final String KEY_DELETE_ID = "deleteId";
+    private static final String KEY_DATE = "date";
     private static final String KEY_DELETE_POSITION = "deletePosition";
     private static final String DELETE_ADAPTER_POSITION = "delete_adapter_position";
     private static final String KEY_PHOTO_TYPE = "photos_type";
@@ -278,6 +279,14 @@ public class PrefManager {
 
     public void setKeyDeleteId(String deleteId) {
         editor.putString(KEY_DELETE_ID,deleteId);
+        editor.commit();
+    }
+    public String getKeyDate() {
+        return pref.getString(KEY_DATE,null);
+    }
+
+    public void setKeyDate(String deleteId) {
+        editor.putString(KEY_DATE,deleteId);
         editor.commit();
     }
 

@@ -137,7 +137,7 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
         }
         dbData.open();
         imageCount = dbData.getParticularSavedImagebycode("all",String.valueOf(pendingListFiltered.get(position).getDistrictCode()),String.valueOf(pendingListFiltered.get(position).getBlockCode()),
-                String.valueOf(pendingListFiltered.get(position).getPvCode()),String.valueOf(pendingListFiltered.get(position).getWork_id()),"");
+                String.valueOf(pendingListFiltered.get(position).getPvCode()),String.valueOf(pendingListFiltered.get(position).getWork_id()),"","");
 
         if(imageCount.size() > 0) {
             holder.pendingScreenAdapterBinding.viewOfflineImages.setVisibility(View.VISIBLE);
@@ -241,7 +241,7 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
                 intent.putExtra("onOffType","offline");
                 intent.putExtra("other_work_detail",pendingListFiltered.get(position).getOther_work_detail());
                 intent.putExtra("flag","");
-                intent.putExtra("type","rdpr");
+                intent.putExtra("type","atr");
                 context.startActivity(intent);
             }
             }
@@ -322,7 +322,7 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
         dbData.open();
         ArrayList<ModelClass> imageList = new ArrayList<>();
         imageList.addAll(dbData.getParticularSavedImagebycode("all",String.valueOf(pendingListFiltered.get(position).getDistrictCode()),String.valueOf(pendingListFiltered.get(position).getBlockCode()),
-                String.valueOf(pendingListFiltered.get(position).getPvCode()),String.valueOf(pendingListFiltered.get(position).getWork_id()),""));
+                String.valueOf(pendingListFiltered.get(position).getPvCode()),String.valueOf(pendingListFiltered.get(position).getWork_id()),"",""));
         try {
             for (int i=0;i<imageList.size();i++){
 
@@ -445,7 +445,7 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
 
     private void deleteSavedImage(String dcode,String bcode,String pvcode,String work_id) {
         ArrayList<ModelClass> activityImage = new ArrayList<>();
-        activityImage = dbData.getParticularSavedImagebycode("all",dcode,bcode, pvcode,work_id,"");
+        activityImage = dbData.getParticularSavedImagebycode("all",dcode,bcode, pvcode,work_id,"","");
         for (int i=0; i < activityImage.size();i++){
             String file_path= activityImage.get(i).getImage_path();
             deleteFileDirectory(file_path);

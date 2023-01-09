@@ -100,7 +100,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         protected ArrayList<ModelClass> doInBackground(JSONObject... params) {
             dbData.open();
             pendingList = new ArrayList<>();
-            pendingList = dbData.getSavedWorkList("all","","","","");
+            pendingList = dbData.getSavedWorkList("all","","","","","");
             Log.d("PENDING_COUNT", String.valueOf(pendingList.size()));
             return pendingList;
         }
@@ -233,7 +233,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
 
     private void deleteSavedImage(String dcode,String bcode,String pvcode,String work_id) {
         ArrayList<ModelClass> activityImage = new ArrayList<>();
-        activityImage = dbData.getParticularSavedImagebycode("all",dcode,bcode, pvcode,work_id,"");
+        activityImage = dbData.getParticularSavedImagebycode("all",dcode,bcode, pvcode,work_id,"","");
        for (int i=0; i < activityImage.size();i++){
            String file_path= activityImage.get(i).getImage_path();
            deleteFileDirectory(file_path);

@@ -249,9 +249,11 @@
     <string name="document">Document</string>
     <string name="pending_list">Pending List</string>
     <string name="inspected_date">Inspected Date</string>
+    <string name="action_taken_date">Action Taken Date</string>
     <string name="status">Status</string>
     <string name="view_report">View Report</string>
     <string name="inspection_taken">Inspection Taken</string>
+    <string name="action_taken_report">Action Taken Report</string>
     <string name="description">Description</string>
     <string name="photos">Photos</string>
     <string name="work_list">Work List</string>

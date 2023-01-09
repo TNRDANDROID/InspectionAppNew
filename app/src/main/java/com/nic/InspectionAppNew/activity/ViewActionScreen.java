@@ -49,15 +49,12 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
     public dbData dbData = new dbData(this);
     public  DBHelper dbHelper;
     public  SQLiteDatabase db;
-
-    Handler myHandler = new Handler();
-    private ProgressHUD progressHUD;
     int work_id;
-    String inspection_id;
-    String other_work_inspection_id;
-    String type;
+    String inspection_id="";
+    String action_taken_id="";
+    String other_work_inspection_id="";
+    String type="";
     ImageAdapter imageAdapter;
-    String pref_Village;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,7 +71,24 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
         }
 
         type=getIntent().getStringExtra("type");
-        if(type.equalsIgnoreCase("rdpr")){
+        if(type.equalsIgnoreCase("atr")){
+            binding.workNameLayout.setVisibility(View.VISIBLE);
+            binding.otherWorkCategoryNameLayout.setVisibility(View.GONE);
+            binding.otherWorkDetailLayout.setVisibility(View.GONE);
+            binding.finYearLayout.setVisibility(View.GONE);
+            binding.statusValueLayout.setVisibility(View.GONE);
+            binding.workH.setText(getApplicationContext().getResources().getString(R.string.work_id));
+            binding.titleTv.setText(getApplicationContext().getResources().getString(R.string.action_taken_report));
+
+            work_id=getIntent().getIntExtra("work_id",0);
+            inspection_id=getIntent().getStringExtra("inspection_id");
+            action_taken_id=getIntent().getStringExtra("action_taken_id");
+            if (Utils.isOnline()) {
+                getWorkDetails();
+            }else {
+                Utils.showAlert(this, getResources().getString(R.string.internet_connection_not_available_please_turn_on_or_offline));
+            }
+        }else if(type.equalsIgnoreCase("rdpr")){
             binding.workNameLayout.setVisibility(View.VISIBLE);
             binding.otherWorkCategoryNameLayout.setVisibility(View.GONE);
             binding.otherWorkDetailLayout.setVisibility(View.GONE);
@@ -127,9 +141,15 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
     public  JSONObject workDetailsParams(Activity activity) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "work_id_wise_inspection_details_view");
+        if(type.equalsIgnoreCase("atr")){
+            dataSet.put(AppConstant.KEY_SERVICE_ID, "work_id_wise_inspection_action_taken_details_view");
+            dataSet.put("action_taken_id", action_taken_id);
+        }else {
+            dataSet.put(AppConstant.KEY_SERVICE_ID, "work_id_wise_inspection_details_view");
+        }
         dataSet.put("work_id", work_id);
         dataSet.put("inspection_id", inspection_id);
+
 
         Log.d("WorkDetails", "" + dataSet);
         return dataSet;
@@ -194,7 +214,12 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
                 String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    workListOptionalS(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+
+                    if(type.equalsIgnoreCase("atr")){
+                        workListATR(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                    }else {
+                        workListOptionalS(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                    }
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
                 }
@@ -245,6 +270,69 @@ public class ViewActionScreen extends AppCompatActivity implements Api.ServerRes
                     String work_name = jsonArray.getJSONObject(i).getString("work_name");
 
                     binding.status.setText(Utils.notNullString(status));
+                    binding.description.setText(Utils.notNullString(description));
+                    binding.workName.setText(Utils.notNullString(work_name));
+
+                    JSONArray imgarray=new JSONArray();
+                    imgarray=jsonArray.getJSONObject(i).getJSONArray("inspection_image");
+                    if(imgarray.length() > 0){
+                        ArrayList<ModelClass> activityImage = new ArrayList<>();
+                        for(int j = 0; j < imgarray.length(); j++ ) {
+                            try {
+                                ModelClass imageOnline = new ModelClass();
+                                imageOnline.setDescription(imgarray.getJSONObject(j).getString("image_description"));
+                                if (!(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase("null") ||
+                                        imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase(""))) {
+                                    byte[] decodedString = Base64.decode(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE), Base64.DEFAULT);
+                                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                    imageOnline.setImage(decodedByte);
+                                    activityImage.add(imageOnline);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        if (activityImage.size() > 0) {
+                            binding.recycler.setVisibility(View.VISIBLE);
+                            binding.notFoundTv.setVisibility(View.GONE);
+                            binding.recycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                            imageAdapter = new ImageAdapter(ViewActionScreen.this, activityImage,dbData);
+                            binding.recycler.setAdapter(imageAdapter);
+                        }else {
+                            binding.recycler.setVisibility(View.GONE);
+                            binding.notFoundTv.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                }
+
+            } else {
+                Utils.showAlert(this, "No Record Found for Corresponding Work");
+            }
+
+        } catch (JSONException | ArrayIndexOutOfBoundsException j) {
+            j.printStackTrace();
+        }
+
+    }
+    private void workListATR(JSONArray jsonArray) {
+        try {
+
+            if (jsonArray.length() > 0) {
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
+                    String bCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
+                    String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
+                    String work_id = jsonArray.getJSONObject(i).getString("workid");
+                    String inspection_id = jsonArray.getJSONObject(i).getString("inspection_id");
+                    String action_taken_date = jsonArray.getJSONObject(i).getString("action_taken_date");
+                    String action_taken_id = jsonArray.getJSONObject(i).getString("action_taken_id");
+                    String description = jsonArray.getJSONObject(i).getString("description");
+                    String work_name = jsonArray.getJSONObject(i).getString("work_name");
+
                     binding.description.setText(Utils.notNullString(description));
                     binding.workName.setText(Utils.notNullString(work_name));
 

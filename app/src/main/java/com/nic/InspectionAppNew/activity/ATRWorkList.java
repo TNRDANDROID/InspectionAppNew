@@ -44,6 +44,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.volley.VolleyError;
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.github.mikephil.charting.charts.BarChart;
@@ -55,6 +56,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.nic.InspectionAppNew.Interface.DateInterface;
@@ -116,6 +118,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
     HorizontalBarChart chart;
     BarDataSet set1;
     YAxis yLeft;
+    private ShimmerRecyclerView recyclerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -136,14 +139,17 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         setSkillGraph();
         dbData.open();
         onOffType=prefManager.getOnOffType();
-        binding.recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
-        binding.recycler.setItemAnimator(new DefaultItemAnimator());
-        binding.recycler.setHasFixedSize(true);
-        binding.recycler.setNestedScrollingEnabled(false);
-        binding.recycler.setFocusable(false);
+        recyclerView = binding.recycler;
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setFocusable(false);
 
-        binding.recycler.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
         binding.notFoundTv.setVisibility(View.GONE);
+        binding.graphLayout.setVisibility(View.GONE);
+        binding.tabLayout.setVisibility(View.GONE);
 
         WorkType="need_improvement";
         workList = new ArrayList<>();
@@ -161,6 +167,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
             Date expDate = c.getTime();
             fromDate= df.format(expDate);
             binding.date.setText(fromDate+" to "+toDate);
+            binding.dateSelected.setText(fromDate+" to "+toDate);
 
             if(Utils.isOnline()){
                 getWorkDetails();
@@ -170,6 +177,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
             }
         }else {
             binding.download.setVisibility(View.VISIBLE);
+            binding.dateLayout.setVisibility(View.GONE);
             new  fetchWorkList().execute();
         }
         binding.download.setOnClickListener(new View.OnClickListener() {
@@ -183,10 +191,21 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                 }
             }
         });
+        binding.datePickLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Utils.isOnline()) {
+                    showDatePickerDialog();
+
+                } else {
+                    showAlert(ATRWorkList.this, "No Internet Connection!");
+                }
+            }
+        });
         binding.needImprovement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.recycler.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
                 binding.notFoundTv.setVisibility(View.GONE);
                 binding.needImprovement.setTextColor(getApplicationContext().getResources().getColor(R.color.white));
                 binding.needImprovement.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button_color));
@@ -208,7 +227,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         binding.unsatisfied.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.recycler.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
                 binding.notFoundTv.setVisibility(View.GONE);
                 binding.needImprovement.setTextColor(getApplicationContext().getResources().getColor(R.color.grey_8));
                 binding.needImprovement.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button));
@@ -229,6 +248,9 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
 
 
 
+    }
+    private void loadCards() {
+        recyclerView.hideShimmerAdapter();
     }
 
     public void getOfflineWorkList() {
@@ -295,8 +317,12 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                 }
             }
             if (worklist.size() > 0) {
+                if(!prefManager.getKeyDate().isEmpty()){
+                    binding.dateSelected.setText(prefManager.getKeyDate());
+                }
+
                 binding.tabLayout.setVisibility(View.VISIBLE);
-                binding.recycler.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
                 binding.notFoundTv.setVisibility(View.GONE);
                 for(int i=0;i<worklist.size();i++){
                     if(worklist.get(i).getWork_status_id()==3){
@@ -305,6 +331,8 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                         unsatisfied_workList.add(worklist.get(i));
                     }
                 }
+                setGraphData(worklist.get(0).getSatisfied_cout(),worklist.get(0).getUnsatisfied_cout(),worklist.get(0).getNeedimprovement_cout(),worklist.get(0).getTotal_cout());
+
                 if(WorkType.equalsIgnoreCase("need_improvement")){
                     System.out.println("need_improvement_workList >>"+need_improvement_workList.size());
                     getNeedImprovementWorkList(need_improvement_workList);
@@ -314,12 +342,12 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                 }
 
                 /*workListAdapter = new WorkListAdapter(WorkList.this, worklist,dbData,"online");
-                workListBinding.recycler.setAdapter(workListAdapter);*/
+                workListrecyclerView.setAdapter(workListAdapter);*/
 
             }else {
                 need_improvement_workList =new ArrayList<>();
                 unsatisfied_workList =new ArrayList<>();
-                binding.recycler.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
                 binding.notFoundTv.setVisibility(View.VISIBLE);
             }
             try {
@@ -346,8 +374,10 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
             workList = new ArrayList<>();
             need_improvement_workList = new ArrayList<>();
             unsatisfied_workList = new ArrayList<>();
-            dbData.open();
-            dbData.deleteWorkListTable();
+            if(onOffType.equals("offline")){
+                dbData.open();
+                dbData.deleteATR_WORK_LISTTable();
+            }
 
             if (params.length > 0) {
                 JSONObject jsonObject=new JSONObject();
@@ -373,6 +403,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                             String work_id = jsonArray.getJSONObject(i).getString("work_id");
                             String inspection_by_officer = jsonArray.getJSONObject(i).getString("name");
                             String work_type_name = "work_type_name"/*jsonArray.getJSONObject(i).getString("work_type_name")*/;
+                            String inspection_by_officer_designation = "desig"/*jsonArray.getJSONObject(i).getString("inspection_by_officer_designation")*/;
 
 
                             ModelClass modelClass = new ModelClass();
@@ -388,9 +419,39 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                             modelClass.setWork_id(Integer.parseInt(work_id));
                             modelClass.setInspection_by_officer(inspection_by_officer);
                             modelClass.setWork_type_name(work_type_name);
+                            modelClass.setInspection_by_officer_designation(inspection_by_officer_designation);
 
                             if(onOffType.equals("offline")){
+                                if(status_wise_count.length()>0){
+
+                                    for(int j=0;j<status_wise_count.length();j++){
+                                        try {
+                                            String satisfied_count = status_wise_count.getJSONObject(j).getString("satisfied");
+                                            String un_satisfied_count = status_wise_count.getJSONObject(j).getString("unsatisfied");
+                                            String need_improvement_count = status_wise_count.getJSONObject(j).getString("need_improvement");
+
+                                            if(satisfied_count.equals("")){
+                                                satisfied_count="0";
+                                            } if(un_satisfied_count.equals("")){
+                                                un_satisfied_count="0";
+                                            } if(need_improvement_count.equals("")){
+                                                need_improvement_count="0";
+                                            }
+                                            int total_inspection_count = /*Integer.parseInt(satisfied_count)+*/Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
+                                            modelClass.setSatisfied_cout(Integer.parseInt(satisfied_count));
+                                            modelClass.setUnsatisfied_cout(Integer.parseInt(un_satisfied_count));
+                                            modelClass.setNeedimprovement_cout(Integer.parseInt(need_improvement_count));
+                                            modelClass.setTotal_cout(total_inspection_count);
+
+                                        } catch (JSONException e){
+
+                                        }
+
+                                    }
+                                }
+
                                 dbData.Insert_atr_workList("offline",modelClass);
+                                prefManager.setKeyDate(fromDate+" to "+toDate);
                             }else {
                                 workList.add(modelClass);
                             }
@@ -444,11 +505,15 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         protected void onPostExecute(ArrayList<ModelClass> worklist) {
             super.onPostExecute(worklist);
 //            Utils.hideProgress(progressHUD);
+            if (worklist.size() > 0) {
+                binding.date.setText(fromDate+" to "+toDate);
+                binding.dateSelected.setText(fromDate+" to "+toDate);
+            }
             if(onOffType.equals("offline")){
                 showAlertdialog(ATRWorkList.this, "Your Data Downloaded Successfully!");
             }else {
                 if (worklist.size() > 0) {
-                    binding.recycler.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
                     binding.notFoundTv.setVisibility(View.GONE);
                     for(int i=0;i<worklist.size();i++){
                         if(worklist.get(i).getWork_status_id()==3){
@@ -466,12 +531,12 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                     }
 
                 /*workListAdapter = new WorkListAdapter(WorkList.this, worklist,dbData,"online");
-                workListBinding.recycler.setAdapter(workListAdapter);*/
+                workListrecyclerView.setAdapter(workListAdapter);*/
 
                 }else {
                     need_improvement_workList =new ArrayList<>();
                     unsatisfied_workList =new ArrayList<>();
-                    binding.recycler.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
                     binding.notFoundTv.setVisibility(View.VISIBLE);
                 }
             }
@@ -574,6 +639,14 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                     new GetWorkListTask().execute(jsonObject);
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, jsonObject.getString("RESPONSE"));
+                   /* if(onOffType.equals("online")){
+                        recyclerView.setVisibility(View.GONE);
+                        binding.notFoundTv.setVisibility(View.VISIBLE);
+                        binding.graphLayout.setVisibility(View.GONE);
+                        binding.tabLayout.setVisibility(View.GONE);
+                    }else {
+                    }
+*/
                 }
                 Log.d("responseWorkList", "" + responseObj.toString());
                 Log.d("responseWorkList", "" + responseDecryptedKey);
@@ -648,25 +721,47 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
 
     public void getNeedImprovementWorkList(ArrayList<ModelClass> worklist){
         if (need_improvement_workList.size() > 0) {
-            binding.recycler.setVisibility(View.VISIBLE);
+            binding.graphLayout.setVisibility(View.VISIBLE);
+            binding.tabLayout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
             binding.notFoundTv.setVisibility(View.GONE);
             workListAdapter = new ATRWorkListAdapter(ATRWorkList.this, need_improvement_workList,dbData,onOffType);
-            binding.recycler.setAdapter(workListAdapter);
+            recyclerView.setAdapter(workListAdapter);
+            recyclerView.showShimmerAdapter();
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadCards();
+                }
+            }, 1000);
         }else {
-            binding.recycler.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
             binding.notFoundTv.setVisibility(View.VISIBLE);
+            binding.graphLayout.setVisibility(View.GONE);
+            binding.tabLayout.setVisibility(View.GONE);
         }
 
     }
     public void getUnSatisfiedWorkList(ArrayList<ModelClass> worklist){
         if (unsatisfied_workList.size() > 0) {
-            binding.recycler.setVisibility(View.VISIBLE);
+            binding.graphLayout.setVisibility(View.VISIBLE);
+            binding.tabLayout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
             binding.notFoundTv.setVisibility(View.GONE);
             workListAdapter = new ATRWorkListAdapter(ATRWorkList.this, unsatisfied_workList,dbData,onOffType);
-            binding.recycler.setAdapter(workListAdapter);
+            recyclerView.setAdapter(workListAdapter);
+            recyclerView.showShimmerAdapter();
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadCards();
+                }
+            }, 1000);
         }else {
-            binding.recycler.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
             binding.notFoundTv.setVisibility(View.VISIBLE);
+            binding.graphLayout.setVisibility(View.GONE);
+            binding.tabLayout.setVisibility(View.GONE);
         }
 
     }
@@ -972,6 +1067,9 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
 
         yLeft = chart.getAxisLeft();
         yLeft.setEnabled(false);
+        BarData data = new BarData();
+        data.setValueTextColor(0xFFFFFFFF);
+        data.setValueTextSize(18f);
     }
     private void setGraphData(int satisfied_count, int un_satisfied_count, int need_improvement_count, int total_inspection_count) {
         ArrayList<BarEntry> entries = new ArrayList<>();
@@ -982,19 +1080,33 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         set1 = new BarDataSet(entries, "DataSet 1");
 
         set1.setColors(0xFFFFA500,0xFF1E90FF);
+//value format here, here is the overridden method
+        ValueFormatter vf = new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return ""+(int)value;
+            }
+        };
 
+        set1.setValueFormatter(vf);
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
 
         BarData data = new BarData(dataSets);
         data.setValueTextColor(0xFFFFFFFF);
-        data.setValueTextSize(15f);
+        data.setValueTextSize(18f);
         data.setValueTextSize(total_inspection_count);
-        data.setBarWidth(0.5f);
-        data.getGroupWidth(0f, 0.5f);
+        data.setBarWidth(0.8f);
+        data.getGroupWidth(0f, 0.8f);
+        data.setDrawValues(true);
         chart.setData(data);
         //Add animation to the graph
 //        chart.animateY(1000);
+        String us="UnSatisfied \n"+String.valueOf(un_satisfied_count);
+        String ni="Need Improvement \n"+String.valueOf(need_improvement_count);
+        String[] vf1 = {us,ni};
+
+        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(vf1));
         chart.setTouchEnabled(false);
         yLeft.setAxisMaximum(total_inspection_count);
         yLeft.setAxisMinimum(0);
@@ -1011,7 +1123,8 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         String[] separated = date.split(":");
         fromDate = separated[0]; // this will contain "Fruit"
         toDate = separated[1];
-        binding.date.setText(fromDate+" to "+toDate);
+      /*  binding.date.setText(fromDate+" to "+toDate);
+        binding.dateSelected.setText(fromDate+" to "+toDate);*/
 
         if(Utils.isOnline()){
             getWorkDetails();

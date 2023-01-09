@@ -113,7 +113,7 @@
                         android:background="@drawable/rectangle_box"
                         android:orientation="vertical"
                         android:onClick="@{()-> activity.showDatePickerDialog()}"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
 
                         <TextView
@@ -150,6 +150,7 @@
 
 
                     </RelativeLayout>
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -158,25 +159,52 @@
                         android:background="@drawable/corner_lite_rect_bg_color"
                         android:layout_marginLeft="@dimen/_10sdp"
                         android:layout_marginRight="@dimen/_10sdp"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:layout_below="@+id/date_layout">
-                        <com.github.mikephil.charting.charts.HorizontalBarChart
-                            android:id="@+id/barChart"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            />
+                        android:layout_marginTop="-20dp"
+                        android:layout_below="@+id/date_pick_layout">
                         <TextView
                             android:gravity="center"
-                            android:layout_below="@+id/barChart"
                             android:padding="@dimen/_5sdp"
                             android:textSize="@dimen/_12sdp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/_10sdp"
                             android:id="@+id/total_count"
                             android:text="Total Inspected Works"
                             android:textColor="@color/text_color"
                             android:textColorHint="@color/text_color"
                             tools:ignore="RtlSymmetry" />
+
+                        <com.github.mikephil.charting.charts.HorizontalBarChart
+                            android:id="@+id/barChart"
+                            android:layout_below="@+id/total_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            />
+
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/download"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:paddingLeft="@dimen/_20sdp"
+                        android:paddingRight="@dimen/_20sdp"
+                        android:paddingBottom="@dimen/_5sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:id="@+id/date_pick_layout"
+                        android:background="@drawable/fin_year_bg_lite">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/select_from_and_to_Date"
+                            android:textColor="@color/white"
+                            android:layout_toRightOf="@+id/fin_year_tv"
+                            android:gravity="center"
+                            android:drawableLeft="@drawable/ic_calendar_icon"
+                            android:drawablePadding="@dimen/_5sdp"
+                            android:id="@+id/date_selected"/>
 
                     </RelativeLayout>
 
@@ -215,7 +243,7 @@
                             />
 
                     </LinearLayout>
-                    <androidx.recyclerview.widget.RecyclerView
+                    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
                         android:id="@+id/recycler"
                         android:layout_below="@+id/tab_layout"
                         android:layout_width="match_parent"

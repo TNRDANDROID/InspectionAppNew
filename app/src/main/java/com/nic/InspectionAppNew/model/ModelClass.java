@@ -61,6 +61,8 @@ public class ModelClass implements Serializable {
     private String work_description;
     private String inspection_id;
     private String inspectedDate;
+    private String action_taken_id;
+    private String action_taken_date;
 
 
     private String as_date;
@@ -78,6 +80,7 @@ public class ModelClass implements Serializable {
     private String desig_code;
     private String desig_name;
     private String inspection_by_officer;
+    private String inspection_by_officer_designation;
 
     String work_stage_code;
     String work_stage_order;
@@ -88,6 +91,30 @@ public class ModelClass implements Serializable {
     int unsatisfied_cout;
     int needimprovement_cout;
 
+
+    public String getAction_taken_date() {
+        return action_taken_date;
+    }
+
+    public void setAction_taken_date(String action_taken_date) {
+        this.action_taken_date = action_taken_date;
+    }
+
+    public String getAction_taken_id() {
+        return action_taken_id;
+    }
+
+    public void setAction_taken_id(String action_taken_id) {
+        this.action_taken_id = action_taken_id;
+    }
+
+    public String getInspection_by_officer_designation() {
+        return inspection_by_officer_designation;
+    }
+
+    public void setInspection_by_officer_designation(String inspection_by_officer_designation) {
+        this.inspection_by_officer_designation = inspection_by_officer_designation;
+    }
 
     public String getInspection_by_officer() {
         return inspection_by_officer;

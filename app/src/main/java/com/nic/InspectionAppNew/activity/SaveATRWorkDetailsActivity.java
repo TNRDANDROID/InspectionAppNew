@@ -131,6 +131,8 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
     String other_work_category_id="";
     String other_work_inspection_id="";
     String inspection_id="";
+    String action_taken_id="";
+    String description="";
     String flag="";
     int min_img_count=0;
     int max_img_count=0;
@@ -292,6 +294,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
         onOffType= getIntent().getStringExtra("onOffType");
         work_id= getIntent().getIntExtra("work_id",0);
         inspection_id = getIntent().getStringExtra("inspection_id");
+        action_taken_id = getIntent().getStringExtra("action_taken_id");
         dcode = getIntent().getStringExtra("dcode");
         bcode = getIntent().getStringExtra("bcode");
         pvcode = getIntent().getStringExtra("pvcode");
@@ -306,20 +309,57 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
         scheme_group_id = getIntent().getStringExtra("scheme_group_id");
         work_group_id = getIntent().getStringExtra("work_group_id");
         work_type_id = getIntent().getStringExtra("work_type_id");
+        flag = getIntent().getStringExtra("flag");
+        type= getIntent().getStringExtra("type");
+        description= getIntent().getStringExtra("description");
 
         dbData.open();
         savedImage = new ArrayList<>();
         loadImageList(savedImage,flag,"");
 
+        if(flag.equalsIgnoreCase("edit")){
+            binding.description.setText(description);
+            try {
+                savedImage=new ArrayList<>();
+                JSONArray imgarray=prefManager.getImageJson();
+                if(imgarray.length() > 0){
+
+                    for(int j = 0; j < imgarray.length(); j++ ) {
+                        try {
+                            ModelClass imageOnline = new ModelClass();
+                            imageOnline.setDescription(imgarray.getJSONObject(j).getString("image_description"));
+                            if (!(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase("null") ||
+                                    imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE).equalsIgnoreCase(""))) {
+                                byte[] decodedString = Base64.decode(imgarray.getJSONObject(j).getString(AppConstant.KEY_IMAGE), Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                imageOnline.setImage(decodedByte);
+                                savedImage.add(imageOnline);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    loadImageList(savedImage,flag,"");
+                    /*adapter = new SaveImageAdapter(SaveWorkDetailsActivity.this, savedImage,flag,"");
+                    adapterCameraIntent=adapter;
+                    saveWorkDetailsActivityBinding.recycler.setAdapter(adapter);*/
+                }
+
+
+            } catch (ArrayIndexOutOfBoundsException j) {
+                j.printStackTrace();
+            }
+        }else {
             dbData.open();
             ArrayList<ModelClass> savedCount = new ArrayList<>();
-            savedCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
+            savedCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode,inspection_id);
 
             if(savedCount.size()>0){
                 binding.description.setText(savedCount.get(0).getWork_description());
                 try {
                     savedImage=new ArrayList<>();
-                    savedImage=dbData.getParticularSavedImagebycode("all",dcode,bcode,pvcode,String.valueOf(work_id),"");
+                    savedImage=dbData.getParticularSavedImagebycode("all",dcode,bcode,pvcode,String.valueOf(work_id),"",inspection_id);
 
                     if(savedImage.size() > 0){
                         loadImageList(savedImage,flag,"local");
@@ -338,7 +378,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
                 savedImage=new ArrayList<>();
                 loadImageList(savedImage,flag,"");
             }
-
+        }
 
 
     }
@@ -638,7 +678,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
             selectionArgs = new String[]{String.valueOf(work_id)};
             dbData.open();
             ArrayList<ModelClass> saveCount = new ArrayList<>();
-            saveCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
+            saveCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode,inspection_id);
             if(saveCount.size()>0){
                 rowInsert = db.update(DBHelper.SAVE_WORK_DETAILS,values,selection,selectionArgs);
             }
@@ -695,6 +735,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
                         imageValue.put("dcode", selected_image_list.get(i).getDistrictCode());
                         imageValue.put("bcode", selected_image_list.get(i).getBlockCode());
                         imageValue.put("pvcode", selected_image_list.get(i).getPvCode());
+                        imageValue.put("inspection_id", inspection_id);
                         imageValue.put("serial_no", count);
                         imageValue.put("flag","2");
 
@@ -704,7 +745,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
                         ArrayList<ModelClass> imageCount = new ArrayList<>();
                         dbData.open();
                         imageCount = dbData.getParticularSavedImagebycode("",String.valueOf(selected_image_list.get(i).getDistrictCode()),String.valueOf(selected_image_list.get(i).getBlockCode()),
-                                String.valueOf(selected_image_list.get(i).getPvCode()), String.valueOf(work_id),String.valueOf(count));
+                                String.valueOf(selected_image_list.get(i).getPvCode()), String.valueOf(work_id),String.valueOf(count),inspection_id);
 
                         if(imageCount.size()>0){
                             for(int j=0;  j<imageCount.size() ;j++){
@@ -853,19 +894,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
-                    if(type.equalsIgnoreCase("rdpr")){
-                        onBackPress();
-                    }else {
-                        if(flag.equalsIgnoreCase("edit")){
-                            onBackPress();
-                        }else {
-                            prefManager.setAppBack("");
-                            homePage();
-                        }
-                    }
-//                    homePage();
-
-
+                    onBackPress();
                 }
             });
 

@@ -871,7 +871,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             selectionArgs = new String[]{String.valueOf(work_id)};
             dbData.open();
             ArrayList<ModelClass> saveCount = new ArrayList<>();
-            saveCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
+            saveCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode,"");
             if(saveCount.size()>0){
                 rowInsert = db.update(DBHelper.SAVE_WORK_DETAILS,values,selection,selectionArgs);
             }

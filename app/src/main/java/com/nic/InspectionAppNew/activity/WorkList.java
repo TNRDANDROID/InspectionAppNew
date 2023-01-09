@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.volley.VolleyError;
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.CommonAdapter;
 import com.nic.InspectionAppNew.adapter.WorkListAdapter;
@@ -69,6 +70,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
     String onOffType;
     String WorkType="";
     String schemeSequentialID="";
+    private ShimmerRecyclerView recyclerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,13 +92,14 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         }
         dbData.open();
         onOffType=getIntent().getStringExtra("OnOffType");
-        workListBinding.recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
-        workListBinding.recycler.setItemAnimator(new DefaultItemAnimator());
-        workListBinding.recycler.setHasFixedSize(true);
-        workListBinding.recycler.setNestedScrollingEnabled(false);
-        workListBinding.recycler.setFocusable(false);
+        recyclerView = workListBinding.recycler;
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setFocusable(false);
 
-        workListBinding.recycler.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
         workListBinding.notFoundTv.setVisibility(View.GONE);
 
         WorkType="ongoing";
@@ -199,7 +202,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                         if(prefManager.getFinancialyearName()!=null && !prefManager.getFinancialyearName().equals("")){
                             prefManager.setSchemeSeqId(Scheme.get(position).getSchemeSequentialID());
                             schemeSequentialID=Scheme.get(position).getSchemeSequentialID();
-                            workListBinding.recycler.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.GONE);
                             workListBinding.notFoundTv.setVisibility(View.GONE);
                             workListBinding.ongoing.setTextColor(getApplicationContext().getResources().getColor(R.color.white));
                             workListBinding.ongoing.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button_color));
@@ -215,7 +218,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                     }*/
                     prefManager.setSchemeSeqId(Scheme.get(position).getSchemeSequentialID());
                     schemeSequentialID=Scheme.get(position).getSchemeSequentialID();
-                    workListBinding.recycler.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
                     workListBinding.notFoundTv.setVisibility(View.GONE);
                     workListBinding.ongoing.setTextColor(getApplicationContext().getResources().getColor(R.color.white));
                     workListBinding.ongoing.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button_color));
@@ -228,7 +231,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                 }else {
                     prefManager.setSchemeSeqId("");
                     schemeSequentialID="";
-                    workListBinding.recycler.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
                     workListBinding.notFoundTv.setVisibility(View.GONE);
                 }
             }
@@ -260,7 +263,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         workListBinding.ongoing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                workListBinding.recycler.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
                 workListBinding.notFoundTv.setVisibility(View.GONE);
                 workListBinding.ongoing.setTextColor(getApplicationContext().getResources().getColor(R.color.white));
                 workListBinding.ongoing.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button_color));
@@ -282,7 +285,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
         workListBinding.completed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                workListBinding.recycler.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
                 workListBinding.notFoundTv.setVisibility(View.GONE);
                 workListBinding.ongoing.setTextColor(getApplicationContext().getResources().getColor(R.color.grey_8));
                 workListBinding.ongoing.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button));
@@ -303,6 +306,9 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
 
 
+    }
+    private void loadCards() {
+        recyclerView.hideShimmerAdapter();
     }
 
     public void getOfflineWorkList() {
@@ -557,7 +563,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             }
             if (worklist.size() > 0) {
                 workListBinding.tabLayout.setVisibility(View.VISIBLE);
-                workListBinding.recycler.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
                 workListBinding.notFoundTv.setVisibility(View.GONE);
                 for(int i=0;i<worklist.size();i++){
                     if(worklist.get(i).getCurrent_stage_of_work().equalsIgnoreCase("11")){
@@ -575,12 +581,12 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                 }
 
                 /*workListAdapter = new WorkListAdapter(WorkList.this, worklist,dbData,"online");
-                workListBinding.recycler.setAdapter(workListAdapter);*/
+                recyclerView.setAdapter(workListAdapter);*/
 
             }else {
                 completed_workList =new ArrayList<>();
                 ongoing_workList =new ArrayList<>();
-                workListBinding.recycler.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
                 workListBinding.notFoundTv.setVisibility(View.VISIBLE);
             }
             try {
@@ -679,7 +685,7 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 //            Utils.hideProgress(progressHUD);
 
             if (worklist.size() > 0) {
-                workListBinding.recycler.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
                 workListBinding.notFoundTv.setVisibility(View.GONE);
                 for(int i=0;i<worklist.size();i++){
                     if(worklist.get(i).getCurrent_stage_of_work().equalsIgnoreCase("11")){
@@ -697,12 +703,12 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
                 }
 
                 /*workListAdapter = new WorkListAdapter(WorkList.this, worklist,dbData,"online");
-                workListBinding.recycler.setAdapter(workListAdapter);*/
+                recyclerView.setAdapter(workListAdapter);*/
 
             }else {
                 completed_workList =new ArrayList<>();
                 ongoing_workList =new ArrayList<>();
-                workListBinding.recycler.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
                 workListBinding.notFoundTv.setVisibility(View.VISIBLE);
             }
 
@@ -801,24 +807,38 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
 
     public void getOngoingWorkList(ArrayList<ModelClass> worklist){
         if (ongoing_workList.size() > 0) {
-            workListBinding.recycler.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
             workListBinding.notFoundTv.setVisibility(View.GONE);
             workListAdapter = new WorkListAdapter(WorkList.this, ongoing_workList,dbData,onOffType);
-            workListBinding.recycler.setAdapter(workListAdapter);
+            recyclerView.setAdapter(workListAdapter);
+            recyclerView.showShimmerAdapter();
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadCards();
+                }
+            }, 1000);
         }else {
-            workListBinding.recycler.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
             workListBinding.notFoundTv.setVisibility(View.VISIBLE);
         }
 
     }
     public void getCompletedWorkList(ArrayList<ModelClass> worklist){
         if (completed_workList.size() > 0) {
-            workListBinding.recycler.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
             workListBinding.notFoundTv.setVisibility(View.GONE);
             workListAdapter = new WorkListAdapter(WorkList.this, completed_workList,dbData,onOffType);
-            workListBinding.recycler.setAdapter(workListAdapter);
+            recyclerView.setAdapter(workListAdapter);
+            recyclerView.showShimmerAdapter();
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadCards();
+                }
+            }, 1000);
         }else {
-            workListBinding.recycler.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
             workListBinding.notFoundTv.setVisibility(View.VISIBLE);
         }
 

@@ -481,7 +481,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         }else {
             dbData.open();
             ArrayList<ModelClass> savedCount = new ArrayList<>();
-            savedCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
+            savedCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode,"");
 
             if(savedCount.size()>0){
                 saveWorkDetailsActivityBinding.description.setText(savedCount.get(0).getWork_description());
@@ -498,7 +498,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
 
                 try {
                     savedImage=new ArrayList<>();
-                    savedImage=dbData.getParticularSavedImagebycode("all",dcode,bcode,pvcode,String.valueOf(work_id),"");
+                    savedImage=dbData.getParticularSavedImagebycode("all",dcode,bcode,pvcode,String.valueOf(work_id),"","");
 
                     if(savedImage.size() > 0){
                         loadImageList(savedImage,flag,"local");
@@ -992,7 +992,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
             selectionArgs = new String[]{String.valueOf(work_id)};
             dbData.open();
             ArrayList<ModelClass> saveCount = new ArrayList<>();
-            saveCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode);
+            saveCount=dbData.getSavedWorkList("",String.valueOf(work_id),dcode,bcode,pvcode,"");
             if(saveCount.size()>0){
                 rowInsert = db.update(DBHelper.SAVE_WORK_DETAILS,values,selection,selectionArgs);
             }
@@ -1058,7 +1058,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
                         ArrayList<ModelClass> imageCount = new ArrayList<>();
                         dbData.open();
                         imageCount = dbData.getParticularSavedImagebycode("",String.valueOf(selected_image_list.get(i).getDistrictCode()),String.valueOf(selected_image_list.get(i).getBlockCode()),
-                                String.valueOf(selected_image_list.get(i).getPvCode()), String.valueOf(work_id),String.valueOf(count));
+                                String.valueOf(selected_image_list.get(i).getPvCode()), String.valueOf(work_id),String.valueOf(count),"");
 
                         if(imageCount.size()>0){
                             for(int j=0;  j<imageCount.size() ;j++){
@@ -1336,7 +1336,7 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
     }
     private void deleteSavedImage(String dcode,String bcode,String pvcode,String work_id) {
         ArrayList<ModelClass> activityImage = new ArrayList<>();
-        activityImage = dbData.getParticularSavedImagebycode("all",dcode,bcode, pvcode,work_id,"");
+        activityImage = dbData.getParticularSavedImagebycode("all",dcode,bcode, pvcode,work_id,"","");
         for (int i=0; i < activityImage.size();i++){
             String file_path= activityImage.get(i).getImage_path();
             deleteFileDirectory(file_path);

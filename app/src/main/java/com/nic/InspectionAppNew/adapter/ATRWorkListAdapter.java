@@ -121,6 +121,8 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
                 intent.putExtra("current_stage_of_work", listFilteredValue.get(position).getCurrent_stage_of_work());
                 intent.putExtra("is_high_value", listFilteredValue.get(position).getIs_high_value());
                 intent.putExtra("onOffType",onOffType);
+                intent.putExtra("type","atr");
+                intent.putExtra("flag","");
                 context.startActivity(intent);
 
 
@@ -147,6 +149,8 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
                 intent.putExtra("current_stage_of_work", listFilteredValue.get(position).getCurrent_stage_of_work());
                 intent.putExtra("is_high_value", listFilteredValue.get(position).getIs_high_value());
                 intent.putExtra("onOffType",onOffType);
+                intent.putExtra("type","atr");
+                intent.putExtra("flag","");
                 context.startActivity(intent);
 
             }

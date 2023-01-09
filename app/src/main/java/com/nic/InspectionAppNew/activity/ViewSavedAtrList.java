@@ -116,6 +116,7 @@ public class ViewSavedAtrList extends AppCompatActivity implements View.OnClickL
     int pageNumber;
     String WorkId="";
     String inspectionID="";
+    String action_taken_id="";
     String pdf_string_actual ="";
     ArrayList<ModelClass> savedWorkList; //**************** Yet To be Added *****************
     private SearchView searchView;
@@ -369,32 +370,34 @@ public class ViewSavedAtrList extends AppCompatActivity implements View.OnClickL
 
     //GET PDF API CALL
 
-    public void getWorkReportDetails(String work_id, String inspection_id) {
+    public void getWorkReportDetails(String work_id, String inspection_id, String Action_taken_id) {
         WorkId=work_id;
         inspectionID=inspection_id;
+        action_taken_id=Action_taken_id;
         try {
-            new ApiService(this).makeJSONObjectRequest("WorkReport", Api.Method.POST, UrlGenerator.getMainService(), workDetailsJsonParams(work_id,inspection_id), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("WorkReport", Api.Method.POST, UrlGenerator.getMainService(), workDetailsJsonParams(work_id,inspection_id,Action_taken_id), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public JSONObject workDetailsJsonParams(String work_id, String inspection_id) throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), workDetailsParams(this,work_id,inspection_id).toString());
+    public JSONObject workDetailsJsonParams(String work_id, String inspection_id, String Action_taken_id) throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), workDetailsParams(this,work_id,inspection_id,Action_taken_id).toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("WorkDetails", "" + dataSet);
+        Log.d("WorkReport", "" + dataSet);
         return dataSet;
     }
-    public  JSONObject workDetailsParams(Activity activity,String work_id, String inspection_id) throws JSONException {
+    public  JSONObject workDetailsParams(Activity activity,String work_id, String inspection_id, String Action_taken_id) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "get_pdf");
         dataSet.put("work_id", work_id);
         dataSet.put("inspection_id", inspection_id);
+        dataSet.put("action_taken_id", Action_taken_id);
 
-        Log.d("WorkDetails", "" + dataSet);
+        Log.d("WorkReport", "" + dataSet);
         return dataSet;
     }
 
@@ -742,7 +745,7 @@ public class ViewSavedAtrList extends AppCompatActivity implements View.OnClickL
     public  JSONObject workDetailsParams(Activity activity) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "date_wise_inspection_details_view");
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "date_wise_inspection_action_taken_details_view");
         if(!work_id.isEmpty()){
             dataSet.put("work_id", work_id);
             dataSet.put("type", 1);
@@ -761,18 +764,17 @@ public class ViewSavedAtrList extends AppCompatActivity implements View.OnClickL
 
             if (jsonObject.length() > 0) {
                 JSONArray jsonArray = new JSONArray();
-                jsonArray=jsonObject.getJSONArray("inspection_details");
-                JSONArray status_wise_count = new JSONArray();
-                status_wise_count = jsonObject.getJSONArray("status_wise_count");
+                jsonArray=jsonObject.getJSONArray("inspection_action_taken_details");
+              /*  JSONArray status_wise_count = new JSONArray();
+                status_wise_count = jsonObject.getJSONArray("status_wise_count");*/
                 savedWorkList = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
                     String bcode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
                     String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
                     String inspection_id = jsonArray.getJSONObject(i).getString("inspection_id");
-                    String inspection_date = jsonArray.getJSONObject(i).getString("inspection_date");
-                    String status_id = jsonArray.getJSONObject(i).getString("status_id");
-                    String status = jsonArray.getJSONObject(i).getString("status");
+                    String action_taken_id = jsonArray.getJSONObject(i).getString("action_taken_id");
+                    String action_taken_date = jsonArray.getJSONObject(i).getString("action_taken_date");
                     String description = jsonArray.getJSONObject(i).getString("description");
                     String work_name = jsonArray.getJSONObject(i).getString("work_name");
                     String work_id = jsonArray.getJSONObject(i).getString("work_id");
@@ -782,9 +784,8 @@ public class ViewSavedAtrList extends AppCompatActivity implements View.OnClickL
                     modelClass.setBlockCode(bcode);
                     modelClass.setPvCode(pvcode);
                     modelClass.setInspection_id(inspection_id);
-                    modelClass.setInspectedDate(inspection_date);
-                    modelClass.setWork_status_id(Integer.parseInt(status_id));
-                    modelClass.setWork_status(status);
+                    modelClass.setAction_taken_id(action_taken_id);
+                    modelClass.setAction_taken_date(action_taken_date);
                     modelClass.setDescription(description);
                     modelClass.setWork_name(work_name);
                     modelClass.setWork_id(Integer.parseInt(work_id));
@@ -812,7 +813,7 @@ public class ViewSavedAtrList extends AppCompatActivity implements View.OnClickL
                     binding.notFoundTv.setVisibility(View.VISIBLE);
                     recyclerView.setAdapter(null);
                 }
-                if(status_wise_count.length()>0){
+                /*if(status_wise_count.length()>0){
                     for(int j=0;j<status_wise_count.length();j++){
                         try {
                             String satisfied_count = status_wise_count.getJSONObject(j).getString("satisfied");
@@ -849,7 +850,7 @@ public class ViewSavedAtrList extends AppCompatActivity implements View.OnClickL
                 }
                 else {
 
-                }
+                }*/
 
             }
             else {
@@ -873,8 +874,8 @@ public class ViewSavedAtrList extends AppCompatActivity implements View.OnClickL
             Date d1 = null;
             Date d2 = null;
             try {
-                d1 = sdf.parse(ord1.getInspectedDate());
-                d2 = sdf.parse(ord2.getInspectedDate());
+                d1 = sdf.parse(ord1.getAction_taken_date());
+                d2 = sdf.parse(ord2.getAction_taken_date());
             } catch (ParseException | java.text.ParseException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

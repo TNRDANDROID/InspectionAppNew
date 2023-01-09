@@ -139,17 +139,18 @@
                             android:padding="@dimen/_3sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
-                            android:id="@+id/other_work_name_layout"
+                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:id="@+id/action_taken_date_layout"
                             android:layout_height="wrap_content">
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/other_work_h"
+                                android:id="@+id/action_taken_date_h"
                                 android:gravity="start"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
-                                android:text="Other Work Name"
+                                android:text="@string/action_taken_date"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -164,125 +165,7 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/other_work_name"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                />
-
-
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
-                            android:padding="@dimen/_3sdp"
-                            android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_5sdp"
-                            android:id="@+id/other_work_category_name_layout"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.8"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/other_work_category_name_h"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="Category Name"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.2"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="@string/colan_symbol"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/other_work_category_name"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                />
-
-
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
-                            android:padding="@dimen/_3sdp"
-                            android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_5sdp"
-                            android:id="@+id/fin_year_layout"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.8"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/fin_year_h"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="@string/inspected_date"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.2"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="@string/colan_symbol"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/inspected_date"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                />
-
-
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
-                            android:padding="@dimen/_3sdp"
-                            android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_5sdp"
-                            android:layout_marginBottom="@dimen/_10sdp"
-                            android:id="@+id/as_value_layout"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.8"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/as_value_h"
-                                android:gravity="start"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="@string/status"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.2"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_12sdp"
-                                android:text="@string/colan_symbol"
-                                />
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/status"
+                                android:id="@+id/action_taken_date"
                                 android:gravity="start"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_12sdp"
