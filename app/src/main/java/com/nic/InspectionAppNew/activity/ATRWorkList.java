@@ -152,6 +152,12 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         binding.tabLayout.setVisibility(View.GONE);
 
         WorkType="need_improvement";
+        binding.needImprovementLayout.setBackground(getResources().getDrawable(R.drawable.blue_filled));
+        binding.unSatisfiedLayout.setBackground(getResources().getDrawable(R.drawable.orange_outline));
+        binding.improvementCount.setTextColor(getResources().getColor(R.color.white));
+        binding.improvementTv.setTextColor(getResources().getColor(R.color.white));
+        binding.unSatisfiedCount.setTextColor(getResources().getColor(R.color.unsatisfied));
+        binding.unSatisfiedTv.setTextColor(getResources().getColor(R.color.unsatisfied));
         workList = new ArrayList<>();
         need_improvement_workList = new ArrayList<>();
         unsatisfied_workList = new ArrayList<>();
@@ -224,9 +230,64 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
 
             }
         });
+        binding.needImprovementLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.needImprovementLayout.setBackground(getResources().getDrawable(R.drawable.blue_filled));
+                binding.unSatisfiedLayout.setBackground(getResources().getDrawable(R.drawable.orange_outline));
+                binding.improvementCount.setTextColor(getResources().getColor(R.color.white));
+                binding.improvementTv.setTextColor(getResources().getColor(R.color.white));
+                binding.unSatisfiedCount.setTextColor(getResources().getColor(R.color.unsatisfied));
+                binding.unSatisfiedTv.setTextColor(getResources().getColor(R.color.unsatisfied));
+                recyclerView.setVisibility(View.GONE);
+                binding.notFoundTv.setVisibility(View.GONE);
+                binding.needImprovement.setTextColor(getApplicationContext().getResources().getColor(R.color.white));
+                binding.needImprovement.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button_color));
+                binding.unsatisfied.setTextColor(getApplicationContext().getResources().getColor(R.color.grey_8));
+                binding.unsatisfied.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.right_button));
+                WorkType="need_improvement";
+                System.out.println("need_improvement_workList >>"+need_improvement_workList.size());
+                if(onOffType.equals("online")) {
+//                    getWorkListOptional();
+                    getNeedImprovementWorkList(need_improvement_workList);
+
+                }else {
+                    getOfflineWorkList();
+                }
+
+
+            }
+        });
         binding.unsatisfied.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                recyclerView.setVisibility(View.GONE);
+                binding.notFoundTv.setVisibility(View.GONE);
+                binding.needImprovement.setTextColor(getApplicationContext().getResources().getColor(R.color.grey_8));
+                binding.needImprovement.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.left_button));
+                binding.unsatisfied.setTextColor(getApplicationContext().getResources().getColor(R.color.white));
+                binding.unsatisfied.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.right_button_color));
+                WorkType="unsatisfied";
+                System.out.println("unsatisfied_workList >>"+unsatisfied_workList.size());
+                if(onOffType.equals("online")) {
+//                    getWorkListOptional();
+                    getUnSatisfiedWorkList(unsatisfied_workList);
+
+                }else {
+                   getOfflineWorkList();
+                }
+
+            }
+        });
+        binding.unSatisfiedLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.needImprovementLayout.setBackground(getResources().getDrawable(R.drawable.blue_outline));
+                binding.unSatisfiedLayout.setBackground(getResources().getDrawable(R.drawable.orange_filled));
+                binding.improvementCount.setTextColor(getResources().getColor(R.color.need_improvement));
+                binding.improvementTv.setTextColor(getResources().getColor(R.color.need_improvement));
+                binding.unSatisfiedCount.setTextColor(getResources().getColor(R.color.white));
+                binding.unSatisfiedTv.setTextColor(getResources().getColor(R.color.white));
                 recyclerView.setVisibility(View.GONE);
                 binding.notFoundTv.setVisibility(View.GONE);
                 binding.needImprovement.setTextColor(getApplicationContext().getResources().getColor(R.color.grey_8));
@@ -321,7 +382,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                     binding.dateSelected.setText(prefManager.getKeyDate());
                 }
 
-                binding.tabLayout.setVisibility(View.VISIBLE);
+//                binding.tabLayout.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.VISIBLE);
                 binding.notFoundTv.setVisibility(View.GONE);
                 for(int i=0;i<worklist.size();i++){
@@ -722,7 +783,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
     public void getNeedImprovementWorkList(ArrayList<ModelClass> worklist){
         if (need_improvement_workList.size() > 0) {
             binding.graphLayout.setVisibility(View.VISIBLE);
-            binding.tabLayout.setVisibility(View.VISIBLE);
+//            binding.tabLayout.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
             binding.notFoundTv.setVisibility(View.GONE);
             workListAdapter = new ATRWorkListAdapter(ATRWorkList.this, need_improvement_workList,dbData,onOffType);
@@ -745,7 +806,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
     public void getUnSatisfiedWorkList(ArrayList<ModelClass> worklist){
         if (unsatisfied_workList.size() > 0) {
             binding.graphLayout.setVisibility(View.VISIBLE);
-            binding.tabLayout.setVisibility(View.VISIBLE);
+//            binding.tabLayout.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
             binding.notFoundTv.setVisibility(View.GONE);
             workListAdapter = new ATRWorkListAdapter(ATRWorkList.this, unsatisfied_workList,dbData,onOffType);
@@ -1072,6 +1133,8 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         data.setValueTextSize(18f);
     }
     private void setGraphData(int satisfied_count, int un_satisfied_count, int need_improvement_count, int total_inspection_count) {
+        binding.unSatisfiedCount.setText(String.valueOf(un_satisfied_count));
+        binding.improvementCount.setText(String.valueOf(need_improvement_count));
         ArrayList<BarEntry> entries = new ArrayList<>();
         entries.add(new BarEntry(0f, un_satisfied_count));
         entries.add(new BarEntry(1f, need_improvement_count));

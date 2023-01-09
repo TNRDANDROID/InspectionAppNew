@@ -163,7 +163,7 @@
                         android:layout_below="@+id/date_pick_layout">
                         <TextView
                             android:gravity="center"
-                            android:padding="@dimen/_5sdp"
+                            android:padding="@dimen/_8sdp"
                             android:textSize="@dimen/_12sdp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -180,46 +180,6 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center">
-
-                            <androidx.cardview.widget.CardView
-                                android:layout_margin="@dimen/_2sdp"
-                                android:layout_width="0dp"
-                                android:layout_weight="1.5"
-                                android:layout_height="wrap_content"
-                                app:cardCornerRadius="@dimen/_20sdp"
-                                app:cardBackgroundColor="@color/unsatisfied">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:padding="@dimen/_8sdp"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:text="Un Satisfied"
-                                        android:textSize="@dimen/_12sdp"
-                                        android:textStyle="bold"
-                                        android:textColor="@color/white"
-                                        android:gravity="center"/>
-
-                                    <TextView
-                                        android:id="@+id/un_satisfied_count"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:text="1"
-                                        android:textStyle="bold"
-                                        android:textColor="@color/white"
-                                        android:textSize="@dimen/_14sdp"
-                                        android:gravity="center"/>
-
-
-                                </LinearLayout>
-
-
-                            </androidx.cardview.widget.CardView>
-
                             <androidx.cardview.widget.CardView
                                 android:layout_margin="@dimen/_2sdp"
                                 android:layout_width="0dp"
@@ -232,15 +192,17 @@
                                     android:orientation="vertical"
                                     android:layout_width="match_parent"
                                     android:padding="@dimen/_8sdp"
+                                    android:id="@+id/need_improvement_layout"
                                     android:layout_height="match_parent"
-                                  >
+                                    >
 
                                     <TextView
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:singleLine="true"
                                         android:text="Need Improvement"
-                                        android:textSize="@dimen/_12sdp"
+                                        android:id="@+id/improvement_tv"
+                                        android:textSize="@dimen/_11sdp"
                                         android:textStyle="bold"
                                         android:textColor="@color/white"
                                         android:fontFamily="@font/poppins_medium"
@@ -261,6 +223,48 @@
 
 
                             </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_margin="@dimen/_2sdp"
+                                android:layout_width="0dp"
+                                android:layout_weight="1.5"
+                                android:layout_height="wrap_content"
+                                app:cardCornerRadius="@dimen/_20sdp"
+                                app:cardBackgroundColor="@color/unsatisfied">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:padding="@dimen/_8sdp"
+                                    android:id="@+id/un_satisfied_layout"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Un Satisfied"
+                                        android:id="@+id/un_satisfied_tv"
+                                        android:textSize="@dimen/_11sdp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/white"
+                                        android:gravity="center"/>
+
+                                    <TextView
+                                        android:id="@+id/un_satisfied_count"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="1"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_14sdp"
+                                        android:gravity="center"/>
+
+
+                                </LinearLayout>
+
+
+                            </androidx.cardview.widget.CardView>
+
 
                         </LinearLayout>
                         <com.github.mikephil.charting.charts.HorizontalBarChart
@@ -289,9 +293,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/select_from_and_to_Date"
-                            android:textColor="@color/white"
+                            android:textColor="@color/primary_text_color2"
                             android:layout_toRightOf="@+id/fin_year_tv"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:drawableLeft="@drawable/ic_calendar_icon"
                             android:drawablePadding="@dimen/_5sdp"
                             android:id="@+id/date_selected"/>
@@ -307,6 +312,7 @@
                         android:layout_marginRight="@dimen/_10sdp"
                         android:layout_marginTop="@dimen/_8sdp"
                         android:layout_marginBottom="@dimen/_8sdp"
+                        android:visibility="gone"
                         android:id="@+id/tab_layout"
                          android:weightSum="2">
                         <TextView

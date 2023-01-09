@@ -180,7 +180,12 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
                         dialogButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                uploadPending(position);
+                                if(pendingListFiltered.get(position).getFlag().equals("1")){
+                                    uploadPending(position);
+                                }else {
+                                    uploadPendingATR(position);
+                                }
+
                                 dialog.dismiss();
                             }
                         });
@@ -313,6 +318,64 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
             dataset.put("work_type_id", work_type_id);
             dataset.put("work_stage_code", work_stage_code);
 
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONArray imageArray = new JSONArray();
+        dbData.open();
+        ArrayList<ModelClass> imageList = new ArrayList<>();
+        imageList.addAll(dbData.getParticularSavedImagebycode("all",String.valueOf(pendingListFiltered.get(position).getDistrictCode()),String.valueOf(pendingListFiltered.get(position).getBlockCode()),
+                String.valueOf(pendingListFiltered.get(position).getPvCode()),String.valueOf(pendingListFiltered.get(position).getWork_id()),"",""));
+        try {
+            for (int i=0;i<imageList.size();i++){
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("latitude",imageList.get(i).getLatitude());
+                jsonObject.put("longitude",imageList.get(i).getLongtitude());
+                jsonObject.put("serial_no",imageList.get(i).getImage_serial_number());
+                jsonObject.put("image_description",imageList.get(i).getDescription());
+                jsonObject.put("image",BitMapToString(imageList.get(i).getImage()));
+                imageArray.put(jsonObject);
+            }
+            dataset.put("image_details",imageArray);
+            inspection_work_details.put(dataset);
+            maindataset.put("inspection_work_details",inspection_work_details);
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        if (Utils.isOnline()) {
+            ((PendingScreen)context).saveImagesJsonParams(maindataset,String.valueOf(pendingListFiltered.get(position).getDistrictCode()),String.valueOf(pendingListFiltered.get(position).getBlockCode()),
+                    String.valueOf(pendingListFiltered.get(position).getPvCode()),String.valueOf(pendingListFiltered.get(position).getWork_id()));
+            Log.d("saveImages", "" + maindataset);
+        } else {
+            Activity activity = (Activity) context;
+            Utils.showAlert(activity, "Turn On Mobile Data To Utpload");
+        }
+
+    }
+    public void uploadPendingATR(int position) {
+        String key="";
+        JSONObject maindataset = new JSONObject();
+        JSONObject dataset = new JSONObject();
+        JSONArray inspection_work_details = new JSONArray();
+        String work_id = String.valueOf(pendingListFiltered.get(position).getWork_id());
+        String description = String.valueOf(pendingListFiltered.get(position).getWork_description());
+
+        prefManager.setWorkId(work_id);
+        prefManager.setDeleteAdapterPosition(position);
+        try {
+            maindataset.put(AppConstant.KEY_SERVICE_ID,"action_taken_details_save");
+            dataset.put("dcode", pendingListFiltered.get(position).getDistrictCode());
+            dataset.put("bcode", pendingListFiltered.get(position).getBlockCode());
+            dataset.put("pvcode", pendingListFiltered.get(position).getPvCode());
+            dataset.put("hab_code", pendingListFiltered.get(position).getHabCode());
+            dataset.put("work_id", work_id);
+            dataset.put("description", description);
+            dataset.put("inspection_id", pendingListFiltered.get(position).getInspection_id());
 
         } catch (JSONException e) {
             e.printStackTrace();

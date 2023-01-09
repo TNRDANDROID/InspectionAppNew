@@ -392,7 +392,7 @@ public class ViewSavedAtrList extends AppCompatActivity implements View.OnClickL
     public  JSONObject workDetailsParams(Activity activity,String work_id, String inspection_id, String Action_taken_id) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "get_pdf");
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "get_action_taken_work_pdf");
         dataSet.put("work_id", work_id);
         dataSet.put("inspection_id", inspection_id);
         dataSet.put("action_taken_id", Action_taken_id);

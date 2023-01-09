@@ -1032,10 +1032,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
     private void getOverAllReport() {
-        Intent intent = new Intent(this, OverAllInspectionReport.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-     /*   if(prefManager.getLevels().equals("S")){
+        if(prefManager.getLevels().equals("S")){
             Intent intent = new Intent(this, OverAllInspectionReport.class);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -1049,7 +1046,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             intent.putExtra("bcode",prefManager.getBlockCode());
             startActivityForResult(intent,0);
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-        }*/
+        }
 
     }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

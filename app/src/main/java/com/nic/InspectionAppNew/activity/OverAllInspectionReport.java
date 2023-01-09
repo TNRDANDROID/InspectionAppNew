@@ -76,7 +76,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
             e.printStackTrace();
         }
         prefManager = new PrefManager(this);
-        level="S";
+        level=prefManager.getLevels();
         districtList = new ArrayList<>();
         districtAdapter = new DistrictBlockAdapter(OverAllInspectionReport.this, districtList,"D");
         blockList = new ArrayList<>();
