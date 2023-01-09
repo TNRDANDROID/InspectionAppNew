@@ -162,7 +162,7 @@ dependencies {
 
     ///Pie Chart
     implementation 'com.github.ghanshyam34:RoundedPieGraph:fcd69a2acb'
-    compile 'id.zelory:compressor:1.0.4'
+    implementation 'id.zelory:compressor:1.0.4'
     //Slider
     implementation 'com.github.MAXDeliveryNG:slideview:1.1.0'
 

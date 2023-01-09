@@ -259,6 +259,7 @@
     <string name="or">(OR)</string>
     <string name="colan_symbol">:</string>
     <string name="other_works">Other Works</string>
+    <string name="atr_report">View Action Taken Report</string>
     <string name="view_inspected_work">View Inspected RDPR Work</string>
     <string name="over_all_inspection_report">OverAll Reports of State Level Inspection</string>
     <string name="view_inspected_other_work">View Inspected Other Work</string>

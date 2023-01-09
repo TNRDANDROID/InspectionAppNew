@@ -149,6 +149,15 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                 openMenuDrawer();
             }
         });
+        homeScreenBinding.navigationLayout.ATR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prefManager.setWorkType("atr");
+                prefManager.setOnOffType("online");
+                homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
+                gotoActionTakenReportScreen();
+            }
+        });
         homeScreenBinding.navigationLayout.viewInspection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1058,6 +1067,12 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         }else{
             homeScreenBinding.drawerLayout.openDrawer(Gravity.LEFT);
         }
+    }
+
+    private void gotoActionTakenReportScreen(){
+        Intent intent = new Intent(MainHomePage.this,ViewSavedAtrList.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     private void gotoViewSavedWorkScreen(){

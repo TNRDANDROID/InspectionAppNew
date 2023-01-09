@@ -237,6 +237,38 @@
                 android:layout_margin="@dimen/_10sdp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
+                android:id="@+id/ATR">
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:src="@drawable/atr_logo"
+                    android:id="@+id/print_icon3"
+                    android:padding="@dimen/_5sdp"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/print_icon3"
+                    android:text="@string/atr_report"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_12sdp"/>
+            </RelativeLayout>
+            <View
+                android:id="@+id/vv8"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:visibility="visible"
+                android:background="@color/grey_2">
+
+            </View>
+            <RelativeLayout
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
                 android:id="@+id/view_inspection">
                 <ImageView
                     android:layout_centerVertical="true"

@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="adapter"
+            type="com.nic.InspectionAppNew.adapter.SavedAtrListAdapter" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            app:cardCornerRadius="15dp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            app:cardElevation="@dimen/_5sdp"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_background_light"
+                    tools:ignore="UselessParent">
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+                        <ImageView
+                            android:layout_width="@dimen/_30sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:rotation="270"
+                            android:src="@drawable/quater_circle_shape"
+                            tools:ignore="ContentDescription" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/linear"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:layout_marginTop="@dimen/_25sdp"
+                            android:padding="@dimen/_3sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:id="@+id/work_layout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/work_h"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/work_id"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/colan_symbol"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/work_id"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:padding="@dimen/_3sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:id="@+id/work_name_layout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/work_name_h"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/work_name"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/colan_symbol"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/work_name"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:padding="@dimen/_3sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:id="@+id/other_work_name_layout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/other_work_h"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="Other Work Name"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/colan_symbol"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/other_work_name"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:padding="@dimen/_3sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:id="@+id/other_work_category_name_layout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/other_work_category_name_h"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="Category Name"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/colan_symbol"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/other_work_category_name"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:padding="@dimen/_3sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:id="@+id/fin_year_layout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/fin_year_h"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/inspected_date"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/colan_symbol"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/inspected_date"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:padding="@dimen/_3sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:id="@+id/as_value_layout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/as_value_h"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/status"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@string/colan_symbol"
+                                />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/status"
+                                android:gravity="start"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:layout_width="@dimen/_30sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_gravity="end"
+                            android:id="@+id/edit"
+                            android:background="@drawable/quater_circle_shape_right"
+                            android:gravity="bottom"
+                            android:visibility="gone">
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_3sdp"
+                                android:layout_marginRight="@dimen/_3sdp"
+                                android:layout_alignParentEnd="true"
+                                android:tint="@color/primary_text_color"
+                                android:src="@drawable/ic_edit_pencil_icon"
+                                tools:ignore="ContentDescription" />
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/view_report"
+                        android:gravity="center_vertical"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:textColor="@color/primary_text_color"
+                        android:drawableEnd="@drawable/ic_pdf"
+                        android:drawablePadding="@dimen/_3sdp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        tools:ignore="RelativeOverlap,UnusedAttribute" />
+                    <!--
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:id="@+id/edit"
+                                            android:layout_toLeftOf="@+id/view_report"
+                                            android:gravity="center_vertical"
+                                            android:layout_alignParentTop="true"
+                                            android:textColor="@color/primary_text_color"
+                                            android:drawableEnd="@drawable/ic_edit_icon"
+                                            android:drawableTint="@color/primary_text_color"
+                                            android:drawablePadding="@dimen/_3sdp"
+                                            android:textSize="@dimen/_13sdp"
+                                            android:text="@string/edit"
+                                            android:layout_gravity="end"
+                                            android:layout_marginTop="@dimen/_5sdp"
+                                            android:layout_marginEnd="@dimen/_10sdp"
+                                            android:layout_marginBottom="@dimen/_8sdp"
+                                            tools:ignore="RelativeOverlap,UnusedAttribute" />
+                    -->
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+    </RelativeLayout>
+
+
+</layout>
