@@ -545,15 +545,15 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
         JSONArray inspection_work_details = new JSONArray();
         true_flag = false;
         try {
-            maindataset.put(AppConstant.KEY_SERVICE_ID,"work_inspection_details_save");
+            maindataset.put(AppConstant.KEY_SERVICE_ID,"action_taken_details_save");
             dataset.put("dcode",dcode);
             dataset.put("bcode", bcode);
             dataset.put("pvcode",pvcode);
             dataset.put("hab_code",hab_code);
             dataset.put("work_id", work_id);
-//            dataset.put("status_id", work_status_id);
-            dataset.put("description", binding.description.getText().toString());
             dataset.put("inspection_id", inspection_id);
+            dataset.put("action_taken_id", action_taken_id);
+            dataset.put("description", binding.description.getText().toString());
             inspection_work_details.put(dataset);
             maindataset.put("inspection_work_details",inspection_work_details);
             true_flag = true;
