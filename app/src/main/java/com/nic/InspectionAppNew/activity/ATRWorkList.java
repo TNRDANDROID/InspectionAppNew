@@ -148,7 +148,6 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
 
         recyclerView.setVisibility(View.GONE);
         binding.notFoundTv.setVisibility(View.GONE);
-        binding.graphLayout.setVisibility(View.GONE);
         binding.tabLayout.setVisibility(View.GONE);
 
         WorkType="need_improvement";
@@ -703,7 +702,6 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                    /* if(onOffType.equals("online")){
                         recyclerView.setVisibility(View.GONE);
                         binding.notFoundTv.setVisibility(View.VISIBLE);
-                        binding.graphLayout.setVisibility(View.GONE);
                         binding.tabLayout.setVisibility(View.GONE);
                     }else {
                     }
@@ -782,7 +780,6 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
 
     public void getNeedImprovementWorkList(ArrayList<ModelClass> worklist){
         if (need_improvement_workList.size() > 0) {
-            binding.graphLayout.setVisibility(View.VISIBLE);
 //            binding.tabLayout.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
             binding.notFoundTv.setVisibility(View.GONE);
@@ -798,14 +795,12 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         }else {
             recyclerView.setVisibility(View.GONE);
             binding.notFoundTv.setVisibility(View.VISIBLE);
-            binding.graphLayout.setVisibility(View.GONE);
             binding.tabLayout.setVisibility(View.GONE);
         }
 
     }
     public void getUnSatisfiedWorkList(ArrayList<ModelClass> worklist){
         if (unsatisfied_workList.size() > 0) {
-            binding.graphLayout.setVisibility(View.VISIBLE);
 //            binding.tabLayout.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
             binding.notFoundTv.setVisibility(View.GONE);
@@ -821,7 +816,6 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         }else {
             recyclerView.setVisibility(View.GONE);
             binding.notFoundTv.setVisibility(View.VISIBLE);
-            binding.graphLayout.setVisibility(View.GONE);
             binding.tabLayout.setVisibility(View.GONE);
         }
 

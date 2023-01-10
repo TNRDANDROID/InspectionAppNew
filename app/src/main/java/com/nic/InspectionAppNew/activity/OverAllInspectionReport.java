@@ -27,6 +27,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.nic.InspectionAppNew.Interface.DateInterface;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.DistrictBlockAdapter;
 import com.nic.InspectionAppNew.api.Api;
@@ -50,7 +51,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class OverAllInspectionReport extends AppCompatActivity implements Api.ServerResponseListener {
+import static com.nic.InspectionAppNew.utils.Utils.showAlert;
+
+public class OverAllInspectionReport extends AppCompatActivity implements Api.ServerResponseListener, DateInterface {
     private OverAllInspectionReportBinding binding;
     private ShimmerRecyclerView recyclerView;
     private ShimmerRecyclerView recyclerView_block;
@@ -63,6 +66,11 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
     private DistrictBlockAdapter districtAdapter;
     private DistrictBlockAdapter blockAdapter;
     String level="";
+    String fromDate="";
+    String toDate="";
+    private ArrayList<ModelClass> workList = new ArrayList<>();
+    private ArrayList<ModelClass> need_improvement_workList = new ArrayList<>();
+    private ArrayList<ModelClass> unsatisfied_workList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,8 +133,39 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
             }
             }
         });
-    }
+        binding.dateLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Utils.isOnline()) {
+                    showDatePickerDialog();
 
+                } else {
+                    showAlert(OverAllInspectionReport.this, "No Internet Connection!");
+                }
+            }
+        });
+
+    }
+    public void showDatePickerDialog(){
+        Utils.showDatePickerDialog(this);
+
+    }
+    @Override
+    public void getDate(String date) {
+        String[] separated = date.split(":");
+        fromDate = separated[0]; // this will contain "Fruit"
+        toDate = separated[1];
+      /*  binding.date.setText(fromDate+" to "+toDate);
+        binding.dateSelected.setText(fromDate+" to "+toDate);*/
+
+        if(Utils.isOnline()){
+            getWorkDetails();
+        }
+        else {
+            Utils.showAlert(OverAllInspectionReport.this,"No Internet");
+        }
+
+    }
     private void fetData() {
         if (Utils.isOnline()) {
             getDashboardData();
@@ -145,7 +184,30 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
             showAlert(OverAllInspectionReport.this,"No Internet Connection!");
         }
     }
-
+    public void getWorkDetails() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("WorkDetails", Api.Method.POST, UrlGenerator.getMainService(), workDetailsJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public JSONObject workDetailsJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), workDetailsParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("WorkDetails", "" + dataSet);
+        return dataSet;
+    }
+    public  JSONObject workDetailsParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "get_inspection_details_for_atr");
+        dataSet.put("from_date", fromDate);
+        dataSet.put("to_date", toDate);
+        Log.d("WorkDetails", "" + dataSet);
+        return dataSet;
+    }
     private void getDashboardData() {
         try {
             new ApiService(this).makeJSONObjectRequest("DashboardData", Api.Method.POST, UrlGenerator.getMainService(), Params(), "not cache", this);
@@ -265,12 +327,167 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                 Log.d("BlockList", "" + responseObj.toString());
                 Log.d("BlockList", "" + responseDecryptedBlockKey);
             }
+            if ("WorkDetails".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new GetWorkListTask().execute(jsonObject);
+                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
+                    Utils.showAlert(this, jsonObject.getString("RESPONSE"));
+                   /* if(onOffType.equals("online")){
+                        recyclerView.setVisibility(View.GONE);
+                        binding.notFoundTv.setVisibility(View.VISIBLE);
+                        binding.graphLayout.setVisibility(View.GONE);
+                        binding.tabLayout.setVisibility(View.GONE);
+                    }else {
+                    }
+*/
+                }
+                Log.d("responseWorkList", "" + responseObj.toString());
+                Log.d("responseWorkList", "" + responseDecryptedKey);
+
+            }
 
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+    public class GetWorkListTask extends AsyncTask<JSONObject, Void, ArrayList<ModelClass>> {
+        private  ProgressHUD progressHUD;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            Utils.showProgress(WorkList.this,progressHUD);
+            progressHUD = ProgressHUD.show(OverAllInspectionReport.this, "Loading...", true, false, null);
+        }
+
+        @Override
+        protected ArrayList<ModelClass> doInBackground(JSONObject... params) {
+            workList = new ArrayList<>();
+            need_improvement_workList = new ArrayList<>();
+            unsatisfied_workList = new ArrayList<>();
+            if (params.length > 0) {
+                JSONObject jsonObject=new JSONObject();
+                JSONArray jsonArray = new JSONArray();
+                JSONArray status_wise_count = new JSONArray();
+                try {
+                    jsonObject=params[0].getJSONObject(AppConstant.JSON_DATA);
+                    jsonArray = jsonObject.getJSONArray("inspection_details");
+                    status_wise_count = jsonObject.getJSONArray("status_wise_count");
+
+                    if(jsonArray.length() >0){
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            String dcode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
+                            String bcode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
+                            String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
+                            String inspection_id = jsonArray.getJSONObject(i).getString("inspection_id");
+                            String inspection_date = jsonArray.getJSONObject(i).getString("inspection_date");
+                            String status_id = jsonArray.getJSONObject(i).getString("status_id");
+                            String status = jsonArray.getJSONObject(i).getString("status");
+                            String description = jsonArray.getJSONObject(i).getString("description");
+                            String work_name = jsonArray.getJSONObject(i).getString("work_name");
+                            String work_id = jsonArray.getJSONObject(i).getString("work_id");
+                            String inspection_by_officer = jsonArray.getJSONObject(i).getString("name");
+                            String work_type_name = "work_type_name"/*jsonArray.getJSONObject(i).getString("work_type_name")*/;
+                            String inspection_by_officer_designation = "desig"/*jsonArray.getJSONObject(i).getString("inspection_by_officer_designation")*/;
+
+
+                            ModelClass modelClass = new ModelClass();
+                            modelClass.setDistrictCode(dcode);
+                            modelClass.setBlockCode(bcode);
+                            modelClass.setPvCode(pvcode);
+                            modelClass.setInspection_id(inspection_id);
+                            modelClass.setInspectedDate(inspection_date);
+                            modelClass.setWork_status_id(Integer.parseInt(status_id));
+                            modelClass.setWork_status(status);
+                            modelClass.setDescription(description);
+                            modelClass.setWork_name(work_name);
+                            modelClass.setWork_id(Integer.parseInt(work_id));
+                            modelClass.setInspection_by_officer(inspection_by_officer);
+                            modelClass.setWork_type_name(work_type_name);
+                            modelClass.setInspection_by_officer_designation(inspection_by_officer_designation);
+
+                            workList.add(modelClass);
+
+                        }
+
+                    } else {
+                        Utils.showAlert(OverAllInspectionReport.this, "No Record Found for Corresponding Financial Year");
+                    }
+
+                    if(status_wise_count.length()>0){
+
+                        for(int j=0;j<status_wise_count.length();j++){
+                            try {
+                                String satisfied_count = status_wise_count.getJSONObject(j).getString("satisfied");
+                                String un_satisfied_count = status_wise_count.getJSONObject(j).getString("unsatisfied");
+                                String need_improvement_count = status_wise_count.getJSONObject(j).getString("need_improvement");
+
+                                if(satisfied_count.equals("")){
+                                    satisfied_count="0";
+                                } if(un_satisfied_count.equals("")){
+                                    un_satisfied_count="0";
+                                } if(need_improvement_count.equals("")){
+                                    need_improvement_count="0";
+                                }
+                                int total_inspection_count = /*Integer.parseInt(satisfied_count)+*/Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
+
+//                              setGraphData(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count), Integer.parseInt(need_improvement_count),total_inspection_count);
+
+                            } catch (JSONException e){
+
+                            }
+
+                        }
+                    }
+                    else {
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Log.d("Wlist_COUNT", String.valueOf(workList.size()));
+            return workList;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<ModelClass> worklist) {
+            super.onPostExecute(worklist);
+//            Utils.hideProgress(progressHUD);
+            if (worklist.size() > 0) {
+                binding.date.setText(fromDate+" to "+toDate);
+            }
+                if (worklist.size() > 0) {
+                    for(int i=0;i<worklist.size();i++){
+                        if(worklist.get(i).getWork_status_id()==3){
+                            need_improvement_workList.add(worklist.get(i));
+                        }else if(worklist.get(i).getWork_status_id()==2){
+                            unsatisfied_workList.add(worklist.get(i));
+                        }
+                    }
+
+                }else {
+                    need_improvement_workList =new ArrayList<>();
+                    unsatisfied_workList =new ArrayList<>();
+                }
+
+
+
+            try {
+                if (progressHUD != null)
+                    progressHUD.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public class InsertDistrictTask extends AsyncTask<JSONObject ,Void ,Void> {
 
         private  ProgressHUD progressHUD;
@@ -463,8 +680,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                             }
                             int total_inspection_count = Integer.parseInt(satisfied_count)+Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
                             binding.totalCountGraph.setText(String.valueOf(total_inspection_count));
-//                            binding.totalTv.setText("Total ("+fin_year+")");
-                            binding.finYear.setText(fin_year);
+
                             showpieChart(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count),Integer.parseInt(need_improvement_count),total_inspection_count);
                         } catch (JSONException e){
 

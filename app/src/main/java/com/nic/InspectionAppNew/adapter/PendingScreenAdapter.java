@@ -238,6 +238,7 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
                 intent.putExtra("scheme_id", pendingListFiltered.get(position).getSchemeSequentialID());
                 intent.putExtra("fin_year", pendingListFiltered.get(position).getFinancialYear());
                 intent.putExtra("work_id", pendingListFiltered.get(position).getWork_id());
+                intent.putExtra("inspection_id", pendingListFiltered.get(position).getInspection_id());
                 intent.putExtra("work_name", pendingListFiltered.get(position).getWork_name());
                 intent.putExtra("as_value", pendingListFiltered.get(position).getAs_value());
                 intent.putExtra("ts_value", pendingListFiltered.get(position).getTs_value());
