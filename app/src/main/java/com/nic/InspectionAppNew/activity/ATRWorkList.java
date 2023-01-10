@@ -26,6 +26,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -189,6 +191,12 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                     Utils.showAlert(ATRWorkList.this,"No Internet");
                 }
             }else {
+                Animation anim = new AlphaAnimation(0.0f, 1.0f);
+                anim.setDuration(500); //You can manage the blinking time with this parameter
+                anim.setStartOffset(20);
+                anim.setRepeatMode(Animation.REVERSE);
+                anim.setRepeatCount(Animation.INFINITE);
+                binding.download.startAnimation(anim);
                 binding.download.setVisibility(View.VISIBLE);
                 binding.dateLayout.setVisibility(View.GONE);
                 new  fetchWorkList().execute();
@@ -1208,7 +1216,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         yLeft.setAxisMaximum(total_inspection_count);
         yLeft.setAxisMinimum(0);
         chart.invalidate();
-        binding.totalCount.setText("Total Inspected Works ("+String.valueOf(total_inspection_count)+")");
+        binding.totalCount.setText("Total Inspection of "+prefManager.getBlockName()+ " ("+String.valueOf(total_inspection_count)+")");
     }
 
     public void showDatePickerDialog(){

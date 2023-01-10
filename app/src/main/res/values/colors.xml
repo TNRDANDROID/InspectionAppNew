@@ -126,6 +126,7 @@
     <color name="background_color">#ecf0f3</color>
     <color name="satisfied">#FF00FA9A</color>
     <color name="unsatisfied">#FFFFA500</color>
+    <color name="unsatisfied2">#cc8400</color>
     <color name="need_improvement">#FF1E90FF</color>
 
     <color name="satisfied1">#CCFEEB</color>

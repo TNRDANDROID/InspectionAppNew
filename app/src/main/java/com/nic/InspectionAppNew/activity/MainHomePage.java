@@ -300,8 +300,12 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         homeScreenBinding.navigationLayout.name.setText(prefManager.getName());
         if(prefManager.getDesignationCode().equals("153")){
             homeScreenBinding.atrLayoutView.setVisibility(View.VISIBLE);
+            homeScreenBinding.navigationLayout.overAllInspectionReport.setVisibility(View.VISIBLE);
+            homeScreenBinding.navigationLayout.vv3.setVisibility(View.VISIBLE);
         }else {
             homeScreenBinding.atrLayoutView.setVisibility(View.GONE);
+            homeScreenBinding.navigationLayout.overAllInspectionReport.setVisibility(View.GONE);
+            homeScreenBinding.navigationLayout.vv3.setVisibility(View.GONE);
         }
         if(prefManager.getLevels().equals("S")){
             if(prefManager.getStateName()!=null && !prefManager.getStateName().isEmpty()){
@@ -702,7 +706,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         Resources resources = getResources();
         Collection<GraphData> data = new ArrayList<>();
         data.add(new GraphData(Float.valueOf(satisfied), resources.getColor(R.color.account_status_green_color)));
-        data.add(new GraphData(Float.valueOf(unsatisfied), resources.getColor(R.color.unsatisfied)));
+        data.add(new GraphData(Float.valueOf(unsatisfied), resources.getColor(R.color.unsatisfied2)));
         data.add(new GraphData(Float.valueOf(need_improvement), resources.getColor(R.color.need_improvement)));
         homeScreenBinding.graph.setData(data);
     }

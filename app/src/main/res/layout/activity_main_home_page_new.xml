@@ -328,7 +328,7 @@
                                                 android:layout_width="@dimen/_10sdp"
                                                 android:layout_height="@dimen/_10sdp"
                                                 android:src="@drawable/rect_fill_box"
-                                                android:tint="@color/unsatisfied"
+                                                android:tint="@color/unsatisfied2"
                                                 android:id="@+id/icon2"/>
                                             <TextView
                                                 android:layout_centerVertical="true"

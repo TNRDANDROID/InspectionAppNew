@@ -167,7 +167,7 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
             public void onClick(View v) {
 
                 if(Utils.isOnline()){
-                    ((ATRWorkList)context).getWorkReportDetails(String.valueOf( listFilteredValue.get(position).getWork_id()), "89"/*listFilteredValue.get(position).getInspection_id()*/);
+                    ((ATRWorkList)context).getWorkReportDetails(String.valueOf( listFilteredValue.get(position).getWork_id()), listFilteredValue.get(position).getInspection_id());
 
 
                 }else {
