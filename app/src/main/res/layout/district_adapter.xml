@@ -34,7 +34,7 @@
                     android:padding="@dimen/_3sdp"
                     android:gravity="center_horizontal"
                     android:id="@+id/headertxt"
-                    android:textSize="@dimen/_8sdp"
+                    android:textSize="@dimen/_9sdp"
                     android:textColor="@color/grey_10"
                     android:layout_gravity="center_horizontal"
                     android:text="District" />
@@ -56,10 +56,10 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_3sdp"
                 android:gravity="center_horizontal"
-                android:textSize="@dimen/_8sdp"
+                android:textSize="@dimen/_9sdp"
                 android:id="@+id/satisfied_count"
                 android:textColor="@color/grey_10"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 android:text="Satisfied" />
             <TextView
                 android:layout_width="0dp"
@@ -67,10 +67,10 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_3sdp"
                 android:gravity="center_horizontal"
-                android:textSize="@dimen/_8sdp"
+                android:textSize="@dimen/_9sdp"
                 android:id="@+id/un_satisfied_count"
                 android:textColor="@color/grey_10"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 android:text="@string/unsatisfied" />
             <TextView
                 android:layout_width="0dp"
@@ -78,10 +78,10 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_3sdp"
                 android:gravity="center_horizontal"
-                android:textSize="@dimen/_8sdp"
+                android:textSize="@dimen/_9sdp"
                 android:id="@+id/need_improvement_count"
                 android:textColor="@color/grey_10"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 android:text="@string/need_improvement" />
             <TextView
                 android:layout_width="0dp"
@@ -89,12 +89,12 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_3sdp"
                 android:gravity="center_horizontal"
-                android:textSize="@dimen/_8sdp"
+                android:textSize="@dimen/_9sdp"
                 android:drawableRight="@drawable/ic_double_arrow"
                 android:drawableTint="@color/primary_text_color2"
                 android:id="@+id/go"
                 android:textColor="@color/grey_10"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 />
 
         </LinearLayout>

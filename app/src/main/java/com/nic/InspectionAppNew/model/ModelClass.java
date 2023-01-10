@@ -87,9 +87,9 @@ public class ModelClass implements Serializable {
     String work_stage_name;
     String flag;
     int total_cout;
-    int satisfied_cout;
-    int unsatisfied_cout;
-    int needimprovement_cout;
+    int satisfied_count;
+    int unsatisfied_count;
+    int needimprovement_count;
 
 
     public String getAction_taken_date() {
@@ -132,28 +132,28 @@ public class ModelClass implements Serializable {
         this.total_cout = total_cout;
     }
 
-    public int getSatisfied_cout() {
-        return satisfied_cout;
+    public int getSatisfied_count() {
+        return satisfied_count;
     }
 
-    public void setSatisfied_cout(int satisfied_cout) {
-        this.satisfied_cout = satisfied_cout;
+    public void setSatisfied_count(int satisfied_count) {
+        this.satisfied_count = satisfied_count;
     }
 
-    public int getUnsatisfied_cout() {
-        return unsatisfied_cout;
+    public int getUnsatisfied_count() {
+        return unsatisfied_count;
     }
 
-    public void setUnsatisfied_cout(int unsatisfied_cout) {
-        this.unsatisfied_cout = unsatisfied_cout;
+    public void setUnsatisfied_count(int unsatisfied_count) {
+        this.unsatisfied_count = unsatisfied_count;
     }
 
-    public int getNeedimprovement_cout() {
-        return needimprovement_cout;
+    public int getNeedimprovement_count() {
+        return needimprovement_count;
     }
 
-    public void setNeedimprovement_cout(int needimprovement_cout) {
-        this.needimprovement_cout = needimprovement_cout;
+    public void setNeedimprovement_count(int needimprovement_count) {
+        this.needimprovement_count = needimprovement_count;
     }
 
     public String getAs_date() {

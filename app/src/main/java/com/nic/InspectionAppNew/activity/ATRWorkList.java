@@ -15,7 +15,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -47,9 +46,7 @@ import com.android.volley.VolleyError;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -58,7 +55,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.nic.InspectionAppNew.Interface.DateInterface;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.ATRWorkListAdapter;
@@ -100,6 +96,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
     public  DBHelper dbHelper;
     public  SQLiteDatabase db;
     private ArrayList<ModelClass> workList = new ArrayList<>();
+    private ArrayList<ModelClass> workListSelected = new ArrayList<>();
     private ArrayList<ModelClass> need_improvement_workList = new ArrayList<>();
     private ArrayList<ModelClass> unsatisfied_workList = new ArrayList<>();
     ATRWorkListAdapter workListAdapter;
@@ -108,6 +105,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
     private String WorkType="";
     int pageNumber;
     String WorkId="";
+    String flag="";
     String inspectionID="";
     String pdf_string_actual ="";
     private static final int MY_REQUEST_CODE_PERMISSION = 1000;
@@ -135,6 +133,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
             e.printStackTrace();
         }
         Bundle bundle = this.getIntent().getExtras();
+        flag=getIntent().getStringExtra("flag");
         chart=binding.barChart;
         setSkillGraph();
         dbData.open();
@@ -150,41 +149,55 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         binding.notFoundTv.setVisibility(View.GONE);
         binding.tabLayout.setVisibility(View.GONE);
 
-        WorkType="need_improvement";
-        binding.needImprovementLayout.setBackground(getResources().getDrawable(R.drawable.blue_filled));
-        binding.unSatisfiedLayout.setBackground(getResources().getDrawable(R.drawable.orange_outline));
-        binding.improvementCount.setTextColor(getResources().getColor(R.color.white));
-        binding.improvementTv.setTextColor(getResources().getColor(R.color.white));
-        binding.unSatisfiedCount.setTextColor(getResources().getColor(R.color.unsatisfied));
-        binding.unSatisfiedTv.setTextColor(getResources().getColor(R.color.unsatisfied));
-        workList = new ArrayList<>();
-        need_improvement_workList = new ArrayList<>();
-        unsatisfied_workList = new ArrayList<>();
-        if(onOffType.equals("online")) {
+        if(flag.equals("V")){
             binding.download.setVisibility(View.GONE);
-            Date startDate = Calendar.getInstance().getTime();
-            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-            toDate = df.format(startDate);
-
-            Calendar c = Calendar.getInstance();
-            c.setTime(startDate);
-            c.add(Calendar.DATE, -30);
-            Date expDate = c.getTime();
-            fromDate= df.format(expDate);
-            binding.date.setText(fromDate+" to "+toDate);
-            binding.dateSelected.setText(fromDate+" to "+toDate);
-
-            if(Utils.isOnline()){
-                getWorkDetails();
-            }
-            else {
-                Utils.showAlert(ATRWorkList.this,"No Internet");
-            }
-        }else {
-            binding.download.setVisibility(View.VISIBLE);
+            binding.datePickLayout.setVisibility(View.GONE);
             binding.dateLayout.setVisibility(View.GONE);
-            new  fetchWorkList().execute();
+            binding.tabLayout.setVisibility(View.GONE);
+            binding.graphLayout.setVisibility(View.GONE);
+            workListSelected = (ArrayList<ModelClass>) getIntent().getSerializableExtra("list");
+            getATRWorkList(workListSelected);
+        }else {
+            WorkType="need_improvement";
+            binding.needImprovementLayout.setBackground(getResources().getDrawable(R.drawable.blue_filled));
+            binding.unSatisfiedLayout.setBackground(getResources().getDrawable(R.drawable.orange_outline));
+            binding.improvementCount.setTextColor(getResources().getColor(R.color.white));
+            binding.improvementTv.setTextColor(getResources().getColor(R.color.white));
+            binding.unSatisfiedCount.setTextColor(getResources().getColor(R.color.unsatisfied));
+            binding.unSatisfiedTv.setTextColor(getResources().getColor(R.color.unsatisfied));
+            workList = new ArrayList<>();
+            need_improvement_workList = new ArrayList<>();
+            unsatisfied_workList = new ArrayList<>();
+            if(onOffType.equals("online")) {
+                binding.download.setVisibility(View.GONE);
+                Date startDate = Calendar.getInstance().getTime();
+                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                toDate = df.format(startDate);
+
+                Calendar c = Calendar.getInstance();
+                c.setTime(startDate);
+                c.add(Calendar.DATE, -30);
+                Date expDate = c.getTime();
+                fromDate= df.format(expDate);
+                binding.date.setText(fromDate+" to "+toDate);
+                binding.dateSelected.setText(fromDate+" to "+toDate);
+
+                if(Utils.isOnline()){
+                    getWorkDetails();
+                }
+                else {
+                    Utils.showAlert(ATRWorkList.this,"No Internet");
+                }
+            }else {
+                binding.download.setVisibility(View.VISIBLE);
+                binding.dateLayout.setVisibility(View.GONE);
+                new  fetchWorkList().execute();
+            }
+
+
         }
+
+
         binding.download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -391,7 +404,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                         unsatisfied_workList.add(worklist.get(i));
                     }
                 }
-                setGraphData(worklist.get(0).getSatisfied_cout(),worklist.get(0).getUnsatisfied_cout(),worklist.get(0).getNeedimprovement_cout(),worklist.get(0).getTotal_cout());
+                setGraphData(worklist.get(0).getSatisfied_count(),worklist.get(0).getUnsatisfied_count(),worklist.get(0).getNeedimprovement_count(),worklist.get(0).getTotal_cout());
 
                 if(WorkType.equalsIgnoreCase("need_improvement")){
                     System.out.println("need_improvement_workList >>"+need_improvement_workList.size());
@@ -504,9 +517,9 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                                                 need_improvement_count="0";
                                             }
                                             int total_inspection_count = /*Integer.parseInt(satisfied_count)+*/Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
-                                            modelClass.setSatisfied_cout(Integer.parseInt(satisfied_count));
-                                            modelClass.setUnsatisfied_cout(Integer.parseInt(un_satisfied_count));
-                                            modelClass.setNeedimprovement_cout(Integer.parseInt(need_improvement_count));
+                                            modelClass.setSatisfied_count(Integer.parseInt(satisfied_count));
+                                            modelClass.setUnsatisfied_count(Integer.parseInt(un_satisfied_count));
+                                            modelClass.setNeedimprovement_count(Integer.parseInt(need_improvement_count));
                                             modelClass.setTotal_cout(total_inspection_count);
 
                                         } catch (JSONException e){
@@ -811,6 +824,27 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
             recyclerView.setVisibility(View.VISIBLE);
             binding.notFoundTv.setVisibility(View.GONE);
             workListAdapter = new ATRWorkListAdapter(ATRWorkList.this, unsatisfied_workList,dbData,onOffType);
+            recyclerView.setAdapter(workListAdapter);
+            recyclerView.showShimmerAdapter();
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadCards();
+                }
+            }, 1000);
+        }else {
+            recyclerView.setVisibility(View.GONE);
+            binding.notFoundTv.setVisibility(View.VISIBLE);
+            binding.tabLayout.setVisibility(View.GONE);
+        }
+
+    }
+    public void getATRWorkList(ArrayList<ModelClass> worklist){
+        if (worklist.size() > 0) {
+//            binding.tabLayout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            binding.notFoundTv.setVisibility(View.GONE);
+            workListAdapter = new ATRWorkListAdapter(ATRWorkList.this, worklist,dbData,onOffType);
             recyclerView.setAdapter(workListAdapter);
             recyclerView.showShimmerAdapter();
             recyclerView.postDelayed(new Runnable() {

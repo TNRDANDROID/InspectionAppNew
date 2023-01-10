@@ -75,16 +75,140 @@
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/filter_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/app_bar"
+            android:visibility="visible"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <RelativeLayout
+        <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/app_bar"
                 android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:layout_marginRight="@dimen/_15sdp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/corner_lite_rect_bg_color"
+                    android:id="@+id/graph_details"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:padding="@dimen/_3sdp"
+                            android:id="@+id/fin_year_layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal">
+
+                            <!--<TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:gravity="start"
+                                android:id="@+id/fin_year_tv"
+                                android:textColor="@color/grey_10"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_gravity="start"
+                                android:text="Financial Year - " />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="@color/primary_text_color2"
+                                android:layout_toRightOf="@+id/fin_year_tv"
+                                android:gravity="end"
+                                android:layout_gravity="end"
+                                android:padding="@dimen/_3sdp"
+                                android:layout_centerVertical="true"
+                                android:id="@+id/fin_year"/>-->
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:padding="@dimen/_5sdp"
+                            android:id="@+id/total_inspection_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:gravity="start"
+                                android:id="@+id/total_tv"
+                                android:textColor="@color/grey_10"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_gravity="start"
+                                android:text="Total Inspected Works - " />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:layout_toRightOf="@+id/total_tv"
+                                android:textColor="@color/primary_text_color2"
+                                android:gravity="start"
+                                android:textStyle="bold"
+                                android:paddingRight="@dimen/_3sdp"
+                                android:paddingTop="@dimen/_3sdp"
+                                android:paddingBottom="@dimen/_3sdp"
+                                android:id="@+id/total_count_graph"/>
+                        </RelativeLayout>
+
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_150sdp"
+                            android:layout_gravity="center_horizontal"
+                            android:id="@+id/pieChart"/>
+
+                    </LinearLayout>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date_layout"
+                    android:paddingLeft="@dimen/_20sdp"
+                    android:paddingRight="@dimen/_20sdp"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:background="@drawable/fin_year_bg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/select_from_and_to_Date"
+                        android:textStyle="bold"
+                        android:drawableLeft="@drawable/ic_calendar_icon"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:id="@+id/date"/>
+
+                </RelativeLayout>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
+                    android:layout_below="@+id/graph_details"
                     android:layout_marginLeft="@dimen/_15sdp"
                     android:layout_marginRight="@dimen/_15sdp"
                     android:layout_marginBottom="@dimen/_10sdp"
@@ -185,6 +309,7 @@
 
                 </RelativeLayout>
             </RelativeLayout>
+        </androidx.core.widget.NestedScrollView>
             </RelativeLayout>
 
 </layout>

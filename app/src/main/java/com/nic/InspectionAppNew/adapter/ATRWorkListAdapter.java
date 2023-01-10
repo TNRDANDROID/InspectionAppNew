@@ -96,7 +96,11 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
         holder.binding.inspectionByOfficerDesig.setText("("+String.valueOf(listFilteredValue.get(position).getInspection_by_officer_designation())+") ");
         holder.binding.workTypeName.setText(String.valueOf(listFilteredValue.get(position).getWork_type_name()));
 
-
+        if(prefManager.getDesignationCode().equals("153")) {
+            holder.binding.takeAction.setVisibility(View.VISIBLE);
+        }else {
+            holder.binding.takeAction.setVisibility(View.GONE);
+        }
         if(String.valueOf(listFilteredValue.get(position).getWork_name()).length() > 5) {
             Utils.addReadMore(context, "Activity : "+String.valueOf(listFilteredValue.get(position).getWork_name()), holder.binding.workName, 0);
         }
@@ -104,28 +108,29 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, SaveATRWorkDetailsActivity.class);
-                intent.putExtra("dcode", listFilteredValue.get(position).getDistrictCode());
-                intent.putExtra("bcode", listFilteredValue.get(position).getBlockCode());
-                intent.putExtra("pvcode", listFilteredValue.get(position).getPvCode());
-                intent.putExtra("hab_code", listFilteredValue.get(position).getHabCode());
-                intent.putExtra("scheme_group_id", listFilteredValue.get(position).getScheme_group_id());
-                intent.putExtra("work_group_id", listFilteredValue.get(position).getWork_group_id());
-                intent.putExtra("work_type_id", listFilteredValue.get(position).getWork_type_id());
-                intent.putExtra("scheme_id", listFilteredValue.get(position).getSchemeSequentialID());
-                intent.putExtra("fin_year", listFilteredValue.get(position).getFinancialYear());
-                intent.putExtra("work_id", listFilteredValue.get(position).getWork_id());
-                intent.putExtra("inspection_id", listFilteredValue.get(position).getInspection_id());
-                intent.putExtra("work_name", listFilteredValue.get(position).getWork_name());
-                intent.putExtra("as_value", listFilteredValue.get(position).getAs_value());
-                intent.putExtra("ts_value", listFilteredValue.get(position).getTs_value());
-                intent.putExtra("current_stage_of_work", listFilteredValue.get(position).getCurrent_stage_of_work());
-                intent.putExtra("is_high_value", listFilteredValue.get(position).getIs_high_value());
-                intent.putExtra("onOffType",onOffType);
-                intent.putExtra("type","atr");
-                intent.putExtra("flag","");
-                context.startActivity(intent);
-
+                if(prefManager.getDesignationCode().equals("153")) {
+                    Intent intent = new Intent(context, SaveATRWorkDetailsActivity.class);
+                    intent.putExtra("dcode", listFilteredValue.get(position).getDistrictCode());
+                    intent.putExtra("bcode", listFilteredValue.get(position).getBlockCode());
+                    intent.putExtra("pvcode", listFilteredValue.get(position).getPvCode());
+                    intent.putExtra("hab_code", listFilteredValue.get(position).getHabCode());
+                    intent.putExtra("scheme_group_id", listFilteredValue.get(position).getScheme_group_id());
+                    intent.putExtra("work_group_id", listFilteredValue.get(position).getWork_group_id());
+                    intent.putExtra("work_type_id", listFilteredValue.get(position).getWork_type_id());
+                    intent.putExtra("scheme_id", listFilteredValue.get(position).getSchemeSequentialID());
+                    intent.putExtra("fin_year", listFilteredValue.get(position).getFinancialYear());
+                    intent.putExtra("work_id", listFilteredValue.get(position).getWork_id());
+                    intent.putExtra("inspection_id", listFilteredValue.get(position).getInspection_id());
+                    intent.putExtra("work_name", listFilteredValue.get(position).getWork_name());
+                    intent.putExtra("as_value", listFilteredValue.get(position).getAs_value());
+                    intent.putExtra("ts_value", listFilteredValue.get(position).getTs_value());
+                    intent.putExtra("current_stage_of_work", listFilteredValue.get(position).getCurrent_stage_of_work());
+                    intent.putExtra("is_high_value", listFilteredValue.get(position).getIs_high_value());
+                    intent.putExtra("onOffType", onOffType);
+                    intent.putExtra("type", "atr");
+                    intent.putExtra("flag", "");
+                    context.startActivity(intent);
+                }
 
             }
         });

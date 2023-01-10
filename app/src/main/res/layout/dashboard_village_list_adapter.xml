@@ -108,6 +108,7 @@
                         android:layout_height="60dp"
                         app:cardCornerRadius="@dimen/_20sdp"
                         app:strokeWidth="1dp"
+                        android:id="@+id/satisfied_layout"
                         app:strokeColor="@color/black"
                         app:cardBackgroundColor="@color/satisfied1">
 
@@ -115,7 +116,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:id="@+id/satisfied_layout"
                             android:layout_gravity="center"
                             android:orientation="vertical">
 
@@ -139,13 +139,13 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="60dp"
+                        android:id="@+id/un_satisfied_layout"
                         app:cardCornerRadius="@dimen/_20sdp"
                         app:cardBackgroundColor="@color/unsatisfied1">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:id="@+id/un_satisfied_layout"
                             android:layout_gravity="center"
                             android:orientation="vertical">
 
@@ -167,13 +167,13 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="60dp"
+                        android:id="@+id/need_improvement_layout"
                         app:cardCornerRadius="@dimen/_20sdp"
                         app:cardBackgroundColor="@color/need_improvement1">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:id="@+id/need_improvement_layout"
                             android:layout_gravity="center"
                             android:orientation="vertical">
 

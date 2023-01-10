@@ -43,8 +43,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Locale;
 
 import static com.nic.InspectionAppNew.utils.Utils.showAlert;
 
@@ -105,6 +109,8 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         homeScreenBinding.navigationLayout.overAllInspectionReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                prefManager.setWorkType("atr");
+                prefManager.setOnOffType("online");
                 homeScreenBinding.drawerLayout.closeDrawer(Gravity.LEFT);
                 getOverAllReport();
             }
@@ -292,12 +298,11 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         homeScreenBinding.designation.setText(prefManager.getDesignation());
         homeScreenBinding.navigationLayout.designation.setText(prefManager.getDesignation());
         homeScreenBinding.navigationLayout.name.setText(prefManager.getName());
-        /*if(prefManager.getDesignationCode().equals("153")){
+        if(prefManager.getDesignationCode().equals("153")){
             homeScreenBinding.atrLayoutView.setVisibility(View.VISIBLE);
         }else {
             homeScreenBinding.atrLayoutView.setVisibility(View.GONE);
-        }*/
-        homeScreenBinding.atrLayoutView.setVisibility(View.VISIBLE);
+        }
         if(prefManager.getLevels().equals("S")){
             if(prefManager.getStateName()!=null && !prefManager.getStateName().isEmpty()){
                 homeScreenBinding.userLevel.setText("State : "+prefManager.getStateName());
@@ -1024,6 +1029,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     }
     public void openATRWorkListScreen() {
         Intent intent = new Intent(this, ATRWorkList.class);
+        intent.putExtra("flag","");
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
@@ -1042,9 +1048,23 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }else if(prefManager.getLevels().equals("B")){
+            Date startDate = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            String toDate = df.format(startDate);
+
+            Calendar c = Calendar.getInstance();
+            c.setTime(startDate);
+            c.add(Calendar.DATE, -30);
+            Date expDate = c.getTime();
+            String fromDate= df.format(expDate);
+
             Intent intent = new Intent(this, VillageListReportActivity.class);
             intent.putExtra("dcode",prefManager.getDistrictCode());
             intent.putExtra("bcode",prefManager.getBlockCode());
+            intent.putExtra("bname",prefManager.getBlockName());
+            intent.putExtra("fromDate",fromDate);
+            intent.putExtra("toDate",toDate);
+            intent.putExtra("flag","B");
             startActivityForResult(intent,0);
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }

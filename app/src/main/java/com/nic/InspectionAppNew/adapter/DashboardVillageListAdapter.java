@@ -12,9 +12,11 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nic.InspectionAppNew.R;
+import com.nic.InspectionAppNew.activity.VillageListReportActivity;
 import com.nic.InspectionAppNew.databinding.DashboardVillageListAdapterBinding;
 import com.nic.InspectionAppNew.model.ModelClass;
 import com.nic.InspectionAppNew.session.PrefManager;
+import com.nic.InspectionAppNew.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -62,14 +64,45 @@ public class DashboardVillageListAdapter extends RecyclerView.Adapter<DashboardV
 
         holder.binding.villageName.setText(String.valueOf(listFilteredValue.get(position).getPvName()));
         holder.binding.totalTv.setText("Total Count Of Inspection ("+String.valueOf(listFilteredValue.get(position).getTotal_cout())+")");
-        holder.binding.satisfiedCount.setText(String.valueOf(listFilteredValue.get(position).getSatisfied_cout()));
-        holder.binding.unSatisfiedCount.setText(String.valueOf(listFilteredValue.get(position).getUnsatisfied_cout()));
-        holder.binding.improvementCount.setText(String.valueOf(listFilteredValue.get(position).getNeedimprovement_cout()));
+        holder.binding.satisfiedCount.setText(String.valueOf(listFilteredValue.get(position).getSatisfied_count()));
+        holder.binding.unSatisfiedCount.setText(String.valueOf(listFilteredValue.get(position).getUnsatisfied_count()));
+        holder.binding.improvementCount.setText(String.valueOf(listFilteredValue.get(position).getNeedimprovement_count()));
 
 
-        holder.binding.satisfiedCount.setOnClickListener(new View.OnClickListener() {
+        holder.binding.satisfiedLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(listFilteredValue.get(position).getSatisfied_count()>0){
+                    ((VillageListReportActivity)context).gotoATR(1,listFilteredValue.get(position).getDistrictCode(),listFilteredValue.get(position).getBlockCode()
+                            ,listFilteredValue.get(position).getPvCode(),listFilteredValue.get(position).getPvName());
+
+                }else {
+                    Utils.showAlert(context,context.getResources().getString(R.string.no_data_found));
+                }
+            }
+        });
+        holder.binding.unSatisfiedLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listFilteredValue.get(position).getUnsatisfied_count()>0){
+                    ((VillageListReportActivity)context).gotoATR(2,listFilteredValue.get(position).getDistrictCode(),listFilteredValue.get(position).getBlockCode()
+                            ,listFilteredValue.get(position).getPvCode(),listFilteredValue.get(position).getPvName());
+
+                }else {
+                    Utils.showAlert(context,context.getResources().getString(R.string.no_data_found));
+                }
+            }
+        });
+        holder.binding.needImprovementLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listFilteredValue.get(position).getNeedimprovement_count()>0){
+                    ((VillageListReportActivity)context).gotoATR(3,listFilteredValue.get(position).getDistrictCode(),listFilteredValue.get(position).getBlockCode()
+                            ,listFilteredValue.get(position).getPvCode(),listFilteredValue.get(position).getPvName());
+
+                }else {
+                    Utils.showAlert(context,context.getResources().getString(R.string.no_data_found));
+                }
             }
         });
 

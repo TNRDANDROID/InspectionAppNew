@@ -47,11 +47,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-
-import static com.nic.InspectionAppNew.utils.Utils.showAlert;
+import java.util.Date;
+import java.util.Locale;
 
 public class OverAllInspectionReport extends AppCompatActivity implements Api.ServerResponseListener, DateInterface {
     private OverAllInspectionReportBinding binding;
@@ -62,6 +64,8 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
     public  DBHelper dbHelper;
     public com.nic.InspectionAppNew.dataBase.dbData dbData = new dbData(this);
     private ArrayList<ModelClass> districtList = new ArrayList<>();
+    private ArrayList<ModelClass> districtListDashboardData = new ArrayList<>();
+    private ArrayList<ModelClass> blockListDashboardData = new ArrayList<>();
     private ArrayList<ModelClass> blockList = new ArrayList<>();
     private DistrictBlockAdapter districtAdapter;
     private DistrictBlockAdapter blockAdapter;
@@ -69,8 +73,10 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
     String fromDate="";
     String toDate="";
     private ArrayList<ModelClass> workList = new ArrayList<>();
-    private ArrayList<ModelClass> need_improvement_workList = new ArrayList<>();
-    private ArrayList<ModelClass> unsatisfied_workList = new ArrayList<>();
+
+    String total="";
+    String flag="";
+    String dname="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,15 +110,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
         binding.back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.districtLayout.setVisibility(View.VISIBLE);
-                binding.blockLayout.setVisibility(View.GONE);
-                recyclerView.showShimmerAdapter();
-                recyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadCards();
-                    }
-                }, 1000);
+               getDistrictsReport(workList);
 
             }
         });
@@ -168,17 +166,35 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
     }
     private void fetData() {
         if (Utils.isOnline()) {
-            getDashboardData();
+
             if(level.equals("S")){
-                getDistrictDashboardData();
+                getDistrictList();
                 binding.districtLayout.setVisibility(View.VISIBLE);
                 binding.blockLayout.setVisibility(View.GONE);
             }else if(level.equals("D")){
-                getBlockDashboardData(prefManager.getDistrictCode());
+                getBlockList(prefManager.getDistrictCode(),prefManager.getDistrictName(),"");
                 binding.back.setVisibility(View.GONE);
                 binding.districtLayout.setVisibility(View.GONE);
                 binding.blockLayout.setVisibility(View.VISIBLE);
             }
+
+            Date startDate = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            toDate = df.format(startDate);
+
+            Calendar c = Calendar.getInstance();
+            c.setTime(startDate);
+            c.add(Calendar.DATE, -30);
+            Date expDate = c.getTime();
+            fromDate= df.format(expDate);
+
+            if(Utils.isOnline()){
+                getWorkDetails();
+            }
+            else {
+                Utils.showAlert(OverAllInspectionReport.this,"No Internet Connection!");
+            }
+
 
         }else {
             showAlert(OverAllInspectionReport.this,"No Internet Connection!");
@@ -202,39 +218,14 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
     public  JSONObject workDetailsParams(Activity activity) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "get_inspection_details_for_atr");
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "overall_inspection_details_for_atr");
         dataSet.put("from_date", fromDate);
         dataSet.put("to_date", toDate);
         Log.d("WorkDetails", "" + dataSet);
         return dataSet;
     }
-    private void getDashboardData() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("DashboardData", Api.Method.POST, UrlGenerator.getMainService(), Params(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-    }
-
-    public JSONObject Params() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), jsonparam(this).toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("DashboardData", "" + dataSet);
-        return dataSet;
-    }
-    public  JSONObject jsonparam(Activity activity) throws JSONException {
-        prefManager = new PrefManager(activity);
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "current_finyear_wise_status_count");
-
-        Log.d("DashboardData", "" + dataSet);
-        return dataSet;
-    }
-
-    public void getDistrictDashboardData() {
+    public void getDistrictList() {
         try {
             new ApiService(this).makeJSONObjectRequest("DistrictList", Api.Method.POST, UrlGenerator.getServicesListUrl(), districtListJsonParams(), "not cache", this);
         } catch (JSONException e) {
@@ -259,7 +250,9 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
         return dataSet;
     }
 
-    public void getBlockDashboardData(String dcode) {
+    public void getBlockList(String dcode,String dname_tv, String flag_tv) {
+        flag=flag_tv;
+        dname=dname_tv;
         try {
             new ApiService(this).makeJSONObjectRequest("BlockList", Api.Method.POST, UrlGenerator.getServicesListUrl(), blockListJsonParams(dcode), "not cache", this);
         } catch (JSONException e) {
@@ -297,15 +290,6 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
             String urlType = serverResponse.getApi();
             JSONObject responseObj = serverResponse.getJsonResponse();
 
-            if ("DashboardData".equals(urlType) && responseObj != null) {
-                String key = responseObj.getString(AppConstant.ENCODE_DATA);
-                String responseDecryptedKey = Utils.decrypt(prefManager.getUserPassKey(), key);
-                JSONObject jsonObject = new JSONObject(responseDecryptedKey);
-                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    dashboardData(jsonObject);
-                }
-                Log.d("DashboardData", "" + responseDecryptedKey);
-            }
             if ("DistrictList".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 Log.d("DistrictList", "" + prefManager.getUserPassKey());
@@ -366,8 +350,6 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
         @Override
         protected ArrayList<ModelClass> doInBackground(JSONObject... params) {
             workList = new ArrayList<>();
-            need_improvement_workList = new ArrayList<>();
-            unsatisfied_workList = new ArrayList<>();
             if (params.length > 0) {
                 JSONObject jsonObject=new JSONObject();
                 JSONArray jsonArray = new JSONArray();
@@ -425,7 +407,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                         Utils.showAlert(OverAllInspectionReport.this, "No Record Found for Corresponding Financial Year");
                     }
 
-                    if(status_wise_count.length()>0){
+                   /* if(status_wise_count.length()>0){
 
                         for(int j=0;j<status_wise_count.length();j++){
                             try {
@@ -440,10 +422,9 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                                 } if(need_improvement_count.equals("")){
                                     need_improvement_count="0";
                                 }
-                                int total_inspection_count = /*Integer.parseInt(satisfied_count)+*/Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
-
-//                              setGraphData(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count), Integer.parseInt(need_improvement_count),total_inspection_count);
-
+                                int total_inspection_count = Integer.parseInt(satisfied_count)+Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
+//                                total=String.valueOf(total_inspection_count);
+//                                showpieChart(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count),Integer.parseInt(need_improvement_count),total_inspection_count);
                             } catch (JSONException e){
 
                             }
@@ -452,7 +433,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                     }
                     else {
 
-                    }
+                    }*/
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -467,21 +448,17 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
         protected void onPostExecute(ArrayList<ModelClass> worklist) {
             super.onPostExecute(worklist);
 //            Utils.hideProgress(progressHUD);
-            if (worklist.size() > 0) {
-                binding.date.setText(fromDate+" to "+toDate);
-            }
                 if (worklist.size() > 0) {
-                    for(int i=0;i<worklist.size();i++){
-                        if(worklist.get(i).getWork_status_id()==3){
-                            need_improvement_workList.add(worklist.get(i));
-                        }else if(worklist.get(i).getWork_status_id()==2){
-                            unsatisfied_workList.add(worklist.get(i));
-                        }
+                    binding.date.setText(fromDate+" to "+toDate);
+                    if(prefManager.getLevels().equals("S")){
+                        getDistrictsReport(worklist);
+                    }else if(prefManager.getLevels().equals("D")){
+                        getBlocksReport(worklist);
+                    }else if(prefManager.getLevels().equals("B")){
+
                     }
 
                 }else {
-                    need_improvement_workList =new ArrayList<>();
-                    unsatisfied_workList =new ArrayList<>();
                 }
 
 
@@ -493,6 +470,144 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                 e.printStackTrace();
             }
         }
+    }
+
+    private void getDistrictsReport(ArrayList<ModelClass> worklist) {
+        districtListDashboardData.clear();
+        int s=0;
+        int us=0;
+        int nm=0;
+        for(int i=0;i<districtList.size();i++){
+            for(int j=0;j<worklist.size();j++){
+                if(worklist.get(j).getDistrictCode().equals(districtList.get(i).getDistrictCode())){
+                    if(worklist.get(j).getWork_status_id()==1){
+                        s=s+1;
+                    }else if(worklist.get(j).getWork_status_id()==2){
+                        us=us+1;
+                    }else if(worklist.get(j).getWork_status_id()==3){
+                        nm=nm+1;
+                    }
+                }
+
+            }
+            ModelClass districtListValues = new ModelClass();
+            districtListValues.setDistrictCode(districtList.get(i).getDistrictCode());
+            districtListValues.setDistrictName(districtList.get(i).getDistrictName());
+            districtListValues.setTotal_cout(s+us+nm);
+            districtListValues.setSatisfied_count(s);
+            districtListValues.setUnsatisfied_count(us);
+            districtListValues.setNeedimprovement_count(nm);
+            districtListDashboardData.add(districtListValues);
+            s=0;
+            us=0;
+            nm=0;
+        }
+
+        binding.blockLayout.setVisibility(View.GONE);
+        binding.districtLayout.setVisibility(View.VISIBLE);
+        districtAdapter = new DistrictBlockAdapter(OverAllInspectionReport.this, districtListDashboardData,"D");
+        recyclerView.setAdapter(districtAdapter);
+        recyclerView.showShimmerAdapter();
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadCards();
+            }
+        }, 1000);
+
+        int tot=0;
+        int sat=0;
+        int usat=0;
+        int nimp=0;
+        for(int i=0;i<districtListDashboardData.size();i++){
+            if(districtListDashboardData.get(i).getSatisfied_count()>0){
+                sat=sat+districtListDashboardData.get(i).getSatisfied_count();
+            }
+            if(districtListDashboardData.get(i).getUnsatisfied_count()>0){
+                usat=usat+districtListDashboardData.get(i).getUnsatisfied_count();
+            }
+            if(districtListDashboardData.get(i).getNeedimprovement_count()>0){
+                nimp=nimp+districtListDashboardData.get(i).getNeedimprovement_count();
+            }
+        }
+
+        tot=sat+usat+nimp;
+        total=String.valueOf(tot);
+        binding.totalCountGraph.setText(total);
+        binding.totalTv.setText("Total Inspections of State - ");
+        showpieChart(sat,usat,nimp,tot);
+    }
+    public void getBlocksReport(ArrayList<ModelClass> worklist) {
+        blockListDashboardData.clear();
+        int s=0;
+        int us=0;
+        int nm=0;
+        for(int i=0;i<blockList.size();i++){
+            for(int j=0;j<worklist.size();j++){
+                if(worklist.get(j).getDistrictCode().equals(blockList.get(i).getDistrictCode()) && worklist.get(j).getBlockCode().equals(blockList.get(i).getBlockCode())){
+                    if(worklist.get(j).getWork_status_id()==1){
+                        s=s+1;
+                    }else if(worklist.get(j).getWork_status_id()==2){
+                        us=us+1;
+                    }else if(worklist.get(j).getWork_status_id()==3){
+                        nm=nm+1;
+                    }
+                }
+
+            }
+            ModelClass modelClass = new ModelClass();
+            modelClass.setDistrictCode(blockList.get(i).getDistrictCode());
+            modelClass.setBlockCode(blockList.get(i).getBlockCode());
+            modelClass.setBlockName(blockList.get(i).getBlockName());
+            modelClass.setTotal_cout(s+us+nm);
+            modelClass.setSatisfied_count(s);
+            modelClass.setUnsatisfied_count(us);
+            modelClass.setNeedimprovement_count(nm);
+            blockListDashboardData.add(modelClass);
+            s=0;
+            us=0;
+            nm=0;
+        }
+        if(level.equals("S")){
+            binding.back.setVisibility(View.VISIBLE);
+        }else {
+            binding.back.setVisibility(View.GONE);
+        }
+        binding.blockLayout.setVisibility(View.VISIBLE);
+        binding.districtLayout.setVisibility(View.GONE);
+        blockAdapter = new DistrictBlockAdapter(OverAllInspectionReport.this, blockListDashboardData,"B");
+        recyclerView_block.setAdapter(blockAdapter);
+        recyclerView_block.showShimmerAdapter();
+        recyclerView_block.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadCardsBlock();
+            }
+        }, 1000);
+
+        int tot=0;
+        int sat=0;
+        int usat=0;
+        int nimp=0;
+        for(int i=0;i<blockListDashboardData.size();i++){
+            if(blockListDashboardData.get(i).getSatisfied_count()>0){
+                sat=sat+blockListDashboardData.get(i).getSatisfied_count();
+            }
+            if(blockListDashboardData.get(i).getUnsatisfied_count()>0){
+                usat=usat+blockListDashboardData.get(i).getUnsatisfied_count();
+            }
+            if(blockListDashboardData.get(i).getNeedimprovement_count()>0){
+                nimp=nimp+blockListDashboardData.get(i).getNeedimprovement_count();
+            }
+        }
+
+        tot=sat+usat+nimp;
+        total=String.valueOf(tot);
+        binding.totalCountGraph.setText(total);
+        binding.totalTv.setText("Total Inspections of "+dname+" - ");
+        showpieChart(sat,usat,nimp,tot);
+
+
     }
 
     public class InsertDistrictTask extends AsyncTask<JSONObject ,Void ,Void> {
@@ -513,23 +628,9 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                     try {
                         String districtCode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
                         String districtName = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_NAME);
-                       /* String satisfied_count = jsonArray.getJSONObject(i).getString("satisfied");
-                        String un_satisfied_count = jsonArray.getJSONObject(i).getString("unsatisfied");
-                        String need_improvement_count = jsonArray.getJSONObject(i).getString("need_improvement");
-                        if(satisfied_count.equals("")){
-                            satisfied_count="0";
-                        } if(un_satisfied_count.equals("")){
-                            un_satisfied_count="0";
-                        } if(need_improvement_count.equals("")){
-                            need_improvement_count="0";
-                        }*/
                         ModelClass districtListValues = new ModelClass();
                         districtListValues.setDistrictCode(districtCode);
                         districtListValues.setDistrictName(districtName);
-                        districtListValues.setTotal_cout(6);
-                        districtListValues.setSatisfied_cout(1);
-                        districtListValues.setUnsatisfied_cout(2);
-                        districtListValues.setNeedimprovement_cout(3);
                         districtList.add(districtListValues);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -556,7 +657,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 //            Utils.hideProgress(progressHUD);
-            binding.blockLayout.setVisibility(View.GONE);
+           /* binding.blockLayout.setVisibility(View.GONE);
             binding.districtLayout.setVisibility(View.VISIBLE);
             districtAdapter = new DistrictBlockAdapter(OverAllInspectionReport.this, districtList,"D");
             recyclerView.setAdapter(districtAdapter);
@@ -566,7 +667,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                 public void run() {
                     loadCards();
                 }
-            }, 1000);
+            }, 1000);*/
            /* try {
                 if (progressHUD != null)
                     progressHUD.cancel();
@@ -596,24 +697,10 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                         String districtCode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
                         String blockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
                         String blockName = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_NAME);
-                       /* String satisfied_count = jsonArray.getJSONObject(i).getString("satisfied");
-                        String un_satisfied_count = jsonArray.getJSONObject(i).getString("unsatisfied");
-                        String need_improvement_count = jsonArray.getJSONObject(i).getString("need_improvement");
-                        if(satisfied_count.equals("")){
-                            satisfied_count="0";
-                        } if(un_satisfied_count.equals("")){
-                            un_satisfied_count="0";
-                        } if(need_improvement_count.equals("")){
-                            need_improvement_count="0";
-                        }*/
                         ModelClass modelClass = new ModelClass();
                         modelClass.setDistrictCode(districtCode);
                         modelClass.setBlockCode(blockCode);
                         modelClass.setBlockName(blockName);
-                        modelClass.setTotal_cout(6);
-                        modelClass.setSatisfied_cout(1);
-                        modelClass.setUnsatisfied_cout(2);
-                        modelClass.setNeedimprovement_cout(3);
                         blockList.add(modelClass);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -639,7 +726,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 //            Utils.hideProgress(progressHUD);
-            if(level.equals("S")){
+          /*  if(level.equals("S")){
                 binding.back.setVisibility(View.VISIBLE);
             }else {
                 binding.back.setVisibility(View.GONE);
@@ -654,59 +741,19 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                 public void run() {
                     loadCardsBlock();
                 }
-            }, 1000);
+            }, 1000);*/
            /* try {
                 if (progressHUD != null)
                     progressHUD.cancel();
             } catch (Exception e) {
                 e.printStackTrace();
             }*/
-
-        }
-    }
-
-    private void dashboardData(JSONObject jsonObject) {
-        try {
-
-            if (jsonObject.length() > 0) {
-                JSONArray status_wise_count = new JSONArray();
-                status_wise_count = jsonObject.getJSONArray("JSON_DATA");
-                if(status_wise_count.length()>0){
-                    for(int j=0;j<status_wise_count.length();j++){
-                        try {
-                            String satisfied_count = status_wise_count.getJSONObject(j).getString("satisfied");
-                            String un_satisfied_count = status_wise_count.getJSONObject(j).getString("unsatisfied");
-                            String need_improvement_count = status_wise_count.getJSONObject(j).getString("need_improvement");
-                            String fin_year = status_wise_count.getJSONObject(j).getString("fin_year");
-                            if(satisfied_count.equals("")){
-                                satisfied_count="0";
-                            } if(un_satisfied_count.equals("")){
-                                un_satisfied_count="0";
-                            } if(need_improvement_count.equals("")){
-                                need_improvement_count="0";
-                            }
-                            int total_inspection_count = Integer.parseInt(satisfied_count)+Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
-                            binding.totalCountGraph.setText(String.valueOf(total_inspection_count));
-
-                            showpieChart(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count),Integer.parseInt(need_improvement_count),total_inspection_count);
-                        } catch (JSONException e){
-
-                        }
-
-                    }
-                }
-                else {
-
-                }
-            } else {
-                Utils.showAlert(this, "No Record Found for Corresponding Work");
+            if(flag.equals("D")){
+                getBlocksReport(workList);
             }
-
-        } catch (JSONException | ArrayIndexOutOfBoundsException j) {
-            j.printStackTrace();
         }
-
     }
+
     private void showpieChart(int satisfied,int unsatisfied,int need_improvement,int total_inspection_count){
 
         ArrayList<PieEntry> Count = new ArrayList<>();
@@ -802,10 +849,14 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
        /* level=prefManager.getLevels();
        fetData();*/
     }
-    public void getVillageListReport(String districtCode, String blockCode) {
+    public void getVillageListReport(String districtCode, String blockCode, String bname) {
         Intent intent = new Intent(this, VillageListReportActivity.class);
         intent.putExtra("dcode",districtCode);
         intent.putExtra("bcode",blockCode);
+        intent.putExtra("bname",bname);
+        intent.putExtra("fromDate",fromDate);
+        intent.putExtra("toDate",toDate);
+        intent.putExtra("flag","");
         startActivityForResult(intent,1);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

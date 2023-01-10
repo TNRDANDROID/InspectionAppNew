@@ -164,9 +164,11 @@
                                     android:text="0"
                                     android:layout_toRightOf="@+id/total_tv"
                                     android:textColor="@color/primary_text_color2"
-                                    android:gravity="end"
-                                    android:layout_gravity="end"
-                                    android:padding="@dimen/_3sdp"
+                                    android:gravity="start"
+                                    android:textStyle="bold"
+                                    android:paddingRight="@dimen/_3sdp"
+                                    android:paddingTop="@dimen/_3sdp"
+                                    android:paddingBottom="@dimen/_3sdp"
                                     android:id="@+id/total_count_graph"/>
                             </RelativeLayout>
 
