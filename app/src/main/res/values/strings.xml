@@ -192,6 +192,7 @@
     <string name="go_online">Go Online</string>
     <string name="username">Username</string>
     <string name="inspection">Inspection</string>
+    <string name="inspection_id">Inspection Id</string>
     <string name="inspected_by">Inspected By</string>
     <string name="click_to_download_your_inspecting_block">Click to Download your Inspecting Block</string>
     <string name="click_to_download_your_inspecting_financial_year">Click to Download your Inspecting Financial Year</string>

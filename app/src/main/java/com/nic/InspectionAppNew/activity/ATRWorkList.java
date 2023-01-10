@@ -462,8 +462,11 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                             String work_name = jsonArray.getJSONObject(i).getString("work_name");
                             String work_id = jsonArray.getJSONObject(i).getString("work_id");
                             String inspection_by_officer = jsonArray.getJSONObject(i).getString("name");
-                            String work_type_name = "work_type_name"/*jsonArray.getJSONObject(i).getString("work_type_name")*/;
-                            String inspection_by_officer_designation = "desig"/*jsonArray.getJSONObject(i).getString("inspection_by_officer_designation")*/;
+                            String work_type_name = jsonArray.getJSONObject(i).getString("work_type_name");
+                            String inspection_by_officer_designation = jsonArray.getJSONObject(i).getString("desig_name");
+                            String dname = jsonArray.getJSONObject(i).getString("dname");
+                            String bname = jsonArray.getJSONObject(i).getString("bname");
+                            String pvname = jsonArray.getJSONObject(i).getString("pvname");
 
 
                             ModelClass modelClass = new ModelClass();
@@ -480,6 +483,9 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                             modelClass.setInspection_by_officer(inspection_by_officer);
                             modelClass.setWork_type_name(work_type_name);
                             modelClass.setInspection_by_officer_designation(inspection_by_officer_designation);
+                            modelClass.setDistrictName(dname);
+                            modelClass.setBlockName(bname);
+                            modelClass.setPvName(pvname);
 
                             if(onOffType.equals("offline")){
                                 if(status_wise_count.length()>0){

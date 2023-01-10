@@ -375,7 +375,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                 try {
                     jsonObject=params[0].getJSONObject(AppConstant.JSON_DATA);
                     jsonArray = jsonObject.getJSONArray("inspection_details");
-                    status_wise_count = jsonObject.getJSONArray("status_wise_count");
+                    status_wise_count = jsonObject.getJSONArray( "status_wise_count");
 
                     if(jsonArray.length() >0){
 
@@ -391,8 +391,11 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                             String work_name = jsonArray.getJSONObject(i).getString("work_name");
                             String work_id = jsonArray.getJSONObject(i).getString("work_id");
                             String inspection_by_officer = jsonArray.getJSONObject(i).getString("name");
-                            String work_type_name = "work_type_name"/*jsonArray.getJSONObject(i).getString("work_type_name")*/;
-                            String inspection_by_officer_designation = "desig"/*jsonArray.getJSONObject(i).getString("inspection_by_officer_designation")*/;
+                            String work_type_name = jsonArray.getJSONObject(i).getString("work_type_name");
+                            String inspection_by_officer_designation = jsonArray.getJSONObject(i).getString("desig_name");
+                            String dname = jsonArray.getJSONObject(i).getString("dname");
+                            String bname = jsonArray.getJSONObject(i).getString("bname");
+                            String pvname = jsonArray.getJSONObject(i).getString("pvname");
 
 
                             ModelClass modelClass = new ModelClass();
@@ -409,6 +412,10 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                             modelClass.setInspection_by_officer(inspection_by_officer);
                             modelClass.setWork_type_name(work_type_name);
                             modelClass.setInspection_by_officer_designation(inspection_by_officer_designation);
+                            modelClass.setDistrictName(dname);
+                            modelClass.setBlockName(bname);
+                            modelClass.setPvName(pvname);
+
 
                             workList.add(modelClass);
 

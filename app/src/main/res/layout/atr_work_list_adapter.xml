@@ -76,7 +76,7 @@
                             android:id="@+id/inspection_by_officer_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/inspected_by"
                             />
                         <TextView
@@ -84,7 +84,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text=" "
                             />
                         <TextView
@@ -94,7 +94,25 @@
                             android:gravity="start"
                             android:textStyle="bold"
                             android:textColor="@color/primary_text_color2"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
+                            />
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_3sdp"
+                        android:id="@+id/inspection_by_officer_desig_layout"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/inspection_by_officer_desig"
+                            android:gravity="start"
+                            android:text="@string/inspected_by"
+                            android:textColor="@color/primary_text_color2"
+                            android:textSize="@dimen/_10sdp"
                             />
 
 
@@ -112,7 +130,7 @@
                             android:id="@+id/work_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/work_id"
                             />
                         <TextView
@@ -121,7 +139,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -131,7 +149,7 @@
                             android:id="@+id/work_id"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -149,7 +167,7 @@
                             android:id="@+id/work_name_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/work_name"
                             />
                         <TextView
@@ -158,7 +176,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -168,7 +186,7 @@
                             android:id="@+id/work_name"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -187,7 +205,7 @@
                             android:id="@+id/stage_name_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/stage_name"
                             />
                         <TextView
@@ -196,7 +214,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -206,7 +224,7 @@
                             android:id="@+id/stage_name"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -225,7 +243,7 @@
                             android:id="@+id/work_type_name_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/work_type_name"
                             />
                         <TextView
@@ -234,7 +252,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -244,7 +262,7 @@
                             android:id="@+id/work_type_name"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -262,7 +280,7 @@
                             android:id="@+id/inspected_date_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/inspected_date"
                             />
                         <TextView
@@ -271,7 +289,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -281,7 +299,7 @@
                             android:id="@+id/inspected_date"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -300,7 +318,7 @@
                             android:id="@+id/status_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/status"
                             />
                         <TextView
@@ -309,7 +327,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -319,7 +337,7 @@
                             android:id="@+id/status"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -339,7 +357,7 @@
                             android:id="@+id/fin_year_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/financial_year"
                             />
                         <TextView
@@ -348,7 +366,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -358,7 +376,7 @@
                             android:id="@+id/fin_year"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -377,7 +395,7 @@
                             android:id="@+id/as_value_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/as_value"
                             />
                         <TextView
@@ -386,7 +404,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -396,7 +414,7 @@
                             android:id="@+id/as_value"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -415,7 +433,7 @@
                             android:id="@+id/ts_value_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/ts_value"
                             />
                         <TextView
@@ -424,7 +442,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -434,7 +452,7 @@
                             android:id="@+id/ts_value"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -454,7 +472,7 @@
                             android:id="@+id/work_status_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/work_status"
                             />
                         <TextView
@@ -463,7 +481,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -473,7 +491,7 @@
                             android:id="@+id/work_status"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -492,7 +510,7 @@
                             android:id="@+id/work_order_date_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/agreement_work_orderdate"
                             />
                         <TextView
@@ -501,7 +519,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -511,7 +529,7 @@
                             android:id="@+id/work_order_date"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -530,7 +548,7 @@
                             android:id="@+id/as_date_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/as_date"
                             />
                         <TextView
@@ -539,7 +557,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -549,7 +567,7 @@
                             android:id="@+id/as_date"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -568,7 +586,7 @@
                             android:id="@+id/ts_date_h"
                             android:gravity="start"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/ts_date"
                             />
                         <TextView
@@ -577,7 +595,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/grey_10"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:text="@string/colan_symbol"
                             />
                         <TextView
@@ -587,7 +605,7 @@
                             android:id="@+id/ts_date"
                             android:gravity="start"
                             android:textColor="@color/grey_8"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/_11sdp"
                             />
 
 
@@ -698,7 +716,7 @@
                                 android:id="@+id/work_h"
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/work_id"
                                 />
                             <TextView
@@ -707,7 +725,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/colan_symbol"
                                 />
                             <TextView
@@ -717,7 +735,7 @@
                                 android:id="@+id/work_id"
                                 android:gravity="start"
                                 android:textColor="@color/grey_8"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 />
 
 
@@ -735,7 +753,7 @@
                                 android:id="@+id/work_name_h"
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/work_name"
                                 />
                             <TextView
@@ -744,7 +762,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/colan_symbol"
                                 />
                             <TextView
@@ -754,7 +772,7 @@
                                 android:id="@+id/work_name"
                                 android:gravity="start"
                                 android:textColor="@color/grey_8"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 />
 
 
@@ -772,7 +790,7 @@
                                 android:id="@+id/stage_name_h"
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/stage_name"
                                 />
                             <TextView
@@ -781,7 +799,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/colan_symbol"
                                 />
                             <TextView
@@ -791,7 +809,7 @@
                                 android:id="@+id/stage_name"
                                 android:gravity="start"
                                 android:textColor="@color/grey_8"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 />
 
 
@@ -810,7 +828,7 @@
                                 android:id="@+id/work_type_name_h"
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/work_type_name"
                                 />
                             <TextView
@@ -819,7 +837,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/colan_symbol"
                                 />
                             <TextView
@@ -829,7 +847,7 @@
                                 android:id="@+id/work_type_name"
                                 android:gravity="start"
                                 android:textColor="@color/grey_8"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 />
 
 
@@ -849,7 +867,7 @@
                                 android:id="@+id/fin_year_h"
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/financial_year"
                                 />
                             <TextView
@@ -858,7 +876,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/colan_symbol"
                                 />
                             <TextView
@@ -868,7 +886,7 @@
                                 android:id="@+id/fin_year"
                                 android:gravity="start"
                                 android:textColor="@color/grey_8"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 />
 
 
@@ -887,7 +905,7 @@
                                 android:id="@+id/as_value_h"
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/as_value"
                                 />
                             <TextView
@@ -896,7 +914,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/colan_symbol"
                                 />
                             <TextView
@@ -906,7 +924,7 @@
                                 android:id="@+id/as_value"
                                 android:gravity="start"
                                 android:textColor="@color/grey_8"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 />
 
 
@@ -925,7 +943,7 @@
                                 android:id="@+id/ts_value_h"
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/ts_value"
                                 />
                             <TextView
@@ -934,7 +952,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/colan_symbol"
                                 />
                             <TextView
@@ -944,7 +962,7 @@
                                 android:id="@+id/ts_value"
                                 android:gravity="start"
                                 android:textColor="@color/grey_8"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 />
 
 
@@ -964,7 +982,7 @@
                                 android:id="@+id/work_status_h"
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/work_status"
                                 />
                             <TextView
@@ -973,7 +991,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/colan_symbol"
                                 />
                             <TextView
@@ -983,7 +1001,7 @@
                                 android:id="@+id/work_status"
                                 android:gravity="start"
                                 android:textColor="@color/grey_8"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 />
 
 
@@ -1002,7 +1020,7 @@
                                 android:id="@+id/work_order_date_h"
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/agreement_work_orderdate"
                                 />
                             <TextView
@@ -1011,7 +1029,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/colan_symbol"
                                 />
                             <TextView
@@ -1021,7 +1039,7 @@
                                 android:id="@+id/work_order_date"
                                 android:gravity="start"
                                 android:textColor="@color/grey_8"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 />
 
 
@@ -1040,7 +1058,7 @@
                                 android:id="@+id/as_date_h"
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/as_date"
                                 />
                             <TextView
@@ -1049,7 +1067,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/colan_symbol"
                                 />
                             <TextView
@@ -1059,7 +1077,7 @@
                                 android:id="@+id/as_date"
                                 android:gravity="start"
                                 android:textColor="@color/grey_8"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 />
 
 
@@ -1078,7 +1096,7 @@
                                 android:id="@+id/ts_date_h"
                                 android:gravity="start"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/ts_date"
                                 />
                             <TextView
@@ -1087,7 +1105,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:textColor="@color/grey_10"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:text="@string/colan_symbol"
                                 />
                             <TextView
@@ -1097,7 +1115,7 @@
                                 android:id="@+id/ts_date"
                                 android:gravity="start"
                                 android:textColor="@color/grey_8"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_11sdp"
                                 />
 
 

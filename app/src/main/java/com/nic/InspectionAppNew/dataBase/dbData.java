@@ -276,6 +276,10 @@ public class dbData {
         values.put("need_improvement_count", modelClass.getNeedimprovement_cout());
         values.put("total_count", modelClass.getTotal_cout());
         values.put("inspection_by_officer_designation", modelClass.getInspection_by_officer_designation());
+        values.put("work_type_name", modelClass.getWork_type_name());
+        values.put("dname", modelClass.getDistrictName());
+        values.put("bname", modelClass.getBlockName());
+        values.put("pvname", modelClass.getPvName());
         id = db.insert(DBHelper.ATR_WORK_LIST,null,values);
 
         Log.d("Insert_id_atr_work", String.valueOf(id));
@@ -568,6 +572,9 @@ public class dbData {
                     card.setUnsatisfied_cout(cursor.getInt(cursor.getColumnIndexOrThrow("unsatisfied_count")));
                     card.setNeedimprovement_cout(cursor.getInt(cursor.getColumnIndexOrThrow("need_improvement_count")));
                     card.setInspection_by_officer_designation(cursor.getString(cursor.getColumnIndexOrThrow("inspection_by_officer_designation")));
+                    card.setDistrictName(cursor.getString(cursor.getColumnIndexOrThrow("dname")));
+                    card.setBlockName(cursor.getString(cursor.getColumnIndexOrThrow("bname")));
+                    card.setPvName(cursor.getString(cursor.getColumnIndexOrThrow("pvname")));
 
                     cards.add(card);
                 }

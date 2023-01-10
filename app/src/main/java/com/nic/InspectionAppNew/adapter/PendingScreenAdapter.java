@@ -115,6 +115,9 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
 
         if(pendingListFiltered.get(position).getFlag().equals("1")){
             holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.infrastructure));
+            holder.pendingScreenAdapterBinding.finYearLayout.setVisibility(View.VISIBLE);
+            holder.pendingScreenAdapterBinding.workStatusLayout.setVisibility(View.VISIBLE);
+            holder.pendingScreenAdapterBinding.inspectionIdLayout.setVisibility(View.GONE);
             /*if(pendingListFiltered.get(position).getWork_status_id() == 1){
                 holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.satisfied));
             }else if(pendingListFiltered.get(position).getWork_status_id() == 2){
@@ -123,6 +126,9 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
                 holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.need_improvement));
             }*/
         }else {
+            holder.pendingScreenAdapterBinding.finYearLayout.setVisibility(View.GONE);
+            holder.pendingScreenAdapterBinding.workStatusLayout.setVisibility(View.GONE);
+            holder.pendingScreenAdapterBinding.inspectionIdLayout.setVisibility(View.VISIBLE);
             holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.graph_ic));
         }
         holder.pendingScreenAdapterBinding.workId.setText(String.valueOf(pendingListFiltered.get(position).getWork_id()));

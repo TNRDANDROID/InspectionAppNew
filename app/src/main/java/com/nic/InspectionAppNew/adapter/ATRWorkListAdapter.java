@@ -93,6 +93,7 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
         holder.binding.inspectedDate.setText(String.valueOf(listFilteredValue.get(position).getInspectedDate()));
         holder.binding.status.setText(String.valueOf(listFilteredValue.get(position).getWork_status()));
         holder.binding.inspectionByOfficer.setText(String.valueOf(listFilteredValue.get(position).getInspection_by_officer()));
+        holder.binding.inspectionByOfficerDesig.setText("("+String.valueOf(listFilteredValue.get(position).getInspection_by_officer_designation())+") ");
         holder.binding.workTypeName.setText(String.valueOf(listFilteredValue.get(position).getWork_type_name()));
 
 

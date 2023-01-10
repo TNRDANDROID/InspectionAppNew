@@ -119,6 +119,44 @@
                                 android:weightSum="2"
                                 android:padding="@dimen/_3sdp"
                                 android:layout_marginBottom="@dimen/_5sdp"
+                                android:id="@+id/inspection_id_layout"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.8"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/inspection_id_h"
+                                    android:gravity="start"
+                                    android:textColor="@color/grey_10"
+                                    android:textSize="@dimen/_12sdp"
+                                    android:text="@string/inspection_id"
+                                    />
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.2"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/grey_10"
+                                    android:textSize="@dimen/_12sdp"
+                                    android:text="@string/colan_symbol"
+                                    />
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/inspection_id"
+                                    android:gravity="start"
+                                    android:textColor="@color/grey_8"
+                                    android:textSize="@dimen/_12sdp"
+                                    />
+
+
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:weightSum="2"
+                                android:padding="@dimen/_3sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
                                 android:id="@+id/fin_year_layout"
                                 android:layout_height="wrap_content">
                                 <TextView

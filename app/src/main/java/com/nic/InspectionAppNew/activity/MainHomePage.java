@@ -292,11 +292,12 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         homeScreenBinding.designation.setText(prefManager.getDesignation());
         homeScreenBinding.navigationLayout.designation.setText(prefManager.getDesignation());
         homeScreenBinding.navigationLayout.name.setText(prefManager.getName());
-        if(prefManager.getDesignationCode().equals("153")){
+        /*if(prefManager.getDesignationCode().equals("153")){
             homeScreenBinding.atrLayoutView.setVisibility(View.VISIBLE);
         }else {
             homeScreenBinding.atrLayoutView.setVisibility(View.GONE);
-        }
+        }*/
+        homeScreenBinding.atrLayoutView.setVisibility(View.VISIBLE);
         if(prefManager.getLevels().equals("S")){
             if(prefManager.getStateName()!=null && !prefManager.getStateName().isEmpty()){
                 homeScreenBinding.userLevel.setText("State : "+prefManager.getStateName());
