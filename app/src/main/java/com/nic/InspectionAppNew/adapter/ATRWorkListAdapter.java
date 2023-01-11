@@ -101,16 +101,22 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
             holder.binding.atrStatusLayout.setVisibility(View.GONE);
             holder.binding.takeAction.setVisibility(View.GONE);
             holder.binding.check.setVisibility(View.VISIBLE);
+            holder.binding.reportedByLayout.setVisibility(View.GONE);
+            holder.binding.reportedBy.setText("");
         }else {
             if(listFilteredValue.get(position).getAction_status() != null && listFilteredValue.get(position).getAction_status().equals("Y")) {
                 holder.binding.atrStatus.setText("Completed");
                 holder.binding.atrStatus.setTextColor(context.getResources().getColor(R.color.account_status_green_color));
                 holder.binding.takeAction.setVisibility(View.GONE);
                 holder.binding.check.setVisibility(View.VISIBLE);
+                holder.binding.reportedByLayout.setVisibility(View.VISIBLE);
+                holder.binding.reportedBy.setText(listFilteredValue.get(position).getReported_by());
             }else {
                 holder.binding.atrStatus.setText("Pending");
                 holder.binding.atrStatus.setTextColor(context.getResources().getColor(R.color.grey_8));
                 holder.binding.check.setVisibility(View.GONE);
+                holder.binding.reportedByLayout.setVisibility(View.GONE);
+                holder.binding.reportedBy.setText("");
                 if(prefManager.getDesignationCode().equals("153")) {
                     holder.binding.takeAction.setVisibility(View.VISIBLE);
                 }else {

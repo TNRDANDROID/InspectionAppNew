@@ -391,6 +391,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                             String pvname = jsonArray.getJSONObject(i).getString("pvname");
                             String action_taken_id = jsonArray.getJSONObject(i).getString("action_taken_id");
                             String action_status = jsonArray.getJSONObject(i).getString("action_status");
+                            String reported_by = jsonArray.getJSONObject(i).getString("reported_by");
 
 
                             ModelClass modelClass = new ModelClass();
@@ -412,6 +413,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                             modelClass.setPvName(pvname);
                             modelClass.setAction_taken_id(action_taken_id);
                             modelClass.setAction_status(action_status);
+                            modelClass.setReported_by(reported_by);
 
 
                             workList.add(modelClass);

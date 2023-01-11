@@ -255,6 +255,7 @@
     <string name="status">Status</string>
     <string name="atr_status">ATR Status</string>
     <string name="view_report">View Report</string>
+    <string name="reported_by">ATR Reported by</string>
     <string name="inspection_taken">Inspection Taken</string>
     <string name="action_taken_report">Action Taken Report</string>
     <string name="description">Description</string>

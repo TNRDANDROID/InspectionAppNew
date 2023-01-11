@@ -64,6 +64,7 @@ public class ModelClass implements Serializable {
     private String action_taken_id;
     private String action_taken_date;
     private String action_status;
+    private String reported_by;
 
 
     private String as_date;
@@ -92,6 +93,14 @@ public class ModelClass implements Serializable {
     int unsatisfied_count;
     int needimprovement_count;
 
+
+    public String getReported_by() {
+        return reported_by;
+    }
+
+    public void setReported_by(String reported_by) {
+        this.reported_by = reported_by;
+    }
 
     public String getAction_status() {
         return action_status;

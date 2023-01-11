@@ -277,6 +277,7 @@ public class dbData {
         values.put("pvname", modelClass.getPvName());
         values.put("action_status", modelClass.getAction_status());
         values.put("action_taken_id", modelClass.getAction_taken_id());
+        values.put("reported_by", modelClass.getReported_by());
         id = db.insert(DBHelper.ATR_WORK_LIST,null,values);
 
         Log.d("Insert_id_atr_work", String.valueOf(id));
@@ -570,6 +571,7 @@ public class dbData {
                     card.setPvName(cursor.getString(cursor.getColumnIndexOrThrow("pvname")));
                     card.setAction_taken_id(cursor.getString(cursor.getColumnIndexOrThrow("action_taken_id")));
                     card.setAction_status(cursor.getString(cursor.getColumnIndexOrThrow("action_status")));
+                    card.setReported_by(cursor.getString(cursor.getColumnIndexOrThrow("reported_by")));
 
                     cards.add(card);
                 }

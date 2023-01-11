@@ -488,6 +488,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                             String pvname = jsonArray.getJSONObject(i).getString("pvname");
                             String action_taken_id = ""/*jsonArray.getJSONObject(i).getString("action_taken_id")*/;
                             String action_status = "N"/*jsonArray.getJSONObject(i).getString("action_status")*/;
+                            String reported_by = ""/*jsonArray.getJSONObject(i).getString("reported_by")*/;
 
 
                             ModelClass modelClass = new ModelClass();
@@ -626,11 +627,6 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
 
     public void getWorkReportDetails(String atrStatus, String work_id, String inspection_id, String action_taken_id) {
         WorkId=work_id;
@@ -1114,6 +1110,10 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
             Utils.showAlert(ATRWorkList.this,"No Internet");
         }
 
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
 }

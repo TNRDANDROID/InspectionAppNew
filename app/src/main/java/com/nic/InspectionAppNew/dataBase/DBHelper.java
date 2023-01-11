@@ -140,6 +140,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "inspection_by_officer_designation TEXT," +
                 "action_taken_id TEXT," +
                 "action_status TEXT," +
+                "reported_by TEXT," +
                 "inspection_by_officer TEXT)");
         db.execSQL("CREATE TABLE " + ONLINE_WORK_LIST + " ("
                 + "dcode INTEGER," +
