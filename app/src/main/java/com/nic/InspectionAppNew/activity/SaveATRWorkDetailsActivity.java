@@ -316,7 +316,14 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
         dbData.open();
         savedImage = new ArrayList<>();
         loadImageList(savedImage,flag,"");
-
+        if(onOffType.equals("online")){
+            binding.speechLayout.setVisibility(View.VISIBLE);
+            binding.typeText.setVisibility(View.GONE);
+        }
+        else {
+            binding.speechLayout.setVisibility(View.GONE);
+            binding.typeText.setVisibility(View.VISIBLE);
+        }
         if(flag.equalsIgnoreCase("edit")){
             binding.description.setText(description);
             try {
@@ -916,7 +923,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
 
     }
 
-    public void speechToText(String language) {
+   /* public void speechToText(String language) {
         listening = true;
         start(language);
 
@@ -924,7 +931,7 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
                 (SaveATRWorkDetailsActivity.this,
                         new String[]{Manifest.permission.RECORD_AUDIO},
                         REQUEST_RECORD_PERMISSION);
-    }
+    }*/
 
     public void start(String language){
         binding.englishMic.setEnabled(false);
@@ -966,6 +973,32 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
     }
 
 
+    public void speechToText(String language) {
+        Intent intent
+                = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        if(language.equalsIgnoreCase("en")){
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
+                    "en-IND");
+        }
+        else {
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
+                    "ta-IND");
+        }
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text");
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, Long.valueOf(10000));//5sec
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, Long.valueOf(20000));//5sec
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, Long.valueOf(5000));//5sec
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, Long.valueOf(5000));//5sec
+
+        try {
+            startActivityForResult(intent, SPEECH_REQUEST_CODE);
+
+        } catch (Exception e) {
+            Toast.makeText(SaveATRWorkDetailsActivity.this, " " + e.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
     @Override
@@ -1033,20 +1066,20 @@ public class SaveATRWorkDetailsActivity extends AppCompatActivity implements Api
                         .show();
             }
         }
-        else if(requestCode == SPEECH_REQUEST_CODE){
-            if (resultCode == RESULT_OK && data != null) {
-                ArrayList<String> result = data.getStringArrayListExtra(
-                        RecognizerIntent.EXTRA_RESULTS);
-                if(!binding.description.getText().toString().equals("")){
-                    binding.description.setText(binding.description.getText().toString()+" "+
-                            Objects.requireNonNull(result).get(0));
-                }else {
-                    binding.description.setText(Objects.requireNonNull(result).get(0));
+          else if(requestCode == SPEECH_REQUEST_CODE){
+              if (resultCode == RESULT_OK && data != null) {
+                  ArrayList<String> result = data.getStringArrayListExtra(
+                          RecognizerIntent.EXTRA_RESULTS);
+                  if(!binding.description.getText().toString().equals("")){
+                      binding.description.setText(binding.description.getText().toString()+" "+
+                              Objects.requireNonNull(result).get(0));
+                  }else {
+                      binding.description.setText(Objects.requireNonNull(result).get(0));
 
-                }
-            }
+                  }
+              }
 
-        }
+          }
     }
     public void showToast(String s){
         Toasty.success(SaveATRWorkDetailsActivity.this,s,Toast.LENGTH_SHORT,true).show();

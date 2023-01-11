@@ -392,12 +392,17 @@ public class SaveWorkDetailsActivity extends AppCompatActivity implements Api.Se
         savedImage = new ArrayList<>();
         loadImageList(savedImage,flag,"");
         if(onOffType.equals("online")){
+            saveWorkDetailsActivityBinding.speechLayout.setVisibility(View.VISIBLE);
+            saveWorkDetailsActivityBinding.typeText.setVisibility(View.GONE);
             if(flag.equalsIgnoreCase("edit")){
                 saveWorkDetailsActivityBinding.submit.setText("Update");
             }else {
                 saveWorkDetailsActivityBinding.submit.setText("Submit");
             }
 
+        }else {
+            saveWorkDetailsActivityBinding.speechLayout.setVisibility(View.GONE);
+            saveWorkDetailsActivityBinding.typeText.setVisibility(View.VISIBLE);
         }
 
         if(flag.equalsIgnoreCase("edit")){

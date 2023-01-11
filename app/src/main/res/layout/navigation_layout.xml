@@ -37,10 +37,10 @@
             android:id="@+id/name"
             android:layout_below="@+id/img_layout"
             android:gravity="start"
-            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_8sdp"
             android:textColor="@color/white"
-            android:textSize="@dimen/_12sdp"
+            android:textSize="@dimen/_11sdp"
             android:textStyle="bold"/>
         <TextView
             android:layout_width="match_parent"
@@ -48,7 +48,7 @@
             android:id="@+id/designation"
             android:layout_below="@+id/name"
             android:gravity="start"
-            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_5sdp"
             android:textColor="@color/white"
             android:textSize="@dimen/_10sdp" />
@@ -59,7 +59,7 @@
             android:layout_below="@+id/designation"
             android:gravity="start"
             android:visibility="visible"
-            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_5sdp"
             android:layout_marginBottom="@dimen/_8sdp"
             android:textColor="@color/white"
@@ -89,7 +89,7 @@
             android:id="@+id/ll1"
             android:layout_alignParentEnd="true"
             android:layout_toEndOf="@+id/imgUser1"
-            android:layout_margin="@dimen/_10sdp"
+            android:layout_margin="@dimen/_7sdp"
             android:layout_width="wrap_content"
             android:visibility="gone"
             android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
                 android:id="@+id/district1"
                 android:textColor="@color/white"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_11sdp"
                 android:gravity="center_horizontal"
                 android:textStyle="bold"/>
             <TextView
@@ -111,7 +111,7 @@
                 android:gravity="center_horizontal"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_11sdp"
                 android:textStyle="bold"/>
             <TextView
                 android:layout_width="match_parent"
@@ -120,7 +120,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:gravity="center_horizontal"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_11sdp"
                 android:textStyle="bold"/>
             <TextView
                 android:layout_width="match_parent"
@@ -129,7 +129,7 @@
                 android:textColor="@color/white"
                 android:gravity="center_horizontal"
                 android:textStyle="bold"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_11sdp"
                 />
         </LinearLayout>
         <TextView
@@ -140,7 +140,7 @@
             android:id="@+id/timer"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:textSize="@dimen/_12sdp"
+            android:textSize="@dimen/_11sdp"
             android:layout_marginEnd="@dimen/_10sdp"
             android:padding="@dimen/_10sdp"/>
 
@@ -167,7 +167,7 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_margin="@dimen/_7sdp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:visibility="visible"
@@ -179,7 +179,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:src="@drawable/user"
                     android:id="@+id/profile_image"
-                    android:padding="@dimen/_5sdp"
+                    android:padding="@dimen/_4sdp"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -190,7 +190,7 @@
                     android:layout_toEndOf="@+id/profile_image"
                     android:text="@string/edit_profile"
                     android:textColor="@color/darkblue"
-                    android:textSize="@dimen/_12sdp"/>
+                    android:textSize="@dimen/_11sdp"/>
             </RelativeLayout>
             <View
                 android:id="@+id/vv7"
@@ -201,7 +201,7 @@
 
             </View>
             <RelativeLayout
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_margin="@dimen/_7sdp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:id="@+id/over_all_inspection_report">
@@ -212,7 +212,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:src="@drawable/report_ic"
                     android:id="@+id/insp_icon"
-                    android:padding="@dimen/_5sdp"
+                    android:padding="@dimen/_4sdp"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -223,7 +223,7 @@
                     android:layout_toEndOf="@+id/insp_icon"
                     android:text="@string/over_all_inspection_report"
                     android:textColor="@color/darkblue"
-                    android:textSize="@dimen/_12sdp"/>
+                    android:textSize="@dimen/_11sdp"/>
             </RelativeLayout>
             <View
                 android:id="@+id/vv3"
@@ -234,7 +234,7 @@
 
             </View>
             <RelativeLayout
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_margin="@dimen/_7sdp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:id="@+id/ATR">
@@ -244,7 +244,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:src="@drawable/atr_logo"
                     android:id="@+id/print_icon3"
-                    android:padding="@dimen/_5sdp"
+                    android:padding="@dimen/_4sdp"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -255,7 +255,7 @@
                     android:layout_toEndOf="@+id/print_icon3"
                     android:text="@string/atr_report"
                     android:textColor="@color/darkblue"
-                    android:textSize="@dimen/_12sdp"/>
+                    android:textSize="@dimen/_11sdp"/>
             </RelativeLayout>
             <View
                 android:id="@+id/vv8"
@@ -266,7 +266,7 @@
 
             </View>
             <RelativeLayout
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_margin="@dimen/_7sdp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:id="@+id/view_inspection">
@@ -276,7 +276,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:src="@drawable/inspection_ic"
                     android:id="@+id/print_icon1"
-                    android:padding="@dimen/_5sdp"
+                    android:padding="@dimen/_4sdp"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -287,7 +287,7 @@
                     android:layout_toEndOf="@+id/print_icon1"
                     android:text="@string/view_inspected_work"
                     android:textColor="@color/darkblue"
-                    android:textSize="@dimen/_12sdp"/>
+                    android:textSize="@dimen/_11sdp"/>
             </RelativeLayout>
             <View
                 android:id="@+id/vv1"
@@ -298,7 +298,7 @@
             </View>
 
             <RelativeLayout
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_margin="@dimen/_7sdp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:visibility="visible"
@@ -310,7 +310,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:src="@drawable/infrastructure"
                     android:id="@+id/print_icon2"
-                    android:padding="@dimen/_5sdp"
+                    android:padding="@dimen/_4sdp"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -321,7 +321,7 @@
                     android:layout_toEndOf="@+id/print_icon2"
                     android:text="@string/view_inspected_other_work"
                     android:textColor="@color/darkblue"
-                    android:textSize="@dimen/_12sdp"/>
+                    android:textSize="@dimen/_11sdp"/>
             </RelativeLayout>
             <View
                 android:id="@+id/vv4"
@@ -332,7 +332,7 @@
             </View>
 
             <RelativeLayout
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_margin="@dimen/_7sdp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:visibility="visible"
@@ -344,7 +344,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:src="@drawable/forgot_password"
                     android:id="@+id/change_password_icon"
-                    android:padding="@dimen/_5sdp"
+                    android:padding="@dimen/_4sdp"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -355,7 +355,7 @@
                     android:layout_toEndOf="@+id/change_password_icon"
                     android:text="Change Password"
                     android:textColor="@color/darkblue"
-                    android:textSize="@dimen/_12sdp"/>
+                    android:textSize="@dimen/_11sdp"/>
             </RelativeLayout>
             <View
                 android:id="@+id/vv5"
@@ -365,7 +365,7 @@
 
             </View>
             <RelativeLayout
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_margin="@dimen/_7sdp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:visibility="visible"
@@ -377,7 +377,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:src="@drawable/ic_refresh"
                     android:id="@+id/refresh_stages_icon"
-                    android:padding="@dimen/_5sdp"
+                    android:padding="@dimen/_4sdp"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -388,7 +388,7 @@
                     android:layout_toEndOf="@+id/refresh_stages_icon"
                     android:text="@string/refresh_work_stages_up_to_date"
                     android:textColor="@color/darkblue"
-                    android:textSize="@dimen/_12sdp"/>
+                    android:textSize="@dimen/_11sdp"/>
             </RelativeLayout>
             <View
                 android:id="@+id/vv6"
@@ -398,7 +398,7 @@
 
             </View>
             <RelativeLayout
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_margin="@dimen/_7sdp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:visibility="visible"
@@ -410,7 +410,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:src="@drawable/log_out"
                     android:id="@+id/log_out_layout_icon"
-                    android:padding="@dimen/_5sdp"
+                    android:padding="@dimen/_4sdp"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -421,7 +421,7 @@
                     android:layout_toEndOf="@+id/log_out_layout_icon"
                     android:text="Log Out"
                     android:textColor="@color/darkblue"
-                    android:textSize="@dimen/_12sdp"/>
+                    android:textSize="@dimen/_11sdp"/>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
@@ -432,7 +432,7 @@
         android:layout_centerHorizontal="true"
         android:drawableLeft="@drawable/ic_version_icon"
         android:layout_alignParentBottom="true"
-        android:textSize="@dimen/_12sdp"
+        android:textSize="@dimen/_11sdp"
         android:textColor="@color/darkblue"
         android:padding="@dimen/_5sdp"
         android:id="@+id/tv_version"

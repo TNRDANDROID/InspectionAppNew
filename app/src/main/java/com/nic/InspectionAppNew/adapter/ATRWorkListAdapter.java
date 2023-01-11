@@ -96,44 +96,26 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
         holder.binding.inspectionByOfficerDesig.setText("("+String.valueOf(listFilteredValue.get(position).getInspection_by_officer_designation())+") ");
         holder.binding.workTypeName.setText(String.valueOf(listFilteredValue.get(position).getWork_type_name()));
 
-        if(prefManager.getDesignationCode().equals("153")) {
-            holder.binding.takeAction.setVisibility(View.VISIBLE);
-        }else {
+
+        if(listFilteredValue.get(position).getAction_status() != null && listFilteredValue.get(position).getAction_status().equals("Y")) {
+            holder.binding.atrStatus.setText("Completed");
+            holder.binding.atrStatus.setTextColor(context.getResources().getColor(R.color.account_status_green_color));
             holder.binding.takeAction.setVisibility(View.GONE);
+            holder.binding.check.setVisibility(View.VISIBLE);
+        }else {
+            holder.binding.atrStatus.setText("Pending");
+            holder.binding.atrStatus.setTextColor(context.getResources().getColor(R.color.grey_8));
+            holder.binding.check.setVisibility(View.GONE);
+            if(prefManager.getDesignationCode().equals("153")) {
+                holder.binding.takeAction.setVisibility(View.VISIBLE);
+            }else {
+                holder.binding.takeAction.setVisibility(View.GONE);
+            }
         }
         if(String.valueOf(listFilteredValue.get(position).getWork_name()).length() > 5) {
             Utils.addReadMore(context, "Activity : "+String.valueOf(listFilteredValue.get(position).getWork_name()), holder.binding.workName, 0);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(prefManager.getDesignationCode().equals("153")) {
-                    Intent intent = new Intent(context, SaveATRWorkDetailsActivity.class);
-                    intent.putExtra("dcode", listFilteredValue.get(position).getDistrictCode());
-                    intent.putExtra("bcode", listFilteredValue.get(position).getBlockCode());
-                    intent.putExtra("pvcode", listFilteredValue.get(position).getPvCode());
-                    intent.putExtra("hab_code", listFilteredValue.get(position).getHabCode());
-                    intent.putExtra("scheme_group_id", listFilteredValue.get(position).getScheme_group_id());
-                    intent.putExtra("work_group_id", listFilteredValue.get(position).getWork_group_id());
-                    intent.putExtra("work_type_id", listFilteredValue.get(position).getWork_type_id());
-                    intent.putExtra("scheme_id", listFilteredValue.get(position).getSchemeSequentialID());
-                    intent.putExtra("fin_year", listFilteredValue.get(position).getFinancialYear());
-                    intent.putExtra("work_id", listFilteredValue.get(position).getWork_id());
-                    intent.putExtra("inspection_id", listFilteredValue.get(position).getInspection_id());
-                    intent.putExtra("work_name", listFilteredValue.get(position).getWork_name());
-                    intent.putExtra("as_value", listFilteredValue.get(position).getAs_value());
-                    intent.putExtra("ts_value", listFilteredValue.get(position).getTs_value());
-                    intent.putExtra("current_stage_of_work", listFilteredValue.get(position).getCurrent_stage_of_work());
-                    intent.putExtra("is_high_value", listFilteredValue.get(position).getIs_high_value());
-                    intent.putExtra("onOffType", onOffType);
-                    intent.putExtra("type", "atr");
-                    intent.putExtra("flag", "");
-                    context.startActivity(intent);
-                }
-
-            }
-        });
         holder.binding.takeAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,9 +149,7 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
             public void onClick(View v) {
 
                 if(Utils.isOnline()){
-                    ((ATRWorkList)context).getWorkReportDetails(String.valueOf( listFilteredValue.get(position).getWork_id()), listFilteredValue.get(position).getInspection_id());
-
-
+                    ((ATRWorkList)context).getWorkReportDetails(listFilteredValue.get(position).getAction_status(),String.valueOf( listFilteredValue.get(position).getWork_id()), listFilteredValue.get(position).getInspection_id(), listFilteredValue.get(position).getAction_taken_id());
                 }else {
                     Utils.showAlert(context,context.getResources().getString(R.string.internet_connection_not_available_please_turn_on_or_offline));
                 }

@@ -345,10 +345,22 @@
                           tools:ignore="Autofill,TextFields" />
 
                     </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:id="@+id/type_text"
+                        android:layout_height="wrap_content"
+                        android:text="@string/type_txt"
+                        android:textColor="@color/subscription_type_red_color"
+                        android:padding="@dimen/_5sdp"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/_12sdp"
+                        />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:weightSum="2"
+                        android:id="@+id/speech_layout"
                         android:layout_marginLeft="@dimen/margin_left_20dp"
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/margin_left_20dp"

@@ -161,13 +161,26 @@
                         android:layout_marginRight="@dimen/_10sdp"
                         android:layout_marginTop="-20dp"
                         android:layout_below="@+id/date_pick_layout">
+
                         <TextView
                             android:gravity="center"
-                            android:padding="@dimen/_8sdp"
-                            android:textSize="@dimen/_12sdp"
+                            android:padding="@dimen/_5sdp"
+                            android:textSize="@dimen/_11sdp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:id="@+id/header_tv"
+                            android:text="block"
+                            android:textColor="@color/text_color"
+                            android:textColorHint="@color/text_color"
+                            tools:ignore="RtlSymmetry" />
+                        <TextView
+                            android:gravity="center"
+                            android:padding="@dimen/_5sdp"
+                            android:textSize="@dimen/_11sdp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@+id/header_tv"
                             android:id="@+id/total_count"
                             android:text="Total Inspected Works"
                             android:textColor="@color/text_color"

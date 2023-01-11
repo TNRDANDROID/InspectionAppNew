@@ -78,6 +78,10 @@ public class PrefManager {
     private static final String GENDER_LIST= "GENDER_LIST";
     private static final String APP_URL= "APP_URL";
     private static final String APP_BACK= "APP_BACK";
+    private static final String SATISFIED= "SATISFIED";
+    private static final String UNSATISFIED= "UNSATISFIED";
+    private static final String NEED_IMPROVEMENT= "NEED_IMPROVEMENT";
+    private static final String TOTAL_INSPECTION= "TOTAL_INSPECTION";
     public PrefManager(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(AppConstant.PREF_NAME, PRIVATE_MODE);
@@ -624,5 +628,37 @@ public class PrefManager {
 
     public String   getAppBack() {
         return pref.getString(APP_BACK, null);
+    }
+    public void setSatisfied(String s) {
+        editor.putString(SATISFIED, s);
+        editor.commit();
+    }
+
+    public String getSatisfied() {
+        return pref.getString(SATISFIED, null);
+    }
+    public void setUnsatisfied(String s) {
+        editor.putString(UNSATISFIED, s);
+        editor.commit();
+    }
+
+    public String getUnsatisfied() {
+        return pref.getString(UNSATISFIED, null);
+    }
+    public void setNeedImprovement(String s) {
+        editor.putString(NEED_IMPROVEMENT, s);
+        editor.commit();
+    }
+
+    public String getNeedImprovement() {
+        return pref.getString(NEED_IMPROVEMENT, null);
+    }
+    public void setTotalInspection(String s) {
+        editor.putString(TOTAL_INSPECTION, s);
+        editor.commit();
+    }
+
+    public String getTotalInspection() {
+        return pref.getString(TOTAL_INSPECTION, null);
     }
 }

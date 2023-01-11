@@ -63,7 +63,7 @@ public class DashboardVillageListAdapter extends RecyclerView.Adapter<DashboardV
 
 
         holder.binding.villageName.setText(String.valueOf(listFilteredValue.get(position).getPvName()));
-        holder.binding.totalTv.setText("Total Count Of Inspection ("+String.valueOf(listFilteredValue.get(position).getTotal_cout())+")");
+        holder.binding.totalTv.setText("Total Inspected Works ("+String.valueOf(listFilteredValue.get(position).getTotal_cout())+")");
         holder.binding.satisfiedCount.setText(String.valueOf(listFilteredValue.get(position).getSatisfied_count()));
         holder.binding.unSatisfiedCount.setText(String.valueOf(listFilteredValue.get(position).getUnsatisfied_count()));
         holder.binding.improvementCount.setText(String.valueOf(listFilteredValue.get(position).getNeedimprovement_count()));

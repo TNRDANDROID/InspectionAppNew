@@ -138,9 +138,44 @@
                                 android:id="@+id/fin_year"/>-->
 
                         </RelativeLayout>
+                        <RelativeLayout
+                            android:padding="@dimen/_3sdp"
+                            android:id="@+id/heading_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:gravity="start"
+                                android:textSize="@dimen/_11sdp"
+                                android:id="@+id/header_tv"
+                                android:textColor="@color/grey_10"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_gravity="start"
+                                android:text="state - " />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="@dimen/_11sdp"
+                                android:layout_toRightOf="@+id/header_tv"
+                                android:textColor="@color/primary_text_color2"
+                                android:gravity="start"
+                                android:textStyle="bold"
+                                android:paddingRight="@dimen/_3sdp"
+                                android:paddingTop="@dimen/_3sdp"
+                                android:paddingBottom="@dimen/_3sdp"
+                                android:id="@+id/header_txt"/>
+                        </RelativeLayout>
 
                         <RelativeLayout
-                            android:padding="@dimen/_5sdp"
+                            android:paddingLeft="@dimen/_3sdp"
+                            android:paddingBottom="@dimen/_3sdp"
+                            android:paddingRight="@dimen/_3sdp"
                             android:id="@+id/total_inspection_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -152,6 +187,7 @@
                                 android:padding="@dimen/_3sdp"
                                 android:gravity="start"
                                 android:id="@+id/total_tv"
+                                android:textSize="@dimen/_11sdp"
                                 android:textColor="@color/grey_10"
                                 android:layout_marginLeft="@dimen/_10sdp"
                                 android:layout_gravity="start"
@@ -165,6 +201,7 @@
                                 android:textColor="@color/primary_text_color2"
                                 android:gravity="start"
                                 android:textStyle="bold"
+                                android:textSize="@dimen/_11sdp"
                                 android:paddingRight="@dimen/_3sdp"
                                 android:paddingTop="@dimen/_3sdp"
                                 android:paddingBottom="@dimen/_3sdp"

@@ -271,15 +271,12 @@ public class dbData {
         values.put("description", modelClass.getDescription());
         values.put("inspection_by_officer", modelClass.getInspection_by_officer());
         values.put("inspection_by_officer_designation", modelClass.getInspection_by_officer_designation());
-        values.put("satisfied_count", modelClass.getSatisfied_count());
-        values.put("unsatisfied_count", modelClass.getUnsatisfied_count());
-        values.put("need_improvement_count", modelClass.getNeedimprovement_count());
-        values.put("total_count", modelClass.getTotal_cout());
-        values.put("inspection_by_officer_designation", modelClass.getInspection_by_officer_designation());
         values.put("work_type_name", modelClass.getWork_type_name());
         values.put("dname", modelClass.getDistrictName());
         values.put("bname", modelClass.getBlockName());
         values.put("pvname", modelClass.getPvName());
+        values.put("action_status", modelClass.getAction_status());
+        values.put("action_taken_id", modelClass.getAction_taken_id());
         id = db.insert(DBHelper.ATR_WORK_LIST,null,values);
 
         Log.d("Insert_id_atr_work", String.valueOf(id));
@@ -567,14 +564,12 @@ public class dbData {
                     card.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
                     card.setInspection_by_officer(cursor.getString(cursor.getColumnIndexOrThrow("inspection_by_officer")));
                     card.setWork_type_name(cursor.getString(cursor.getColumnIndexOrThrow("work_type_name")));
-                    card.setTotal_cout(cursor.getInt(cursor.getColumnIndexOrThrow("total_count")));
-                    card.setSatisfied_count(cursor.getInt(cursor.getColumnIndexOrThrow("satisfied_count")));
-                    card.setUnsatisfied_count(cursor.getInt(cursor.getColumnIndexOrThrow("unsatisfied_count")));
-                    card.setNeedimprovement_count(cursor.getInt(cursor.getColumnIndexOrThrow("need_improvement_count")));
                     card.setInspection_by_officer_designation(cursor.getString(cursor.getColumnIndexOrThrow("inspection_by_officer_designation")));
                     card.setDistrictName(cursor.getString(cursor.getColumnIndexOrThrow("dname")));
                     card.setBlockName(cursor.getString(cursor.getColumnIndexOrThrow("bname")));
                     card.setPvName(cursor.getString(cursor.getColumnIndexOrThrow("pvname")));
+                    card.setAction_taken_id(cursor.getString(cursor.getColumnIndexOrThrow("action_taken_id")));
+                    card.setAction_status(cursor.getString(cursor.getColumnIndexOrThrow("action_status")));
 
                     cards.add(card);
                 }

@@ -130,7 +130,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
 
         Calendar c = Calendar.getInstance();
         c.setTime(startDate);
-        c.add(Calendar.DATE, -30);
+        c.add(Calendar.DATE, -60);
         Date expDate = c.getTime();
         fromDate= df.format(expDate);
         binding.date.setText(fromDate+" to "+toDate);
@@ -677,18 +677,15 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         // Pie Chart Event
 
         ArrayList<PieEntry> Count = new ArrayList<>();
-        //Add the Values in the Array list
-        Count.add(new PieEntry(satisfied,"Satisfied"));
-        Count.add(new PieEntry(unsatisfied,"UnSatisfied"));
-        Count.add(new PieEntry(need_improvement,"Need Improvement"));
+        ArrayList<Integer> Colors = new ArrayList<>();
+
+        //Set Diffrent Colorss For the Values
+        int need_improvement_color = 0xFF1E90FF;
+        int unsatisfied_color = 0xFFFFA500;
+        int satisfied_color = 0xFF00FA9A;
 
         PieDataSet pieDataSet = new PieDataSet( Count, "");
 
-        //Set Diffrent Colorss For the Values
-        int c = 0xFF1E90FF;
-        int b = 0xFFFFA500;
-        int a = 0xFF00FA9A;
-        pieDataSet.setColors(a,b,c);
         pieDataSet.setValueTextColor(Color.BLACK);
         pieDataSet.setValueTextSize(15f);
         pieDataSet.setDrawIcons(false);
@@ -701,6 +698,26 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
             }
         };
         pieDataSet.setValueFormatter(vf);
+
+        if(satisfied!=0)
+        {
+            Count.add(new PieEntry(satisfied,"Satisfied",1));
+            Colors.add(satisfied_color);
+        }
+        if(unsatisfied!=0)
+        {
+            Count.add(new PieEntry(unsatisfied,"UnSatisfied" ,2));
+            Colors.add(unsatisfied_color);
+
+        }
+        if(need_improvement!=0)
+        {
+            Count.add(new PieEntry(need_improvement,"Need Improvement", 3));
+            Colors.add(need_improvement_color);
+
+        }
+
+        pieDataSet.setColors(Colors);
 
         // LEGEND SETTINGS
         Legend l = binding.graph.getLegend();
@@ -720,7 +737,7 @@ public class ViewSavedOtherWorkList extends AppCompatActivity implements Api.Ser
         // Postioning CENTER TExt
 //        binding.pieChart.setCenterTextOffset(0, -20);
 //        binding.pieChart.setCenterText(String.valueOf(total_inspection_count));
-        binding.totalTv.setText("Total Count Of Inspection ("+String.valueOf(total_inspection_count)+")");
+        binding.totalTv.setText("Total Inspected Works ("+String.valueOf(total_inspection_count)+")");
         binding.graph.setCenterTextSize(15f);
         binding.graph.setCenterTextSizePixels(35);
         binding.graph.animate();

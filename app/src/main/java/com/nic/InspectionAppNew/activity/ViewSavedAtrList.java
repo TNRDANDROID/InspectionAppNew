@@ -154,7 +154,7 @@ public class ViewSavedAtrList extends AppCompatActivity implements View.OnClickL
 
         Calendar c = Calendar.getInstance();
         c.setTime(startDate);
-        c.add(Calendar.DATE, -30);
+        c.add(Calendar.DATE, -60);
         Date expDate = c.getTime();
         fromDate= df.format(expDate);
         binding.date.setText(fromDate+" to "+toDate);
@@ -931,7 +931,7 @@ public class ViewSavedAtrList extends AppCompatActivity implements View.OnClickL
         //To hide Labels
         binding.pieChart.setDrawSliceText(false);
 
-        binding.totalTv.setText("Total Count Of Inspection ("+String.valueOf(total_inspection_count)+")");
+        binding.totalTv.setText("Total Inspected Works ("+String.valueOf(total_inspection_count)+")");
         binding.pieChart.setCenterTextSize(15f);
         binding.pieChart.setCenterTextSizePixels(35);
         binding.pieChart.animate();

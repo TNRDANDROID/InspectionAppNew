@@ -245,11 +245,11 @@ public class WorkList extends AppCompatActivity implements Api.ServerResponseLis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
-                    prefManager.setFinancialyearName(FinYear.get(position).getFinancialYear());
+//                    prefManager.setFinancialyearName(FinYear.get(position).getFinancialYear());
                     workListBinding.schemeSpinner.setSelection(0);
 
                 }else {
-                    prefManager.setFinancialyearName("");
+//                    prefManager.setFinancialyearName("");
                     workListBinding.schemeSpinner.setSelection(0);
                 }
             }

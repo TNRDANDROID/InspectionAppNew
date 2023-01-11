@@ -98,7 +98,9 @@ public class VillageListReportActivity extends AppCompatActivity implements Api.
         bname=getIntent().getStringExtra("bname");
 
         binding.date.setText(fromDate+" to "+toDate);
-        binding.totalTv.setText("Total Inspections of "+bname+" - ");
+        binding.headerTv.setText("Block - ");
+        binding.headerTxt.setText(bname);
+        binding.totalTv.setText("Total Inspected Works - ");
         if(flag.equals("B")){
             binding.dateLayout.setVisibility(View.VISIBLE);
             binding.graphDetails.setVisibility(View.VISIBLE);
@@ -293,6 +295,8 @@ public class VillageListReportActivity extends AppCompatActivity implements Api.
                             String dname = jsonArray.getJSONObject(i).getString("dname");
                             String bname = jsonArray.getJSONObject(i).getString("bname");
                             String pvname = jsonArray.getJSONObject(i).getString("pvname");
+                            String action_taken_id = jsonArray.getJSONObject(i).getString("action_taken_id");
+                            String action_status = jsonArray.getJSONObject(i).getString("action_status");
 
 
                             ModelClass modelClass = new ModelClass();
@@ -312,7 +316,8 @@ public class VillageListReportActivity extends AppCompatActivity implements Api.
                             modelClass.setDistrictName(dname);
                             modelClass.setBlockName(bname);
                             modelClass.setPvName(pvname);
-
+                            modelClass.setAction_taken_id(action_taken_id);
+                            modelClass.setAction_status(action_status);
 
                             workList.add(modelClass);
 
@@ -398,17 +403,20 @@ public class VillageListReportActivity extends AppCompatActivity implements Api.
                 }
 
             }
+            int totalCount=s+us+nm;
             ModelClass modelClass = new ModelClass();
             modelClass.setDistrictCode(villageList.get(i).getDistrictCode());
             modelClass.setBlockCode(villageList.get(i).getBlockCode());
             modelClass.setBlockName(villageList.get(i).getBlockName());
             modelClass.setPvCode(villageList.get(i).getPvCode());
             modelClass.setPvName(villageList.get(i).getPvName());
-            modelClass.setTotal_cout(s+us+nm);
+            modelClass.setTotal_cout(totalCount);
             modelClass.setSatisfied_count(s);
             modelClass.setUnsatisfied_count(us);
             modelClass.setNeedimprovement_count(nm);
-            villageListDashboardData.add(modelClass);
+            if(totalCount>0){
+                villageListDashboardData.add(modelClass);
+            }
             s=0;
             us=0;
             nm=0;

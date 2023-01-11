@@ -23,13 +23,8 @@
 
             android:visibility="visible"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RelativeLayout
-                android:visibility="visible"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
+            android:layout_height="wrap_content"
+            android:id="@+id/corner_bg">
 
                 <ImageView
                     android:id="@+id/circle1"
@@ -41,10 +36,15 @@
                     android:background="@drawable/quater_circle_shape_color"
                     />
 
-
-            </RelativeLayout>
-
         </RelativeLayout>
+        <ImageView
+            android:id="@+id/check"
+            android:layout_width="@dimen/_180sdp"
+            android:layout_height="@dimen/_180sdp"
+            android:layout_centerInParent="true"
+            android:padding="@dimen/_55sdp"
+            android:background="@drawable/ic_check"
+            />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -308,7 +308,6 @@
                         android:layout_width="match_parent"
                         android:weightSum="2"
                         android:padding="@dimen/_3sdp"
-                        android:layout_marginBottom="@dimen/_5sdp"
                         android:id="@+id/status_layout"
                         android:layout_height="wrap_content">
                         <TextView
@@ -336,6 +335,45 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/status"
                             android:gravity="start"
+                            android:textColor="@color/grey_8"
+                            android:textSize="@dimen/_11sdp"
+                            />
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:weightSum="2"
+                        android:padding="@dimen/_3sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:id="@+id/atr_status_layout"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.8"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/atr_status_h"
+                            android:gravity="start"
+                            android:textColor="@color/grey_10"
+                            android:textSize="@dimen/_11sdp"
+                            android:text="@string/atr_status"
+                            />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.2"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/grey_10"
+                            android:textSize="@dimen/_11sdp"
+                            android:text="@string/colan_symbol"
+                            />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/atr_status"
+                            android:gravity="start"
+                            android:textStyle="bold"
                             android:textColor="@color/grey_8"
                             android:textSize="@dimen/_11sdp"
                             />

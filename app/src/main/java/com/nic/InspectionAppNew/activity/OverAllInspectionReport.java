@@ -184,7 +184,7 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
 
             Calendar c = Calendar.getInstance();
             c.setTime(startDate);
-            c.add(Calendar.DATE, -30);
+            c.add(Calendar.DATE, -60);
             Date expDate = c.getTime();
             fromDate= df.format(expDate);
 
@@ -226,10 +226,16 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
     }
 
     public void getDistrictList() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("DistrictList", Api.Method.POST, UrlGenerator.getServicesListUrl(), districtListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(Utils.isOnline()){
+            try {
+                new ApiService(this).makeJSONObjectRequest("DistrictList", Api.Method.POST, UrlGenerator.getServicesListUrl(), districtListJsonParams(), "not cache", this);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+        else {
+            Utils.showAlert(OverAllInspectionReport.this,"No Internet");
         }
     }
     public JSONObject districtListJsonParams() throws JSONException {
@@ -253,10 +259,15 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
     public void getBlockList(String dcode,String dname_tv, String flag_tv) {
         flag=flag_tv;
         dname=dname_tv;
-        try {
-            new ApiService(this).makeJSONObjectRequest("BlockList", Api.Method.POST, UrlGenerator.getServicesListUrl(), blockListJsonParams(dcode), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(Utils.isOnline()){
+            try {
+                new ApiService(this).makeJSONObjectRequest("BlockList", Api.Method.POST, UrlGenerator.getServicesListUrl(), blockListJsonParams(dcode), "not cache", this);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            Utils.showAlert(OverAllInspectionReport.this,"No Internet");
         }
     }
     public JSONObject blockListJsonParams(String dcode) throws JSONException {
@@ -378,6 +389,8 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                             String dname = jsonArray.getJSONObject(i).getString("dname");
                             String bname = jsonArray.getJSONObject(i).getString("bname");
                             String pvname = jsonArray.getJSONObject(i).getString("pvname");
+                            String action_taken_id = jsonArray.getJSONObject(i).getString("action_taken_id");
+                            String action_status = jsonArray.getJSONObject(i).getString("action_status");
 
 
                             ModelClass modelClass = new ModelClass();
@@ -397,6 +410,8 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                             modelClass.setDistrictName(dname);
                             modelClass.setBlockName(bname);
                             modelClass.setPvName(pvname);
+                            modelClass.setAction_taken_id(action_taken_id);
+                            modelClass.setAction_status(action_status);
 
 
                             workList.add(modelClass);
@@ -490,14 +505,18 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                 }
 
             }
+            int totalCount=s+us+nm;
             ModelClass districtListValues = new ModelClass();
             districtListValues.setDistrictCode(districtList.get(i).getDistrictCode());
             districtListValues.setDistrictName(districtList.get(i).getDistrictName());
-            districtListValues.setTotal_cout(s+us+nm);
+            districtListValues.setTotal_cout(totalCount);
             districtListValues.setSatisfied_count(s);
             districtListValues.setUnsatisfied_count(us);
             districtListValues.setNeedimprovement_count(nm);
-            districtListDashboardData.add(districtListValues);
+            if(totalCount>0){
+                districtListDashboardData.add(districtListValues);
+            }
+
             s=0;
             us=0;
             nm=0;
@@ -534,7 +553,9 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
         tot=sat+usat+nimp;
         total=String.valueOf(tot);
         binding.totalCountGraph.setText(total);
-        binding.totalTv.setText("Total Inspections of State - ");
+        binding.headerTv.setText("State - ");
+        binding.headerTxt.setText("Tamil Nadu");
+        binding.totalTv.setText("Total Inspected Works - ");
         showpieChart(sat,usat,nimp,tot);
     }
     public void getBlocksReport(ArrayList<ModelClass> worklist) {
@@ -555,15 +576,18 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
                 }
 
             }
+            int totalCount=s+us+nm;
             ModelClass modelClass = new ModelClass();
             modelClass.setDistrictCode(blockList.get(i).getDistrictCode());
             modelClass.setBlockCode(blockList.get(i).getBlockCode());
             modelClass.setBlockName(blockList.get(i).getBlockName());
-            modelClass.setTotal_cout(s+us+nm);
+            modelClass.setTotal_cout(totalCount);
             modelClass.setSatisfied_count(s);
             modelClass.setUnsatisfied_count(us);
             modelClass.setNeedimprovement_count(nm);
-            blockListDashboardData.add(modelClass);
+            if(totalCount>0){
+                blockListDashboardData.add(modelClass);
+            }
             s=0;
             us=0;
             nm=0;
@@ -604,7 +628,9 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
         tot=sat+usat+nimp;
         total=String.valueOf(tot);
         binding.totalCountGraph.setText(total);
-        binding.totalTv.setText("Total Inspections of "+dname+" - ");
+        binding.headerTv.setText("District - ");
+        binding.headerTxt.setText(dname);
+        binding.totalTv.setText("Total Inspected Works - ");
         showpieChart(sat,usat,nimp,tot);
 
 
@@ -756,19 +782,18 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
 
     private void showpieChart(int satisfied,int unsatisfied,int need_improvement,int total_inspection_count){
 
+        // Pie Chart Event
+
         ArrayList<PieEntry> Count = new ArrayList<>();
-        //Add the Values in the Array list
-        Count.add(new PieEntry(satisfied,"Satisfied"));
-        Count.add(new PieEntry(unsatisfied,"UnSatisfied"));
-        Count.add(new PieEntry(need_improvement,"Need Improvement"));
+        ArrayList<Integer> Colors = new ArrayList<>();
+
+        //Set Diffrent Colorss For the Values
+        int need_improvement_color = 0xFF1E90FF;
+        int unsatisfied_color = 0xFFFFA500;
+        int satisfied_color = 0xFF00FA9A;
 
         PieDataSet pieDataSet = new PieDataSet( Count, "");
 
-        //Set Diffrent Colorss For the Values
-        int c = 0xFF1E90FF;
-        int b = 0xFFFFA500;
-        int a = 0xFF00FA9A;
-        pieDataSet.setColors(a,b,c);
         pieDataSet.setValueTextColor(Color.BLACK);
         pieDataSet.setValueTextSize(15f);
         pieDataSet.setDrawIcons(false);
@@ -782,6 +807,25 @@ public class OverAllInspectionReport extends AppCompatActivity implements Api.Se
         };
         pieDataSet.setValueFormatter(vf);
 
+        if(satisfied!=0)
+        {
+            Count.add(new PieEntry(satisfied,"Satisfied",1));
+            Colors.add(satisfied_color);
+        }
+        if(unsatisfied!=0)
+        {
+            Count.add(new PieEntry(unsatisfied,"UnSatisfied" ,2));
+            Colors.add(unsatisfied_color);
+
+        }
+        if(need_improvement!=0)
+        {
+            Count.add(new PieEntry(need_improvement,"Need Improvement", 3));
+            Colors.add(need_improvement_color);
+
+        }
+
+        pieDataSet.setColors(Colors);
         // LEGEND SETTINGS
         Legend l = binding.pieChart.getLegend();
         l.setForm(Legend.LegendForm.CIRCLE); // set what type of form/shape should be used

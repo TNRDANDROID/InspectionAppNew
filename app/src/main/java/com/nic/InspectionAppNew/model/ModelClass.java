@@ -63,6 +63,7 @@ public class ModelClass implements Serializable {
     private String inspectedDate;
     private String action_taken_id;
     private String action_taken_date;
+    private String action_status;
 
 
     private String as_date;
@@ -91,6 +92,14 @@ public class ModelClass implements Serializable {
     int unsatisfied_count;
     int needimprovement_count;
 
+
+    public String getAction_status() {
+        return action_status;
+    }
+
+    public void setAction_status(String action_status) {
+        this.action_status = action_status;
+    }
 
     public String getAction_taken_date() {
         return action_taken_date;

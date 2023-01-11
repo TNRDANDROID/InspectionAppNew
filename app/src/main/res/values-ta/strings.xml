@@ -224,6 +224,7 @@
     <string name="need_improvement">Need Improvement</string>
     <string name="not_editable">(Not Editable)</string>
     <string name="english_speech">English Speech</string>
+    <string name="type_txt">Type your description manually </string>
     <string name="tamil_speech">Tamil Speech</string>
     <string name="work_details">Work Details</string>
     <string name="rdpr_works">RDPR Works</string>
@@ -236,7 +237,7 @@
     <string name="selected_village">Selected Village</string>
     <string name="selected_scheme">Selected Scheme</string>
     <string name="download">Download</string>
-    <string name="download_txt">Download your work list here… </string>
+    <string name="download_txt">Click here to download inspected works… </string>
     <string name="skip">Skip</string>
     <string name="work_id">Work id</string>
     <string name="work_name">Work Name</string>
@@ -252,6 +253,7 @@
     <string name="inspected_date">Inspected Date</string>
     <string name="action_taken_date">Action Taken Date</string>
     <string name="status">Status</string>
+    <string name="atr_status">ATR Status</string>
     <string name="view_report">View Report</string>
     <string name="inspection_taken">Inspection Taken</string>
     <string name="action_taken_report">Action Taken Report</string>

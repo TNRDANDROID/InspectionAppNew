@@ -300,12 +300,12 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         homeScreenBinding.navigationLayout.name.setText(prefManager.getName());
         if(prefManager.getDesignationCode().equals("153")){
             homeScreenBinding.atrLayoutView.setVisibility(View.VISIBLE);
-            homeScreenBinding.navigationLayout.overAllInspectionReport.setVisibility(View.VISIBLE);
-            homeScreenBinding.navigationLayout.vv3.setVisibility(View.VISIBLE);
+            homeScreenBinding.navigationLayout.ATR.setVisibility(View.VISIBLE);
+            homeScreenBinding.navigationLayout.vv8.setVisibility(View.VISIBLE);
         }else {
             homeScreenBinding.atrLayoutView.setVisibility(View.GONE);
-            homeScreenBinding.navigationLayout.overAllInspectionReport.setVisibility(View.GONE);
-            homeScreenBinding.navigationLayout.vv3.setVisibility(View.GONE);
+            homeScreenBinding.navigationLayout.ATR.setVisibility(View.GONE);
+            homeScreenBinding.navigationLayout.vv8.setVisibility(View.GONE);
         }
         if(prefManager.getLevels().equals("S")){
             if(prefManager.getStateName()!=null && !prefManager.getStateName().isEmpty()){
@@ -341,6 +341,22 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         }else {
             homeScreenBinding.navigationLayout.userImg.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_user_icon));
         }
+        if (!Utils.isOnline()) {
+            String satisfied_count = prefManager.getSatisfied();
+            String un_satisfied_count = prefManager.getUnsatisfied();
+            String need_improvement_count = prefManager.getNeedImprovement();
+            String total_count = prefManager.getTotalInspection();
+            String fin_year = prefManager.getFinancialyearName();
+            homeScreenBinding.satisfiedCountGraph.setText(String.valueOf(satisfied_count));
+            homeScreenBinding.unSatisfiedCountGraph.setText(String.valueOf(un_satisfied_count));
+            homeScreenBinding.needImprovementCountGraph.setText(String.valueOf(need_improvement_count));
+            homeScreenBinding.totalCountGraph.setText(String.valueOf(total_count));
+            homeScreenBinding.totalCount1.setText(String.valueOf(total_count));
+//                            homeScreenBinding.totalTv.setText("Total ("+fin_year+")");
+            homeScreenBinding.finYear.setText(fin_year);
+            showPieChart(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count),Integer.parseInt(need_improvement_count), Integer.parseInt(total_count));
+
+        }
     }
 
     private void getProfileData() {
@@ -372,10 +388,15 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
     }
 
     public void getStageList() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("StageList", Api.Method.POST, UrlGenerator.getMainService(), stageListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(Utils.isOnline()){
+            try {
+                new ApiService(this).makeJSONObjectRequest("StageList", Api.Method.POST, UrlGenerator.getMainService(), stageListJsonParams(), "not cache", this);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            Utils.showAlert(MainHomePage.this,"No Internet");
         }
     }
     public JSONObject stageListJsonParams() throws JSONException {
@@ -494,7 +515,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
         if (Utils.isOnline()) {
             getDashboardData();
         }else {
-            showAlert(MainHomePage.this,"No Internet Connection!");
+//            showAlert(MainHomePage.this,"No Internet Connection!");
         }
 
 
@@ -672,6 +693,11 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
                             homeScreenBinding.totalCount1.setText(String.valueOf(total_inspection_count));
 //                            homeScreenBinding.totalTv.setText("Total ("+fin_year+")");
                             homeScreenBinding.finYear.setText(fin_year);
+                            prefManager.setSatisfied(satisfied_count);
+                            prefManager.setUnsatisfied(un_satisfied_count);
+                            prefManager.setNeedImprovement(need_improvement_count);
+                            prefManager.setTotalInspection(String.valueOf(total_inspection_count));
+                            prefManager.setFinancialyearName(fin_year);
                             showPieChart(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count),Integer.parseInt(need_improvement_count),total_inspection_count);
                         } catch (JSONException e){
 
@@ -1058,7 +1084,7 @@ public class MainHomePage extends AppCompatActivity implements Api.ServerRespons
 
             Calendar c = Calendar.getInstance();
             c.setTime(startDate);
-            c.add(Calendar.DATE, -30);
+            c.add(Calendar.DATE, -60);
             Date expDate = c.getTime();
             String fromDate= df.format(expDate);
 

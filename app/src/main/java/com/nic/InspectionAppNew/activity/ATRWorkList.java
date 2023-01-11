@@ -49,14 +49,8 @@ import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.nic.InspectionAppNew.Interface.DateInterface;
 import com.nic.InspectionAppNew.R;
 import com.nic.InspectionAppNew.adapter.ATRWorkListAdapter;
@@ -109,6 +103,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
     String WorkId="";
     String flag="";
     String inspectionID="";
+    String actionTakenId="";
     String pdf_string_actual ="";
     private static final int MY_REQUEST_CODE_PERMISSION = 1000;
     ProgressDialog progressBar;
@@ -137,7 +132,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         Bundle bundle = this.getIntent().getExtras();
         flag=getIntent().getStringExtra("flag");
         chart=binding.barChart;
-        setSkillGraph();
+
         dbData.open();
         onOffType=prefManager.getOnOffType();
         recyclerView = binding.recycler;
@@ -178,7 +173,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
 
                 Calendar c = Calendar.getInstance();
                 c.setTime(startDate);
-                c.add(Calendar.DATE, -30);
+                c.add(Calendar.DATE, -60);
                 Date expDate = c.getTime();
                 fromDate= df.format(expDate);
                 binding.date.setText(fromDate+" to "+toDate);
@@ -343,7 +338,7 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
     }
     public void getWorkDetails() {
         try {
-            new ApiService(this).makeJSONObjectRequest("WorkDetails", Api.Method.POST, UrlGenerator.getMainService(), workDetailsJsonParams(), "not cache", this);
+            new  ApiService(this).makeJSONObjectRequest("WorkDetails", Api.Method.POST, UrlGenerator.getMainService(), workDetailsJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -406,13 +401,16 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                 recyclerView.setVisibility(View.VISIBLE);
                 binding.notFoundTv.setVisibility(View.GONE);
                 for(int i=0;i<worklist.size();i++){
-                    if(worklist.get(i).getWork_status_id()==3){
+                    if(worklist.get(i).getWork_status_id()==3 && worklist.get(i).getAction_status().equals("N")){
                         need_improvement_workList.add(worklist.get(i));
-                    }else if(worklist.get(i).getWork_status_id()==2){
+                    }else if(worklist.get(i).getWork_status_id()==2 && worklist.get(i).getAction_status().equals("N")){
                         unsatisfied_workList.add(worklist.get(i));
                     }
                 }
-                setGraphData(worklist.get(0).getSatisfied_count(),worklist.get(0).getUnsatisfied_count(),worklist.get(0).getNeedimprovement_count(),worklist.get(0).getTotal_cout());
+                binding.unSatisfiedCount.setText(String.valueOf(unsatisfied_workList.size()));
+                binding.improvementCount.setText(String.valueOf(need_improvement_workList.size()));
+                binding.headerTv.setText("Block -  "+prefManager.getBlockName());
+                binding.totalCount.setText("Total Inspected Works -  "+ String.valueOf(unsatisfied_workList.size()+need_improvement_workList.size()));
 
                 if(WorkType.equalsIgnoreCase("need_improvement")){
                     System.out.println("need_improvement_workList >>"+need_improvement_workList.size());
@@ -488,6 +486,8 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                             String dname = jsonArray.getJSONObject(i).getString("dname");
                             String bname = jsonArray.getJSONObject(i).getString("bname");
                             String pvname = jsonArray.getJSONObject(i).getString("pvname");
+                            String action_taken_id = ""/*jsonArray.getJSONObject(i).getString("action_taken_id")*/;
+                            String action_status = "N"/*jsonArray.getJSONObject(i).getString("action_status")*/;
 
 
                             ModelClass modelClass = new ModelClass();
@@ -507,36 +507,10 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                             modelClass.setDistrictName(dname);
                             modelClass.setBlockName(bname);
                             modelClass.setPvName(pvname);
+                            modelClass.setAction_taken_id(action_taken_id);
+                            modelClass.setAction_status(action_status);
 
                             if(onOffType.equals("offline")){
-                                if(status_wise_count.length()>0){
-
-                                    for(int j=0;j<status_wise_count.length();j++){
-                                        try {
-                                            String satisfied_count = status_wise_count.getJSONObject(j).getString("satisfied");
-                                            String un_satisfied_count = status_wise_count.getJSONObject(j).getString("unsatisfied");
-                                            String need_improvement_count = status_wise_count.getJSONObject(j).getString("need_improvement");
-
-                                            if(satisfied_count.equals("")){
-                                                satisfied_count="0";
-                                            } if(un_satisfied_count.equals("")){
-                                                un_satisfied_count="0";
-                                            } if(need_improvement_count.equals("")){
-                                                need_improvement_count="0";
-                                            }
-                                            int total_inspection_count = /*Integer.parseInt(satisfied_count)+*/Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
-                                            modelClass.setSatisfied_count(Integer.parseInt(satisfied_count));
-                                            modelClass.setUnsatisfied_count(Integer.parseInt(un_satisfied_count));
-                                            modelClass.setNeedimprovement_count(Integer.parseInt(need_improvement_count));
-                                            modelClass.setTotal_cout(total_inspection_count);
-
-                                        } catch (JSONException e){
-
-                                        }
-
-                                    }
-                                }
-
                                 dbData.Insert_atr_workList("offline",modelClass);
                                 prefManager.setKeyDate(fromDate+" to "+toDate);
                             }else {
@@ -550,34 +524,6 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                         Utils.showAlert(ATRWorkList.this, "No Record Found for Corresponding Financial Year");
                     }
 
-                    if(status_wise_count.length()>0){
-
-                        for(int j=0;j<status_wise_count.length();j++){
-                            try {
-                                String satisfied_count = status_wise_count.getJSONObject(j).getString("satisfied");
-                                String un_satisfied_count = status_wise_count.getJSONObject(j).getString("unsatisfied");
-                                String need_improvement_count = status_wise_count.getJSONObject(j).getString("need_improvement");
-
-                                if(satisfied_count.equals("")){
-                                    satisfied_count="0";
-                                } if(un_satisfied_count.equals("")){
-                                    un_satisfied_count="0";
-                                } if(need_improvement_count.equals("")){
-                                    need_improvement_count="0";
-                                }
-                                int total_inspection_count = /*Integer.parseInt(satisfied_count)+*/Integer.parseInt(un_satisfied_count)+Integer.parseInt(need_improvement_count);
-
-                                setGraphData(Integer.parseInt(satisfied_count),Integer.parseInt(un_satisfied_count), Integer.parseInt(need_improvement_count),total_inspection_count);
-
-                            } catch (JSONException e){
-
-                            }
-
-                        }
-                    }
-                    else {
-
-                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -603,12 +549,16 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
                     recyclerView.setVisibility(View.VISIBLE);
                     binding.notFoundTv.setVisibility(View.GONE);
                     for(int i=0;i<worklist.size();i++){
-                        if(worklist.get(i).getWork_status_id()==3){
+                        if(worklist.get(i).getWork_status_id()==3 && worklist.get(i).getAction_status().equals("N") ){
                             need_improvement_workList.add(worklist.get(i));
-                        }else if(worklist.get(i).getWork_status_id()==2){
+                        }else if(worklist.get(i).getWork_status_id()==2 && worklist.get(i).getAction_status().equals("N")){
                             unsatisfied_workList.add(worklist.get(i));
                         }
                     }
+                    binding.unSatisfiedCount.setText(String.valueOf(unsatisfied_workList.size()));
+                    binding.improvementCount.setText(String.valueOf(need_improvement_workList.size()));
+                    binding.headerTv.setText("Block -  "+prefManager.getBlockName());
+                    binding.totalCount.setText("Total Inspected Works -  "+ String.valueOf(unsatisfied_workList.size()+need_improvement_workList.size()));
                     if(WorkType.equalsIgnoreCase("need_improvement")){
                         System.out.println("need_improvement_workList >>"+need_improvement_workList.size());
                         getNeedImprovementWorkList(need_improvement_workList);
@@ -682,30 +632,37 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
 
     }
 
-    public void getWorkReportDetails(String work_id, String inspection_id) {
+    public void getWorkReportDetails(String atrStatus, String work_id, String inspection_id, String action_taken_id) {
         WorkId=work_id;
         inspectionID=inspection_id;
+        actionTakenId=action_taken_id;
         try {
-            new ApiService(this).makeJSONObjectRequest("WorkReport", Api.Method.POST, UrlGenerator.getMainService(), workDetailsJsonParams(work_id,inspection_id), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("WorkReport", Api.Method.POST, UrlGenerator.getMainService(), workDetailsJsonParams(atrStatus,work_id,inspection_id,action_taken_id), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public JSONObject workDetailsJsonParams(String work_id, String inspection_id) throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), workDetailsParams(this,work_id,inspection_id).toString());
+    public JSONObject workDetailsJsonParams(String atrStatus, String work_id, String inspection_id, String action_taken_id) throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), workDetailsParams(this,atrStatus,work_id,inspection_id,action_taken_id).toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
         Log.d("WorkDetails", "" + dataSet);
         return dataSet;
     }
-    public  JSONObject workDetailsParams(Activity activity,String work_id, String inspection_id) throws JSONException {
+    public  JSONObject workDetailsParams(Activity activity,String atrStatus, String work_id, String inspection_id, String action_taken_id) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "get_pdf");
+        if(atrStatus.equals("Y")){
+            dataSet.put(AppConstant.KEY_SERVICE_ID, "get_action_taken_work_pdf");
+            dataSet.put("action_taken_id", action_taken_id);
+        }else {
+            dataSet.put(AppConstant.KEY_SERVICE_ID, "get_pdf");
+        }
         dataSet.put("work_id", work_id);
         dataSet.put("inspection_id", inspection_id);
+
 
         Log.d("WorkDetails", "" + dataSet);
         return dataSet;
@@ -993,8 +950,8 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
             String  success="";
             String title="Inspection";
             String work_id =WorkId;
-            dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+inspectionID+"_"+work_id + ".pdf");
-            path=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+inspectionID+"_"+work_id + ".pdf";
+            dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+inspectionID+"_"+work_id +"_"+actionTakenId + ".pdf");
+            path=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+inspectionID+"_"+work_id +"_"+actionTakenId + ".pdf";
             if (DocumentString != null && !DocumentString.equals("")) {
                 byte[] decodedString = new byte[0];
                 try {
@@ -1137,87 +1094,6 @@ public class ATRWorkList extends AppCompatActivity implements Api.ServerResponse
         progressBar.hide();
     }
 
-    private void setSkillGraph() {
-        chart.setDrawBarShadow(false);
-        chart.setDrawValueAboveBar(false);
-        chart.setDrawBarShadow(false);
-        chart.setPinchZoom(false);
-        chart.setDrawGridBackground(false);
-        chart.getLegend().setEnabled(false);
-        chart.getDescription().setEnabled(false);
-        chart.setFitBars(false);
-        chart.setDoubleTapToZoomEnabled(false);
-        chart.setMinimumHeight(300);
-
-        //Display the axis on the left (contains the labels 1*, 2* and so on)
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setEnabled(true);
-        xAxis.setDrawGridLines(false);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setLabelCount(2);
-
-        String[] vf = {"UnSatisfied", "Need Improvement"};
-
-        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(vf));
-
-        YAxis yRight = chart.getAxisRight();
-        yRight.setDrawAxisLine(true);
-        yRight.setDrawGridLines(false);
-        yRight.setEnabled(true);
-        String[] total_count = {""};
-
-        yRight.setValueFormatter(new IndexAxisValueFormatter(total_count));
-
-        yLeft = chart.getAxisLeft();
-        yLeft.setEnabled(false);
-        BarData data = new BarData();
-        data.setValueTextColor(0xFFFFFFFF);
-        data.setValueTextSize(18f);
-    }
-    private void setGraphData(int satisfied_count, int un_satisfied_count, int need_improvement_count, int total_inspection_count) {
-        binding.unSatisfiedCount.setText(String.valueOf(un_satisfied_count));
-        binding.improvementCount.setText(String.valueOf(need_improvement_count));
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(0f, un_satisfied_count));
-        entries.add(new BarEntry(1f, need_improvement_count));
-
-
-        set1 = new BarDataSet(entries, "DataSet 1");
-
-        set1.setColors(0xFFFFA500,0xFF1E90FF);
-//value format here, here is the overridden method
-        ValueFormatter vf = new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return ""+(int)value;
-            }
-        };
-
-        set1.setValueFormatter(vf);
-        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set1);
-
-        BarData data = new BarData(dataSets);
-        data.setValueTextColor(0xFFFFFFFF);
-        data.setValueTextSize(18f);
-        data.setValueTextSize(total_inspection_count);
-        data.setBarWidth(0.8f);
-        data.getGroupWidth(0f, 0.8f);
-        data.setDrawValues(true);
-        chart.setData(data);
-        //Add animation to the graph
-//        chart.animateY(1000);
-        String us="UnSatisfied \n"+String.valueOf(un_satisfied_count);
-        String ni="Need Improvement \n"+String.valueOf(need_improvement_count);
-        String[] vf1 = {us,ni};
-
-        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(vf1));
-        chart.setTouchEnabled(false);
-        yLeft.setAxisMaximum(total_inspection_count);
-        yLeft.setAxisMinimum(0);
-        chart.invalidate();
-        binding.totalCount.setText("Total Inspection of "+prefManager.getBlockName()+ " ("+String.valueOf(total_inspection_count)+")");
-    }
 
     public void showDatePickerDialog(){
         Utils.showDatePickerDialog(this);
