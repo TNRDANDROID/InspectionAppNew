@@ -97,21 +97,28 @@ public class ATRWorkListAdapter extends RecyclerView.Adapter<ATRWorkListAdapter.
         holder.binding.workTypeName.setText(String.valueOf(listFilteredValue.get(position).getWork_type_name()));
 
 
-        if(listFilteredValue.get(position).getAction_status() != null && listFilteredValue.get(position).getAction_status().equals("Y")) {
-            holder.binding.atrStatus.setText("Completed");
-            holder.binding.atrStatus.setTextColor(context.getResources().getColor(R.color.account_status_green_color));
+        if(listFilteredValue.get(position).getWork_status_id() == 1) {
+            holder.binding.atrStatusLayout.setVisibility(View.GONE);
             holder.binding.takeAction.setVisibility(View.GONE);
             holder.binding.check.setVisibility(View.VISIBLE);
         }else {
-            holder.binding.atrStatus.setText("Pending");
-            holder.binding.atrStatus.setTextColor(context.getResources().getColor(R.color.grey_8));
-            holder.binding.check.setVisibility(View.GONE);
-            if(prefManager.getDesignationCode().equals("153")) {
-                holder.binding.takeAction.setVisibility(View.VISIBLE);
-            }else {
+            if(listFilteredValue.get(position).getAction_status() != null && listFilteredValue.get(position).getAction_status().equals("Y")) {
+                holder.binding.atrStatus.setText("Completed");
+                holder.binding.atrStatus.setTextColor(context.getResources().getColor(R.color.account_status_green_color));
                 holder.binding.takeAction.setVisibility(View.GONE);
+                holder.binding.check.setVisibility(View.VISIBLE);
+            }else {
+                holder.binding.atrStatus.setText("Pending");
+                holder.binding.atrStatus.setTextColor(context.getResources().getColor(R.color.grey_8));
+                holder.binding.check.setVisibility(View.GONE);
+                if(prefManager.getDesignationCode().equals("153")) {
+                    holder.binding.takeAction.setVisibility(View.VISIBLE);
+                }else {
+                    holder.binding.takeAction.setVisibility(View.GONE);
+                }
             }
         }
+
         if(String.valueOf(listFilteredValue.get(position).getWork_name()).length() > 5) {
             Utils.addReadMore(context, "Activity : "+String.valueOf(listFilteredValue.get(position).getWork_name()), holder.binding.workName, 0);
         }

@@ -470,6 +470,21 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/txt"
+                            android:gravity="start"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_toLeftOf="@+id/view_offline_images"
+                            android:textColor="@color/grey_9"
+                            android:textSize="@dimen/_12sdp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_8sdp"
+                            android:layout_marginLeft="@dimen/_50sdp"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:id="@+id/view_offline_images"
                             android:gravity="end"
                             android:drawableStart="@drawable/ic_gallery_icon"
@@ -507,7 +522,7 @@
                     android:layout_alignParentTop="true"
                     android:id="@+id/img"
                     android:padding="@dimen/_8sdp"
-                    android:src="@drawable/need_improvement"
+                    android:src="@drawable/graph_ic"
                     tools:ignore="ContentDescription" />
             </androidx.cardview.widget.CardView>
         </RelativeLayout>

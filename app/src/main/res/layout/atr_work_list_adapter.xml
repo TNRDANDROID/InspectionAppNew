@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_5sdp"
         android:background="@drawable/corner_strong_rect_bg_color"
 
         >
@@ -345,7 +346,6 @@
                         android:layout_width="match_parent"
                         android:weightSum="2"
                         android:padding="@dimen/_3sdp"
-                        android:layout_marginBottom="@dimen/_5sdp"
                         android:id="@+id/atr_status_layout"
                         android:layout_height="wrap_content">
                         <TextView
@@ -661,7 +661,7 @@
                     android:drawableEnd="@drawable/ic_pdf"
                     android:drawablePadding="@dimen/_3sdp"
                     android:layout_gravity="end"
-                    android:layout_marginTop="-45dp"
+                    android:layout_marginTop="-40dp"
                     android:layout_marginEnd="@dimen/_5sdp"
                     android:layout_marginBottom="@dimen/_5sdp"
                     tools:ignore="RelativeOverlap,UnusedAttribute" />

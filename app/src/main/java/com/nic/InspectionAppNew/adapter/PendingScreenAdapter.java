@@ -115,9 +115,12 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
 
         if(pendingListFiltered.get(position).getFlag().equals("1")){
             holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.infrastructure));
+            holder.pendingScreenAdapterBinding.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.white));
             holder.pendingScreenAdapterBinding.finYearLayout.setVisibility(View.VISIBLE);
             holder.pendingScreenAdapterBinding.workStatusLayout.setVisibility(View.VISIBLE);
             holder.pendingScreenAdapterBinding.inspectionIdLayout.setVisibility(View.GONE);
+            holder.pendingScreenAdapterBinding.inspectionId.setText("");
+            holder.pendingScreenAdapterBinding.txt.setText("Inspected Work ");
             /*if(pendingListFiltered.get(position).getWork_status_id() == 1){
                 holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.satisfied));
             }else if(pendingListFiltered.get(position).getWork_status_id() == 2){
@@ -130,6 +133,9 @@ public class PendingScreenAdapter extends PagedListAdapter<ModelClass,PendingScr
             holder.pendingScreenAdapterBinding.workStatusLayout.setVisibility(View.GONE);
             holder.pendingScreenAdapterBinding.inspectionIdLayout.setVisibility(View.VISIBLE);
             holder.pendingScreenAdapterBinding.img.setImageDrawable(context.getResources().getDrawable(R.drawable.graph_ic));
+            holder.pendingScreenAdapterBinding.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.gradEnd));
+            holder.pendingScreenAdapterBinding.inspectionId.setText(String.valueOf(pendingListFiltered.get(position).getInspection_id()));
+            holder.pendingScreenAdapterBinding.txt.setText("Action Taken Report");
         }
         holder.pendingScreenAdapterBinding.workId.setText(String.valueOf(pendingListFiltered.get(position).getWork_id()));
         holder.pendingScreenAdapterBinding.workName.setText(pendingListFiltered.get(position).getWork_name());
